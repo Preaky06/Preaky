@@ -52,7 +52,6 @@ const title = index.match(/<title>[\s\S]*?<\/title>/)[0].replace("ExpliSite — 
 let body = index.match(/<body>([\s\S]*)<\/body>/)[1];
 // Liens de pied de page vers les pages du serveur : sans objet ici.
 body = body.replace(/<nav class="footer-links"[\s\S]*?<\/nav>/, "");
-body = body.replace("Propulsé par Claude", "Propulsé par Claude · vos documents sont analysés avec votre compte claude.ai");
 
 const css = read("public/styles.css");
 const js = bundle().replace(/<\/script/gi, "<\\/script");

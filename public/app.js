@@ -245,7 +245,6 @@ function initTopbar() {
   const bar = $(".topbar");
   const onScroll = () => bar.classList.toggle("scrolled", scrollY > 8);
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
-  $("#year").textContent = new Date().getFullYear();
 }
 
 // Loupe : révèle la version claire sous le pointeur. Se promène seule tant
