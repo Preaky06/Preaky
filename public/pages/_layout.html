@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{TITLE}} — Limpide</title>
+  <meta name="robots" content="{{ROBOTS}}" />
+  <link rel="canonical" href="{{BASE_URL}}{{PATH}}" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/pages/pages.css" />
+</head>
+<body class="page">
+  <header class="topbar">
+    <a href="/" class="logo" aria-label="Limpide, accueil">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="17" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M25 25l9 9" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><path d="M11.5 17.5h11" stroke="var(--hl)" stroke-width="5" stroke-linecap="round"/></svg>
+      <span>Limpide</span>
+    </a>
+    <a href="/" class="btn btn-ghost">Analyser un document</a>
+  </header>
+  <main class="doc">
+{{CONTENT}}
+  </main>
+  <footer class="footer">
+    <div class="footer-row">
+      <nav class="footer-links" aria-label="Informations légales">
+        <a href="/mentions-legales">Mentions légales</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <a href="/cgu">Conditions d'utilisation</a>
+      </nav>
+      <p class="mono">Limpide</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -7,12 +7,13 @@ import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
 import { ANALYSIS_SCHEMA, ANALYSIS_SYSTEM, CHAT_SYSTEM, LANGUAGES } from "./lib/prompts.js";
 import { mockAnalysis, mockAnswer } from "./lib/mock.js";
+import { createSite, LEGAL_VARS } from "./lib/site.js";
 
 try { process.loadEnvFile(); } catch { /* pas de .env : on utilise l'environnement */ }
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, "public");
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000; // 0 = port libre au hasard
 const HOST = process.env.HOST || "0.0.0.0";
 const MODEL = process.env.LIMPIDE_MODEL || "claude-opus-5";
 const ANALYSIS_EFFORT = process.env.LIMPIDE_EFFORT || "high";
@@ -21,6 +22,9 @@ const USE_FALLBACKS = process.env.LIMPIDE_FALLBACKS !== "0";
 const MAX_BODY_BYTES = (Number(process.env.MAX_UPLOAD_MB) || 24) * 1024 * 1024;
 const RATE_LIMIT = Number(process.env.RATE_LIMIT_PER_HOUR) || 40;
 const TRUST_PROXY = process.env.TRUST_PROXY === "1";
+const DAILY_LIMIT = Number(process.env.DAILY_LIMIT) || 1000;
+const SITE_URL = (process.env.SITE_URL || "").replace(/\/+$/, "");
+const CONTACT = process.env.OWNER_EMAIL || "";
 
 const HAS_KEY = Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 const DEMO = process.env.DEMO_MODE === "1" || !HAS_KEY;
@@ -31,28 +35,17 @@ const MAX_FILES = 12;
 
 // ---------------------------------------------------------------- utilitaires
 
-const MIME = {
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".svg": "image/svg+xml",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".ico": "image/x-icon",
-  ".webmanifest": "application/manifest+json",
-  ".txt": "text/plain; charset=utf-8",
-};
 
 const SECURITY_HEADERS = {
   "Content-Security-Policy": [
     "default-src 'self'",
     "img-src 'self' blob: data:",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
     "script-src 'self'",
     "connect-src 'self'",
-    "frame-src blob:",
+    "worker-src 'self'",
+    "manifest-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -62,11 +55,13 @@ const SECURITY_HEADERS = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(self), microphone=(), geolocation=()",
   "X-Frame-Options": "DENY",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  ...(SITE_URL.startsWith("https://") ? { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" } : {}),
 };
 
 function sendJson(res, status, obj) {
   const body = JSON.stringify(obj);
-  res.writeHead(status, { ...SECURITY_HEADERS, "Content-Type": MIME[".json"], "Cache-Control": "no-store" });
+  res.writeHead(status, { ...SECURITY_HEADERS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
   res.end(body);
 }
 
@@ -92,6 +87,36 @@ setInterval(() => {
   const now = Date.now();
   for (const [ip, list] of hits) if (!list.some((t) => now - t < 3600_000)) hits.delete(ip);
 }, 600_000).unref();
+
+// Plafond global quotidien : protège la facture API si le site est pris d'assaut.
+let day = new Date().toISOString().slice(0, 10);
+let dayCount = 0;
+function dailyCapReached() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (today !== day) { day = today; dayCount = 0; }
+  if (dayCount >= DAILY_LIMIT) return true;
+  dayCount++;
+  return false;
+}
+
+// Refuse les appels d'API lancés depuis un autre site (le navigateur envoie Origin).
+function foreignOrigin(req) {
+  const origin = req.headers.origin;
+  if (!origin) return false;
+  let host;
+  try { host = new URL(origin).host; } catch { return true; }
+  if (host === req.headers.host) return false;
+  if (SITE_URL) { try { if (host === new URL(SITE_URL).host) return false; } catch { /* SITE_URL invalide */ } }
+  return true;
+}
+
+function logUsage(route, message, started) {
+  const u = message.usage || {};
+  console.log(JSON.stringify({
+    ev: "usage", route, model: message.model, stop: message.stop_reason, ms: Date.now() - started,
+    input: u.input_tokens, output: u.output_tokens, cache_read: u.cache_read_input_tokens || 0, cache_write: u.cache_creation_input_tokens || 0,
+  }));
+}
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -236,6 +261,7 @@ async function handleAnalyze(req, res) {
 
   res.on("close", () => { closed = true; stream.abort(); });
 
+  const started = Date.now();
   let chars = 0;
   let phase = "";
   try {
@@ -253,6 +279,7 @@ async function handleAnalyze(req, res) {
       }
     }
     const message = await stream.finalMessage();
+    logUsage("analyze", message, started);
     if (message.stop_reason === "refusal") {
       send("error", { message: "Ce document n'a pas pu être analysé. Essayez avec un autre document." });
     } else if (message.stop_reason === "max_tokens") {
@@ -318,6 +345,7 @@ async function handleAsk(req, res) {
     ...requestExtras(),
   });
   res.on("close", () => { closed = true; stream.abort(); });
+  const started = Date.now();
 
   try {
     for await (const event of stream) {
@@ -326,6 +354,7 @@ async function handleAsk(req, res) {
       }
     }
     const message = await stream.finalMessage();
+    logUsage("ask", message, started);
     if (message.stop_reason === "refusal") send("error", { message: "Je ne peux pas répondre à cette question." });
     else send("done", {});
   } catch (err) {
@@ -337,45 +366,30 @@ async function handleAsk(req, res) {
   res.end();
 }
 
-function serveStatic(req, res) {
-  let urlPath;
-  try { urlPath = decodeURIComponent(new URL(req.url, "http://x").pathname); }
-  catch { res.writeHead(400); res.end(); return; }
-  if (urlPath === "/") urlPath = "/index.html";
-  const filePath = path.normalize(path.join(PUBLIC_DIR, urlPath));
-  if (!filePath.startsWith(PUBLIC_DIR + path.sep)) { res.writeHead(403); res.end(); return; }
-
-  fs.stat(filePath, (err, stat) => {
-    const target = !err && stat.isFile() ? filePath : path.join(PUBLIC_DIR, "index.html");
-    const ext = path.extname(target);
-    const isHtml = ext === ".html";
-    res.writeHead(!err && stat.isFile() ? 200 : (path.extname(urlPath) ? 404 : 200), {
-      ...SECURITY_HEADERS,
-      "Content-Type": MIME[ext] || "application/octet-stream",
-      "Cache-Control": isHtml ? "no-cache" : "public, max-age=3600",
-    });
-    if (req.method === "HEAD") { res.end(); return; }
-    fs.createReadStream(target).pipe(res);
-  });
-}
+const serveSite = createSite({ publicDir: PUBLIC_DIR, env: process.env, securityHeaders: SECURITY_HEADERS, siteUrl: SITE_URL, trustProxy: TRUST_PROXY });
 
 const server = http.createServer(async (req, res) => {
-  const url = req.url || "/";
+  const url = (req.url || "/").split("?")[0];
   try {
-    if (url === "/api/health" && req.method === "GET") {
-      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL });
+    if (url === "/api/health" && (req.method === "GET" || req.method === "HEAD")) {
+      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL, contact: CONTACT || null });
     }
     if (url === "/api/analyze" || url === "/api/ask") {
       if (req.method !== "POST") return sendJson(res, 405, { error: "Méthode non autorisée." });
+      if (foreignOrigin(req)) return sendJson(res, 403, { error: "Origine non autorisée." });
       if (!String(req.headers["content-type"] || "").includes("application/json")) {
         return sendJson(res, 415, { error: "JSON attendu." });
       }
       if (rateLimited(clientIp(req))) {
         return sendJson(res, 429, { error: "Limite atteinte pour l'instant. Réessayez dans un moment." });
       }
+      if (!DEMO && dailyCapReached()) {
+        return sendJson(res, 503, { error: "Limpide a atteint sa limite d'analyses pour aujourd'hui. Revenez demain." });
+      }
       return url === "/api/analyze" ? await handleAnalyze(req, res) : await handleAsk(req, res);
     }
-    if (req.method === "GET" || req.method === "HEAD") return serveStatic(req, res);
+    if (url.startsWith("/api/")) return sendJson(res, 404, { error: "Point d'accès inconnu." });
+    if (req.method === "GET" || req.method === "HEAD") return serveSite(req, res);
     sendJson(res, 405, { error: "Méthode non autorisée." });
   } catch (err) {
     if (!res.headersSent) sendJson(res, err.status || 500, { error: err.status ? err.message : "Erreur serveur." });
@@ -385,6 +399,23 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.requestTimeout = 0; // les analyses longues sont streamées
+server.headersTimeout = 30_000;
+server.keepAliveTimeout = 65_000;
 server.listen(PORT, HOST, () => {
-  console.log(`Limpide → http://localhost:${PORT}  (${DEMO ? "MODE DÉMO — aucune clé API détectée" : `modèle ${MODEL}`})`);
+  console.log(`Limpide → http://localhost:${server.address().port}  (${DEMO ? "MODE DÉMO — aucune clé API détectée" : `modèle ${MODEL}`})`);
+  const missingLegal = LEGAL_VARS.filter((k) => !process.env[k]);
+  if (missingLegal.length) console.warn(`⚠ Pages légales incomplètes : renseignez ${missingLegal.join(", ")} (voir .env.example).`);
 });
+
+// Arrêt propre : on laisse les analyses en cours se terminer (30 s max).
+let stopping = false;
+for (const sig of ["SIGTERM", "SIGINT"]) {
+  process.on(sig, () => {
+    if (stopping) process.exit(1);
+    stopping = true;
+    console.log(`${sig} reçu, arrêt en cours…`);
+    server.close(() => process.exit(0));
+    server.closeIdleConnections?.();
+    setTimeout(() => process.exit(0), 30_000).unref();
+  });
+}

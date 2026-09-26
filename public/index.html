@@ -10,15 +10,26 @@
   <meta property="og:title" content="Limpide — la paperasse, en clair" />
   <meta property="og:description" content="Votre courrier parle charabia. Limpide traduit, repère les dates limites et rédige la réponse." />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:url" content="{{BASE_URL}}/" />
+  <meta property="og:image" content="{{BASE_URL}}/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="{{BASE_URL}}/" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Limpide","url":"{{BASE_URL}}/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"fr","description":"Photographiez un courrier administratif, une facture ou un contrat : Limpide explique ce qu'il dit, ce qu'il faut faire et avant quand.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
   <link rel="manifest" href="/manifest.webmanifest" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <link rel="preload" href="/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
   <link rel="stylesheet" href="/styles.css" />
   <script src="/app.js" type="module" defer></script>
 </head>
 <body>
+  <noscript><div class="noscript">Limpide a besoin de JavaScript pour fonctionner. Activez-le dans votre navigateur puis rechargez la page.</div></noscript>
   <a class="skip" href="#main">Aller au contenu</a>
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"></span></div>
@@ -140,6 +151,11 @@
               <span class="toggle-ink" aria-hidden="true"></span>
             </div>
           </div>
+          <label class="consent" id="consent">
+            <input type="checkbox" id="consentBox" />
+            <span class="consent-box" aria-hidden="true"></span>
+            <span>J'accepte que mon document soit transmis à un service d'IA (Anthropic) pour être analysé, sans être conservé. <a href="/confidentialite" target="_blank">Confidentialité</a></span>
+          </label>
           <button type="button" class="btn btn-primary go" id="analyzeBtn" data-magnetic disabled>
             <span>Rendre limpide</span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -201,12 +217,13 @@
       <div class="result-toolbar">
         <button type="button" class="btn btn-ghost" id="backBtn" data-magnetic>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Nouveau document
+          <span>Nouveau document</span>
         </button>
         <div class="toolbar-right">
           <button type="button" class="btn btn-ghost" id="shareBtn" data-magnetic>Partager</button>
           <button type="button" class="btn btn-ghost" id="downloadBtn" data-magnetic>Télécharger</button>
           <button type="button" class="btn btn-ghost" id="printBtn" data-magnetic>Imprimer</button>
+          <button type="button" class="btn btn-ghost" id="reportBtn" data-magnetic hidden>Signaler un problème</button>
         </div>
       </div>
       <div id="resultRoot"></div>
@@ -251,7 +268,7 @@
       <div class="chat-suggest" id="chatSuggest"></div>
       <form class="chat-form" id="chatForm">
         <input type="text" id="chatInput" placeholder="Ex. : Et si je ne paie pas ?" autocomplete="off" aria-label="Votre question" maxlength="2000" />
-        <button type="submit" class="btn btn-primary" aria-label="Envoyer">↑</button>
+        <button type="submit" class="btn btn-primary" id="chatSend" aria-label="Envoyer">↑</button>
       </form>
     </div>
   </aside>
@@ -262,6 +279,12 @@
     <div class="footer-big" aria-hidden="true">limpide</div>
     <div class="footer-row">
       <p>Limpide vous aide à comprendre vos documents. Ce n'est pas un conseil juridique, fiscal ou médical.</p>
+      <nav class="footer-links" aria-label="Informations légales">
+        <a href="/mentions-legales">Mentions légales</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <a href="/cgu">Conditions d'utilisation</a>
+        <a href="#" id="contactLink" hidden>Contact</a>
+      </nav>
       <p class="mono">Propulsé par Claude · © <span id="year"></span></p>
     </div>
   </footer>

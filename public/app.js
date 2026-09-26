@@ -1,5 +1,6 @@
 // Limpide — logique de l'interface (aucune dépendance).
 import { SAMPLES } from "./samples.js";
+import { translator, locale, RTL } from "./i18n.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -11,6 +12,29 @@ const MAX_PDF_BYTES = 16 * 1024 * 1024;
 const MAX_IMAGE_SIDE = 2000;
 const HISTORY_KEY = "limpide.history.v1";
 const PREFS_KEY = "limpide.prefs.v1";
+
+// Langue de l'interface fonctionnelle (résultat, analyse, chat).
+let t = translator("fr");
+let LOC = "fr";
+function setUiLang(lang) {
+  t = translator(lang);
+  LOC = locale(lang);
+  const dir = RTL.has(lang) ? "rtl" : "ltr";
+  for (const id of ["viewResult", "chat", "scanner"]) {
+    const el = document.getElementById(id);
+    el.setAttribute("lang", LOC);
+    el.setAttribute("dir", dir);
+  }
+  $("#backBtn span").textContent = t("newDoc");
+  $("#shareBtn").textContent = t("share");
+  $("#downloadBtn").textContent = t("download");
+  $("#printBtn").textContent = t("print");
+  $("#reportBtn").textContent = t("report");
+  $("#chatTitle").textContent = t("chatTitle");
+  $("#chatInput").placeholder = t("chatPh");
+  $("#chatSend").setAttribute("aria-label", t("send"));
+  $("#cancelBtn").textContent = t("cancel");
+}
 
 const state = {
   mode: "file",           // "file" | "text"
@@ -64,7 +88,7 @@ function toast(message, type = "") {
   setTimeout(() => { el.classList.add("out"); el.addEventListener("animationend", () => el.remove()); }, type === "err" ? 5200 : 2800);
 }
 
-async function copyText(text, label = "Copié") {
+async function copyText(text, label = t("copied")) {
   try { await navigator.clipboard.writeText(text); toast(`${label} ✓`); }
   catch {
     const ta = h("textarea", { style: { position: "fixed", opacity: "0" } });
@@ -97,19 +121,19 @@ function daysFromToday(date) {
   return Math.round((date - today) / 86400000);
 }
 
-const fmtDate = (date) => date.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+const fmtDate = (date) => date.toLocaleDateString(LOC, { weekday: "short", day: "numeric", month: "long", year: "numeric" });
 
 function countdownLabel(days) {
-  if (days === 0) return "aujourd'hui";
-  if (days === 1) return "demain";
-  if (days > 1) return `dans ${days} j`;
-  if (days === -1) return "hier";
-  return `il y a ${-days} j`;
+  if (days === 0) return t("today");
+  if (days === 1) return t("tomorrow");
+  if (days > 1) return t("inDays", { n: days });
+  if (days === -1) return t("yesterday");
+  return t("daysAgo", { n: -days });
 }
 
 function fmtMoney(amount, currency) {
-  try { return new Intl.NumberFormat("fr-FR", { style: "currency", currency: currency || "EUR" }).format(amount); }
-  catch { return `${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 2 }).format(amount)} ${currency || ""}`.trim(); }
+  try { return new Intl.NumberFormat(LOC, { style: "currency", currency: currency || "EUR" }).format(amount); }
+  catch { return `${new Intl.NumberFormat(LOC, { maximumFractionDigits: 2 }).format(amount)} ${currency || ""}`.trim(); }
 }
 
 function viewSwap(fn) {
@@ -132,6 +156,12 @@ function initTheme() {
   });
   if (prefs.lang) { state.lang = prefs.lang; $("#langSelect").value = prefs.lang; }
   if (prefs.detail) setDetail(prefs.detail);
+  const consent = $("#consentBox");
+  consent.checked = !!prefs.consent;
+  consent.addEventListener("change", () => {
+    storage.set(PREFS_KEY, { ...storage.get(PREFS_KEY, {}), consent: consent.checked });
+    $("#consent").classList.remove("shake");
+  });
   $("#langSelect").addEventListener("change", (e) => {
     state.lang = e.target.value;
     storage.set(PREFS_KEY, { ...storage.get(PREFS_KEY, {}), lang: state.lang });
@@ -416,11 +446,11 @@ function initIntake() {
       state.selectTab("text");
       $("#textInput").value = s.text();
       $("#textInput").dispatchEvent(new Event("input"));
-      startAnalysis();
+      startAnalysis({ sample: true });
     },
   }, s.label)));
 
-  $("#analyzeBtn").addEventListener("click", startAnalysis);
+  $("#analyzeBtn").addEventListener("click", () => startAnalysis());
 }
 
 /* ============================================================== SSE */
@@ -462,11 +492,12 @@ async function postStream(url, body, onEvent, signal) {
 
 /* ============================================================ analyse */
 
-const STAGES = {
-  upload: ["Envoi sécurisé du document…"],
-  thinking: ["Lecture ligne à ligne…", "Chasse au jargon…", "Repérage des dates limites…", "Vérification des montants…", "Recherche de vos recours…"],
-  writing: ["Traduction en langage clair…", "Préparation de votre liste d'actions…", "Rédaction de la réponse…", "Derniers détails…"],
+const STAGE_KEYS = {
+  upload: ["st_upload"],
+  thinking: ["st_t1", "st_t2", "st_t3", "st_t4", "st_t5"],
+  writing: ["st_w1", "st_w2", "st_w3", "st_w4"],
 };
+const stages = (phase) => STAGE_KEYS[phase].map((k) => t(k));
 
 function buildScanDocs() {
   const wrap = $("#scanDocs");
@@ -501,7 +532,7 @@ function startScanner() {
     stageEl.textContent = text;
     stageEl.classList.remove("swap"); void stageEl.offsetWidth; stageEl.classList.add("swap");
   };
-  setStage(STAGES.upload[0]);
+  setStage(stages("upload")[0]);
 
   const ring = $("#ringFg");
   const pctEl = $("#scanPct");
@@ -516,7 +547,7 @@ function startScanner() {
   }, 80);
 
   const stageTimer = setInterval(() => {
-    const list = STAGES[phase];
+    const list = stages(phase);
     stageIdx = (stageIdx + 1) % list.length;
     setStage(list[stageIdx]);
   }, 3200);
@@ -534,7 +565,7 @@ function startScanner() {
   return {
     phase(p) {
       if (p === phase) return;
-      phase = p; stageIdx = 0; setStage(STAGES[p][0]);
+      phase = p; stageIdx = 0; setStage(stages(p)[0]);
       if (p === "writing") target = Math.max(target, 50);
     },
     thinking(text) {
@@ -551,7 +582,7 @@ function startScanner() {
     async done() {
       target = 100; pct = 100;
       ring.style.strokeDashoffset = "0"; pctEl.textContent = "100";
-      setStage("C'est limpide.");
+      setStage(t("st_done"));
       await new Promise((r) => setTimeout(r, reduceMotion ? 0 : 550));
       this.stop();
     },
@@ -563,8 +594,17 @@ function startScanner() {
   };
 }
 
-async function startAnalysis() {
+async function startAnalysis({ sample = false } = {}) {
   if (state.abort) return;
+  if (!sample && !$("#consentBox").checked) {
+    const c = $("#consent");
+    c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
+    c.addEventListener("animationend", () => c.classList.remove("shake"), { once: true });
+    toast("Cochez la case d'accord pour lancer l'analyse.", "err");
+    return;
+  }
+  if (!navigator.onLine) { toast("Vous êtes hors ligne. Reconnectez-vous pour analyser un document.", "err"); return; }
+  setUiLang(state.lang);
   const text = $("#textInput").value.trim();
   const useFiles = state.mode === "file";
   if (useFiles && !state.files.length) { toast("Ajoutez d'abord un document.", "err"); return; }
@@ -590,7 +630,7 @@ async function startAnalysis() {
     }, controller.signal);
   } catch (err) {
     errorMsg = err.name === "AbortError" ? "" : (err.message || "Connexion interrompue.");
-    if (err.name === "AbortError") { scanner.stop(); state.abort = null; toast("Analyse annulée."); return; }
+    if (err.name === "AbortError") { scanner.stop(); state.abort = null; toast(t("cancelled")); return; }
   }
   state.abort = null;
 
@@ -609,17 +649,13 @@ async function startAnalysis() {
 
 /* ============================================================ résultat */
 
-const URGENCY = {
-  none: { label: "Rien à faire", angle: -67.5 },
-  low: { label: "Pour info", angle: -22.5 },
-  medium: { label: "À traiter", angle: 22.5 },
-  high: { label: "Urgent", angle: 67.5 },
-};
+const URGENCY_ANGLE = { none: -67.5, low: -22.5, medium: 22.5, high: 67.5 };
+const urgencyLabel = (u) => t(`u_${URGENCY_ANGLE[u] !== undefined ? u : "low"}`);
 
 const CONTACT_ICONS = { phone: "☎", email: "@", address: "⌂", website: "↗", reference: "#", other: "•" };
 
 function gauge(urgency, reason) {
-  const u = URGENCY[urgency] || URGENCY.low;
+  const u = { label: urgencyLabel(urgency), angle: URGENCY_ANGLE[urgency] ?? URGENCY_ANGLE.low };
   const NS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(NS, "svg");
   svg.setAttribute("viewBox", "0 0 200 120");
@@ -648,7 +684,7 @@ function gauge(urgency, reason) {
   needle.append(line, hub);
   svg.append(needle);
   requestAnimationFrame(() => requestAnimationFrame(() => { needle.style.transform = `rotate(${u.angle}deg)`; }));
-  return h("div", { class: "gauge", role: "img", "aria-label": `Urgence : ${u.label}` },
+  return h("div", { class: "gauge", role: "img", "aria-label": `${t("urgency")} : ${u.label}` },
     svg, h("span", { class: "gauge-label", text: u.label }), reason ? h("p", { class: "gauge-reason", text: reason, dir: "auto" }) : null);
 }
 
@@ -733,7 +769,7 @@ function buildIcs(result, items) {
       `DTSTART;VALUE=DATE:${ymd(date)}`,
       `DTEND;VALUE=DATE:${ymd(next)}`,
       icsFold(`SUMMARY:${icsEscape(`${it.label} — ${result.title}`)}`),
-      icsFold(`DESCRIPTION:${icsEscape([it.consequence ? `Si oublié : ${it.consequence}` : "", result.issuer ? `Émetteur : ${result.issuer}` : "", "Rappel créé par Limpide."].filter(Boolean).join("\n"))}`),
+      icsFold(`DESCRIPTION:${icsEscape([it.consequence ? `${t("ifMissed")} : ${it.consequence}` : "", result.issuer ? `${t("issuer")} : ${result.issuer}` : "", "Limpide"].filter(Boolean).join("\n"))}`),
       "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:-P3D", icsFold(`DESCRIPTION:${icsEscape(it.label)}`), "END:VALARM",
       "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:-PT12H", icsFold(`DESCRIPTION:${icsEscape(it.label)}`), "END:VALARM",
       "END:VEVENT",
@@ -761,10 +797,10 @@ function renderResult(entry) {
 
   // --- En-tête
   const meta = h("div", { class: "r-meta" },
-    entry.demo ? h("span", { class: "tag demo", text: "Exemple fictif — mode démo" }) : null,
+    entry.demo ? h("span", { class: "tag demo", text: t("demoTag") }) : null,
     r.document_type ? h("span", { class: "tag", text: r.document_type }) : null,
     r.issuer ? h("span", { class: "tag", dir: "auto", text: r.issuer }) : null,
-    docDate ? h("span", { class: "tag", text: `Daté du ${docDate.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}` }) : null,
+    docDate ? h("span", { class: "tag", text: t("datedOn", { d: docDate.toLocaleDateString(LOC, { day: "numeric", month: "long", year: "numeric" }) }) }) : null,
   );
   root.append(h("section", { class: "r-hero" },
     h("div", {}, meta, h("h1", { class: "r-title", dir: "auto", text: r.title || "Votre document" }), summaryWords(r.plain_summary || "", pickHighlights(r.plain_summary || ""))),
@@ -786,7 +822,7 @@ function renderResult(entry) {
       input.checked = !!entry.checks[i];
       input.addEventListener("change", () => {
         entry.checks[i] = input.checked; updateBar(); updateHistoryEntry(entry);
-        if (input.checked && entry.checks.filter(Boolean).length === actions.length) toast("Tout est fait. Bravo ✨");
+        if (input.checked && entry.checks.filter(Boolean).length === actions.length) toast(t("allDone"));
       });
       return h("label", { class: "todo-item" }, input,
         h("span", { class: "todo-box", "aria-hidden": "true" }, svgCheck()),
@@ -796,14 +832,14 @@ function renderResult(entry) {
           due ? h("span", { class: `due${days < 0 ? " late" : ""}`, text: `${fmtDate(due)} · ${countdownLabel(days)}` }) : null));
     }));
     updateBar();
-    cards.push(card("À faire", "✓", "accent span-7", todo, h("div", { class: "progress-bar", "aria-hidden": "true" }, bar)));
+    cards.push(card(t("todo"), "✓", "accent span-7", todo, h("div", { class: "progress-bar", "aria-hidden": "true" }, bar)));
   }
 
   // --- Montants
   const amounts = (r.amounts || []).filter((a) => typeof a.amount === "number" && Number.isFinite(a.amount));
   if (amounts.length) {
-    const dirLabel = { to_pay: "À payer", to_receive: "À recevoir", info: "Pour info" };
-    cards.push(card("Montants", "€", actions.length ? "span-5" : "span-4", h("div", { class: "amounts" }, amounts.map((a) => {
+    const dirLabel = { to_pay: t("toPay"), to_receive: t("toReceive"), info: t("info") };
+    cards.push(card(t("amounts"), "€", actions.length ? "span-5" : "span-4", h("div", { class: "amounts" }, amounts.map((a) => {
       const v = h("span", { class: "amount-value" });
       countUp(v, a.amount, a.currency);
       return h("div", { class: `amount ${a.direction}` }, h("span", { class: "amount-dir", text: dirLabel[a.direction] || "" }), v, h("span", { class: "amount-label", dir: "auto", text: a.label }));
@@ -822,28 +858,28 @@ function renderResult(entry) {
         h("span", { class: "tl-label", dir: "auto", text: d.label }),
         d.consequence ? h("span", { class: "tl-cons", dir: "auto", text: d.consequence }) : null);
     }));
-    cards.push(card("Dates clés", "◷", "span-7", tl,
+    cards.push(card(t("dates"), "◷", "span-7", tl,
       calItems.length ? h("button", { type: "button", class: "mini-btn", onclick: () => {
         downloadFile(`limpide-${slug(r.title)}.ics`, buildIcs(r, calItems), "text/calendar;charset=utf-8");
-        toast("Ouvrez le fichier pour l'ajouter à votre agenda");
-      } }, "＋ Ajouter à mon agenda") : null));
+        toast(t("calToast"));
+      } }, t("addCal")) : null));
   }
 
   // --- Ce qu'il faut retenir
-  if ((r.key_points || []).length) cards.push(card("L'essentiel", "✳", "span-5", list(r.key_points)));
+  if ((r.key_points || []).length) cards.push(card(t("essentials"), "✳", "span-5", list(r.key_points)));
 
   // --- Attention
-  if ((r.warnings || []).length) cards.push(card("Attention", "!", "warn span-6", list(r.warnings)));
+  if ((r.warnings || []).length) cards.push(card(t("warnings"), "!", "warn span-6", list(r.warnings)));
 
   // --- Droits
-  if ((r.rights || []).length) cards.push(card("Vos droits et options", "⚖", "span-6", list(r.rights)));
+  if ((r.rights || []).length) cards.push(card(t("rights"), "⚖", "span-6", list(r.rights)));
 
   // --- Glossaire
   if ((r.glossary || []).length) {
-    cards.push(card("Mots compliqués — touchez pour traduire", "Aa", "span-12", h("div", { class: "gloss" }, r.glossary.map((g) => {
+    cards.push(card(t("glossary"), "Aa", "span-12", h("div", { class: "gloss" }, r.glossary.map((g) => {
       const b = h("button", { type: "button", class: "flip", "aria-pressed": "false" },
         h("span", { class: "flip-inner" },
-          h("span", { class: "flip-face flip-front" }, h("strong", { dir: "auto", text: g.term }), h("small", { text: "↻ retourner" })),
+          h("span", { class: "flip-face flip-front" }, h("strong", { dir: "auto", text: g.term }), h("small", { text: t("flip") })),
           h("span", { class: "flip-face flip-back", dir: "auto", text: g.definition })));
       b.addEventListener("click", () => { b.classList.toggle("on"); b.setAttribute("aria-pressed", b.classList.contains("on")); });
       return b;
@@ -852,7 +888,7 @@ function renderResult(entry) {
 
   // --- Contacts & références
   if ((r.contacts || []).length) {
-    cards.push(card("Contacts et références", "☎", "span-5", h("div", { class: "contacts" }, r.contacts.map((c) => {
+    cards.push(card(t("contacts"), "☎", "span-5", h("div", { class: "contacts" }, r.contacts.map((c) => {
       let valueEl;
       if (c.kind === "phone") valueEl = h("a", { href: `tel:${c.value.replace(/[^\d+]/g, "")}`, text: c.value });
       else if (c.kind === "email" && /@/.test(c.value)) valueEl = h("a", { href: `mailto:${c.value}`, text: c.value });
@@ -863,27 +899,27 @@ function renderResult(entry) {
       return h("div", { class: "contact" },
         h("span", { class: "contact-ico", "aria-hidden": "true", text: CONTACT_ICONS[c.kind] || "•" }),
         h("div", { class: "contact-body", dir: "auto" }, h("small", { text: c.label }), valueEl),
-        h("button", { type: "button", class: "copy", onclick: () => copyText(c.value) }, "Copier"));
+        h("button", { type: "button", class: "copy", onclick: () => copyText(c.value) }, t("copy")));
     }))));
   }
 
   // --- Réponse prête
   if (r.reply_draft?.needed && r.reply_draft.body) {
-    const subject = h("input", { class: "letter-subject", type: "text", "aria-label": "Objet", dir: "auto" });
+    const subject = h("input", { class: "letter-subject", type: "text", "aria-label": t("subject"), dir: "auto" });
     subject.value = r.reply_draft.subject || "";
-    const body = h("textarea", { "aria-label": "Courrier", dir: "auto", spellcheck: "true" });
+    const body = h("textarea", { "aria-label": t("letter"), dir: "auto", spellcheck: "true" });
     body.value = r.reply_draft.body;
     const email = (r.contacts || []).find((c) => c.kind === "email" && /@/.test(c.value))?.value || "";
-    cards.push(card("Réponse prête à envoyer", "✉", (r.contacts || []).length ? "span-7" : "span-12",
+    cards.push(card(t("reply"), "✉", (r.contacts || []).length ? "span-7" : "span-12",
       h("div", { class: "letter" }, subject, body),
       h("div", { class: "mini-row" },
-        h("button", { type: "button", class: "mini-btn", onclick: () => copyText(`${subject.value}\n\n${body.value}`, "Courrier copié") }, "Copier"),
-        h("button", { type: "button", class: "mini-btn", onclick: () => downloadFile(`courrier-${slug(r.title)}.txt`, `Objet : ${subject.value}\n\n${body.value}\n`) }, "Télécharger"),
+        h("button", { type: "button", class: "mini-btn", onclick: () => copyText(`${subject.value}\n\n${body.value}`) }, t("copy")),
+        h("button", { type: "button", class: "mini-btn", onclick: () => downloadFile(`courrier-${slug(r.title)}.txt`, `${t("subject")} : ${subject.value}\n\n${body.value}\n`) }, t("download")),
         h("button", { type: "button", class: "mini-btn", onclick: () => {
           const href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject.value)}&body=${encodeURIComponent(body.value)}`;
           location.href = href.length > 1900 ? `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject.value)}` : href;
-          if (href.length > 1900) copyText(body.value, "Texte copié — collez-le dans l'e-mail");
-        } }, email ? "Envoyer par e-mail" : "Ouvrir ma messagerie"))));
+          if (href.length > 1900) copyText(body.value, t("pasteHint"));
+        } }, email ? t("sendEmail") : t("openMail")))));
   }
 
   cards.forEach((c, i) => { c.style.setProperty("--i", i); bento.append(c); });
@@ -891,12 +927,10 @@ function renderResult(entry) {
 
   if (r.professional_advice) {
     root.append(h("div", { class: "pro", dir: "auto" }, h("span", { "aria-hidden": "true", text: "👤" }),
-      h("div", {}, h("b", { text: "Un avis professionnel serait utile" }), r.professional_advice)));
+      h("div", {}, h("b", { text: t("proTitle") }), r.professional_advice)));
   }
   if (r.readability && r.readability !== "good") {
-    root.append(h("p", { class: "readability", text: r.readability === "poor"
-      ? "Le document était difficile à lire : certaines informations peuvent manquer. Une photo plus nette, bien à plat et éclairée, donnera un meilleur résultat."
-      : "Une partie du document était peu lisible : vérifiez les montants et dates importants sur l'original." }));
+    root.append(h("p", { class: "readability", text: t(r.readability === "poor" ? "readPoor" : "readPartial") }));
   }
   initTilt(root);
 }
@@ -913,6 +947,7 @@ function svgCheck() {
 }
 
 function showResult(entry) {
+  setUiLang(entry.lang || "fr");
   state.current = entry;
   state.chatHistory = [];
   viewSwap(() => {
@@ -944,24 +979,30 @@ function showHome(push = true) {
 function resultAsText(r) {
   const out = [`# ${r.title}`, "", r.plain_summary, ""];
   const sec = (title, items) => { if (items?.length) out.push(`## ${title}`, ...items.map((i) => `- ${i}`), ""); };
-  if (r.issuer) out.push(`Émetteur : ${r.issuer}`);
-  out.push(`Urgence : ${(URGENCY[r.urgency] || URGENCY.low).label} — ${r.urgency_reason}`, "");
-  sec("À faire", (r.actions || []).map((a) => `${a.task}${a.deadline ? ` (avant le ${a.deadline})` : ""}${a.detail ? ` — ${a.detail}` : ""}`));
-  sec("Dates clés", (r.deadlines || []).map((d) => `${d.date} : ${d.label}${d.consequence ? ` — si oublié : ${d.consequence}` : ""}`));
-  sec("Montants", (r.amounts || []).map((a) => `${a.label} : ${fmtMoney(a.amount, a.currency)}`));
-  sec("L'essentiel", r.key_points);
-  sec("Attention", r.warnings);
-  sec("Vos droits et options", r.rights);
-  sec("Lexique", (r.glossary || []).map((g) => `${g.term} : ${g.definition}`));
-  sec("Contacts", (r.contacts || []).map((c) => `${c.label} : ${c.value}`));
-  if (r.reply_draft?.needed && r.reply_draft.body) out.push("## Réponse proposée", `Objet : ${r.reply_draft.subject}`, "", r.reply_draft.body, "");
-  if (r.professional_advice) out.push(`Conseil : ${r.professional_advice}`, "");
-  out.push("—", "Analyse réalisée avec Limpide. Ne remplace pas un conseil professionnel.");
+  if (r.issuer) out.push(`${t("issuer")} : ${r.issuer}`);
+  out.push(`${t("urgency")} : ${urgencyLabel(r.urgency)} — ${r.urgency_reason}`, "");
+  sec(t("todo"), (r.actions || []).map((a) => `${a.task}${a.deadline ? ` (${a.deadline})` : ""}${a.detail ? ` — ${a.detail}` : ""}`));
+  sec(t("dates"), (r.deadlines || []).map((d) => `${d.date} : ${d.label}${d.consequence ? ` — ${t("ifMissed")} : ${d.consequence}` : ""}`));
+  sec(t("amounts"), (r.amounts || []).map((a) => `${a.label} : ${fmtMoney(a.amount, a.currency)}`));
+  sec(t("essentials"), r.key_points);
+  sec(t("warnings"), r.warnings);
+  sec(t("rights"), r.rights);
+  sec(t("glossary").split(" — ")[0], (r.glossary || []).map((g) => `${g.term} : ${g.definition}`));
+  sec(t("contacts"), (r.contacts || []).map((c) => `${c.label} : ${c.value}`));
+  if (r.reply_draft?.needed && r.reply_draft.body) out.push(`## ${t("reply")}`, `${t("subject")} : ${r.reply_draft.subject}`, "", r.reply_draft.body, "");
+  if (r.professional_advice) out.push(`${t("advice")} : ${r.professional_advice}`, "");
+  out.push("—", t("disclaimer"));
   return out.join("\n");
 }
 
 function initResultToolbar() {
   $("#backBtn").addEventListener("click", () => showHome());
+  $("#reportBtn").addEventListener("click", () => {
+    const r = state.current?.result;
+    if (!state.contact || !r) return;
+    const body = `Bonjour,\n\nJe signale un problème sur l'analyse « ${r.title} » (type : ${r.document_type}).\n\nCe qui ne va pas :\n\n`;
+    location.href = `mailto:${encodeURIComponent(state.contact)}?subject=${encodeURIComponent("Limpide — signalement")}&body=${encodeURIComponent(body)}`;
+  });
   $("#printBtn").addEventListener("click", () => {
     $$(".card").forEach((c) => c.classList.add("settled"));
     print();
@@ -977,7 +1018,7 @@ function initResultToolbar() {
       try { await navigator.share({ title: r.title, text }); return; }
       catch (e) { if (e.name === "AbortError") return; }
     }
-    copyText(text, "Résumé copié");
+    copyText(text);
   });
   addEventListener("popstate", (e) => {
     if (e.state?.view === "result") {
@@ -989,6 +1030,7 @@ function initResultToolbar() {
 }
 
 function showResultNoPush(entry) {
+  setUiLang(entry.lang || "fr");
   state.current = entry;
   state.docForChat = null;
   viewSwap(() => {
@@ -1077,7 +1119,7 @@ function resetChat(entry) {
   $("#chatPanel").hidden = true;
   $("#chatToggle").setAttribute("aria-expanded", "false");
   $("#chatLog").replaceChildren(h("div", { class: "msg bot", dir: "auto" },
-    state.docForChat ? "Je garde le document sous la main. Demandez-moi n'importe quoi à son sujet." : "Je me base sur l'analyse enregistrée. Posez votre question."));
+    state.docForChat ? t("chatHelloDoc") : t("chatHelloAnalysis")));
   renderSuggestions(entry.result.suggested_questions || []);
 }
 
@@ -1135,6 +1177,7 @@ function initChat() {
     ask(input.value); input.value = "";
   });
   addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && state.abort) { state.abort.abort(); return; }
     if (e.key === "Escape" && !$("#chatPanel").hidden) { $("#chatPanel").hidden = true; toggle.setAttribute("aria-expanded", "false"); }
   });
 }
@@ -1147,7 +1190,25 @@ async function checkHealth() {
     const data = await res.json();
     state.demo = !!data.demo;
     $(".demo-banner").hidden = !data.demo;
+    if (data.contact) {
+      state.contact = data.contact;
+      $("#reportBtn").hidden = false;
+      const link = $("#contactLink");
+      link.href = `mailto:${data.contact}`;
+      link.hidden = false;
+    }
   } catch { /* hors ligne : on laissera l'erreur apparaître à l'analyse */ }
+}
+
+function initOffline() {
+  let pill = null;
+  const update = () => {
+    if (navigator.onLine) { pill?.remove(); pill = null; return; }
+    if (!pill) { pill = h("div", { class: "offline-pill", role: "status", text: "Hors ligne — vos documents enregistrés restent consultables." }); document.body.append(pill); }
+  };
+  addEventListener("online", update);
+  addEventListener("offline", update);
+  update();
 }
 
 /* ================================================================ init */
@@ -1166,6 +1227,10 @@ function init() {
   initTilt();
   initMagnetic();
   checkHealth();
+  initOffline();
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+  }
   history.replaceState({ view: "home" }, "", location.pathname);
 }
 

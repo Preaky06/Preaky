@@ -9,5 +9,17 @@ services:
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
+      - key: OWNER_NAME
+        sync: false
+      - key: OWNER_STATUS
+        sync: false
+      - key: OWNER_ADDRESS
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: HOSTING_PROVIDER
+        value: "Render Services, Inc. — 525 Brannan Street, Suite 300, San Francisco, CA 94107, États-Unis"
       - key: TRUST_PROXY
         value: "1"
