@@ -1,0 +1,29 @@
+{
+  "name": "limpide",
+  "version": "1.0.0",
+  "description": "Limpide — la paperasse, en clair. Décodeur de documents administratifs propulsé par Claude.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "demo": "DEMO_MODE=1 node server.js",
+    "check": "node --check server.js && node --check public/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Preaky06/Preaky.git"
+  },
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Preaky06/Preaky/issues"
+  },
+  "homepage": "https://github.com/Preaky06/Preaky#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0"
+  },
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20.12"
+  }
+}

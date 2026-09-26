@@ -1,0 +1,10 @@
+{
+  "name": "Limpide — la paperasse, en clair",
+  "short_name": "Limpide",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2eee4",
+  "theme_color": "#15130f",
+  "lang": "fr",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

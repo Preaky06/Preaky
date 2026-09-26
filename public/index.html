@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Limpide — la paperasse, en clair</title>
+  <meta name="description" content="Photographiez n'importe quel courrier administratif, facture, contrat ou résultat d'analyse : Limpide vous explique ce qu'il dit, ce que vous devez faire et avant quand." />
+  <meta name="theme-color" content="#f2eee4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#11100d" media="(prefers-color-scheme: dark)" />
+  <meta property="og:title" content="Limpide — la paperasse, en clair" />
+  <meta property="og:description" content="Votre courrier parle charabia. Limpide traduit, repère les dates limites et rédige la réponse." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;600&display=swap" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/app.js" type="module" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"></span></div>
+
+  <!-- Voile qui apparaît quand on fait glisser un fichier sur la page -->
+  <div class="dropveil" aria-hidden="true">
+    <div class="dropveil-inner">
+      <span class="dropveil-word">Lâchez</span>
+      <span class="dropveil-sub">on s'occupe du reste</span>
+    </div>
+  </div>
+
+  <div class="demo-banner" hidden>
+    <strong>Mode démo</strong> — aucune clé API n'est configurée sur le serveur : les résultats affichés sont fictifs.
+  </div>
+
+  <header class="topbar">
+    <a href="/" class="logo" data-magnetic aria-label="Limpide, accueil">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="17" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M25 25l9 9" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><path d="M11.5 17.5h11" stroke="var(--hl)" stroke-width="5" stroke-linecap="round"/></svg>
+      <span>Limpide</span>
+    </a>
+    <nav class="topnav" aria-label="Navigation principale">
+      <a href="#comment" data-magnetic>Comment ça marche</a>
+      <a href="#faq" data-magnetic>Questions</a>
+      <button type="button" class="linkbtn" id="historyBtn" data-magnetic aria-haspopup="dialog">
+        Mes documents <span class="badge" id="historyCount" hidden>0</span>
+      </button>
+      <button type="button" class="iconbtn" id="themeBtn" data-magnetic aria-label="Changer de thème">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="currentColor"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============================== ACCUEIL ============================== -->
+    <section class="view view-home" id="viewHome">
+      <div class="hero">
+        <p class="eyebrow reveal"><span class="pulse"></span> Impôts · CAF · Bail · Factures · Amendes · Contrats · Santé</p>
+        <h1 class="hero-title">
+          <span class="line"><span class="word">Votre</span> <span class="word">courrier</span></span>
+          <span class="line"><span class="word">parle</span> <em class="word jargon-word">charabia.</em></span>
+          <span class="line"><span class="word">On</span> <span class="word"><span class="mark">traduit.</span></span></span>
+        </h1>
+
+        <!-- Loupe : le jargon devient clair sous le curseur -->
+        <figure class="lens-demo reveal" id="lensDemo" aria-label="Démonstration : un paragraphe administratif traduit en langage clair">
+          <div class="lens-layer lens-jargon" aria-hidden="true">
+            <p><b>Objet : Avis de mise en recouvrement.</b> En application des dispositions de l'article L. 256 du Livre des procédures fiscales, et à défaut de règlement de l'imposition primitive dans le délai légal, une majoration de 10 % prévue à l'article 1730 du CGI a été appliquée. Le contribuable dispose, à compter de la notification, d'un délai de trente jours pour s'acquitter des sommes restant dues ou formuler une réclamation contentieuse assortie, le cas échéant, d'une demande de sursis de paiement, faute de quoi il sera procédé au recouvrement forcé par voie de saisie administrative à tiers détenteur.</p>
+          </div>
+          <div class="lens-layer lens-plain" aria-hidden="true">
+            <p><mark>Vous avez payé vos impôts en retard.</mark> Une pénalité de <mark>10 %</mark> a été ajoutée. Vous avez <mark>30 jours</mark> pour payer ou contester. Si vous ne faites rien, <mark>l'argent peut être prélevé directement sur votre compte bancaire.</mark> Vous pouvez demander à payer en plusieurs fois.</p>
+          </div>
+          <div class="lens-ring" aria-hidden="true"></div>
+          <figcaption class="lens-caption mono">↖ promenez la loupe</figcaption>
+        </figure>
+      </div>
+
+      <!-- Dépôt de document -->
+      <section class="intake reveal" id="intake" aria-labelledby="intakeTitle">
+        <div class="intake-head">
+          <h2 id="intakeTitle" class="mono">01 — Déposez le document</h2>
+          <div class="tabs" role="tablist" aria-label="Type d'entrée">
+            <button role="tab" aria-selected="true" aria-controls="panelFile" id="tabFile" class="tab">Photo ou PDF</button>
+            <button role="tab" aria-selected="false" aria-controls="panelText" id="tabText" class="tab">Coller du texte</button>
+            <span class="tab-ink" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="panel" id="panelFile" role="tabpanel" aria-labelledby="tabFile">
+          <label class="slot" id="slot" for="fileInput" data-magnetic-soft>
+            <input type="file" id="fileInput" accept="image/*,application/pdf" multiple />
+            <span class="slot-mouth" aria-hidden="true"><span class="slot-paper"></span></span>
+            <span class="slot-copy">
+              <strong>Glissez votre courrier ici</strong>
+              <span>ou cliquez pour choisir — plusieurs photos pour plusieurs pages, ou un PDF.<br class="hide-sm" /> Vous pouvez aussi coller une capture avec <kbd>Ctrl</kbd>+<kbd>V</kbd>.</span>
+            </span>
+          </label>
+          <div class="slot-actions">
+            <label class="btn btn-ghost camera-btn" for="cameraInput" data-magnetic>
+              <input type="file" id="cameraInput" accept="image/*" capture="environment" />
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+              Prendre en photo
+            </label>
+          </div>
+          <ul class="thumbs" id="thumbs" aria-label="Pages ajoutées"></ul>
+        </div>
+
+        <div class="panel" id="panelText" role="tabpanel" aria-labelledby="tabText" hidden>
+          <textarea id="textInput" rows="9" placeholder="Collez ici le texte d'un e-mail, d'un contrat, d'un courrier…" aria-label="Texte du document"></textarea>
+          <p class="hint mono"><span id="charCount">0</span> caractères</p>
+        </div>
+
+        <div class="options">
+          <label class="field">
+            <span class="mono">Expliquer en</span>
+            <select id="langSelect" aria-label="Langue de l'explication">
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="pt">Português</option>
+              <option value="it">Italiano</option>
+              <option value="de">Deutsch</option>
+              <option value="ar">العربية</option>
+              <option value="tr">Türkçe</option>
+              <option value="ro">Română</option>
+              <option value="pl">Polski</option>
+              <option value="uk">Українська</option>
+              <option value="ru">Русский</option>
+              <option value="zh">中文</option>
+              <option value="vi">Tiếng Việt</option>
+              <option value="wo">Wolof</option>
+            </select>
+          </label>
+          <div class="field">
+            <span class="mono">Niveau</span>
+            <div class="toggle" role="radiogroup" aria-label="Niveau d'explication">
+              <button type="button" role="radio" aria-checked="true" data-detail="simple">Simple</button>
+              <button type="button" role="radio" aria-checked="false" data-detail="detailed">Détaillé</button>
+              <span class="toggle-ink" aria-hidden="true"></span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary go" id="analyzeBtn" data-magnetic disabled>
+            <span>Rendre limpide</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <div class="samples">
+          <span class="mono">Pas de document sous la main ? Essayez :</span>
+          <div class="chips" id="sampleChips"></div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span>Avis d'impôt</span><i>✳</i><span>Régularisation de charges</span><i>✳</i><span>Courrier CAF</span><i>✳</i><span>Contrat de travail</span><i>✳</i><span>Amende</span><i>✳</i><span>Facture d'énergie</span><i>✳</i><span>Bail</span><i>✳</i><span>Résultats d'analyses</span><i>✳</i><span>Relevé de mutuelle</span><i>✳</i><span>Mise en demeure</span><i>✳</i><span>URSSAF</span><i>✳</i><span>Assurance</span><i>✳</i>
+          <span>Avis d'impôt</span><i>✳</i><span>Régularisation de charges</span><i>✳</i><span>Courrier CAF</span><i>✳</i><span>Contrat de travail</span><i>✳</i><span>Amende</span><i>✳</i><span>Facture d'énergie</span><i>✳</i><span>Bail</span><i>✳</i><span>Résultats d'analyses</span><i>✳</i><span>Relevé de mutuelle</span><i>✳</i><span>Mise en demeure</span><i>✳</i><span>URSSAF</span><i>✳</i><span>Assurance</span><i>✳</i>
+        </div>
+      </div>
+
+      <section class="how" id="comment" aria-labelledby="howTitle">
+        <h2 id="howTitle" class="section-title reveal">Trois secondes pour déposer.<br /><em>Zéro</em> pour comprendre.</h2>
+        <ol class="steps">
+          <li class="step reveal" data-tilt>
+            <span class="step-num">01</span>
+            <h3>Photographiez</h3>
+            <p>Un courrier, une facture, un contrat, un PDF reçu par mail. Même froissé, même en plusieurs pages.</p>
+          </li>
+          <li class="step reveal" data-tilt>
+            <span class="step-num">02</span>
+            <h3>Lisez en clair</h3>
+            <p>Ce que ça veut dire pour vous, combien, avant quand, et les pièges cachés dans les petites lignes.</p>
+          </li>
+          <li class="step reveal" data-tilt>
+            <span class="step-num">03</span>
+            <h3>Agissez</h3>
+            <p>Une liste de choses à faire, les dates dans votre agenda, et la réponse déjà rédigée.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="privacy reveal" aria-labelledby="privTitle">
+        <div class="privacy-orb" aria-hidden="true"></div>
+        <h2 id="privTitle" class="section-title">Vos papiers restent <em>vos</em> papiers.</h2>
+        <p>Aucun compte. Aucun document stocké sur nos serveurs : il est transmis chiffré pour l'analyse puis oublié. L'historique n'existe que dans votre navigateur, et vous l'effacez d'un clic.</p>
+      </section>
+
+      <section class="faq" id="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle" class="section-title reveal">Questions</h2>
+        <details class="reveal"><summary>Quels documents puis-je analyser ?</summary><p>Tout ce qui est écrit : courriers des impôts, de la CAF, de France Travail, factures, contrats, baux, devis, amendes, relevés bancaires, comptes rendus médicaux, conditions générales… En photo (JPG, PNG, WebP), en PDF ou en texte collé.</p></details>
+        <details class="reveal"><summary>Est-ce fiable ?</summary><p>Limpide lit le document avec l'un des modèles d'IA les plus précis actuellement disponibles (Claude, d'Anthropic) et n'invente pas de chiffres : si une information est illisible, il le signale. Pour une décision engageante (procès, diagnostic, gros montant), il vous indique le professionnel à consulter.</p></details>
+        <details class="reveal"><summary>Et si le document est dans une autre langue ?</summary><p>Aucun problème. Vous choisissez la langue de l'explication ; la réponse rédigée, elle, est écrite dans la langue de l'organisme qui la recevra.</p></details>
+        <details class="reveal"><summary>Où sont gardées mes analyses ?</summary><p>Uniquement dans votre navigateur (« Mes documents »). Les photos ne sont pas conservées, seules les explications le sont. Vous pouvez tout effacer à tout moment.</p></details>
+        <details class="reveal"><summary>Est-ce un conseil juridique ?</summary><p>Non. Limpide vous aide à comprendre et à préparer vos démarches. Il ne remplace pas un avocat, un médecin ou un conseiller.</p></details>
+      </section>
+    </section>
+
+    <!-- ============================= RÉSULTAT ============================= -->
+    <section class="view view-result" id="viewResult" hidden aria-live="polite">
+      <div class="result-toolbar">
+        <button type="button" class="btn btn-ghost" id="backBtn" data-magnetic>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Nouveau document
+        </button>
+        <div class="toolbar-right">
+          <button type="button" class="btn btn-ghost" id="shareBtn" data-magnetic>Partager</button>
+          <button type="button" class="btn btn-ghost" id="downloadBtn" data-magnetic>Télécharger</button>
+          <button type="button" class="btn btn-ghost" id="printBtn" data-magnetic>Imprimer</button>
+        </div>
+      </div>
+      <div id="resultRoot"></div>
+    </section>
+  </main>
+
+  <!-- ============================ ANALYSE EN COURS ============================ -->
+  <div class="scanner" id="scanner" hidden role="dialog" aria-modal="true" aria-labelledby="scanStage">
+    <div class="scanner-stage">
+      <div class="scan-docs" id="scanDocs"></div>
+      <div class="scan-side">
+        <div class="ring" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/></svg>
+          <span id="scanPct">0</span>
+        </div>
+        <p class="scan-stage" id="scanStage">Lecture du document…</p>
+        <div class="scan-thoughts mono" id="scanThoughts" aria-live="off"></div>
+        <button type="button" class="btn btn-ghost" id="cancelBtn">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== HISTORIQUE ============================== -->
+  <dialog class="drawer" id="historyDrawer" aria-labelledby="historyTitle">
+    <div class="drawer-head">
+      <h2 id="historyTitle">Mes documents</h2>
+      <button type="button" class="iconbtn" data-close aria-label="Fermer">✕</button>
+    </div>
+    <p class="drawer-note">Stockés uniquement dans ce navigateur.</p>
+    <ul class="history-list" id="historyList"></ul>
+    <button type="button" class="btn btn-ghost danger" id="clearHistoryBtn">Tout effacer</button>
+  </dialog>
+
+  <!-- ================================ CHAT ================================ -->
+  <aside class="chat" id="chat" hidden aria-labelledby="chatTitle">
+    <button type="button" class="chat-toggle" id="chatToggle" aria-expanded="false" aria-controls="chatPanel" data-magnetic>
+      <span class="chat-toggle-icon" aria-hidden="true">?</span>
+      <span id="chatTitle">Une question sur ce document ?</span>
+    </button>
+    <div class="chat-panel" id="chatPanel" hidden>
+      <div class="chat-log" id="chatLog" aria-live="polite"></div>
+      <div class="chat-suggest" id="chatSuggest"></div>
+      <form class="chat-form" id="chatForm">
+        <input type="text" id="chatInput" placeholder="Ex. : Et si je ne paie pas ?" autocomplete="off" aria-label="Votre question" maxlength="2000" />
+        <button type="submit" class="btn btn-primary" aria-label="Envoyer">↑</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <div class="footer-big" aria-hidden="true">limpide</div>
+    <div class="footer-row">
+      <p>Limpide vous aide à comprendre vos documents. Ce n'est pas un conseil juridique, fiscal ou médical.</p>
+      <p class="mono">Propulsé par Claude · © <span id="year"></span></p>
+    </div>
+  </footer>
+</body>
+</html>

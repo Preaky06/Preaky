@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: limpide
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TRUST_PROXY
+        value: "1"
