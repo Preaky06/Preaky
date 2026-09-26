@@ -8,8 +8,9 @@
     "dev": "node --watch server.js",
     "demo": "DEMO_MODE=1 node server.js",
     "test": "node --test test/server.test.js",
-    "check": "node --check server.js && node --check public/app.js && node --check public/i18n.js && node --check public/sw.js",
-    "assets": "node scripts/generate-assets.mjs"
+    "check": "node --check server.js && node --check public/app.js && node --check public/i18n.js && node --check public/sw.js && node --check public/transport.js && node --check public/transport.claude.js",
+    "assets": "node scripts/generate-assets.mjs",
+    "build:artifact": "node scripts/build-artifact.mjs"
   },
   "repository": {
     "type": "git",

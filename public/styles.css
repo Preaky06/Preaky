@@ -361,7 +361,8 @@ select {
 .faq details[open] summary::after { transform: rotate(135deg); }
 .faq details p { margin: 0 0 20px; max-width: 760px; color: var(--ink-2); animation: fadeUp 0.5s var(--ease); }
 
-.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+/* visible au repos : l'apparition ne fait que glisser le bloc en place */
+.reveal { transform: translateY(28px); transition: transform 0.9s var(--ease); }
 .reveal.in { opacity: 1; transform: none; }
 .lens-demo.reveal.in { transform: rotate(1.4deg); }
 .step.reveal.in { transform: translateY(var(--oy, 0px)) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg)); }
@@ -629,7 +630,7 @@ body.in-result .footer { display: none; }
 /* ---------------------------------------------------------------- mouvement réduit */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal { transform: none; }
   .grain { display: none; }
 }
 

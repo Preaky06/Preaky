@@ -1,13 +1,16 @@
 // Limpide — logique de l'interface (aucune dépendance).
 import { SAMPLES } from "./samples.js";
 import { translator, locale, RTL } from "./i18n.js";
+import { transport } from "./transport.js";
+
+const F = transport.features;
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-const MAX_IMAGES = 12;
+let MAX_IMAGES = 12;
 const MAX_PDF_BYTES = 16 * 1024 * 1024;
 const MAX_IMAGE_SIDE = 2000;
 const HISTORY_KEY = "limpide.history.v1";
@@ -98,11 +101,11 @@ async function copyText(text, label = t("copied")) {
   }
 }
 
-function downloadFile(name, content, type = "text/plain;charset=utf-8") {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const a = h("a", { href: url, download: name });
-  document.body.append(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
+// Enregistre un fichier ; à défaut (plateforme qui refuse), copie le contenu.
+async function saveFile(name, content, type) {
+  try { if (await transport.save(name, content, type)) return; }
+  catch (e) { if (e?.code === "declined") return; }
+  copyText(content);
 }
 
 function slug(s) {
@@ -145,7 +148,7 @@ function viewSwap(fn) {
 
 function initTheme() {
   const prefs = storage.get(PREFS_KEY, {});
-  if (prefs.theme) document.documentElement.dataset.theme = prefs.theme;
+  if (prefs.theme && F.themeToggle) document.documentElement.dataset.theme = prefs.theme;
   $("#themeBtn").addEventListener("click", () => {
     const isDark = document.documentElement.dataset.theme
       ? document.documentElement.dataset.theme === "dark"
@@ -382,6 +385,8 @@ async function addFiles(fileList) {
       if (state.files.some((f) => f.type === "application/pdf")) { toast("Un seul PDF à la fois.", "err"); continue; }
       if (file.size > MAX_PDF_BYTES) { toast("PDF trop lourd (16 Mo max). Essayez de photographier les pages utiles.", "err"); continue; }
       state.files.push({ name: file.name, type: "application/pdf", data: await readAsBase64(file), preview: null, size: file.size });
+    } else if (isImage && state.noImages) {
+      toast("Les photos ne sont pas prises en charge ici : utilisez un PDF ou collez le texte.", "err");
     } else if (isImage) {
       if (state.files.filter((f) => f.type !== "application/pdf").length >= MAX_IMAGES) { toast(`${MAX_IMAGES} pages maximum.`, "err"); break; }
       try { state.files.push(await prepareImage(file)); }
@@ -451,43 +456,6 @@ function initIntake() {
   }, s.label)));
 
   $("#analyzeBtn").addEventListener("click", () => startAnalysis());
-}
-
-/* ============================================================== SSE */
-
-async function postStream(url, body, onEvent, signal) {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-    signal,
-  });
-  if (!res.ok) {
-    let msg = "";
-    try { msg = (await res.json()).error; } catch { /* corps non JSON */ }
-    if (res.status === 413) msg ||= "Document trop volumineux.";
-    throw new Error(msg || `Erreur serveur (${res.status}).`);
-  }
-  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buf = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += value;
-    let idx;
-    while ((idx = buf.indexOf("\n\n")) !== -1) {
-      const raw = buf.slice(0, idx); buf = buf.slice(idx + 2);
-      let event = "message", data = "";
-      for (const line of raw.split("\n")) {
-        if (line.startsWith("event:")) event = line.slice(6).trim();
-        else if (line.startsWith("data:")) data += line.slice(5).trim();
-      }
-      if (!data) continue;
-      let payload;
-      try { payload = JSON.parse(data); } catch { continue; }
-      onEvent(event, payload);
-    }
-  }
 }
 
 /* ============================================================ analyse */
@@ -596,7 +564,7 @@ function startScanner() {
 
 async function startAnalysis({ sample = false } = {}) {
   if (state.abort) return;
-  if (!sample && !$("#consentBox").checked) {
+  if (F.consent && !sample && !$("#consentBox").checked) {
     const c = $("#consent");
     c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
     c.addEventListener("animationend", () => c.classList.remove("shake"), { once: true });
@@ -621,7 +589,7 @@ async function startAnalysis({ sample = false } = {}) {
 
   let result = null, demo = state.demo, errorMsg = "";
   try {
-    await postStream("/api/analyze", { ...doc, lang: state.lang, detail: state.detail }, (event, data) => {
+    await transport.analyze({ ...doc, lang: state.lang, detail: state.detail }, (event, data) => {
       if (event === "phase") scanner.phase(data.phase);
       else if (event === "thinking") scanner.thinking(data.text);
       else if (event === "progress") scanner.progress(data.chars);
@@ -754,6 +722,15 @@ function icsFold(line) {
   return out.join("\r\n");
 }
 
+// Lien « ajouter à Google Agenda » pour une échéance (journée entière).
+function googleCalendarUrl(result, it) {
+  const d = parseDate(it.date);
+  const next = new Date(d); next.setDate(next.getDate() + 1);
+  const ymd = (x) => `${x.getFullYear()}${String(x.getMonth() + 1).padStart(2, "0")}${String(x.getDate()).padStart(2, "0")}`;
+  const details = [it.consequence ? `${t("ifMissed")} : ${it.consequence}` : "", result.issuer ? `${t("issuer")} : ${result.issuer}` : ""].filter(Boolean).join("\n");
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${it.label} — ${result.title}`)}&dates=${ymd(d)}/${ymd(next)}&details=${encodeURIComponent(details)}`;
+}
+
 function buildIcs(result, items) {
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Limpide//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
@@ -859,8 +836,11 @@ function renderResult(entry) {
         d.consequence ? h("span", { class: "tl-cons", dir: "auto", text: d.consequence }) : null);
     }));
     cards.push(card(t("dates"), "◷", "span-7", tl,
-      calItems.length ? h("button", { type: "button", class: "mini-btn", onclick: () => {
-        downloadFile(`limpide-${slug(r.title)}.ics`, buildIcs(r, calItems), "text/calendar;charset=utf-8");
+      calItems.length && !F.ics ? h("div", { class: "mini-row" }, calItems.map((it) => h("a", {
+        class: "mini-btn", href: googleCalendarUrl(r, it), target: "_blank", rel: "noopener noreferrer",
+      }, `＋ Google Agenda · ${parseDate(it.date).toLocaleDateString(LOC, { day: "numeric", month: "short" })}`))) : null,
+      calItems.length && F.ics ? h("button", { type: "button", class: "mini-btn", onclick: () => {
+        saveFile(`limpide-${slug(r.title)}.ics`, buildIcs(r, calItems), "text/calendar;charset=utf-8");
         toast(t("calToast"));
       } }, t("addCal")) : null));
   }
@@ -914,7 +894,7 @@ function renderResult(entry) {
       h("div", { class: "letter" }, subject, body),
       h("div", { class: "mini-row" },
         h("button", { type: "button", class: "mini-btn", onclick: () => copyText(`${subject.value}\n\n${body.value}`) }, t("copy")),
-        h("button", { type: "button", class: "mini-btn", onclick: () => downloadFile(`courrier-${slug(r.title)}.txt`, `${t("subject")} : ${subject.value}\n\n${body.value}\n`) }, t("download")),
+        h("button", { type: "button", class: "mini-btn", onclick: () => saveFile(`courrier-${slug(r.title)}.txt`, `${t("subject")} : ${subject.value}\n\n${body.value}\n`) }, t("download")),
         h("button", { type: "button", class: "mini-btn", onclick: () => {
           const href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject.value)}&body=${encodeURIComponent(body.value)}`;
           location.href = href.length > 1900 ? `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject.value)}` : href;
@@ -958,7 +938,7 @@ function showResult(entry) {
     resetChat(entry);
     scrollTo({ top: 0, behavior: "instant" });
   });
-  history.pushState({ view: "result", id: entry.id }, "", `#resultat`);
+  if (F.history) history.pushState({ view: "result", id: entry.id }, "", `#resultat`);
   document.title = `${entry.result.title || "Résultat"} — Limpide`;
 }
 
@@ -972,7 +952,7 @@ function showHome(push = true) {
     scrollTo({ top: 0, behavior: "instant" });
     initReveal();
   });
-  if (push) history.pushState({ view: "home" }, "", location.pathname);
+  if (push && F.history) history.pushState({ view: "home" }, "", location.pathname);
   document.title = "Limpide — la paperasse, en clair";
 }
 
@@ -1009,12 +989,12 @@ function initResultToolbar() {
   });
   $("#downloadBtn").addEventListener("click", () => {
     const r = state.current?.result; if (!r) return;
-    downloadFile(`limpide-${slug(r.title)}.md`, resultAsText(r), "text/markdown;charset=utf-8");
+    saveFile(`limpide-${slug(r.title)}.md`, resultAsText(r), "text/markdown;charset=utf-8");
   });
   $("#shareBtn").addEventListener("click", async () => {
     const r = state.current?.result; if (!r) return;
     const text = resultAsText(r);
-    if (navigator.share) {
+    if (F.share && navigator.share) {
       try { await navigator.share({ title: r.title, text }); return; }
       catch (e) { if (e.name === "AbortError") return; }
     }
@@ -1088,8 +1068,16 @@ function initHistory() {
   const drawer = $("#historyDrawer");
   $("#historyBtn").addEventListener("click", () => { renderHistory(); drawer.showModal(); });
   drawer.addEventListener("click", (e) => { if (e.target === drawer || e.target.closest("[data-close]")) drawer.close(); });
-  $("#clearHistoryBtn").addEventListener("click", () => {
-    if (!confirm("Effacer toutes vos analyses de ce navigateur ?")) return;
+  // Confirmation dans la page : un second clic dans les 4 secondes efface.
+  const clearBtn = $("#clearHistoryBtn");
+  let armed = 0;
+  clearBtn.addEventListener("click", () => {
+    if (!armed) {
+      clearBtn.textContent = "Confirmer l'effacement";
+      armed = setTimeout(() => { armed = 0; clearBtn.textContent = "Tout effacer"; }, 4000);
+      return;
+    }
+    clearTimeout(armed); armed = 0; clearBtn.textContent = "Tout effacer";
     storage.set(HISTORY_KEY, []); renderHistory(); renderHistoryCount(); toast("Historique effacé");
   });
   renderHistoryCount();
@@ -1140,7 +1128,7 @@ async function ask(question) {
   let answer = "", errorMsg = "";
   try {
     const doc = state.docForChat || { files: [], text: "" };
-    await postStream("/api/ask", {
+    await transport.ask({
       ...doc,
       analysis: state.current.result,
       history: state.chatHistory,
@@ -1186,10 +1174,14 @@ function initChat() {
 
 async function checkHealth() {
   try {
-    const res = await fetch("/api/health");
-    const data = await res.json();
+    const data = await transport.health();
     state.demo = !!data.demo;
     $(".demo-banner").hidden = !data.demo;
+    if (data.demo && data.host === "outside") {
+      $(".demo-banner").innerHTML = "<strong>Mode démo</strong> — ouvrez cette page dans claude.ai pour analyser vos propres documents. Les résultats affichés ici sont fictifs.";
+    }
+    if (data.maxImages) MAX_IMAGES = data.maxImages;
+    if (data.images === false) state.noImages = true;
     if (data.contact) {
       state.contact = data.contact;
       $("#reportBtn").hidden = false;
@@ -1228,10 +1220,13 @@ function init() {
   initMagnetic();
   checkHealth();
   initOffline();
-  if ("serviceWorker" in navigator && location.protocol === "https:") {
+  if (F.serviceWorker && "serviceWorker" in navigator && location.protocol === "https:") {
     addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
   }
-  history.replaceState({ view: "home" }, "", location.pathname);
+  if (F.history) history.replaceState({ view: "home" }, "", location.pathname);
+  if (!F.print) $("#printBtn").hidden = true;
+  if (!F.consent) $("#consent").hidden = true;
+  if (!F.themeToggle) $("#themeBtn").hidden = true;
 }
 
 init();
