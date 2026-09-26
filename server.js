@@ -1,4 +1,4 @@
-// Limpide — serveur HTTP : fichiers statiques + proxy sécurisé vers l'API Claude.
+// ExpliSite — serveur HTTP : fichiers statiques + proxy sécurisé vers l'API Claude.
 // La clé API reste côté serveur ; le navigateur ne la voit jamais.
 import http from "node:http";
 import fs from "node:fs";
@@ -15,10 +15,10 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, "public");
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000; // 0 = port libre au hasard
 const HOST = process.env.HOST || "0.0.0.0";
-const MODEL = process.env.LIMPIDE_MODEL || "claude-opus-5";
-const ANALYSIS_EFFORT = process.env.LIMPIDE_EFFORT || "high";
-const CHAT_EFFORT = process.env.LIMPIDE_CHAT_EFFORT || "medium";
-const USE_FALLBACKS = process.env.LIMPIDE_FALLBACKS !== "0";
+const MODEL = process.env.EXPLISITE_MODEL || "claude-opus-5";
+const ANALYSIS_EFFORT = process.env.EXPLISITE_EFFORT || "high";
+const CHAT_EFFORT = process.env.EXPLISITE_CHAT_EFFORT || "medium";
+const USE_FALLBACKS = process.env.EXPLISITE_FALLBACKS !== "0";
 const MAX_BODY_BYTES = (Number(process.env.MAX_UPLOAD_MB) || 24) * 1024 * 1024;
 const RATE_LIMIT = Number(process.env.RATE_LIMIT_PER_HOUR) || 40;
 const TRUST_PROXY = process.env.TRUST_PROXY === "1";
@@ -384,7 +384,7 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 429, { error: "Limite atteinte pour l'instant. Réessayez dans un moment." });
       }
       if (!DEMO && dailyCapReached()) {
-        return sendJson(res, 503, { error: "Limpide a atteint sa limite d'analyses pour aujourd'hui. Revenez demain." });
+        return sendJson(res, 503, { error: "ExpliSite a atteint sa limite d'analyses pour aujourd'hui. Revenez demain." });
       }
       return url === "/api/analyze" ? await handleAnalyze(req, res) : await handleAsk(req, res);
     }
@@ -402,7 +402,7 @@ server.requestTimeout = 0; // les analyses longues sont streamées
 server.headersTimeout = 30_000;
 server.keepAliveTimeout = 65_000;
 server.listen(PORT, HOST, () => {
-  console.log(`Limpide → http://localhost:${server.address().port}  (${DEMO ? "MODE DÉMO — aucune clé API détectée" : `modèle ${MODEL}`})`);
+  console.log(`ExpliSite → http://localhost:${server.address().port}  (${DEMO ? "MODE DÉMO — aucune clé API détectée" : `modèle ${MODEL}`})`);
   const missingLegal = LEGAL_VARS.filter((k) => !process.env[k]);
   if (missingLegal.length) console.warn(`⚠ Pages légales incomplètes : renseignez ${missingLegal.join(", ")} (voir .env.example).`);
 });

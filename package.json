@@ -1,7 +1,7 @@
 {
-  "name": "limpide",
+  "name": "explisite",
   "version": "1.0.0",
-  "description": "Limpide — la paperasse, en clair. Décodeur de documents administratifs propulsé par Claude.",
+  "description": "ExpliSite — la paperasse, en clair. Décodeur de documents administratifs propulsé par Claude.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

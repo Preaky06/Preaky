@@ -1,6 +1,6 @@
 // Service worker : l'interface et l'historique restent consultables hors ligne.
 // Les appels /api/* ne sont jamais mis en cache (documents personnels).
-const VERSION = "limpide-v2";
+const VERSION = "explisite-v3";
 const SHELL = [
   "/", "/styles.css", "/app.js", "/i18n.js", "/samples.js", "/favicon.svg", "/manifest.webmanifest",
   "/fonts/fonts.css",

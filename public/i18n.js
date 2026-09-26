@@ -25,7 +25,7 @@ const fr = {
   st_t1: "Lecture ligne à ligne…", st_t2: "Chasse au jargon…", st_t3: "Repérage des dates limites…", st_t4: "Vérification des montants…", st_t5: "Recherche de vos recours…",
   st_w1: "Traduction en langage clair…", st_w2: "Préparation de votre liste d'actions…", st_w3: "Rédaction de la réponse…", st_w4: "Derniers détails…",
   st_done: "C'est limpide.", cancel: "Annuler", cancelled: "Analyse annulée.",
-  issuer: "Émetteur", advice: "Conseil", disclaimer: "Analyse réalisée avec Limpide. Ne remplace pas un conseil professionnel.",
+  issuer: "Émetteur", advice: "Conseil", disclaimer: "Analyse réalisée avec ExpliSite. Ne remplace pas un conseil professionnel.",
 };
 
 const en = {
@@ -51,7 +51,7 @@ const en = {
   st_t1: "Reading line by line…", st_t2: "Hunting down jargon…", st_t3: "Spotting deadlines…", st_t4: "Checking amounts…", st_t5: "Looking for your options…",
   st_w1: "Translating into plain language…", st_w2: "Preparing your action list…", st_w3: "Drafting the reply…", st_w4: "Final touches…",
   st_done: "Crystal clear.", cancel: "Cancel", cancelled: "Analysis cancelled.",
-  issuer: "Sender", advice: "Advice", disclaimer: "Analysis made with Limpide. Not a substitute for professional advice.",
+  issuer: "Sender", advice: "Advice", disclaimer: "Analysis made with ExpliSite. Not a substitute for professional advice.",
 };
 
 const es = {
@@ -77,7 +77,7 @@ const es = {
   st_t1: "Leyendo línea por línea…", st_t2: "Cazando la jerga…", st_t3: "Detectando plazos…", st_t4: "Verificando importes…", st_t5: "Buscando sus recursos…",
   st_w1: "Traduciendo a lenguaje claro…", st_w2: "Preparando su lista de acciones…", st_w3: "Redactando la respuesta…", st_w4: "Últimos detalles…",
   st_done: "Todo claro.", cancel: "Cancelar", cancelled: "Análisis cancelado.",
-  issuer: "Emisor", advice: "Consejo", disclaimer: "Análisis realizado con Limpide. No sustituye un consejo profesional.",
+  issuer: "Emisor", advice: "Consejo", disclaimer: "Análisis realizado con ExpliSite. No sustituye un consejo profesional.",
 };
 
 const pt = {
@@ -103,7 +103,7 @@ const pt = {
   st_t1: "A ler linha a linha…", st_t2: "À caça do jargão…", st_t3: "A identificar prazos…", st_t4: "A verificar montantes…", st_t5: "A procurar os seus recursos…",
   st_w1: "A traduzir em linguagem clara…", st_w2: "A preparar a sua lista de ações…", st_w3: "A redigir a resposta…", st_w4: "Últimos detalhes…",
   st_done: "Tudo claro.", cancel: "Cancelar", cancelled: "Análise cancelada.",
-  issuer: "Emissor", advice: "Conselho", disclaimer: "Análise feita com Limpide. Não substitui aconselhamento profissional.",
+  issuer: "Emissor", advice: "Conselho", disclaimer: "Análise feita com ExpliSite. Não substitui aconselhamento profissional.",
 };
 
 const it = {
@@ -129,7 +129,7 @@ const it = {
   st_t1: "Lettura riga per riga…", st_t2: "Caccia al gergo…", st_t3: "Individuazione delle scadenze…", st_t4: "Verifica degli importi…", st_t5: "Ricerca dei tuoi rimedi…",
   st_w1: "Traduzione in linguaggio chiaro…", st_w2: "Preparazione della lista di azioni…", st_w3: "Stesura della risposta…", st_w4: "Ultimi dettagli…",
   st_done: "Tutto chiaro.", cancel: "Annulla", cancelled: "Analisi annullata.",
-  issuer: "Mittente", advice: "Consiglio", disclaimer: "Analisi realizzata con Limpide. Non sostituisce un parere professionale.",
+  issuer: "Mittente", advice: "Consiglio", disclaimer: "Analisi realizzata con ExpliSite. Non sostituisce un parere professionale.",
 };
 
 const de = {
@@ -155,7 +155,7 @@ const de = {
   st_t1: "Zeile für Zeile lesen…", st_t2: "Fachjargon aufspüren…", st_t3: "Fristen erkennen…", st_t4: "Beträge prüfen…", st_t5: "Ihre Möglichkeiten suchen…",
   st_w1: "In einfache Sprache übersetzen…", st_w2: "Aufgabenliste vorbereiten…", st_w3: "Antwort verfassen…", st_w4: "Letzte Details…",
   st_done: "Alles klar.", cancel: "Abbrechen", cancelled: "Analyse abgebrochen.",
-  issuer: "Absender", advice: "Rat", disclaimer: "Analyse mit Limpide erstellt. Ersetzt keine fachliche Beratung.",
+  issuer: "Absender", advice: "Rat", disclaimer: "Analyse mit ExpliSite erstellt. Ersetzt keine fachliche Beratung.",
 };
 
 const ar = {
@@ -181,7 +181,7 @@ const ar = {
   st_t1: "قراءة سطرًا بسطر…", st_t2: "تفكيك المصطلحات…", st_t3: "تحديد المواعيد النهائية…", st_t4: "التحقق من المبالغ…", st_t5: "البحث عن خياراتك…",
   st_w1: "الترجمة إلى لغة بسيطة…", st_w2: "إعداد قائمة المهام…", st_w3: "كتابة الرد…", st_w4: "اللمسات الأخيرة…",
   st_done: "أصبح واضحًا.", cancel: "إلغاء", cancelled: "تم إلغاء التحليل.",
-  issuer: "الجهة المرسلة", advice: "نصيحة", disclaimer: "تحليل من Limpide. لا يغني عن استشارة مختص.",
+  issuer: "الجهة المرسلة", advice: "نصيحة", disclaimer: "تحليل من ExpliSite. لا يغني عن استشارة مختص.",
 };
 
 const tr = {
@@ -207,7 +207,7 @@ const tr = {
   st_t1: "Satır satır okunuyor…", st_t2: "Jargon ayıklanıyor…", st_t3: "Son tarihler belirleniyor…", st_t4: "Tutarlar kontrol ediliyor…", st_t5: "Seçenekleriniz aranıyor…",
   st_w1: "Sade dile çevriliyor…", st_w2: "Yapılacaklar listesi hazırlanıyor…", st_w3: "Yanıt yazılıyor…", st_w4: "Son ayrıntılar…",
   st_done: "Her şey net.", cancel: "İptal", cancelled: "Analiz iptal edildi.",
-  issuer: "Gönderen", advice: "Öneri", disclaimer: "Limpide ile yapılan analiz. Profesyonel tavsiyenin yerini tutmaz.",
+  issuer: "Gönderen", advice: "Öneri", disclaimer: "ExpliSite ile yapılan analiz. Profesyonel tavsiyenin yerini tutmaz.",
 };
 
 const ro = {
@@ -233,7 +233,7 @@ const ro = {
   st_t1: "Citire rând cu rând…", st_t2: "Vânătoare de jargon…", st_t3: "Identificarea termenelor…", st_t4: "Verificarea sumelor…", st_t5: "Căutarea opțiunilor dvs.…",
   st_w1: "Traducere în limbaj clar…", st_w2: "Pregătirea listei de acțiuni…", st_w3: "Redactarea răspunsului…", st_w4: "Ultimele detalii…",
   st_done: "Totul e clar.", cancel: "Anulează", cancelled: "Analiză anulată.",
-  issuer: "Expeditor", advice: "Sfat", disclaimer: "Analiză realizată cu Limpide. Nu înlocuiește un sfat profesional.",
+  issuer: "Expeditor", advice: "Sfat", disclaimer: "Analiză realizată cu ExpliSite. Nu înlocuiește un sfat profesional.",
 };
 
 const pl = {
@@ -259,7 +259,7 @@ const pl = {
   st_t1: "Czytanie linijka po linijce…", st_t2: "Tropienie żargonu…", st_t3: "Wyszukiwanie terminów…", st_t4: "Sprawdzanie kwot…", st_t5: "Szukanie Twoich możliwości…",
   st_w1: "Tłumaczenie na prosty język…", st_w2: "Przygotowanie listy działań…", st_w3: "Pisanie odpowiedzi…", st_w4: "Ostatnie szczegóły…",
   st_done: "Wszystko jasne.", cancel: "Anuluj", cancelled: "Analiza anulowana.",
-  issuer: "Nadawca", advice: "Porada", disclaimer: "Analiza wykonana przez Limpide. Nie zastępuje porady specjalisty.",
+  issuer: "Nadawca", advice: "Porada", disclaimer: "Analiza wykonana przez ExpliSite. Nie zastępuje porady specjalisty.",
 };
 
 const uk = {
@@ -285,7 +285,7 @@ const uk = {
   st_t1: "Читаю рядок за рядком…", st_t2: "Розбираю жаргон…", st_t3: "Шукаю кінцеві терміни…", st_t4: "Перевіряю суми…", st_t5: "Шукаю ваші можливості…",
   st_w1: "Перекладаю простою мовою…", st_w2: "Готую список дій…", st_w3: "Пишу відповідь…", st_w4: "Останні деталі…",
   st_done: "Усе зрозуміло.", cancel: "Скасувати", cancelled: "Аналіз скасовано.",
-  issuer: "Відправник", advice: "Порада", disclaimer: "Аналіз виконано Limpide. Не замінює професійної консультації.",
+  issuer: "Відправник", advice: "Порада", disclaimer: "Аналіз виконано ExpliSite. Не замінює професійної консультації.",
 };
 
 const ru = {
@@ -311,7 +311,7 @@ const ru = {
   st_t1: "Читаю строку за строкой…", st_t2: "Разбираю жаргон…", st_t3: "Ищу сроки…", st_t4: "Проверяю суммы…", st_t5: "Ищу ваши возможности…",
   st_w1: "Перевожу на простой язык…", st_w2: "Готовлю список действий…", st_w3: "Пишу ответ…", st_w4: "Последние детали…",
   st_done: "Всё ясно.", cancel: "Отмена", cancelled: "Анализ отменён.",
-  issuer: "Отправитель", advice: "Совет", disclaimer: "Анализ выполнен Limpide. Не заменяет профессиональной консультации.",
+  issuer: "Отправитель", advice: "Совет", disclaimer: "Анализ выполнен ExpliSite. Не заменяет профессиональной консультации.",
 };
 
 const zh = {
@@ -337,7 +337,7 @@ const zh = {
   st_t1: "逐行阅读…", st_t2: "解读术语…", st_t3: "查找截止日期…", st_t4: "核对金额…", st_t5: "寻找您的选择…",
   st_w1: "翻译成通俗语言…", st_w2: "整理待办清单…", st_w3: "撰写回复…", st_w4: "最后完善…",
   st_done: "一目了然。", cancel: "取消", cancelled: "分析已取消。",
-  issuer: "发件方", advice: "建议", disclaimer: "由 Limpide 分析，不能替代专业意见。",
+  issuer: "发件方", advice: "建议", disclaimer: "由 ExpliSite 分析，不能替代专业意见。",
 };
 
 const vi = {
@@ -363,7 +363,7 @@ const vi = {
   st_t1: "Đọc từng dòng…", st_t2: "Giải mã thuật ngữ…", st_t3: "Tìm hạn chót…", st_t4: "Kiểm tra số tiền…", st_t5: "Tìm các lựa chọn của bạn…",
   st_w1: "Dịch sang ngôn ngữ dễ hiểu…", st_w2: "Chuẩn bị danh sách việc cần làm…", st_w3: "Soạn thư trả lời…", st_w4: "Hoàn thiện…",
   st_done: "Đã rõ ràng.", cancel: "Hủy", cancelled: "Đã hủy phân tích.",
-  issuer: "Người gửi", advice: "Lời khuyên", disclaimer: "Phân tích bởi Limpide. Không thay thế tư vấn chuyên môn.",
+  issuer: "Người gửi", advice: "Lời khuyên", disclaimer: "Phân tích bởi ExpliSite. Không thay thế tư vấn chuyên môn.",
 };
 
 // Le wolof s'écrit surtout à l'oral ; l'interface retombe sur le français.

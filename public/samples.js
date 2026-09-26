@@ -1,4 +1,4 @@
-// Documents d'exemple (fictifs) pour tester Limpide sans avoir de courrier sous la main.
+// Documents d'exemple (fictifs) pour tester ExpliSite sans avoir de courrier sous la main.
 
 const d = (offset) => {
   const x = new Date(Date.now() + offset * 86400000);

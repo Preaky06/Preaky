@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Limpide — la paperasse, en clair</title>
-  <meta name="description" content="Photographiez n'importe quel courrier administratif, facture, contrat ou résultat d'analyse : Limpide vous explique ce qu'il dit, ce que vous devez faire et avant quand." />
+  <title>ExpliSite — la paperasse, en clair</title>
+  <meta name="description" content="Photographiez n'importe quel courrier administratif, facture, contrat ou résultat d'analyse : ExpliSite vous explique ce qu'il dit, ce que vous devez faire et avant quand." />
   <meta name="theme-color" content="#f2eee4" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#11100d" media="(prefers-color-scheme: dark)" />
-  <meta property="og:title" content="Limpide — la paperasse, en clair" />
-  <meta property="og:description" content="Votre courrier parle charabia. Limpide traduit, repère les dates limites et rédige la réponse." />
+  <meta property="og:title" content="ExpliSite — la paperasse, en clair" />
+  <meta property="og:description" content="Votre courrier parle charabia. ExpliSite traduit, repère les dates limites et rédige la réponse." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:url" content="{{BASE_URL}}/" />
@@ -20,7 +20,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/icons/icon-192.png" type="image/png" sizes="192x192" />
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Limpide","url":"{{BASE_URL}}/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"fr","description":"Photographiez un courrier administratif, une facture ou un contrat : Limpide explique ce qu'il dit, ce qu'il faut faire et avant quand.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ExpliSite","url":"{{BASE_URL}}/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"fr","description":"Photographiez un courrier administratif, une facture ou un contrat : ExpliSite explique ce qu'il dit, ce qu'il faut faire et avant quand.","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="preload" href="/fonts/fraunces-latin-full-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
@@ -29,7 +29,7 @@
   <script src="/app.js" type="module" defer></script>
 </head>
 <body>
-  <noscript><div class="noscript">Limpide a besoin de JavaScript pour fonctionner. Activez-le dans votre navigateur puis rechargez la page.</div></noscript>
+  <noscript><div class="noscript">ExpliSite a besoin de JavaScript pour fonctionner. Activez-le dans votre navigateur puis rechargez la page.</div></noscript>
   <a class="skip" href="#main">Aller au contenu</a>
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"></span></div>
@@ -47,9 +47,9 @@
   </div>
 
   <header class="topbar">
-    <a href="/" class="logo" data-magnetic aria-label="Limpide, accueil">
+    <a href="/" class="logo" data-magnetic aria-label="ExpliSite, accueil">
       <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="17" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="3.2"/><path d="M25 25l9 9" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><path d="M11.5 17.5h11" stroke="var(--hl)" stroke-width="5" stroke-linecap="round"/></svg>
-      <span>Limpide</span>
+      <span>ExpliSite</span>
     </a>
     <nav class="topnav" aria-label="Navigation principale">
       <a href="#comment" data-magnetic>Comment ça marche</a>
@@ -157,7 +157,7 @@
             <span>J'accepte que mon document soit transmis à un service d'IA (Anthropic) pour être analysé, sans être conservé. <a href="/confidentialite" target="_blank">Confidentialité</a></span>
           </label>
           <button type="button" class="btn btn-primary go" id="analyzeBtn" data-magnetic disabled>
-            <span>Rendre limpide</span>
+            <span>Expliquer</span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
@@ -205,10 +205,10 @@
       <section class="faq" id="faq" aria-labelledby="faqTitle">
         <h2 id="faqTitle" class="section-title reveal">Questions</h2>
         <details class="reveal"><summary>Quels documents puis-je analyser ?</summary><p>Tout ce qui est écrit : courriers des impôts, de la CAF, de France Travail, factures, contrats, baux, devis, amendes, relevés bancaires, comptes rendus médicaux, conditions générales… En photo (JPG, PNG, WebP), en PDF ou en texte collé.</p></details>
-        <details class="reveal"><summary>Est-ce fiable ?</summary><p>Limpide lit le document avec l'un des modèles d'IA les plus précis actuellement disponibles (Claude, d'Anthropic) et n'invente pas de chiffres : si une information est illisible, il le signale. Pour une décision engageante (procès, diagnostic, gros montant), il vous indique le professionnel à consulter.</p></details>
+        <details class="reveal"><summary>Est-ce fiable ?</summary><p>ExpliSite lit le document avec l'un des modèles d'IA les plus précis actuellement disponibles (Claude, d'Anthropic) et n'invente pas de chiffres : si une information est illisible, il le signale. Pour une décision engageante (procès, diagnostic, gros montant), il vous indique le professionnel à consulter.</p></details>
         <details class="reveal"><summary>Et si le document est dans une autre langue ?</summary><p>Aucun problème. Vous choisissez la langue de l'explication ; la réponse rédigée, elle, est écrite dans la langue de l'organisme qui la recevra.</p></details>
         <details class="reveal"><summary>Où sont gardées mes analyses ?</summary><p>Uniquement dans votre navigateur (« Mes documents »). Les photos ne sont pas conservées, seules les explications le sont. Vous pouvez tout effacer à tout moment.</p></details>
-        <details class="reveal"><summary>Est-ce un conseil juridique ?</summary><p>Non. Limpide vous aide à comprendre et à préparer vos démarches. Il ne remplace pas un avocat, un médecin ou un conseiller.</p></details>
+        <details class="reveal"><summary>Est-ce un conseil juridique ?</summary><p>Non. ExpliSite vous aide à comprendre et à préparer vos démarches. Il ne remplace pas un avocat, un médecin ou un conseiller.</p></details>
       </section>
     </section>
 
@@ -276,9 +276,9 @@
   <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
   <footer class="footer">
-    <div class="footer-big" aria-hidden="true">limpide</div>
+    <div class="footer-big" aria-hidden="true">explisite</div>
     <div class="footer-row">
-      <p>Limpide vous aide à comprendre vos documents. Ce n'est pas un conseil juridique, fiscal ou médical.</p>
+      <p>ExpliSite vous aide à comprendre vos documents. Ce n'est pas un conseil juridique, fiscal ou médical.</p>
       <nav class="footer-links" aria-label="Informations légales">
         <a href="/mentions-legales">Mentions légales</a>
         <a href="/confidentialite">Confidentialité</a>

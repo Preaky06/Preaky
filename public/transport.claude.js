@@ -117,7 +117,7 @@ function abortError() {
 
 function errorMessage(e) {
   switch (e?.code) {
-    case "not_granted": return "Limpide n'a pas l'autorisation d'utiliser Claude. Rechargez la page et acceptez la demande.";
+    case "not_granted": return "ExpliSite n'a pas l'autorisation d'utiliser Claude. Rechargez la page et acceptez la demande.";
     case "sampling_disabled": return "Claude n'est pas disponible pour ce compte.";
     case "rate_limited": return "Limite d'utilisation atteinte pour le moment. Réessayez un peu plus tard.";
     case "session_expired": return "Votre session claude.ai a expiré : reconnectez-vous puis réessayez.";

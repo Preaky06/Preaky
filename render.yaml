@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: limpide
+    name: explisite
     runtime: node
     plan: free
     buildCommand: npm ci --omit=dev

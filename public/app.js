@@ -1,4 +1,4 @@
-// Limpide — logique de l'interface (aucune dépendance).
+// ExpliSite — logique de l'interface (aucune dépendance).
 import { SAMPLES } from "./samples.js";
 import { translator, locale, RTL } from "./i18n.js";
 import { transport } from "./transport.js";
@@ -13,8 +13,16 @@ const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 let MAX_IMAGES = 12;
 const MAX_PDF_BYTES = 16 * 1024 * 1024;
 const MAX_IMAGE_SIDE = 2000;
-const HISTORY_KEY = "limpide.history.v1";
-const PREFS_KEY = "limpide.prefs.v1";
+const HISTORY_KEY = "explisite.history.v1";
+const PREFS_KEY = "explisite.prefs.v1";
+// Reprend l'historique et les préférences enregistrés sous l'ancien nom (Limpide).
+try {
+  for (const [from, to] of [["limpide.history.v1", HISTORY_KEY], ["limpide.prefs.v1", PREFS_KEY]]) {
+    const old = localStorage.getItem(from);
+    if (old && !localStorage.getItem(to)) localStorage.setItem(to, old);
+    if (old) localStorage.removeItem(from);
+  }
+} catch { /* stockage indisponible */ }
 
 // Langue de l'interface fonctionnelle (résultat, analyse, chat).
 let t = translator("fr");
@@ -733,7 +741,7 @@ function googleCalendarUrl(result, it) {
 
 function buildIcs(result, items) {
   const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
-  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Limpide//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//ExpliSite//FR", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
   items.forEach((it, i) => {
     const date = parseDate(it.date);
     if (!date) return;
@@ -741,12 +749,12 @@ function buildIcs(result, items) {
     const ymd = (x) => `${x.getFullYear()}${String(x.getMonth() + 1).padStart(2, "0")}${String(x.getDate()).padStart(2, "0")}`;
     lines.push(
       "BEGIN:VEVENT",
-      `UID:${stamp}-${i}-${Math.random().toString(36).slice(2)}@limpide`,
+      `UID:${stamp}-${i}-${Math.random().toString(36).slice(2)}@explisite`,
       `DTSTAMP:${stamp}`,
       `DTSTART;VALUE=DATE:${ymd(date)}`,
       `DTEND;VALUE=DATE:${ymd(next)}`,
       icsFold(`SUMMARY:${icsEscape(`${it.label} — ${result.title}`)}`),
-      icsFold(`DESCRIPTION:${icsEscape([it.consequence ? `${t("ifMissed")} : ${it.consequence}` : "", result.issuer ? `${t("issuer")} : ${result.issuer}` : "", "Limpide"].filter(Boolean).join("\n"))}`),
+      icsFold(`DESCRIPTION:${icsEscape([it.consequence ? `${t("ifMissed")} : ${it.consequence}` : "", result.issuer ? `${t("issuer")} : ${result.issuer}` : "", "ExpliSite"].filter(Boolean).join("\n"))}`),
       "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:-P3D", icsFold(`DESCRIPTION:${icsEscape(it.label)}`), "END:VALARM",
       "BEGIN:VALARM", "ACTION:DISPLAY", "TRIGGER:-PT12H", icsFold(`DESCRIPTION:${icsEscape(it.label)}`), "END:VALARM",
       "END:VEVENT",
@@ -840,7 +848,7 @@ function renderResult(entry) {
         class: "mini-btn", href: googleCalendarUrl(r, it), target: "_blank", rel: "noopener noreferrer",
       }, `＋ Google Agenda · ${parseDate(it.date).toLocaleDateString(LOC, { day: "numeric", month: "short" })}`))) : null,
       calItems.length && F.ics ? h("button", { type: "button", class: "mini-btn", onclick: () => {
-        saveFile(`limpide-${slug(r.title)}.ics`, buildIcs(r, calItems), "text/calendar;charset=utf-8");
+        saveFile(`explisite-${slug(r.title)}.ics`, buildIcs(r, calItems), "text/calendar;charset=utf-8");
         toast(t("calToast"));
       } }, t("addCal")) : null));
   }
@@ -939,7 +947,7 @@ function showResult(entry) {
     scrollTo({ top: 0, behavior: "instant" });
   });
   if (F.history) history.pushState({ view: "result", id: entry.id }, "", `#resultat`);
-  document.title = `${entry.result.title || "Résultat"} — Limpide`;
+  document.title = `${entry.result.title || "Résultat"} — ExpliSite`;
 }
 
 function showHome(push = true) {
@@ -953,7 +961,7 @@ function showHome(push = true) {
     initReveal();
   });
   if (push && F.history) history.pushState({ view: "home" }, "", location.pathname);
-  document.title = "Limpide — la paperasse, en clair";
+  document.title = "ExpliSite — la paperasse, en clair";
 }
 
 function resultAsText(r) {
@@ -981,7 +989,7 @@ function initResultToolbar() {
     const r = state.current?.result;
     if (!state.contact || !r) return;
     const body = `Bonjour,\n\nJe signale un problème sur l'analyse « ${r.title} » (type : ${r.document_type}).\n\nCe qui ne va pas :\n\n`;
-    location.href = `mailto:${encodeURIComponent(state.contact)}?subject=${encodeURIComponent("Limpide — signalement")}&body=${encodeURIComponent(body)}`;
+    location.href = `mailto:${encodeURIComponent(state.contact)}?subject=${encodeURIComponent("ExpliSite — signalement")}&body=${encodeURIComponent(body)}`;
   });
   $("#printBtn").addEventListener("click", () => {
     $$(".card").forEach((c) => c.classList.add("settled"));
@@ -989,7 +997,7 @@ function initResultToolbar() {
   });
   $("#downloadBtn").addEventListener("click", () => {
     const r = state.current?.result; if (!r) return;
-    saveFile(`limpide-${slug(r.title)}.md`, resultAsText(r), "text/markdown;charset=utf-8");
+    saveFile(`explisite-${slug(r.title)}.md`, resultAsText(r), "text/markdown;charset=utf-8");
   });
   $("#shareBtn").addEventListener("click", async () => {
     const r = state.current?.result; if (!r) return;

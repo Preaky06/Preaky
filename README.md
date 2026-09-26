@@ -1,6 +1,6 @@
-# Limpide — la paperasse, en clair
+# ExpliSite — la paperasse, en clair
 
-Limpide transforme n'importe quel document administratif (avis d'impôt, courrier CAF, amende, facture, bail, contrat, résultats d'analyses…) en explication claire et en plan d'action :
+ExpliSite transforme n'importe quel document administratif (avis d'impôt, courrier CAF, amende, facture, bail, contrat, résultats d'analyses…) en explication claire et en plan d'action :
 
 - **En clair** : ce que le document signifie pour vous, en une ou deux phrases.
 - **Jauge d'urgence** : rien à faire, pour info, à traiter, urgent.
@@ -70,8 +70,8 @@ Le site a besoin d'un petit serveur Node (il protège la clé API) : un héberge
 **Railway / Fly.io / tout hébergeur Docker** : le `Dockerfile` est prêt.
 
 ```bash
-docker build -t limpide .
-docker run -p 3000:3000 -e ANTHROPIC_API_KEY=sk-ant-... -e TRUST_PROXY=1 limpide
+docker build -t explisite .
+docker run -p 3000:3000 -e ANTHROPIC_API_KEY=sk-ant-... -e TRUST_PROXY=1 explisite
 ```
 
 **VPS** : `npm ci --omit=dev && node server.js` derrière Nginx ou Caddy (HTTPS). Si vous utilisez Nginx, désactivez le buffering sur `/api/` (`proxy_buffering off;`) pour que l'analyse s'affiche en direct, et mettez `TRUST_PROXY=1`.
@@ -84,10 +84,10 @@ Vérification : `GET /api/health` doit renvoyer `{"ok":true,"demo":false,...}`.
 |---|---|---|
 | `ANTHROPIC_API_KEY` | — | Clé API (obligatoire hors démo) |
 | `PORT` | `3000` | Port d'écoute |
-| `LIMPIDE_MODEL` | `claude-opus-5` | Modèle Claude |
-| `LIMPIDE_EFFORT` | `high` | Profondeur d'analyse (`low` → `max`) |
-| `LIMPIDE_CHAT_EFFORT` | `medium` | Profondeur des réponses du chat |
-| `LIMPIDE_FALLBACKS` | `1` | `0` désactive le repli automatique |
+| `EXPLISITE_MODEL` | `claude-opus-5` | Modèle Claude |
+| `EXPLISITE_EFFORT` | `high` | Profondeur d'analyse (`low` → `max`) |
+| `EXPLISITE_CHAT_EFFORT` | `medium` | Profondeur des réponses du chat |
+| `EXPLISITE_FALLBACKS` | `1` | `0` désactive le repli automatique |
 | `RATE_LIMIT_PER_HOUR` | `40` | Requêtes max par IP et par heure |
 | `MAX_UPLOAD_MB` | `24` | Taille max d'une requête |
 | `TRUST_PROXY` | — | `1` derrière un reverse proxy (IP réelle pour la limite) |
@@ -96,7 +96,7 @@ Vérification : `GET /api/health` doit renvoyer `{"ok":true,"demo":false,...}`.
 | `OWNER_NAME`, `OWNER_STATUS`, `OWNER_ADDRESS`, `OWNER_EMAIL`, `PUBLICATION_DIRECTOR`, `HOSTING_PROVIDER` | — | Informations des pages légales ; `OWNER_EMAIL` active aussi « Signaler un problème » |
 | `DEMO_MODE` | — | `1` force le mode démo |
 
-Coût indicatif (estimation, à vérifier sur votre console Anthropic) : une analyse d'un courrier d'une à deux pages coûte environ 0,05 à 0,30 $ avec Claude Opus 5 à l'effort `high`, surtout selon la longueur de la réflexion. Passer `LIMPIDE_EFFORT=medium` réduit ce coût. Une limite par IP est active pour éviter les abus.
+Coût indicatif (estimation, à vérifier sur votre console Anthropic) : une analyse d'un courrier d'une à deux pages coûte environ 0,05 à 0,30 $ avec Claude Opus 5 à l'effort `high`, surtout selon la longueur de la réflexion. Passer `EXPLISITE_EFFORT=medium` réduit ce coût. Une limite par IP est active pour éviter les abus.
 
 ## Structure
 
@@ -112,4 +112,4 @@ scripts/               génération des icônes et de l'image de partage
 archive/               ancien fichier du dépôt (composant React de portfolio)
 ```
 
-Limpide aide à comprendre ses documents ; ce n'est pas un conseil juridique, fiscal ou médical.
+ExpliSite aide à comprendre ses documents ; ce n'est pas un conseil juridique, fiscal ou médical.

@@ -1,6 +1,6 @@
-// Construit la version « claude.ai » de Limpide : une seule page HTML autonome
+// Construit la version « claude.ai » de ExpliSite : une seule page HTML autonome
 // (CSS et JS intégrés) qui appelle Claude avec le compte de la personne qui
-// l'utilise. Aucun serveur ni clé API. Sortie : dist/limpide.html
+// l'utilise. Aucun serveur ni clé API. Sortie : dist/explisite.html
 //
 // Usage : npm run build:artifact
 import fs from "node:fs";
@@ -48,7 +48,7 @@ function bundle() {
 }
 
 const index = read("public/index.html");
-const title = index.match(/<title>[\s\S]*?<\/title>/)[0].replace("Limpide — la paperasse, en clair", "Limpide");
+const title = index.match(/<title>[\s\S]*?<\/title>/)[0].replace("ExpliSite — la paperasse, en clair", "ExpliSite");
 let body = index.match(/<body>([\s\S]*)<\/body>/)[1];
 // Liens de pied de page vers les pages du serveur : sans objet ici.
 body = body.replace(/<nav class="footer-links"[\s\S]*?<\/nav>/, "");
@@ -73,5 +73,5 @@ ${js}
 `;
 
 fs.mkdirSync(rel("dist"), { recursive: true });
-fs.writeFileSync(rel("dist/limpide.html"), html);
-console.log(`dist/limpide.html — ${(html.length / 1024).toFixed(0)} Kio`);
+fs.writeFileSync(rel("dist/explisite.html"), html);
+console.log(`dist/explisite.html — ${(html.length / 1024).toFixed(0)} Kio`);

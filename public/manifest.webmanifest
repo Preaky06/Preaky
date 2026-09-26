@@ -1,7 +1,7 @@
 {
-  "name": "Limpide — la paperasse, en clair",
-  "short_name": "Limpide",
-  "description": "Photographiez un courrier, une facture ou un contrat : Limpide explique ce qu'il dit et ce qu'il faut faire.",
+  "name": "ExpliSite — la paperasse, en clair",
+  "short_name": "ExpliSite",
+  "description": "Photographiez un courrier, une facture ou un contrat : ExpliSite explique ce qu'il dit et ce qu'il faut faire.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

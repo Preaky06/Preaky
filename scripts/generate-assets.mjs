@@ -44,7 +44,7 @@ mark { background: #e4ff3d; color: #15130f; padding: 0 .08em; border-radius: .08
 </style></head><body>
 <div class="orb"></div>
 <h1>Votre courrier<br/>parle <em>charabia.</em><br/>On <mark>traduit.</mark></h1>
-<div class="brand"><svg viewBox="0 0 40 40"><circle cx="17" cy="17" r="11" fill="none" stroke="#15130f" stroke-width="3.2"/><path d="M25 25l9 9" stroke="#15130f" stroke-width="3.6" stroke-linecap="round"/><path d="M11.5 17.5h11" stroke="#e4ff3d" stroke-width="5" stroke-linecap="round"/></svg>Limpide</div>
+<div class="brand"><svg viewBox="0 0 40 40"><circle cx="17" cy="17" r="11" fill="none" stroke="#15130f" stroke-width="3.2"/><path d="M25 25l9 9" stroke="#15130f" stroke-width="3.6" stroke-linecap="round"/><path d="M11.5 17.5h11" stroke="#e4ff3d" stroke-width="5" stroke-linecap="round"/></svg>ExpliSite</div>
 <div class="tag">Impôts · CAF · Bail · Factures · Amendes</div>
 </body></html>`;
 
@@ -64,7 +64,7 @@ for (const [file, size, svg] of shots) {
 }
 await page.setViewportSize({ width: 1200, height: 630 });
 // Chargé depuis un fichier pour que les polices locales (file://) soient accessibles.
-const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "limpide-")), "og.html");
+const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "explisite-")), "og.html");
 fs.writeFileSync(tmp, og);
 await page.goto(pathToFileURL(tmp).href, { waitUntil: "load" });
 await page.evaluate(() => document.fonts.ready);
