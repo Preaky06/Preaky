@@ -9,6 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
 import os from "node:os";
+import crypto from "node:crypto";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const procs = [];
@@ -285,4 +286,90 @@ test("la base ne contient pas le document en clair", async () => {
   assert.ok(raw.length > 0);
   assert.doesNotMatch(raw, /SECRET-TEMOIN/);
   assert.ok(fs.existsSync(path.join(dir, "encryption.key")));
+});
+
+// ------------------------------------------------------------ connexion Google
+
+test("connexion Google : PKCE, état, liaison sûre des comptes, suppression", async () => {
+  const challenges = new Map();
+  let lastVerifierOk = false;
+  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");
+  // Faux serveur de jetons Google : le « code » dit quelle identité renvoyer.
+  const fakeGoogle = http.createServer((req, res) => {
+    let b = ""; req.on("data", (c) => { b += c; });
+    req.on("end", () => {
+      const p = new URLSearchParams(b);
+      const [, email, sub, aud] = p.get("code").split("|");
+      const expected = challenges.get(p.get("code"));
+      lastVerifierOk = !!expected && crypto.createHash("sha256").update(p.get("code_verifier")).digest("base64url") === expected;
+      if (!lastVerifierOk || p.get("client_secret") !== "secret-test") { res.writeHead(400); res.end("{}"); return; }
+      const payload = { iss: "https://accounts.google.com", aud: aud || "client-test", exp: Date.now() / 1000 + 600, sub, email, email_verified: true };
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ id_token: `${b64({ alg: "RS256" })}.${b64(payload)}.sig` }));
+    });
+  });
+  await new Promise((r) => fakeGoogle.listen(0, "127.0.0.1", r));
+  const srv = await startServer({
+    DEMO_MODE: "1", GOOGLE_CLIENT_ID: "client-test", GOOGLE_CLIENT_SECRET: "secret-test",
+    GOOGLE_AUTH_URL: "https://accounts.example/auth", GOOGLE_TOKEN_URL: `http://127.0.0.1:${fakeGoogle.address().port}/token`,
+  });
+  const B = srv.base;
+
+  // Démarre la connexion, puis revient de « Google » avec le code donné.
+  async function googleLogin(code, { cookieOverride, reuse } = {}) {
+    const start = await fetch(B + "/api/auth/google", { redirect: "manual" });
+    assert.equal(start.status, 302);
+    const loc = new URL(start.headers.get("location"));
+    assert.equal(loc.origin + loc.pathname, "https://accounts.example/auth");
+    assert.equal(loc.searchParams.get("client_id"), "client-test");
+    assert.equal(loc.searchParams.get("code_challenge_method"), "S256");
+    assert.match(loc.searchParams.get("redirect_uri"), /\/api\/auth\/google\/callback$/);
+    const state = reuse || loc.searchParams.get("state");
+    challenges.set(code, loc.searchParams.get("code_challenge"));
+    const cookie = cookieOverride ?? start.headers.get("set-cookie").split(";")[0];
+    const back = await fetch(`${B}/api/auth/google/callback?state=${state}&code=${encodeURIComponent(code)}`, { redirect: "manual", headers: cookie ? { Cookie: cookie } : {} });
+    const session = (back.headers.getSetCookie?.() || []).find((c) => c.startsWith("explisite_session=") && !c.startsWith("explisite_session=;"));
+    return { location: back.headers.get("location"), session: session?.split(";")[0], state };
+  }
+  const me = async (cookie) => (await (await fetch(B + "/api/auth/me", { headers: { Cookie: cookie } })).json()).user;
+
+  // Nouveau compte créé par Google, sans mot de passe.
+  const first = await googleLogin("c1|gina@example.org|g-111");
+  assert.equal(first.location, "/#bienvenue");
+  assert.ok(lastVerifierOk);
+  assert.deepEqual(await me(first.session), { email: "gina@example.org", hasPassword: false });
+
+  // Reconnexion : même compte.
+  const again = await googleLogin("c2|gina@example.org|g-111");
+  assert.equal(again.location, "/#connecte");
+
+  // État rejoué ou cookie absent : refusé.
+  assert.equal((await googleLogin("c3|gina@example.org|g-111", { reuse: first.state })).location, "/#erreur-google-state");
+  assert.equal((await googleLogin("c4|gina@example.org|g-111", { cookieOverride: "" })).location, "/#erreur-google-state");
+  // Jeton émis pour une autre application : refusé.
+  assert.equal((await googleLogin("c5|gina@example.org|g-111|autre-client")).location, "/#erreur-google-token");
+
+  // Compte créé à l'avance avec l'adresse d'autrui : Google le récupère,
+  // l'ancien mot de passe et l'ancienne session ne fonctionnent plus.
+  const squatter = cookieJar();
+  await squatter(B, "/api/auth/register", { method: "POST", body: { email: "victime@example.org", password: "motdepasse-pirate" } });
+  const victim = await googleLogin("c6|victime@example.org|g-222");
+  assert.equal(victim.location, "/#connecte");
+  assert.equal((await squatter(B, "/api/documents")).status, 401);
+  assert.equal((await squatter(B, "/api/auth/login", { method: "POST", body: { email: "victime@example.org", password: "motdepasse-pirate" } })).status, 401);
+  assert.equal((await me(victim.session)).email, "victime@example.org");
+
+  // Suppression d'un compte Google : confirmation par l'adresse e-mail.
+  const del = (body) => fetch(B + "/api/auth/delete", { method: "POST", headers: { Cookie: first.session, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  assert.equal((await del({ password: "autre@example.org" })).status, 401);
+  assert.equal((await del({ password: "gina@example.org" })).status, 200);
+  assert.equal(await me(first.session), null);
+
+  fakeGoogle.close();
+});
+
+test("connexion Google absente si non configurée", async () => {
+  const res = await fetch(demo.base + "/api/auth/google", { redirect: "manual" });
+  assert.equal(res.status, 404);
+  assert.equal((await (await fetch(demo.base + "/api/auth/me")).json()).google, false);
 });

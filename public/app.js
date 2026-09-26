@@ -59,6 +59,7 @@ const state = {
   user: null,             // compte serveur connecté { email }
   cloud: false,           // true : l'historique vit dans le compte (serveur ou claude.ai)
   accounts: false,        // le serveur propose des comptes
+  google: false,          // connexion Google configurée sur le serveur
   chatBusy: false,
 };
 
@@ -1184,7 +1185,11 @@ function renderAccountBox() {
   if (state.user) {
     note.textContent = `Enregistrés dans votre compte : vous les retrouvez à chaque connexion, sur tous vos appareils.`;
     const del = h("button", { type: "button", class: "linkbtn danger-link" });
-    const pwd = h("input", { type: "password", id: "deletePwd", placeholder: "Mot de passe", autocomplete: "current-password", hidden: true, "aria-label": "Mot de passe pour confirmer" });
+    // Compte créé avec Google (sans mot de passe) : on confirme en retapant l'adresse.
+    const withPwd = state.user.hasPassword !== false;
+    const pwd = h("input", withPwd
+      ? { type: "password", id: "deletePwd", placeholder: "Mot de passe", autocomplete: "current-password", hidden: true, "aria-label": "Mot de passe pour confirmer" }
+      : { type: "email", id: "deletePwd", placeholder: "Votre adresse e-mail", autocomplete: "off", hidden: true, "aria-label": "Adresse e-mail pour confirmer" });
     armConfirm(del, "Supprimer mon compte", "Confirmer la suppression", async () => {
       if (pwd.hidden) { pwd.hidden = false; pwd.focus(); del.textContent = "Supprimer définitivement"; return; }
       try {
@@ -1233,6 +1238,7 @@ function openAuth(mode) {
   $("#authSwitch").textContent = authMode === "register" ? "J'ai déjà un compte" : "Créer un compte";
   $("#authSwitch").hidden = state.signup === false;
   $("#authHint").hidden = authMode !== "register";
+  $("#authGoogle").hidden = !state.google;
   $("#authError").textContent = "";
   if ($("#historyDrawer").open) $("#historyDrawer").close();
   if (!dlg.open) dlg.showModal();
@@ -1291,12 +1297,34 @@ function initAccount() {
   });
 }
 
+// Retour de Google : le serveur redirige vers /#connecte, /#bienvenue ou /#erreur-google-….
+const GOOGLE_RETURN = {
+  connecte: ["Vous êtes connecté avec Google.", ""],
+  bienvenue: ["Compte créé avec Google. Vos analyses y seront enregistrées.", ""],
+  "erreur-google-cancelled": ["Connexion Google annulée.", ""],
+  "erreur-google-state": ["La connexion Google a expiré. Réessayez.", "err"],
+  "erreur-google-token": ["Google n'a pas pu confirmer votre identité. Réessayez.", "err"],
+  "erreur-google-email": ["Votre adresse Google n'est pas vérifiée : utilisez l'e-mail et un mot de passe.", "err"],
+  "erreur-google-inscriptions": ["Les inscriptions sont fermées sur ce site.", "err"],
+  "erreur-google-limite": ["Trop de tentatives. Réessayez dans une heure.", "err"],
+};
+// Lu avant que init() ne nettoie l'adresse.
+const RETURN_HASH = location.hash.slice(1);
+function handleGoogleReturn() {
+  if (!GOOGLE_RETURN[RETURN_HASH]) return;
+  const [message, type] = GOOGLE_RETURN[RETURN_HASH];
+  toast(message, type);
+  if (location.hash) history.replaceState(history.state, "", location.pathname);
+}
+
 // Au chargement : compte serveur connecté, ou espace claude.ai disponible.
 async function initStorage() {
+  handleGoogleReturn();
   if (transport.account && state.accounts) {
     try {
       const me = await transport.account.me();
       state.signup = me.signup;
+      state.google = !!me.google;
       if (me.user) await onSignedIn(me.user);
     } catch { /* comptes indisponibles : navigateur seulement */ }
   } else if (transport.docs?.ready && await transport.docs.ready()) {

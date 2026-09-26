@@ -711,3 +711,10 @@ body.in-result .footer { display: none; }
 .auth .btn-primary { width: 100%; }
 .auth .linkbtn { justify-self: center; color: var(--ink-2); }
 @media (max-width: 640px) { .account-btn:not(.is-avatar) { padding: 7px 12px; font-size: 0.85rem; } }
+
+.auth-google { display: grid; gap: 14px; }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 13px 20px; border-radius: 99px; border: 1.5px solid var(--line); background: #fff; color: #1f1f1f; font-weight: 600; text-decoration: none; transition: border-color 0.2s, box-shadow 0.3s, transform 0.3s var(--spring); }
+.google-btn:hover { border-color: var(--ink); box-shadow: 0 8px 24px -12px rgba(0,0,0,.35); transform: translateY(-1px); }
+.google-btn svg { width: 20px; height: 20px; }
+.auth-or { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--ink-3); font-size: 0.85rem; }
+.auth-or::before, .auth-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }

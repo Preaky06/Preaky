@@ -15,7 +15,7 @@ ExpliSite transforme n'importe quel document administratif (avis d'impôt, courr
 - Explications en 15 langues ; l'écran de résultat, l'analyse et le chat s'affichent aussi dans la langue choisie (14 langues, arabe de droite à gauche). La page d'accueil reste en français.
 - Niveau simple ou détaillé, historique local, partage, impression, thème clair/sombre, mobile (appareil photo).
 - Application installable (PWA) : l'interface et l'historique restent consultables hors ligne.
-- Comptes (e-mail + mot de passe) : chacun retrouve ses documents, ses cases cochées et ses conversations à chaque connexion, sur tous ses appareils. Contenu chiffré en AES-256-GCM dans une base SQLite, mots de passe en scrypt, suppression du compte en un clic. Les analyses faites avant l'inscription sont versées dans le compte.
+- Comptes (e-mail + mot de passe, ou « Continuer avec Google ») : chacun retrouve ses documents, ses cases cochées et ses conversations à chaque connexion, sur tous ses appareils. Contenu chiffré en AES-256-GCM dans une base SQLite, mots de passe en scrypt, suppression du compte en un clic. Les analyses faites avant l'inscription sont versées dans le compte.
 - Pages légales (mentions légales, confidentialité RGPD, conditions d'utilisation), case de consentement avant l'envoi d'un document, lien « Signaler un problème ».
 - Référencement : image de partage, sitemap, robots.txt, données structurées ; polices hébergées sur le site (aucune ressource tierce, aucun cookie).
 
@@ -52,7 +52,7 @@ Au démarrage, le serveur signale les informations légales manquantes. Tant qu'
 ## Tests
 
 ```bash
-npm test          # 15 tests : pages, sécurité, validation, limites, comptes (isolation, chiffrement au repos), mode démo, requête réelle vérifiée contre une fausse API locale
+npm test          # 17 tests : pages, sécurité, validation, limites, comptes (isolation, chiffrement au repos), connexion Google (PKCE, état rejoué, liaison sûre), mode démo, requête réelle vérifiée contre une fausse API locale
 npm run check     # vérification syntaxique
 ```
 
@@ -81,6 +81,15 @@ Caddy obtient le certificat HTTPS tout seul. Le site est en ligne sur `https://v
 - Journaux : `docker compose logs -f app`.
 - Sauvegarde : `docker compose exec app node scripts/backup.mjs` (copie cohérente dans le volume, dossier `backups/`). Copiez-la ailleurs régulièrement, avec la clé de chiffrement.
 - Mot de passe oublié : `docker compose exec app node scripts/reset-password.mjs adresse@exemple.fr` affiche un mot de passe provisoire à transmettre à la personne.
+
+### Connexion avec Google (optionnel)
+
+1. Ouvrez https://console.cloud.google.com, créez un projet (par exemple « ExpliSite »).
+2. **API et services → Écran de consentement OAuth** : type « Externe », nom de l'application ExpliSite, votre e-mail de contact, lien vers `https://votre-domaine/confidentialite`. Portées : `openid`, `email`, `profile` (aucune validation Google n'est nécessaire pour ces trois-là). Publiez l'application (« En production ») pour que tout le monde puisse se connecter.
+3. **API et services → Identifiants → Créer des identifiants → ID client OAuth**, type « Application Web ». Dans « URI de redirection autorisés », ajoutez exactement `https://votre-domaine/api/auth/google/callback`.
+4. Copiez l'ID client et le code secret dans `.env` (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`), puis `docker compose up -d`.
+
+Le bouton « Continuer avec Google » apparaît alors dans la fenêtre de connexion. Si une personne avait déjà un compte avec la même adresse, Google s'y relie ; par sécurité, l'ancien mot de passe de ce compte est alors désactivé (l'adresse n'avait jamais été vérifiée, contrairement à celle de Google).
 
 ### Autres hébergeurs
 
@@ -114,6 +123,7 @@ Dans tous les cas, mettez `TRUST_PROXY=1` et `SITE_URL=https://votre-domaine`. V
 | `ACCOUNTS` | `1` | `0` désactive les comptes |
 | `ALLOW_SIGNUP` | `1` | `0` ferme les inscriptions |
 | `MAX_DOCS_PER_USER` | `300` | Documents enregistrés max par compte |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | — | Active « Continuer avec Google » |
 | `SITE_URL` | — | Adresse publique (`https://…`) |
 | `OWNER_NAME`, `OWNER_STATUS`, `OWNER_ADDRESS`, `OWNER_EMAIL`, `PUBLICATION_DIRECTOR`, `HOSTING_PROVIDER` | — | Informations des pages légales ; `OWNER_EMAIL` active aussi « Signaler un problème » |
 | `DEMO_MODE` | — | `1` force le mode démo |

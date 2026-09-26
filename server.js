@@ -10,6 +10,7 @@ import { mockAnalysis, mockAnswer } from "./lib/mock.js";
 import { createSite, LEGAL_VARS } from "./lib/site.js";
 import { openStore } from "./lib/store.js";
 import { createAccountRoutes } from "./lib/accounts.js";
+import { createGoogleAuth } from "./lib/google.js";
 
 try { process.loadEnvFile(); } catch { /* pas de .env : on utilise l'environnement */ }
 
@@ -374,11 +375,22 @@ async function handleAsk(req, res) {
 
 // Comptes et documents enregistrés (désactivables avec ACCOUNTS=0).
 const store = ACCOUNTS ? openStore({ dataDir: DATA_DIR, encryptionKey: process.env.ENCRYPTION_KEY }) : null;
+const isSecure = (req) => SITE_URL.startsWith("https://") || req.socket.encrypted
+  || (TRUST_PROXY && String(req.headers["x-forwarded-proto"] || "").startsWith("https"));
+
+// Connexion Google : active si GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET sont renseignés.
+const google = store ? createGoogleAuth({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  authUrl: process.env.GOOGLE_AUTH_URL,
+  tokenUrl: process.env.GOOGLE_TOKEN_URL,
+  isSecure,
+  redirectUri: (req) => `${SITE_URL || `${isSecure(req) ? "https" : "http"}://${req.headers.host}`}/api/auth/google/callback`,
+}) : null;
+
 const accountRoutes = store ? createAccountRoutes({
   store, sendJson, readJsonBody, foreignOrigin, clientIp, validateDocument,
-  allowSignup: ALLOW_SIGNUP, maxDocsPerUser: MAX_DOCS_PER_USER,
-  isSecure: (req) => SITE_URL.startsWith("https://") || req.socket.encrypted
-    || (TRUST_PROXY && String(req.headers["x-forwarded-proto"] || "").startsWith("https")),
+  allowSignup: ALLOW_SIGNUP, maxDocsPerUser: MAX_DOCS_PER_USER, isSecure, google, securityHeaders: SECURITY_HEADERS,
 }) : null;
 
 const serveSite = createSite({ publicDir: PUBLIC_DIR, env: process.env, securityHeaders: SECURITY_HEADERS, siteUrl: SITE_URL, trustProxy: TRUST_PROXY });
