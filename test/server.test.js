@@ -7,6 +7,8 @@ import { spawn } from "node:child_process";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import fs from "node:fs";
+import os from "node:os";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const procs = [];
@@ -15,7 +17,7 @@ function startServer(env) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, ["server.js"], {
       cwd: root,
-      env: { PATH: process.env.PATH, HOST: "127.0.0.1", PORT: "0", ...env },
+      env: { PATH: process.env.PATH, HOST: "127.0.0.1", PORT: "0", DATA_DIR: fs.mkdtempSync(path.join(os.tmpdir(), "explisite-test-")), ...env },
       stdio: ["ignore", "pipe", "pipe"],
     });
     procs.push(child);
@@ -188,4 +190,99 @@ test("plafond quotidien global", async () => {
   // DAILY_LIMIT=3 : les trois appels précédents l'ont épuisé.
   const res = await post(real.base, "/api/analyze", { text: "Encore un texte de test." });
   assert.equal(res.status, 503);
+});
+
+// ---------------------------------------------------------------- comptes
+
+function cookieJar() {
+  let cookie = "";
+  return async (base, route, { method = "GET", body, headers = {} } = {}) => {
+    const res = await fetch(base + route, {
+      method,
+      headers: { ...(body ? { "Content-Type": "application/json" } : {}), ...(cookie ? { Cookie: cookie } : {}), ...headers },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const set = res.headers.get("set-cookie");
+    if (set) cookie = set.split(";")[0].endsWith("=") ? "" : set.split(";")[0];
+    let data = null;
+    try { data = await res.json(); } catch { /* vide */ }
+    return { status: res.status, data, setCookie: set };
+  };
+}
+
+const RESULT = { title: "Avis d'impôt", urgency: "high", issuer: "DGFiP", actions: [] };
+
+test("comptes : inscription, session, documents chiffrés, isolation, suppression", async () => {
+  const alice = cookieJar(), bob = cookieJar();
+  const B = demo.base;
+  assert.deepEqual((await alice(B, "/api/auth/me")).data.user, null);
+  assert.equal((await alice(B, "/api/documents")).status, 401);
+
+  assert.equal((await alice(B, "/api/auth/register", { method: "POST", body: { email: "pas-un-email", password: "motdepasse1" } })).status, 400);
+  assert.equal((await alice(B, "/api/auth/register", { method: "POST", body: { email: "alice@example.org", password: "court" } })).status, 400);
+  const reg = await alice(B, "/api/auth/register", { method: "POST", body: { email: "Alice@Example.org", password: "motdepasse1" } });
+  assert.equal(reg.status, 201);
+  assert.match(reg.setCookie, /HttpOnly/);
+  assert.match(reg.setCookie, /SameSite=Lax/);
+  assert.equal((await alice(B, "/api/auth/me")).data.user.email, "alice@example.org");
+  assert.equal((await bob(B, "/api/auth/register", { method: "POST", body: { email: "alice@example.org", password: "autremotdepasse" } })).status, 409);
+
+  const created = await alice(B, "/api/documents", { method: "POST", body: {
+    result: RESULT, lang: "fr", checks: [true], text: "Texte du courrier original, assez long.",
+    files: [{ name: "p1.jpg", type: "image/jpeg", data: "QUJDRA==" }],
+  } });
+  assert.equal(created.status, 201);
+  const id = created.data.id;
+
+  const list = (await alice(B, "/api/documents")).data.documents;
+  assert.equal(list.length, 1);
+  assert.equal(list[0].title, "Avis d'impôt");
+  assert.equal(list[0].result, undefined);
+
+  const full = (await alice(B, `/api/documents/${id}`)).data.document;
+  assert.deepEqual(full.result, RESULT);
+  assert.deepEqual(full.checks, [true]);
+  assert.equal(full.files[0].data, "QUJDRA==");
+  assert.equal(full.text, "Texte du courrier original, assez long.");
+
+  const chat = [{ role: "user", content: "Et si je ne paie pas ?" }, { role: "assistant", content: "Majoration." }, { role: "system", content: "x" }];
+  assert.equal((await alice(B, `/api/documents/${id}`, { method: "PATCH", body: { checks: [true, false], chat } })).status, 200);
+  const patched = (await alice(B, `/api/documents/${id}`)).data.document;
+  assert.deepEqual(patched.checks, [true, false]);
+  assert.equal(patched.chat.length, 2);
+
+  // Bob ne voit ni ne modifie les documents d'Alice.
+  await bob(B, "/api/auth/register", { method: "POST", body: { email: "bob@example.org", password: "motdepasse2" } });
+  assert.equal((await bob(B, "/api/documents")).data.documents.length, 0);
+  assert.equal((await bob(B, `/api/documents/${id}`)).status, 404);
+  assert.equal((await bob(B, `/api/documents/${id}`, { method: "DELETE" })).status, 404);
+
+  // Se reconnecter retrouve les documents.
+  assert.equal((await alice(B, "/api/auth/logout", { method: "POST", body: {} })).status, 200);
+  assert.equal((await alice(B, "/api/documents")).status, 401);
+  assert.equal((await alice(B, "/api/auth/login", { method: "POST", body: { email: "alice@example.org", password: "mauvais-mdp" } })).status, 401);
+  assert.equal((await alice(B, "/api/auth/login", { method: "POST", body: { email: "alice@example.org", password: "motdepasse1" } })).status, 200);
+  assert.equal((await alice(B, "/api/documents")).data.documents.length, 1);
+
+  // Appel venu d'un autre site refusé.
+  assert.equal((await alice(B, "/api/documents", { method: "DELETE", headers: { Origin: "https://evil.example" } })).status, 403);
+
+  // Suppression du compte : mot de passe exigé, documents effacés.
+  assert.equal((await alice(B, "/api/auth/delete", { method: "POST", body: { password: "faux-mdp-123" } })).status, 401);
+  assert.equal((await alice(B, "/api/auth/delete", { method: "POST", body: { password: "motdepasse1" } })).status, 200);
+  assert.equal((await alice(B, "/api/auth/login", { method: "POST", body: { email: "alice@example.org", password: "motdepasse1" } })).status, 401);
+});
+
+test("la base ne contient pas le document en clair", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "explisite-enc-"));
+  const srv = await startServer({ DEMO_MODE: "1", DATA_DIR: dir });
+  const jar = cookieJar();
+  await jar(srv.base, "/api/auth/register", { method: "POST", body: { email: "carla@example.org", password: "motdepasse3" } });
+  await jar(srv.base, "/api/documents", { method: "POST", body: { result: { ...RESULT, plain_summary: "SECRET-TEMOIN-42" }, text: "Numéro fiscal SECRET-TEMOIN-43" } });
+  srv.child.kill();
+  await new Promise((r) => srv.child.once("exit", r));
+  const raw = fs.readdirSync(dir).filter((f) => f.startsWith("explisite.db")).map((f) => fs.readFileSync(path.join(dir, f), "latin1")).join("");
+  assert.ok(raw.length > 0);
+  assert.doesNotMatch(raw, /SECRET-TEMOIN/);
+  assert.ok(fs.existsSync(path.join(dir, "encryption.key")));
 });

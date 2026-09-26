@@ -8,6 +8,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { ANALYSIS_SCHEMA, ANALYSIS_SYSTEM, CHAT_SYSTEM, LANGUAGES } from "./lib/prompts.js";
 import { mockAnalysis, mockAnswer } from "./lib/mock.js";
 import { createSite, LEGAL_VARS } from "./lib/site.js";
+import { openStore } from "./lib/store.js";
+import { createAccountRoutes } from "./lib/accounts.js";
 
 try { process.loadEnvFile(); } catch { /* pas de .env : on utilise l'environnement */ }
 
@@ -25,6 +27,10 @@ const TRUST_PROXY = process.env.TRUST_PROXY === "1";
 const DAILY_LIMIT = Number(process.env.DAILY_LIMIT) || 1000;
 const SITE_URL = (process.env.SITE_URL || "").replace(/\/+$/, "");
 const CONTACT = process.env.OWNER_EMAIL || "";
+const DATA_DIR = process.env.DATA_DIR || path.join(path.dirname(fileURLToPath(import.meta.url)), "data");
+const ACCOUNTS = process.env.ACCOUNTS !== "0";
+const ALLOW_SIGNUP = process.env.ALLOW_SIGNUP !== "0";
+const MAX_DOCS_PER_USER = Number(process.env.MAX_DOCS_PER_USER) || 300;
 
 const HAS_KEY = Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 const DEMO = process.env.DEMO_MODE === "1" || !HAS_KEY;
@@ -59,9 +65,9 @@ const SECURITY_HEADERS = {
   ...(SITE_URL.startsWith("https://") ? { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" } : {}),
 };
 
-function sendJson(res, status, obj) {
+function sendJson(res, status, obj, extraHeaders = {}) {
   const body = JSON.stringify(obj);
-  res.writeHead(status, { ...SECURITY_HEADERS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
+  res.writeHead(status, { ...SECURITY_HEADERS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...extraHeaders });
   res.end(body);
 }
 
@@ -366,13 +372,22 @@ async function handleAsk(req, res) {
   res.end();
 }
 
+// Comptes et documents enregistrés (désactivables avec ACCOUNTS=0).
+const store = ACCOUNTS ? openStore({ dataDir: DATA_DIR, encryptionKey: process.env.ENCRYPTION_KEY }) : null;
+const accountRoutes = store ? createAccountRoutes({
+  store, sendJson, readJsonBody, foreignOrigin, clientIp, validateDocument,
+  allowSignup: ALLOW_SIGNUP, maxDocsPerUser: MAX_DOCS_PER_USER,
+  isSecure: (req) => SITE_URL.startsWith("https://") || req.socket.encrypted
+    || (TRUST_PROXY && String(req.headers["x-forwarded-proto"] || "").startsWith("https")),
+}) : null;
+
 const serveSite = createSite({ publicDir: PUBLIC_DIR, env: process.env, securityHeaders: SECURITY_HEADERS, siteUrl: SITE_URL, trustProxy: TRUST_PROXY });
 
 const server = http.createServer(async (req, res) => {
   const url = (req.url || "/").split("?")[0];
   try {
     if (url === "/api/health" && (req.method === "GET" || req.method === "HEAD")) {
-      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL, contact: CONTACT || null });
+      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL, contact: CONTACT || null, accounts: !!store });
     }
     if (url === "/api/analyze" || url === "/api/ask") {
       if (req.method !== "POST") return sendJson(res, 405, { error: "Méthode non autorisée." });
@@ -388,6 +403,7 @@ const server = http.createServer(async (req, res) => {
       }
       return url === "/api/analyze" ? await handleAnalyze(req, res) : await handleAsk(req, res);
     }
+    if (accountRoutes && await accountRoutes(req, res, url)) return;
     if (url.startsWith("/api/")) return sendJson(res, 404, { error: "Point d'accès inconnu." });
     if (req.method === "GET" || req.method === "HEAD") return serveSite(req, res);
     sendJson(res, 405, { error: "Méthode non autorisée." });
@@ -414,7 +430,7 @@ for (const sig of ["SIGTERM", "SIGINT"]) {
     if (stopping) process.exit(1);
     stopping = true;
     console.log(`${sig} reçu, arrêt en cours…`);
-    server.close(() => process.exit(0));
+    server.close(() => { store?.close(); process.exit(0); });
     server.closeIdleConnections?.();
     setTimeout(() => process.exit(0), 30_000).unref();
   });

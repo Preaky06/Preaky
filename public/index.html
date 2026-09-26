@@ -57,6 +57,7 @@
       <button type="button" class="linkbtn" id="historyBtn" data-magnetic aria-haspopup="dialog">
         Mes documents <span class="badge" id="historyCount" hidden>0</span>
       </button>
+      <button type="button" class="btn btn-ghost account-btn" id="accountBtn" data-magnetic hidden>Se connecter</button>
       <button type="button" class="iconbtn" id="themeBtn" data-magnetic aria-label="Changer de thème">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" fill="currentColor"/></svg>
       </button>
@@ -199,7 +200,7 @@
       <section class="privacy reveal" aria-labelledby="privTitle">
         <div class="privacy-orb" aria-hidden="true"></div>
         <h2 id="privTitle" class="section-title">Vos papiers restent <em>vos</em> papiers.</h2>
-        <p>Aucun compte. Aucun document stocké sur nos serveurs : il est transmis chiffré pour l'analyse puis oublié. L'historique n'existe que dans votre navigateur, et vous l'effacez d'un clic.</p>
+        <p id="privacyText">Sans compte, rien n'est gardé : votre document est transmis chiffré pour l'analyse, puis oublié. Avec un compte, vos documents sont enregistrés chiffrés, visibles de vous seul, pour que vous les retrouviez à chaque connexion. Vous effacez tout d'un clic.</p>
       </section>
 
       <section class="faq" id="faq" aria-labelledby="faqTitle">
@@ -207,7 +208,7 @@
         <details class="reveal"><summary>Quels documents puis-je analyser ?</summary><p>Tout ce qui est écrit : courriers des impôts, de la CAF, de France Travail, factures, contrats, baux, devis, amendes, relevés bancaires, comptes rendus médicaux, conditions générales… En photo (JPG, PNG, WebP), en PDF ou en texte collé.</p></details>
         <details class="reveal"><summary>Est-ce fiable ?</summary><p>ExpliSite lit le document avec l'un des modèles d'IA les plus précis actuellement disponibles (Claude, d'Anthropic) et n'invente pas de chiffres : si une information est illisible, il le signale. Pour une décision engageante (procès, diagnostic, gros montant), il vous indique le professionnel à consulter.</p></details>
         <details class="reveal"><summary>Et si le document est dans une autre langue ?</summary><p>Aucun problème. Vous choisissez la langue de l'explication ; la réponse rédigée, elle, est écrite dans la langue de l'organisme qui la recevra.</p></details>
-        <details class="reveal"><summary>Où sont gardées mes analyses ?</summary><p>Uniquement dans votre navigateur (« Mes documents »). Les photos ne sont pas conservées, seules les explications le sont. Vous pouvez tout effacer à tout moment.</p></details>
+        <details class="reveal"><summary>Où sont gardées mes analyses ?</summary><p id="storageFaq">Sans compte, dans votre navigateur uniquement. Avec un compte gratuit, dans votre espace personnel : vous retrouvez vos explications, vos cases cochées et vos questions à chaque connexion, sur tous vos appareils. Vous pouvez tout supprimer à tout moment, compte compris.</p></details>
         <details class="reveal"><summary>Est-ce un conseil juridique ?</summary><p>Non. ExpliSite vous aide à comprendre et à préparer vos démarches. Il ne remplace pas un avocat, un médecin ou un conseiller.</p></details>
       </section>
     </section>
@@ -252,9 +253,33 @@
       <h2 id="historyTitle">Mes documents</h2>
       <button type="button" class="iconbtn" data-close aria-label="Fermer">✕</button>
     </div>
-    <p class="drawer-note">Stockés uniquement dans ce navigateur.</p>
+    <p class="drawer-note" id="storageNote">Stockés uniquement dans ce navigateur.</p>
+    <div class="account-box" id="accountBox" hidden></div>
     <ul class="history-list" id="historyList"></ul>
     <button type="button" class="btn btn-ghost danger" id="clearHistoryBtn">Tout effacer</button>
+  </dialog>
+
+  <!-- ================================ COMPTE ================================ -->
+  <dialog class="auth" id="authDialog" aria-labelledby="authTitle">
+    <form id="authForm" novalidate>
+      <div class="drawer-head">
+        <h2 id="authTitle">Se connecter</h2>
+        <button type="button" class="iconbtn" data-close aria-label="Fermer">✕</button>
+      </div>
+      <p class="auth-intro">Retrouvez vos documents expliqués à chaque connexion, sur tous vos appareils.</p>
+      <label class="auth-field">
+        <span class="mono">E-mail</span>
+        <input type="email" id="authEmail" autocomplete="email" required maxlength="254" />
+      </label>
+      <label class="auth-field">
+        <span class="mono">Mot de passe</span>
+        <input type="password" id="authPassword" autocomplete="current-password" required minlength="8" maxlength="200" />
+      </label>
+      <p class="auth-hint" id="authHint" hidden>8 caractères minimum. Vos documents enregistrés sont chiffrés.</p>
+      <p class="auth-error" id="authError" role="alert"></p>
+      <button type="submit" class="btn btn-primary" id="authSubmit"><span>Me connecter</span></button>
+      <button type="button" class="linkbtn" id="authSwitch">Créer un compte</button>
+    </form>
   </dialog>
 
   <!-- ================================ CHAT ================================ -->

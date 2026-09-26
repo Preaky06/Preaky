@@ -96,6 +96,59 @@ export const transport = {
     }
   },
 
+  // Pas de compte à créer : claude.ai sait qui est connecté.
+  account: null,
+
+  // Documents dans l'espace privé de la personne (data/users/<id>/), invisible
+  // pour tout autre utilisateur, propriétaire de la page compris.
+  docs: {
+    label: "votre espace claude.ai",
+    async ready() {
+      const [db, user] = await Promise.all([use("db"), use("user")]);
+      const uid = await user?.id?.().catch(() => null);
+      if (!db || !uid) return false;
+      cloud = db.collection(`data/users/${uid}`);
+      return true;
+    },
+    async list() {
+      const snap = await cloud.orderBy("at", "desc").limit(300).get();
+      return snap.docs.map((d) => {
+        const v = d.data();
+        return { id: d.id, at: v.at, title: v.title, urgency: v.urgency, issuer: v.issuer, lang: v.lang, demo: !!v.demo };
+      });
+    },
+    async get(id) {
+      const snap = await cloud.doc(id).get();
+      if (!snap.exists) throw new Error("Document introuvable.");
+      return { id, ...snap.data() };
+    },
+    async create(doc) {
+      const r = doc.result;
+      const body = {
+        at: Date.now(), title: String(r.title || "Document").slice(0, 200), urgency: r.urgency || "low",
+        issuer: String(r.issuer || "").slice(0, 200), lang: doc.lang || "fr", demo: !!doc.demo,
+        result: r, checks: doc.checks || [], chat: doc.chat || [],
+        // Le texte collé aide le chat plus tard ; les photos et PDF ne sont pas gardés ici.
+        text: String(doc.text || "").slice(0, 60_000),
+      };
+      if (JSON.stringify(body).length > 240_000) body.text = "";
+      const ref = cloud.doc(crypto.randomUUID());
+      await ref.set(body).catch(dbError);
+      return ref.id;
+    },
+    async update(id, patch) {
+      const body = {};
+      if (patch.checks) body.checks = patch.checks;
+      if (patch.chat) body.chat = patch.chat.slice(-30);
+      await cloud.doc(id).update(body).catch(dbError);
+    },
+    remove: (id) => cloud.doc(id).delete().catch(dbError),
+    async clear() {
+      const snap = await cloud.limit(1000).get();
+      for (const d of snap.docs) await cloud.doc(d.id).delete().catch(dbError);
+    },
+  },
+
   async save(name, content) {
     const downloads = await downloadsP;
     if (!downloads) return false;
@@ -108,6 +161,17 @@ export const transport = {
     }
   },
 };
+
+let cloud = null;
+
+function dbError(e) {
+  const messages = {
+    invalid_argument: "Enregistrement refusé : demandez au propriétaire de la page un accès « Contributeur ».",
+    quota_exceeded: "L'espace de stockage est plein : supprimez quelques documents.",
+    resource_exhausted: "Trop d'enregistrements d'un coup : réessayez dans un instant.",
+  };
+  throw new Error(messages[e?.code] || "Enregistrement impossible pour le moment.");
+}
 
 function abortError() {
   const e = new Error("cancelled");

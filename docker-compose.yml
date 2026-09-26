@@ -1,0 +1,36 @@
+# Hébergement complet sur un serveur (VPS) : ExpliSite + HTTPS automatique.
+#   1. Pointez votre nom de domaine vers l'adresse IP du serveur (enregistrement A).
+#   2. Copiez .env.example en .env et remplissez-le (DOMAIN, clé API, mentions légales).
+#   3. docker compose up -d
+# Caddy obtient et renouvelle seul le certificat HTTPS (Let's Encrypt).
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      TRUST_PROXY: "1"
+      SITE_URL: https://${DOMAIN:?Renseignez DOMAIN dans .env}
+    volumes:
+      - explisite-data:/data
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  explisite-data:
+  caddy-data:
+  caddy-config:

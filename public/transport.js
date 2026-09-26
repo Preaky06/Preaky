@@ -14,6 +14,26 @@ export const transport = {
     return res.json();
   },
 
+  // Compte ExpliSite (e-mail + mot de passe), géré par le serveur.
+  account: {
+    me: () => json("GET", "/api/auth/me"),
+    register: (email, password) => json("POST", "/api/auth/register", { email, password }),
+    login: (email, password) => json("POST", "/api/auth/login", { email, password }),
+    logout: () => json("POST", "/api/auth/logout", {}),
+    remove: (password) => json("POST", "/api/auth/delete", { password }),
+  },
+
+  // Documents enregistrés dans le compte.
+  docs: {
+    label: "votre compte ExpliSite",
+    list: async () => (await json("GET", "/api/documents")).documents,
+    get: async (id) => (await json("GET", `/api/documents/${id}`)).document,
+    create: async (doc) => (await json("POST", "/api/documents", doc)).id,
+    update: (id, patch) => json("PATCH", `/api/documents/${id}`, patch),
+    remove: (id) => json("DELETE", `/api/documents/${id}`),
+    clear: () => json("DELETE", "/api/documents"),
+  },
+
   // Enregistre un fichier généré par la page.
   async save(name, content, type = "text/plain;charset=utf-8") {
     const url = URL.createObjectURL(new Blob([content], { type }));
@@ -24,6 +44,20 @@ export const transport = {
     return true;
   },
 };
+
+// Appel JSON simple ; une erreur HTTP devient une exception avec le message du serveur.
+async function json(method, url, body) {
+  const res = await fetch(url, {
+    method,
+    headers: body ? { "Content-Type": "application/json" } : {},
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: "same-origin",
+  });
+  let data = {};
+  try { data = await res.json(); } catch { /* réponse vide */ }
+  if (!res.ok) throw Object.assign(new Error(data.error || `Erreur serveur (${res.status}).`), { status: res.status });
+  return data;
+}
 
 // POST JSON, réponse en flux SSE : chaque événement est remis à onEvent.
 async function postStream(url, body, onEvent, signal) {

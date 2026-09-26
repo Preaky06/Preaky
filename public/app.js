@@ -56,7 +56,9 @@ const state = {
   abort: null,
   current: null,          // { id, result, demo, lang, at, checks: [] }
   docForChat: null,       // { files, text } — uniquement en mémoire
-  chatHistory: [],
+  user: null,             // compte serveur connecté { email }
+  cloud: false,           // true : l'historique vit dans le compte (serveur ou claude.ai)
+  accounts: false,        // le serveur propose des comptes
   chatBusy: false,
 };
 
@@ -616,9 +618,9 @@ async function startAnalysis({ sample = false } = {}) {
   }
   await scanner.done();
 
-  const entry = { id: crypto.randomUUID?.() || String(Date.now()), at: Date.now(), result, demo, lang: state.lang, checks: [] };
-  saveHistory(entry);
+  const entry = { id: crypto.randomUUID?.() || String(Date.now()), at: Date.now(), result, demo, lang: state.lang, checks: [], chat: [] };
   state.docForChat = doc;
+  saveHistory(entry, doc);
   showResult(entry);
 }
 
@@ -936,7 +938,7 @@ function svgCheck() {
 function showResult(entry) {
   setUiLang(entry.lang || "fr");
   state.current = entry;
-  state.chatHistory = [];
+  entry.chat ||= [];
   viewSwap(() => {
     $("#viewHome").hidden = true;
     $("#viewResult").hidden = false;
@@ -955,6 +957,7 @@ function showHome(push = true) {
     $("#viewHome").hidden = false;
     $("#chat").hidden = true;
     document.body.classList.remove("in-result");
+    state.lastEntry = state.current;
     state.current = null;
     scrollTo({ top: 0, behavior: "instant" });
     initReveal();
@@ -1008,10 +1011,7 @@ function initResultToolbar() {
     copyText(text);
   });
   addEventListener("popstate", (e) => {
-    if (e.state?.view === "result") {
-      const entry = loadHistory().find((x) => x.id === e.state.id);
-      if (entry) { showResultNoPush(entry); return; }
-    }
+    if (e.state?.view === "result" && state.lastEntry?.id === e.state.id) { showResultNoPush(state.lastEntry); return; }
     if (!$("#viewResult").hidden) showHome(false);
   });
 }
@@ -1019,7 +1019,6 @@ function initResultToolbar() {
 function showResultNoPush(entry) {
   setUiLang(entry.lang || "fr");
   state.current = entry;
-  state.docForChat = null;
   viewSwap(() => {
     $("#viewHome").hidden = true; $("#viewResult").hidden = false;
     document.body.classList.add("in-result");
@@ -1028,46 +1027,129 @@ function showResultNoPush(entry) {
 }
 
 /* ============================================================ historique */
+// Les analyses sont gardées soit dans ce navigateur, soit dans le compte de la
+// personne (serveur ExpliSite une fois connecté, ou espace privé claude.ai).
 
-function loadHistory() { return storage.get(HISTORY_KEY, []); }
+const local = {
+  all: () => storage.get(HISTORY_KEY, []),
+  write(list) { if (!storage.set(HISTORY_KEY, list)) storage.set(HISTORY_KEY, list.slice(0, 10)); },
+};
+const cloud = () => (state.cloud ? transport.docs : null);
+const pending = new WeakMap();   // entrée → enregistrement en cours dans le compte
+const updateTimers = new Map();
 
-function saveHistory(entry) {
-  const list = [entry, ...loadHistory().filter((x) => x.id !== entry.id)].slice(0, 40);
-  if (!storage.set(HISTORY_KEY, list)) storage.set(HISTORY_KEY, list.slice(0, 10));
+const summaryOf = (e) => ({
+  id: e.id, at: e.at, demo: !!e.demo,
+  title: e.title ?? e.result?.title ?? "Document", urgency: e.urgency ?? e.result?.urgency ?? "low", issuer: e.issuer ?? e.result?.issuer ?? "",
+});
+
+async function listHistory() {
+  const docs = cloud();
+  if (!docs) return local.all().map(summaryOf);
+  try { return await docs.list(); }
+  catch (e) { toast(e.message || "Documents indisponibles pour le moment.", "err"); return []; }
+}
+
+function saveLocal(entry) {
+  local.write([entry, ...local.all().filter((x) => x.id !== entry.id)].slice(0, 40));
   renderHistoryCount();
 }
 
-function updateHistoryEntry(entry) {
-  const list = loadHistory();
-  const i = list.findIndex((x) => x.id === entry.id);
-  if (i !== -1) { list[i] = entry; storage.set(HISTORY_KEY, list); }
+function saveHistory(entry, doc) {
+  const docs = cloud();
+  if (!docs) { saveLocal(entry); return; }
+  pending.set(entry, docs.create({
+    result: entry.result, lang: entry.lang, demo: entry.demo, checks: entry.checks, chat: entry.chat,
+    files: doc?.files || [], text: doc?.text || "",
+  }).then((id) => { entry.id = id; entry.remote = true; renderHistoryCount(); })
+    .catch((e) => { toast(`Gardé dans ce navigateur seulement : ${e.message}`, "err"); saveLocal(entry); }));
 }
 
-function renderHistoryCount() {
-  const n = loadHistory().length;
+// Enregistre les cases cochées et la conversation (regroupé, 0,5 s après la dernière modification).
+function updateHistoryEntry(entry) {
+  clearTimeout(updateTimers.get(entry));
+  updateTimers.set(entry, setTimeout(async () => {
+    updateTimers.delete(entry);
+    await pending.get(entry);
+    if (entry.remote && cloud()) {
+      try { await cloud().update(entry.id, { checks: entry.checks, chat: entry.chat }); }
+      catch (e) { toast(e.message || "Modification non enregistrée.", "err"); }
+      return;
+    }
+    const list = local.all();
+    const i = list.findIndex((x) => x.id === entry.id);
+    if (i !== -1) { list[i] = entry; local.write(list); }
+  }, 500));
+}
+
+async function openHistory(summary) {
+  let entry;
+  if (cloud()) {
+    try {
+      const d = await cloud().get(summary.id);
+      entry = { id: d.id, at: d.at, result: d.result, demo: !!d.demo, lang: d.lang, checks: d.checks || [], chat: d.chat || [], remote: true };
+      state.docForChat = d.files?.length || d.text ? { files: d.files || [], text: d.text || "" } : null;
+    } catch (e) { toast(e.message || "Document indisponible.", "err"); return; }
+  } else {
+    entry = local.all().find((x) => x.id === summary.id);
+    if (!entry) return;
+    entry.chat ||= [];
+    state.docForChat = null;
+  }
+  showResult(entry);
+}
+
+async function removeHistory(id) {
+  if (cloud()) {
+    try { await cloud().remove(id); } catch (e) { toast(e.message, "err"); return; }
+  } else local.write(local.all().filter((x) => x.id !== id));
+  renderHistory(); renderHistoryCount();
+}
+
+async function clearHistory() {
+  if (cloud()) {
+    try { await cloud().clear(); } catch (e) { toast(e.message, "err"); return; }
+  } else local.write([]);
+  renderHistory(); renderHistoryCount(); toast("Historique effacé");
+}
+
+// Après connexion : les analyses faites avant sont versées dans le compte.
+async function importLocalHistory() {
+  const items = local.all();
+  if (!items.length || !cloud()) return;
+  let done = 0;
+  for (const e of items.slice().reverse()) {
+    try {
+      await cloud().create({ result: e.result, lang: e.lang, demo: e.demo, checks: e.checks || [], chat: e.chat || [], files: [], text: "" });
+      done++;
+    } catch { break; }
+  }
+  if (done === items.length) local.write([]);
+  else local.write(items.slice(0, items.length - done));
+  if (done) toast(`${done} analyse${done > 1 ? "s" : ""} de ce navigateur ajoutée${done > 1 ? "s" : ""} à ${cloud().label}`);
+  renderHistoryCount();
+}
+
+async function renderHistoryCount() {
+  const n = (await listHistory()).length;
   const badge = $("#historyCount");
   badge.hidden = !n; badge.textContent = n;
 }
 
-function renderHistory() {
+async function renderHistory() {
+  renderAccountBox();
   const ul = $("#historyList");
-  const items = loadHistory();
+  const items = await listHistory();
+  $("#clearHistoryBtn").hidden = !items.length;
   if (!items.length) {
     ul.replaceChildren(h("li", { class: "drawer-note", text: "Aucun document pour l'instant. Vos analyses apparaîtront ici." }));
     return;
   }
   ul.replaceChildren(...items.map((e, i) => h("li", { class: "history-item", style: { animationDelay: `${i * 40}ms` } },
-    h("button", { type: "button", class: "history-open", onclick: () => {
-      $("#historyDrawer").close();
-      state.docForChat = null;
-      showResult(e);
-    } },
-      h("strong", { dir: "auto" }, h("span", { class: `dot ${e.result.urgency}`, "aria-hidden": "true" }), e.result.title || "Document"),
-      h("small", { text: `${new Date(e.at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}${e.result.issuer ? ` · ${e.result.issuer}` : ""}${e.demo ? " · démo" : ""}` })),
-    h("button", { type: "button", class: "history-del", "aria-label": `Supprimer ${e.result.title}`, onclick: () => {
-      storage.set(HISTORY_KEY, loadHistory().filter((x) => x.id !== e.id));
-      renderHistory(); renderHistoryCount();
-    } }, "✕"),
+    h("button", { type: "button", class: "history-open", onclick: () => { $("#historyDrawer").close(); openHistory(e); } },
+      h("strong", { dir: "auto" }, h("span", { class: `dot ${e.urgency}`, "aria-hidden": "true" }), e.title || "Document"),
+      h("small", { text: `${new Date(e.at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}${e.issuer ? ` · ${e.issuer}` : ""}${e.demo ? " · démo" : ""}` })),
+    h("button", { type: "button", class: "history-del", "aria-label": `Supprimer ${e.title}`, onclick: () => removeHistory(e.id) }, "✕"),
   )));
 }
 
@@ -1075,18 +1157,153 @@ function initHistory() {
   const drawer = $("#historyDrawer");
   $("#historyBtn").addEventListener("click", () => { renderHistory(); drawer.showModal(); });
   drawer.addEventListener("click", (e) => { if (e.target === drawer || e.target.closest("[data-close]")) drawer.close(); });
-  // Confirmation dans la page : un second clic dans les 4 secondes efface.
-  const clearBtn = $("#clearHistoryBtn");
+  armConfirm($("#clearHistoryBtn"), "Tout effacer", "Confirmer l'effacement", clearHistory);
+  renderHistoryCount();
+}
+
+// Bouton à double clic : le premier arme, le second (dans les 4 s) confirme.
+function armConfirm(btn, label, confirmLabel, action) {
   let armed = 0;
-  clearBtn.addEventListener("click", () => {
+  btn.textContent = label;
+  btn.addEventListener("click", () => {
     if (!armed) {
-      clearBtn.textContent = "Confirmer l'effacement";
-      armed = setTimeout(() => { armed = 0; clearBtn.textContent = "Tout effacer"; }, 4000);
+      btn.textContent = confirmLabel;
+      armed = setTimeout(() => { armed = 0; btn.textContent = label; }, 4000);
       return;
     }
-    clearTimeout(armed); armed = 0; clearBtn.textContent = "Tout effacer";
-    storage.set(HISTORY_KEY, []); renderHistory(); renderHistoryCount(); toast("Historique effacé");
+    clearTimeout(armed); armed = 0; btn.textContent = label;
+    action();
   });
+}
+
+/* ================================================================ compte */
+
+function renderAccountBox() {
+  const box = $("#accountBox");
+  const note = $("#storageNote");
+  if (state.user) {
+    note.textContent = `Enregistrés dans votre compte : vous les retrouvez à chaque connexion, sur tous vos appareils.`;
+    const del = h("button", { type: "button", class: "linkbtn danger-link" });
+    const pwd = h("input", { type: "password", id: "deletePwd", placeholder: "Mot de passe", autocomplete: "current-password", hidden: true, "aria-label": "Mot de passe pour confirmer" });
+    armConfirm(del, "Supprimer mon compte", "Confirmer la suppression", async () => {
+      if (pwd.hidden) { pwd.hidden = false; pwd.focus(); del.textContent = "Supprimer définitivement"; return; }
+      try {
+        await transport.account.remove(pwd.value);
+        onSignedOut(); $("#historyDrawer").close();
+        toast("Compte et documents supprimés.");
+      } catch (e) { toast(e.message, "err"); }
+    });
+    box.replaceChildren(
+      h("p", { class: "account-line" }, h("span", { class: "avatar", "aria-hidden": "true", text: state.user.email[0].toUpperCase() }),
+        h("span", {}, "Connecté : ", h("strong", { text: state.user.email }))),
+      h("div", { class: "account-actions" },
+        h("button", { type: "button", class: "linkbtn", onclick: logout }, "Se déconnecter"), del, pwd),
+    );
+    box.hidden = false;
+  } else if (state.cloud) {
+    note.textContent = `Enregistrés dans ${transport.docs.label} : vous les retrouvez à chaque connexion.`;
+    box.hidden = true;
+  } else if (state.accounts) {
+    note.textContent = "Enregistrés dans ce navigateur uniquement.";
+    box.replaceChildren(h("p", { class: "account-cta" }, "Créez un compte gratuit pour retrouver vos documents sur tous vos appareils. ",
+      h("button", { type: "button", class: "btn btn-primary", onclick: () => openAuth("register") }, "Créer un compte"),
+      h("button", { type: "button", class: "linkbtn", onclick: () => openAuth("login") }, "J'ai déjà un compte")));
+    box.hidden = false;
+  } else {
+    note.textContent = "Stockés uniquement dans ce navigateur.";
+    box.hidden = true;
+  }
+}
+
+function updateAccountButton() {
+  const btn = $("#accountBtn");
+  btn.hidden = !state.accounts;
+  btn.textContent = state.user ? state.user.email[0].toUpperCase() : "Se connecter";
+  btn.classList.toggle("is-avatar", !!state.user);
+  btn.setAttribute("aria-label", state.user ? `Compte ${state.user.email}` : "Se connecter");
+}
+
+let authMode = "login";
+function openAuth(mode) {
+  authMode = mode === "register" && state.signup !== false ? "register" : "login";
+  const dlg = $("#authDialog");
+  $("#authTitle").textContent = authMode === "register" ? "Créer un compte" : "Se connecter";
+  $("#authSubmit span").textContent = authMode === "register" ? "Créer mon compte" : "Me connecter";
+  $("#authPassword").autocomplete = authMode === "register" ? "new-password" : "current-password";
+  $("#authSwitch").textContent = authMode === "register" ? "J'ai déjà un compte" : "Créer un compte";
+  $("#authSwitch").hidden = state.signup === false;
+  $("#authHint").hidden = authMode !== "register";
+  $("#authError").textContent = "";
+  if ($("#historyDrawer").open) $("#historyDrawer").close();
+  if (!dlg.open) dlg.showModal();
+  $("#authEmail").focus();
+}
+
+async function onSignedIn(user) {
+  state.user = user;
+  state.cloud = true;
+  updateAccountButton();
+  await importLocalHistory();
+  renderHistoryCount();
+}
+
+function onSignedOut() {
+  state.user = null;
+  state.cloud = false;
+  updateAccountButton();
+  renderHistoryCount();
+}
+
+async function logout() {
+  try { await transport.account.logout(); } catch { /* la session expirera d'elle-même */ }
+  onSignedOut();
+  $("#historyDrawer").close();
+  toast("Vous êtes déconnecté.");
+}
+
+function initAccount() {
+  const dlg = $("#authDialog");
+  $("#accountBtn").addEventListener("click", () => {
+    if (state.user) { renderHistory(); $("#historyDrawer").showModal(); } else openAuth("login");
+  });
+  $("#authSwitch").addEventListener("click", () => openAuth(authMode === "register" ? "login" : "register"));
+  dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.closest("[data-close]")) dlg.close(); });
+  $("#authForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = $("#authSubmit");
+    btn.classList.add("is-busy"); btn.disabled = true;
+    $("#authError").textContent = "";
+    try {
+      const email = $("#authEmail").value.trim();
+      const password = $("#authPassword").value;
+      const { user } = authMode === "register"
+        ? await transport.account.register(email, password)
+        : await transport.account.login(email, password);
+      dlg.close();
+      $("#authPassword").value = "";
+      toast(authMode === "register" ? "Compte créé. Vos analyses y seront enregistrées." : `Bon retour, ${user.email}`);
+      await onSignedIn(user);
+    } catch (err) {
+      $("#authError").textContent = err.message;
+    } finally {
+      btn.classList.remove("is-busy"); btn.disabled = false;
+    }
+  });
+}
+
+// Au chargement : compte serveur connecté, ou espace claude.ai disponible.
+async function initStorage() {
+  if (transport.account && state.accounts) {
+    try {
+      const me = await transport.account.me();
+      state.signup = me.signup;
+      if (me.user) await onSignedIn(me.user);
+    } catch { /* comptes indisponibles : navigateur seulement */ }
+  } else if (transport.docs?.ready && await transport.docs.ready()) {
+    state.cloud = true;
+    await importLocalHistory();
+  }
+  updateAccountButton();
   renderHistoryCount();
 }
 
@@ -1115,7 +1332,12 @@ function resetChat(entry) {
   $("#chatToggle").setAttribute("aria-expanded", "false");
   $("#chatLog").replaceChildren(h("div", { class: "msg bot", dir: "auto" },
     state.docForChat ? t("chatHelloDoc") : t("chatHelloAnalysis")));
-  renderSuggestions(entry.result.suggested_questions || []);
+  for (const m of entry.chat || []) {
+    const el = h("div", { class: `msg ${m.role === "user" ? "user" : "bot"}`, dir: "auto" });
+    if (m.role === "user") el.textContent = m.content; else el.innerHTML = mdLite(m.content);
+    $("#chatLog").append(el);
+  }
+  renderSuggestions(entry.chat?.length ? [] : entry.result.suggested_questions || []);
 }
 
 function renderSuggestions(qs) {
@@ -1138,7 +1360,7 @@ async function ask(question) {
     await transport.ask({
       ...doc,
       analysis: state.current.result,
-      history: state.chatHistory,
+      history: state.current.chat,
       question,
       lang: state.current.lang || state.lang,
     }, (event, data) => {
@@ -1152,7 +1374,8 @@ async function ask(question) {
   bot.classList.remove("typing");
   if (errorMsg && !answer) { bot.classList.add("err"); bot.textContent = errorMsg; }
   else {
-    state.chatHistory.push({ role: "user", content: question }, { role: "assistant", content: answer });
+    state.current.chat.push({ role: "user", content: question }, { role: "assistant", content: answer });
+    updateHistoryEntry(state.current);
   }
   state.chatBusy = false;
   log.scrollTop = log.scrollHeight;
@@ -1188,6 +1411,7 @@ async function checkHealth() {
       $(".demo-banner").innerHTML = "<strong>Mode démo</strong> — ouvrez cette page dans claude.ai pour analyser vos propres documents. Les résultats affichés ici sont fictifs.";
     }
     if (data.maxImages) MAX_IMAGES = data.maxImages;
+    state.accounts = !!data.accounts;
     if (data.images === false) state.noImages = true;
     if (data.contact) {
       state.contact = data.contact;
@@ -1222,10 +1446,11 @@ function init() {
   initResultToolbar();
   initHistory();
   initChat();
+  initAccount();
   initReveal();
   initTilt();
   initMagnetic();
-  checkHealth();
+  checkHealth().then(initStorage);
   initOffline();
   if (F.serviceWorker && "serviceWorker" in navigator && location.protocol === "https:") {
     addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));

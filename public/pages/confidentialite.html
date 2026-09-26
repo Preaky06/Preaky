@@ -2,7 +2,7 @@
 <p class="updated">Dernière mise à jour : {{UPDATED}}</p>
 
 <div class="box">
-  <p><strong>En bref.</strong> Pas de compte, pas de cookie, pas de publicité, pas de suivi. Vos documents sont envoyés pour analyse puis oubliés par notre serveur. Votre historique reste dans votre navigateur.</p>
+  <p><strong>En bref.</strong> Pas de publicité, pas de suivi. Sans compte, vos documents sont envoyés pour analyse puis oubliés par notre serveur, et votre historique reste dans votre navigateur. Avec un compte, vos analyses et documents sont enregistrés <strong>chiffrés</strong> pour que vous les retrouviez à chaque connexion, et vous pouvez tout supprimer à tout moment.</p>
 </div>
 
 <h2>Responsable du traitement</h2>
@@ -11,16 +11,19 @@
 <h2>Données traitées et finalités</h2>
 <ul>
   <li><strong>Documents, textes et questions que vous soumettez</strong> : utilisés uniquement pour produire l'analyse et les réponses demandées. Ils peuvent contenir des données personnelles, y compris des données sensibles (santé, situation financière, infractions).</li>
+  <li><strong>Si vous créez un compte</strong> : votre adresse e-mail, votre mot de passe (conservé uniquement sous forme d'empreinte scrypt, jamais en clair), et pour chaque document enregistré : l'analyse, les cases cochées, vos questions et les réponses, ainsi que la photo, le PDF ou le texte d'origine. Ces contenus sont chiffrés (AES-256-GCM) dans la base de données ; seuls le titre, l'émetteur, le niveau d'urgence et les dates restent lisibles pour afficher votre liste.</li>
+  <li><strong>Cookie de session</strong> : un seul cookie technique, posé uniquement quand vous vous connectez, pour vous garder connecté 30 jours. Il ne sert à rien d'autre.</li>
   <li><strong>Adresse IP</strong> : conservée en mémoire vive pendant une heure au maximum, pour limiter les abus (nombre d'analyses par heure). Elle n'est ni enregistrée sur disque ni associée au contenu des documents.</li>
   <li><strong>Journaux techniques</strong> : erreurs et volumes de consommation (nombre de jetons), sans contenu de document ni adresse IP.</li>
 </ul>
 
 <h2>Base légale</h2>
-<p>Votre consentement, donné en cochant la case prévue avant chaque première analyse (article 6.1.a du RGPD), et, pour les données sensibles que vous choisissez de transmettre, votre consentement explicite (article 9.2.a). Vous pouvez le retirer à tout moment en décochant la case ; aucune analyse ne sera alors lancée.</p>
+<p>Votre consentement, donné en cochant la case prévue avant chaque première analyse (article 6.1.a du RGPD), et, pour les données sensibles que vous choisissez de transmettre, votre consentement explicite (article 9.2.a). Vous pouvez le retirer à tout moment en décochant la case ; aucune analyse ne sera alors lancée. L'enregistrement dans un compte repose sur l'exécution du service que vous avez demandé en le créant (article 6.1.b).</p>
 
 <h2>Conservation</h2>
 <ul>
-  <li><strong>Serveur de ExpliSite</strong> : aucun document ni résultat n'est enregistré. Le contenu n'existe en mémoire que le temps de l'analyse.</li>
+  <li><strong>Sans compte</strong> : aucun document ni résultat n'est enregistré sur le serveur. Le contenu n'existe en mémoire que le temps de l'analyse.</li>
+  <li><strong>Avec un compte</strong> : vos documents sont conservés tant que vous ne les supprimez pas. Supprimer un document, tout effacer ou supprimer votre compte (dans « Mes documents ») les efface immédiatement de la base de données. Les sessions expirent après 30 jours.</li>
   <li><strong>Votre navigateur</strong> : les résultats d'analyse, vos cases cochées et vos préférences sont stockés localement (localStorage). Les photos et PDF ne sont pas conservés. Vous pouvez tout effacer depuis « Mes documents » → « Tout effacer ».</li>
   <li><strong>Anthropic</strong> : voir ci-dessous.</li>
 </ul>
@@ -30,10 +33,10 @@
 <p>L'hébergeur du site ({{HOSTING_SHORT}}) transporte techniquement les requêtes sans les conserver.</p>
 
 <h2>Vos droits</h2>
-<p>Vous disposez des droits d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité, ainsi que du droit de retirer votre consentement. Comme aucune donnée n'est conservée sur notre serveur, l'essentiel de ces droits s'exerce directement dans votre navigateur. Pour toute question : {{OWNER_EMAIL_LINK}}. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr/fr/plaintes" rel="noopener" target="_blank">CNIL</a>.</p>
+<p>Vous disposez des droits d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité, ainsi que du droit de retirer votre consentement. Vous exercez l'essentiel de ces droits vous-même dans « Mes documents » : consulter, supprimer chaque document, tout effacer, ou supprimer votre compte. Pour toute question : {{OWNER_EMAIL_LINK}}. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr/fr/plaintes" rel="noopener" target="_blank">CNIL</a>.</p>
 
 <h2>Cookies</h2>
-<p>ExpliSite ne dépose aucun cookie et n'utilise aucun outil de mesure d'audience ni aucune ressource tierce (les polices sont hébergées sur le site). Le stockage local du navigateur sert uniquement au fonctionnement du service (historique, préférences) et n'est jamais lu par un tiers.</p>
+<p>ExpliSite ne dépose qu'un cookie, le cookie de session décrit plus haut, et seulement si vous vous connectez : il est strictement nécessaire au service et ne demande donc pas de bandeau de consentement. Aucun outil de mesure d'audience ni aucune ressource tierce n'est utilisé (les polices sont hébergées sur le site). Le stockage local du navigateur sert uniquement au fonctionnement du service (historique, préférences) et n'est jamais lu par un tiers.</p>
 
 <h2>Conseil</h2>
 <p>Si un document contient des informations dont vous ne souhaitez pas la transmission (numéro de sécurité sociale, coordonnées bancaires complètes), masquez-les avant de le photographier : l'analyse reste possible sans elles.</p>

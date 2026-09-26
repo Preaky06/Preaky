@@ -4,13 +4,15 @@
   "description": "ExpliSite — la paperasse, en clair. Décodeur de documents administratifs propulsé par Claude.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "demo": "DEMO_MODE=1 node server.js",
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "demo": "DEMO_MODE=1 node --disable-warning=ExperimentalWarning server.js",
     "test": "node --test test/server.test.js",
-    "check": "node --check server.js && node --check public/app.js && node --check public/i18n.js && node --check public/sw.js && node --check public/transport.js && node --check public/transport.claude.js",
+    "check": "node --check server.js && node --check public/app.js && node --check public/i18n.js && node --check public/sw.js && node --check public/transport.js && node --check public/transport.claude.js && node --check lib/store.js && node --check lib/accounts.js",
     "assets": "node scripts/generate-assets.mjs",
-    "build:artifact": "node scripts/build-artifact.mjs"
+    "build:artifact": "node scripts/build-artifact.mjs",
+    "reset-password": "node --disable-warning=ExperimentalWarning scripts/reset-password.mjs",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.mjs"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,6 @@
   "type": "module",
   "private": true,
   "engines": {
-    "node": ">=20.12"
+    "node": ">=22.13"
   }
 }

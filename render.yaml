@@ -1,12 +1,23 @@
+# Render : les comptes ont besoin d'un disque persistant, disponible à partir
+# de l'offre « Starter » (payante). Sur l'offre gratuite, la base serait
+# effacée à chaque redémarrage.
 services:
   - type: web
     name: explisite
     runtime: node
-    plan: free
+    plan: starter
     buildCommand: npm ci --omit=dev
-    startCommand: node server.js
+    startCommand: npm start
     healthCheckPath: /api/health
+    disk:
+      name: explisite-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: ENCRYPTION_KEY
+        sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: OWNER_NAME

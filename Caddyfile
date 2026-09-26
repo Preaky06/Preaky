@@ -1,0 +1,11 @@
+{$DOMAIN} {
+	encode zstd gzip
+	# Les analyses arrivent en flux : pas de mise en tampon.
+	reverse_proxy app:3000 {
+		flush_interval -1
+	}
+}
+
+www.{$DOMAIN} {
+	redir https://{$DOMAIN}{uri} permanent
+}

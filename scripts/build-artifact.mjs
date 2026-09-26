@@ -1,4 +1,4 @@
-// Construit la version « claude.ai » de ExpliSite : une seule page HTML autonome
+// Construit la version « claude.ai » d'ExpliSite : une seule page HTML autonome
 // (CSS et JS intégrés) qui appelle Claude avec le compte de la personne qui
 // l'utilise. Aucun serveur ni clé API. Sortie : dist/explisite.html
 //
@@ -52,6 +52,15 @@ const title = index.match(/<title>[\s\S]*?<\/title>/)[0].replace("ExpliSite — 
 let body = index.match(/<body>([\s\S]*)<\/body>/)[1];
 // Liens de pied de page vers les pages du serveur : sans objet ici.
 body = body.replace(/<nav class="footer-links"[\s\S]*?<\/nav>/, "");
+
+// Textes propres à la version claude.ai (pas de compte ExpliSite : l'espace
+// personnel est celui du compte claude.ai).
+const swap = (re, text) => {
+  if (!re.test(body)) throw new Error(`Texte introuvable : ${re}`);
+  body = body.replace(re, (m) => m.replace(/>[\s\S]*<\/p>$/, `>${text}</p>`));
+};
+swap(/<p id="privacyText">[\s\S]*?<\/p>/, "Vos analyses sont enregistrées dans votre espace privé claude.ai : vous seul les voyez, et vous les retrouvez à chaque connexion. Les photos et PDF ne sont pas conservés. Vous effacez tout d'un clic.");
+swap(/<p id="storageFaq">[\s\S]*?<\/p>/, "Dans votre espace privé claude.ai, lié à votre compte : vous retrouvez vos explications, vos cases cochées et vos questions à chaque connexion. Les photos et PDF ne sont pas conservés. Vous pouvez tout supprimer à tout moment.");
 
 const css = read("public/styles.css");
 const js = bundle().replace(/<\/script/gi, "<\\/script");

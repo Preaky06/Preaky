@@ -4,5 +4,8 @@ node_modules
 archive
 *.log
 test
-scripts
 .github
+dist
+docker-compose.yml
+Caddyfile
+data
