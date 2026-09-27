@@ -249,13 +249,20 @@ function requestExtras() {
 const sampleCache = new Map();
 
 // Quota : connexion exigée et une unité réservée (rendue si l'appel échoue).
-function reserveQuota(req, kind) {
+function reserveQuota(req, kind, extra) {
   if (!billing?.quotasOn) return null;
   const user = accountRoutes.currentUser(req);
   if (!user) {
     throw Object.assign(new Error(kind === "analyses"
       ? "Créez un compte gratuit pour analyser vos documents : une analyse est offerte chaque mois."
       : "Créez un compte gratuit pour poser vos questions."), { status: 401, code: "login_required" });
+  }
+  if (kind === "questions") {
+    const documentId = typeof extra?.documentId === "string" ? extra.documentId : "";
+    if (!documentId) throw Object.assign(new Error("Ce document n'est pas encore enregistré dans votre compte. Réessayez dans un instant."), { status: 409 });
+    const r = billing.reserveQuestion(user.id, documentId);
+    if (!r.ok) throw Object.assign(new Error(r.message), { status: r.status || 402, code: r.status ? undefined : "quota", extra: { premium: r.premium } });
+    return r;
   }
   const r = billing.reserve(user.id, kind);
   if (!r.ok) throw Object.assign(new Error(r.message), { status: 402, code: "quota", extra: { premium: r.premium, resetsAt: r.resetsAt } });
@@ -380,7 +387,7 @@ async function handleAsk(req, res) {
     .slice(-12)
     .map((m) => ({ role: m.role, content: m.content.slice(0, 8000) }));
 
-  const quota = reserveQuota(req, "questions");
+  const quota = reserveQuota(req, "questions", { documentId: body.documentId });
   const send = openSse(res);
   let closed = false;
   let answered = false;
@@ -388,7 +395,10 @@ async function handleAsk(req, res) {
 
   if (DEMO) {
     res.on("close", () => { closed = true; });
-    await mockAnswer((ev, data) => { if (ev === "done") answered = true; send(ev, data); }, () => closed, question);
+    await mockAnswer((ev, data) => {
+      if (ev === "done") { answered = true; data = { remaining: quota?.remaining ?? null }; }
+      send(ev, data);
+    }, () => closed, question);
     res.end();
     return;
   }
@@ -426,7 +436,7 @@ async function handleAsk(req, res) {
     const message = await stream.finalMessage();
     logUsage("ask", message, started);
     if (message.stop_reason === "refusal") send("error", { message: "Je ne peux pas répondre à cette question." });
-    else { answered = true; send("done", {}); }
+    else { answered = true; send("done", { remaining: quota?.remaining ?? null }); }
   } catch (err) {
     if (!closed) {
       console.error("[ask]", err?.status ?? "", err?.message);

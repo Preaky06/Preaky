@@ -124,6 +124,12 @@ Dans tous les cas, mettez `TRUST_PROXY=1` et `SITE_URL=https://votre-domaine`. V
 | `ALLOW_SIGNUP` | `1` | `0` ferme les inscriptions |
 | `MAX_DOCS_PER_USER` | `300` | Documents enregistrés max par compte |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | — | Active « Continuer avec Google » |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY` | — | Active l'abonnement ExpliSite+ et les quotas |
+| `QUOTAS` | — | `1` active les quotas sans Stripe (tests) |
+| `FREE_ANALYSES_PER_MONTH` | `1` | Analyses gratuites par mois |
+| `FREE_QUESTIONS_PER_DOCUMENT` / `PREMIUM_QUESTIONS_PER_DOCUMENT` | `5` / `20` | Questions au chat par analyse |
+| `FREE_QUESTIONS_PER_MONTH` / `PREMIUM_QUESTIONS_PER_MONTH` | `10` / `400` | Plafond mensuel de sécurité sur les questions |
+| `PREMIUM_ANALYSES_PER_MONTH` | `200` | Usage raisonnable des abonnés |
 | `SITE_URL` | — | Adresse publique (`https://…`) |
 | `OWNER_NAME`, `OWNER_STATUS`, `OWNER_ADDRESS`, `OWNER_EMAIL`, `PUBLICATION_DIRECTOR`, `HOSTING_PROVIDER` | — | Informations des pages légales ; `OWNER_EMAIL` active aussi « Signaler un problème » |
 | `DEMO_MODE` | — | `1` force le mode démo |

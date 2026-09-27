@@ -424,7 +424,8 @@ test("abonnement : quotas gratuits, exemples gratuits, paiement Stripe, webhook 
 
   const info = (await (await fetch(B + "/api/health")).json()).billing;
   assert.equal(info.enabled, true);
-  assert.deepEqual(info.free, { analyses: 1, questions: 10 });
+  assert.deepEqual(info.free, { analyses: 1, questionsPerDocument: 5, questions: 10 });
+  assert.equal(info.premium.questionsPerDocument, 20);
   assert.equal(info.prices.month.amount, 499);
 
   // Sans compte : analyse refusée, mais les exemples restent libres (et mis en cache).
@@ -485,4 +486,34 @@ test("abonnement : quotas gratuits, exemples gratuits, paiement Stripe, webhook 
   assert.equal((await jar(B, "/api/auth/me")).data.user.plan.premium, false);
 
   fakeStripe.close();
+});
+
+test("questions : 5 par document en gratuit, document obligatoire et à soi", async () => {
+  const srv = await startServer({ ANTHROPIC_API_KEY: "sk-test", ANTHROPIC_BASE_URL: `http://127.0.0.1:${fake.address().port}`, QUOTAS: "1", RATE_LIMIT_PER_HOUR: "100" });
+  const B = srv.base;
+  const jar = cookieJar(), other = cookieJar();
+  await jar(B, "/api/auth/register", { method: "POST", body: { email: "lea@example.org", password: "motdepasse5" } });
+  await other(B, "/api/auth/register", { method: "POST", body: { email: "tom@example.org", password: "motdepasse6" } });
+  const docId = (await jar(B, "/api/documents", { method: "POST", body: { result: RESULT } })).data.id;
+  const ask = (who, body) => fetch(B + "/api/ask", { method: "POST", headers: { "Content-Type": "application/json", Cookie: who.cookie }, body: JSON.stringify({ question: "Et alors ?", analysis: RESULT, ...body }) });
+
+  assert.equal((await ask(jar, {})).status, 409, "document obligatoire");
+  assert.equal((await ask(other, { documentId: docId })).status, 404, "document d'un autre compte");
+  const remaining = [];
+  for (let i = 0; i < 5; i++) {
+    const events = await sse(await ask(jar, { documentId: docId }));
+    remaining.push(events.find((e) => e.event === "done").data.remaining);
+  }
+  assert.deepEqual(remaining, [4, 3, 2, 1, 0]);
+  const blocked = await ask(jar, { documentId: docId });
+  assert.equal(blocked.status, 402);
+  assert.match((await blocked.json()).error, /5 questions gratuites sur ce document/);
+  const list = (await jar(B, "/api/documents")).data.documents;
+  assert.equal(list[0].questions, 5);
+
+  // Plafond mensuel de sécurité : 10 questions gratuites au total, même sur un autre document.
+  const doc2 = (await jar(B, "/api/documents", { method: "POST", body: { result: RESULT } })).data.id;
+  for (let i = 0; i < 5; i++) assert.equal((await ask(jar, { documentId: doc2 })).status, 200);
+  const doc3 = (await jar(B, "/api/documents", { method: "POST", body: { result: RESULT } })).data.id;
+  assert.equal((await ask(jar, { documentId: doc3 })).status, 402);
 });

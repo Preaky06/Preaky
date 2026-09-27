@@ -1088,7 +1088,7 @@ async function openHistory(summary) {
   if (cloud()) {
     try {
       const d = await cloud().get(summary.id);
-      entry = { id: d.id, at: d.at, result: d.result, demo: !!d.demo, lang: d.lang, checks: d.checks || [], chat: d.chat || [], remote: true };
+      entry = { id: d.id, at: d.at, result: d.result, demo: !!d.demo, lang: d.lang, checks: d.checks || [], chat: d.chat || [], remote: true, questions: d.questions || 0 };
       state.docForChat = d.files?.length || d.text ? { files: d.files || [], text: d.text || "" } : null;
     } catch (e) { toast(e.message || "Document indisponible.", "err"); return; }
   } else {
@@ -1382,10 +1382,12 @@ async function ask(question) {
   const bot = h("div", { class: "msg bot typing", dir: "auto" });
   log.append(bot);
   log.scrollTop = log.scrollHeight;
-  let answer = "", errorMsg = "";
+  let answer = "", errorMsg = "", remaining = null;
   try {
     const doc = state.docForChat || { files: [], text: "" };
+    await pending.get(state.current);   // l'identifiant du document dans le compte
     await transport.ask({
+      documentId: state.current.remote ? state.current.id : undefined,
       ...doc,
       analysis: state.current.result,
       history: state.current.chat,
@@ -1397,6 +1399,7 @@ async function ask(question) {
         bot.innerHTML = mdLite(answer);
         log.scrollTop = log.scrollHeight;
       } else if (event === "error") errorMsg = data.message;
+      else if (event === "done" && typeof data.remaining === "number") remaining = data.remaining;
     });
   } catch (err) { errorMsg = err.message || "Connexion interrompue."; }
   bot.classList.remove("typing");
@@ -1404,6 +1407,11 @@ async function ask(question) {
   else {
     state.current.chat.push({ role: "user", content: question }, { role: "assistant", content: answer });
     updateHistoryEntry(state.current);
+    if (remaining !== null) {
+      log.append(h("p", { class: "chat-quota", text: remaining > 0
+        ? `Encore ${remaining} question${remaining > 1 ? "s" : ""} possible${remaining > 1 ? "s" : ""} sur ce document.`
+        : "C'était la dernière question prévue pour ce document." }));
+    }
   }
   state.chatBusy = false;
   log.scrollTop = log.scrollHeight;

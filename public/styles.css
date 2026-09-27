@@ -718,3 +718,5 @@ body.in-result .footer { display: none; }
 .google-btn svg { width: 20px; height: 20px; }
 .auth-or { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--ink-3); font-size: 0.85rem; }
 .auth-or::before, .auth-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.chat-quota { align-self: center; margin: 0; padding: 4px 12px; border-radius: 99px; background: var(--paper-2); color: var(--ink-2); font-size: 0.8rem; }
