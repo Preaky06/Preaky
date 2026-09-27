@@ -47,7 +47,7 @@ const post = (base, route, body, headers = {}) => fetch(base + route, {
   method: "POST", headers: { "Content-Type": "application/json", ...headers }, body: JSON.stringify(body),
 });
 
-let demo, real, fake, fakeRequests = [], fakeMode = "ok";
+let demo, real, opus, fake, fakeRequests = [], fakeMode = "ok";
 
 before(async () => {
   fake = http.createServer((req, res) => {
@@ -74,6 +74,7 @@ before(async () => {
   await new Promise((r) => fake.listen(0, "127.0.0.1", r));
   demo = await startServer({ DEMO_MODE: "1", RATE_LIMIT_PER_HOUR: "4", OWNER_NAME: "Jeanne <Test>", OWNER_EMAIL: "contact@example.org" });
   real = await startServer({ ANTHROPIC_API_KEY: "sk-test", ANTHROPIC_BASE_URL: `http://127.0.0.1:${fake.address().port}`, DAILY_LIMIT: "3" });
+  opus = await startServer({ ANTHROPIC_API_KEY: "sk-test", ANTHROPIC_BASE_URL: `http://127.0.0.1:${fake.address().port}`, EXPLISITE_MODEL: "claude-opus-5" });
 });
 
 after(() => { procs.forEach((p) => p.kill()); fake?.close(); });
@@ -84,7 +85,7 @@ test("health indique le mode et le contact", async () => {
   assert.equal(d.contact, "contact@example.org");
   const r = await (await fetch(real.base + "/api/health")).json();
   assert.equal(r.demo, false);
-  assert.equal(r.model, "claude-opus-5");
+  assert.equal(r.model, "claude-sonnet-5");
 });
 
 test("page d'accueil : en-têtes de sécurité, compression, URL absolue", async () => {
@@ -158,15 +159,24 @@ test("vraie API : requête conforme (modèle, réflexion, schéma, repli, cache)
   const events = await sse(await post(real.base, "/api/analyze", { text: "Avis de contravention de test.", lang: "ar", detail: "detailed" }));
   assert.deepEqual(events.find((e) => e.event === "result").data.result, { title: "Amende", urgency: "high" });
   const { headers, body } = fakeRequests[0];
-  assert.equal(body.model, "claude-opus-5");
-  assert.equal(headers["anthropic-beta"], "server-side-fallback-2026-07-01");
-  assert.equal(body.fallbacks, "default");
+  assert.equal(body.model, "claude-sonnet-5");
+  // Sonnet 5 : pas de repli automatique (non documenté pour ce modèle).
+  assert.equal(headers["anthropic-beta"], undefined);
+  assert.equal(body.fallbacks, undefined);
   assert.deepEqual(body.thinking, { type: "adaptive", display: "summarized" });
   assert.equal(body.output_config.format.type, "json_schema");
   assert.equal(body.output_config.effort, "high");
   assert.ok(body.messages[0].content[0].cache_control);
   assert.match(body.messages[0].content.at(-1).text, /arabe/);
   assert.match(real.logs(), /"ev":"usage"/);
+});
+
+test("Opus 5 : repli automatique activé", async () => {
+  fakeRequests = [];
+  await sse(await post(opus.base, "/api/analyze", { text: "Avis de contravention de test." }));
+  assert.equal(fakeRequests[0].body.model, "claude-opus-5");
+  assert.equal(fakeRequests[0].headers["anthropic-beta"], "server-side-fallback-2026-07-01");
+  assert.equal(fakeRequests[0].body.fallbacks, "default");
 });
 
 test("vraie API : chat en flux avec l'historique", async () => {

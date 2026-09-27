@@ -20,10 +20,13 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, "public");
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3000; // 0 = port libre au hasard
 const HOST = process.env.HOST || "0.0.0.0";
-const MODEL = process.env.EXPLISITE_MODEL || "claude-opus-5";
+const MODEL = process.env.EXPLISITE_MODEL || "claude-sonnet-5";
 const ANALYSIS_EFFORT = process.env.EXPLISITE_EFFORT || "high";
 const CHAT_EFFORT = process.env.EXPLISITE_CHAT_EFFORT || "medium";
-const USE_FALLBACKS = process.env.EXPLISITE_FALLBACKS !== "0";
+// Repli automatique en cas de refus : documenté pour ces modèles seulement.
+const FALLBACK_MODELS = new Set(["claude-opus-5", "claude-fable-5-1"]);
+const USE_FALLBACKS = process.env.EXPLISITE_FALLBACKS === "1"
+  || (process.env.EXPLISITE_FALLBACKS !== "0" && FALLBACK_MODELS.has(MODEL));
 const MAX_BODY_BYTES = (Number(process.env.MAX_UPLOAD_MB) || 24) * 1024 * 1024;
 const RATE_LIMIT = Number(process.env.RATE_LIMIT_PER_HOUR) || 40;
 const TRUST_PROXY = process.env.TRUST_PROXY === "1";
@@ -237,7 +240,7 @@ function todayIso() {
 }
 
 function requestExtras() {
-  return USE_FALLBACKS ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } : { betas: [] };
+  return USE_FALLBACKS ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } : {};
 }
 
 // ----------------------------------------------------------------- endpoints

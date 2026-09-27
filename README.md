@@ -23,7 +23,7 @@ Entrées acceptées : photos (JPG, PNG, WebP ; plusieurs pages possibles, redime
 
 ## Moteur
 
-Analyse par **Claude Opus 5** (Anthropic) via le SDK officiel `@anthropic-ai/sdk` :
+Analyse par **Claude Sonnet 5** (Anthropic) via le SDK officiel `@anthropic-ai/sdk` — réglable, par exemple `EXPLISITE_MODEL=claude-opus-5` pour la qualité maximale :
 lecture native des images et PDF, réflexion adaptative (`thinking: adaptive`, dont le résumé s'affiche en direct pendant l'analyse), sorties structurées JSON (schéma dans `lib/prompts.js`), streaming, cache de prompt pour les questions de suivi, et repli serveur automatique en cas de refus (`fallbacks: "default"`).
 
 La clé API reste sur le serveur. Aucun document n'est stocké : il transite vers l'API pour l'analyse, puis est oublié. L'historique vit uniquement dans le `localStorage` du navigateur.
@@ -109,10 +109,10 @@ Dans tous les cas, mettez `TRUST_PROXY=1` et `SITE_URL=https://votre-domaine`. V
 |---|---|---|
 | `ANTHROPIC_API_KEY` | — | Clé API (obligatoire hors démo) |
 | `PORT` | `3000` | Port d'écoute |
-| `EXPLISITE_MODEL` | `claude-opus-5` | Modèle Claude |
+| `EXPLISITE_MODEL` | `claude-sonnet-5` | Modèle Claude (`claude-opus-5` : meilleure qualité, 2 à 3 fois plus cher) |
 | `EXPLISITE_EFFORT` | `high` | Profondeur d'analyse (`low` → `max`) |
 | `EXPLISITE_CHAT_EFFORT` | `medium` | Profondeur des réponses du chat |
-| `EXPLISITE_FALLBACKS` | `1` | `0` désactive le repli automatique |
+| `EXPLISITE_FALLBACKS` | auto | Repli automatique en cas de refus : actif par défaut avec Opus 5, `1` pour forcer, `0` pour couper |
 | `RATE_LIMIT_PER_HOUR` | `40` | Requêtes max par IP et par heure |
 | `MAX_UPLOAD_MB` | `24` | Taille max d'une requête |
 | `TRUST_PROXY` | — | `1` derrière un reverse proxy (IP réelle pour la limite) |
@@ -128,7 +128,7 @@ Dans tous les cas, mettez `TRUST_PROXY=1` et `SITE_URL=https://votre-domaine`. V
 | `OWNER_NAME`, `OWNER_STATUS`, `OWNER_ADDRESS`, `OWNER_EMAIL`, `PUBLICATION_DIRECTOR`, `HOSTING_PROVIDER` | — | Informations des pages légales ; `OWNER_EMAIL` active aussi « Signaler un problème » |
 | `DEMO_MODE` | — | `1` force le mode démo |
 
-Coût indicatif (estimation, à vérifier sur votre console Anthropic) : une analyse d'un courrier d'une à deux pages coûte environ 0,05 à 0,30 $ avec Claude Opus 5 à l'effort `high`, surtout selon la longueur de la réflexion. Passer `EXPLISITE_EFFORT=medium` réduit ce coût. Une limite par IP est active pour éviter les abus.
+Coût indicatif (estimation, à vérifier sur la page Usage de votre console Anthropic) : avec Claude Sonnet 5 (2 $ / 10 $ par million de tokens lus / écrits), une analyse d'un courrier d'une à deux pages coûte environ 0,07 à 0,10 $, une question au chat 0,01 à 0,03 $. Avec Opus 5 : environ 0,15 à 0,25 $ par analyse. Passer `EXPLISITE_EFFORT=medium` réduit encore le coût. Fixez un plafond de dépense dans la console Anthropic (Settings → Limits). Une limite par IP est active pour éviter les abus.
 
 ## Structure
 
