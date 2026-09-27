@@ -197,7 +197,7 @@ test("plafond quotidien global", async () => {
 
 function cookieJar() {
   let cookie = "";
-  return async (base, route, { method = "GET", body, headers = {} } = {}) => {
+  const jar = async (base, route, { method = "GET", body, headers = {} } = {}) => {
     const res = await fetch(base + route, {
       method,
       headers: { ...(body ? { "Content-Type": "application/json" } : {}), ...(cookie ? { Cookie: cookie } : {}), ...headers },
@@ -207,8 +207,10 @@ function cookieJar() {
     if (set) cookie = set.split(";")[0].endsWith("=") ? "" : set.split(";")[0];
     let data = null;
     try { data = await res.json(); } catch { /* vide */ }
+    jar.cookie = cookie;
     return { status: res.status, data, setCookie: set };
   };
+  return jar;
 }
 
 const RESULT = { title: "Avis d'impôt", urgency: "high", issuer: "DGFiP", actions: [] };
@@ -337,7 +339,9 @@ test("connexion Google : PKCE, état, liaison sûre des comptes, suppression", a
   const first = await googleLogin("c1|gina@example.org|g-111");
   assert.equal(first.location, "/#bienvenue");
   assert.ok(lastVerifierOk);
-  assert.deepEqual(await me(first.session), { email: "gina@example.org", hasPassword: false });
+  const gina = await me(first.session);
+  assert.equal(gina.email, "gina@example.org");
+  assert.equal(gina.hasPassword, false);
 
   // Reconnexion : même compte.
   const again = await googleLogin("c2|gina@example.org|g-111");
@@ -372,4 +376,103 @@ test("connexion Google absente si non configurée", async () => {
   const res = await fetch(demo.base + "/api/auth/google", { redirect: "manual" });
   assert.equal(res.status, 404);
   assert.equal((await (await fetch(demo.base + "/api/auth/me")).json()).google, false);
+});
+
+// ---------------------------------------------------------------- abonnement
+
+test("abonnement : quotas gratuits, exemples gratuits, paiement Stripe, webhook signé, résiliation", async () => {
+  const stripeCalls = [];
+  const subs = new Map();
+  const fakeStripe = http.createServer((req, res) => {
+    let b = ""; req.on("data", (c) => { b += c; });
+    req.on("end", () => {
+      stripeCalls.push({ method: req.method, url: req.url, auth: req.headers.authorization, body: new URLSearchParams(b) });
+      const json = (o) => { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(o)); };
+      if (req.url.startsWith("/v1/prices/")) return json({ id: req.url.split("/").pop(), unit_amount: req.url.endsWith("year") ? 4999 : 499, currency: "eur" });
+      if (req.url === "/v1/checkout/sessions") return json({ id: "cs_1", url: "https://checkout.stripe.test/cs_1" });
+      if (req.url === "/v1/billing_portal/sessions") return json({ url: "https://billing.stripe.test/p_1" });
+      if (req.url.startsWith("/v1/subscriptions/")) return json(subs.get(req.url.split("/").pop()));
+      res.writeHead(404); res.end("{}");
+    });
+  });
+  await new Promise((r) => fakeStripe.listen(0, "127.0.0.1", r));
+  const WHSEC = "whsec_test";
+  const srv = await startServer({
+    ANTHROPIC_API_KEY: "sk-test", ANTHROPIC_BASE_URL: `http://127.0.0.1:${fake.address().port}`,
+    STRIPE_SECRET_KEY: "sk_test_x", STRIPE_WEBHOOK_SECRET: WHSEC, STRIPE_API_BASE: `http://127.0.0.1:${fakeStripe.address().port}`,
+    STRIPE_PRICE_MONTHLY: "price_month", STRIPE_PRICE_YEARLY: "price_year", PREMIUM_ANALYSES_PER_MONTH: "3",
+  });
+  const B = srv.base;
+  const jar = cookieJar();
+  const analyze = (body) => fetch(B + "/api/analyze", { method: "POST", headers: { "Content-Type": "application/json", ...(jar.cookie ? { Cookie: jar.cookie } : {}) }, body: JSON.stringify(body) });
+  const webhook = (event, secret = WHSEC) => {
+    const raw = JSON.stringify(event);
+    const t = Math.floor(Date.now() / 1000);
+    const sig = crypto.createHmac("sha256", secret).update(`${t}.${raw}`).digest("hex");
+    return fetch(B + "/api/billing/webhook", { method: "POST", headers: { "Content-Type": "application/json", "Stripe-Signature": `t=${t},v1=${sig}` }, body: raw });
+  };
+
+  const info = (await (await fetch(B + "/api/health")).json()).billing;
+  assert.equal(info.enabled, true);
+  assert.deepEqual(info.free, { analyses: 1, questions: 10 });
+  assert.equal(info.prices.month.amount, 499);
+
+  // Sans compte : analyse refusée, mais les exemples restent libres (et mis en cache).
+  const anon = await analyze({ text: "Un courrier de test assez long pour passer." });
+  assert.equal(anon.status, 401);
+  assert.equal((await anon.json()).code, "login_required");
+  fakeRequests = [];
+  await sse(await analyze({ sample: "amende" }));
+  await sse(await analyze({ sample: "amende" }));
+  assert.equal(fakeRequests.length, 1, "le second essai de l'exemple vient du cache");
+
+  // Compte gratuit : 1 analyse, puis 402.
+  const reg = await jar(B, "/api/auth/register", { method: "POST", body: { email: "paul@example.org", password: "motdepasse4" } });
+  jar.cookie = reg.setCookie.split(";")[0];
+  const ok1 = await sse(await analyze({ text: "Premier courrier de test assez long." }));
+  assert.ok(ok1.find((e) => e.event === "result"));
+  const blocked = await analyze({ text: "Deuxième courrier de test assez long." });
+  assert.equal(blocked.status, 402);
+  assert.equal((await blocked.json()).code, "quota");
+  const me1 = (await jar(B, "/api/auth/me")).data.user;
+  assert.equal(me1.usage.analyses, 1);
+  assert.equal(me1.plan.premium, false);
+
+  // Paiement : droit de rétractation exigé, puis session Stripe correcte.
+  assert.equal((await jar(B, "/api/billing/checkout", { method: "POST", body: { interval: "year" } })).status, 400);
+  const co = await jar(B, "/api/billing/checkout", { method: "POST", body: { interval: "year", withdrawalAck: true } });
+  assert.equal(co.data.url, "https://checkout.stripe.test/cs_1");
+  const call = stripeCalls.find((c) => c.url === "/v1/checkout/sessions");
+  assert.equal(call.auth, "Bearer sk_test_x");
+  assert.equal(call.body.get("mode"), "subscription");
+  assert.equal(call.body.get("line_items[0][price]"), "price_year");
+  assert.equal(call.body.get("customer_email"), "paul@example.org");
+  const userId = call.body.get("client_reference_id");
+  assert.ok(userId);
+
+  // Webhook à la mauvaise signature : ignoré.
+  assert.equal((await webhook({ type: "checkout.session.completed", data: { object: {} } }, "whsec_faux")).status, 400);
+
+  // Paiement confirmé par Stripe → premium.
+  const periodEnd = Math.floor(Date.now() / 1000) + 365 * 86400;
+  subs.set("sub_1", { id: "sub_1", customer: "cus_1", status: "active", cancel_at_period_end: false, items: { data: [{ current_period_end: periodEnd, price: { recurring: { interval: "year" } } }] } });
+  assert.equal((await webhook({ type: "checkout.session.completed", data: { object: { mode: "subscription", client_reference_id: userId, customer: "cus_1", subscription: "sub_1" } } })).status, 200);
+  const me2 = (await jar(B, "/api/auth/me")).data.user;
+  assert.equal(me2.plan.premium, true);
+  assert.equal(me2.plan.interval, "year");
+  assert.equal(me2.limits.analyses, 3);
+  assert.ok((await sse(await analyze({ text: "Deuxième courrier de test assez long." }))).find((e) => e.event === "result"));
+
+  // Espace client Stripe (résiliation, factures).
+  assert.equal((await jar(B, "/api/billing/portal", { method: "POST", body: {} })).data.url, "https://billing.stripe.test/p_1");
+
+  // Usage raisonnable : 3 analyses max ce mois (2 déjà faites), la 4e est refusée.
+  await sse(await analyze({ text: "Troisième courrier de test assez long." }));
+  assert.equal((await analyze({ text: "Quatrième courrier de test assez long." })).status, 402);
+
+  // Résiliation effective → retour au gratuit.
+  assert.equal((await webhook({ type: "customer.subscription.deleted", data: { object: { id: "sub_1", customer: "cus_1", status: "canceled", items: { data: [{ current_period_end: periodEnd }] } } } })).status, 200);
+  assert.equal((await jar(B, "/api/auth/me")).data.user.plan.premium, false);
+
+  fakeStripe.close();
 });

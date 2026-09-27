@@ -11,6 +11,8 @@ import { createSite, LEGAL_VARS } from "./lib/site.js";
 import { openStore } from "./lib/store.js";
 import { createAccountRoutes } from "./lib/accounts.js";
 import { createGoogleAuth } from "./lib/google.js";
+import { createBilling } from "./lib/billing.js";
+import { SAMPLES } from "./public/samples.js";
 
 try { process.loadEnvFile(); } catch { /* pas de .env : on utilise l'environnement */ }
 
@@ -125,6 +127,20 @@ function logUsage(route, message, started) {
   }));
 }
 
+function readRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > 1024 * 1024) { reject(Object.assign(new Error("Requête trop volumineuse."), { status: 413 })); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    req.on("error", reject);
+  });
+}
+
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
     let size = 0;
@@ -226,18 +242,59 @@ function requestExtras() {
 
 // ----------------------------------------------------------------- endpoints
 
+// Résultats des documents d'exemple, gardés 24 h : les essais ne coûtent qu'une fois.
+const sampleCache = new Map();
+
+// Quota : connexion exigée et une unité réservée (rendue si l'appel échoue).
+function reserveQuota(req, kind) {
+  if (!billing?.quotasOn) return null;
+  const user = accountRoutes.currentUser(req);
+  if (!user) {
+    throw Object.assign(new Error(kind === "analyses"
+      ? "Créez un compte gratuit pour analyser vos documents : une analyse est offerte chaque mois."
+      : "Créez un compte gratuit pour poser vos questions."), { status: 401, code: "login_required" });
+  }
+  const r = billing.reserve(user.id, kind);
+  if (!r.ok) throw Object.assign(new Error(r.message), { status: 402, code: "quota", extra: { premium: r.premium, resetsAt: r.resetsAt } });
+  return r;
+}
+
 async function handleAnalyze(req, res) {
   const body = await readJsonBody(req);
-  const doc = validateDocument(body);
+  const sample = typeof body.sample === "string" ? SAMPLES.find((x) => x.id === body.sample) : null;
+  if (body.sample && !sample) throw Object.assign(new Error("Exemple inconnu."), { status: 400 });
+  const doc = sample ? { files: [], text: sample.text() } : validateDocument(body);
   const lang = langName(body.lang);
   const detail = body.detail === "detailed" ? "détaillé (développe davantage chaque point)" : "simple (phrases courtes, zéro jargon, comme pour un ami)";
+
+  const cacheKey = sample ? `${sample.id}|${body.lang}|${body.detail}|${todayIso()}` : null;
+  const cached = cacheKey && sampleCache.get(cacheKey);
+  const quota = sample ? null : reserveQuota(req, "analyses");
 
   const send = openSse(res);
   let closed = false;
 
+  if (cached) {
+    send("phase", { phase: "writing" });
+    send("progress", { chars: 2600 });
+    send("result", cached);
+    res.end();
+    return;
+  }
+  let succeeded = false;
+  const sendResult = (data) => {
+    succeeded = true;
+    if (cacheKey) {
+      if (sampleCache.size > 200) sampleCache.clear();
+      sampleCache.set(cacheKey, data);
+    }
+    send("result", data);
+  };
+  res.on("close", () => { if (!succeeded) quota?.release(); });
+
   if (DEMO) {
     res.on("close", () => { closed = true; });
-    await mockAnalysis(send, () => closed, body.lang);
+    await mockAnalysis((ev, data) => (ev === "result" ? sendResult(data) : send(ev, data)), () => closed, body.lang);
     res.end();
     return;
   }
@@ -296,7 +353,7 @@ async function handleAnalyze(req, res) {
       let result;
       try { result = JSON.parse(text); }
       catch { send("error", { message: "La réponse d'analyse était incomplète. Réessayez." }); res.end(); return; }
-      send("result", { result, model: message.model });
+      sendResult({ result, model: message.model });
     }
   } catch (err) {
     if (!closed) {
@@ -320,12 +377,15 @@ async function handleAsk(req, res) {
     .slice(-12)
     .map((m) => ({ role: m.role, content: m.content.slice(0, 8000) }));
 
+  const quota = reserveQuota(req, "questions");
   const send = openSse(res);
   let closed = false;
+  let answered = false;
+  res.on("close", () => { if (!answered) quota?.release(); });
 
   if (DEMO) {
     res.on("close", () => { closed = true; });
-    await mockAnswer(send, () => closed, question);
+    await mockAnswer((ev, data) => { if (ev === "done") answered = true; send(ev, data); }, () => closed, question);
     res.end();
     return;
   }
@@ -363,7 +423,7 @@ async function handleAsk(req, res) {
     const message = await stream.finalMessage();
     logUsage("ask", message, started);
     if (message.stop_reason === "refusal") send("error", { message: "Je ne peux pas répondre à cette question." });
-    else send("done", {});
+    else { answered = true; send("done", {}); }
   } catch (err) {
     if (!closed) {
       console.error("[ask]", err?.status ?? "", err?.message);
@@ -388,9 +448,19 @@ const google = store ? createGoogleAuth({
   redirectUri: (req) => `${SITE_URL || `${isSecure(req) ? "https" : "http"}://${req.headers.host}`}/api/auth/google/callback`,
 }) : null;
 
+// Abonnement ExpliSite+ et quotas (actifs si Stripe est configuré, ou QUOTAS=1).
+let billing = null;
+
 const accountRoutes = store ? createAccountRoutes({
   store, sendJson, readJsonBody, foreignOrigin, clientIp, validateDocument,
   allowSignup: ALLOW_SIGNUP, maxDocsPerUser: MAX_DOCS_PER_USER, isSecure, google, securityHeaders: SECURITY_HEADERS,
+  describeUser: (id) => (billing ? billing.account(id) : {}),
+}) : null;
+
+billing = store ? createBilling(process.env, {
+  store, sendJson, readJsonBody, readRawBody, foreignOrigin,
+  currentUser: (req) => accountRoutes.currentUser(req),
+  baseUrl: (req) => SITE_URL || `${isSecure(req) ? "https" : "http"}://${req.headers.host}`,
 }) : null;
 
 const serveSite = createSite({ publicDir: PUBLIC_DIR, env: process.env, securityHeaders: SECURITY_HEADERS, siteUrl: SITE_URL, trustProxy: TRUST_PROXY });
@@ -399,7 +469,7 @@ const server = http.createServer(async (req, res) => {
   const url = (req.url || "/").split("?")[0];
   try {
     if (url === "/api/health" && (req.method === "GET" || req.method === "HEAD")) {
-      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL, contact: CONTACT || null, accounts: !!store });
+      return sendJson(res, 200, { ok: true, demo: DEMO, model: DEMO ? null : MODEL, contact: CONTACT || null, accounts: !!store, billing: billing?.publicInfo() || null });
     }
     if (url === "/api/analyze" || url === "/api/ask") {
       if (req.method !== "POST") return sendJson(res, 405, { error: "Méthode non autorisée." });
@@ -415,12 +485,13 @@ const server = http.createServer(async (req, res) => {
       }
       return url === "/api/analyze" ? await handleAnalyze(req, res) : await handleAsk(req, res);
     }
+    if (billing && await billing.handle(req, res, url)) return;
     if (accountRoutes && await accountRoutes(req, res, url)) return;
     if (url.startsWith("/api/")) return sendJson(res, 404, { error: "Point d'accès inconnu." });
     if (req.method === "GET" || req.method === "HEAD") return serveSite(req, res);
     sendJson(res, 405, { error: "Méthode non autorisée." });
   } catch (err) {
-    if (!res.headersSent) sendJson(res, err.status || 500, { error: err.status ? err.message : "Erreur serveur." });
+    if (!res.headersSent) sendJson(res, err.status || 500, { error: err.status ? err.message : "Erreur serveur.", code: err.code, ...err.extra });
     else res.end();
     if (!err.status) console.error(err);
   }
