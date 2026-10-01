@@ -57,6 +57,7 @@ body { display: flex; align-items: center; justify-content: center; flex-directi
 .poster .sky, .poster .orb, .poster .ground, .poster .fig, .poster .tint { position: absolute; }
 .poster .sky { inset: 0; }
 .poster .ground { left: 0; right: 0; bottom: 0; }
+.poster .pimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .poster .tint { inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(8,4,6,.7) 100%); }
 .poster .cred { position: absolute; left: 12%; right: 12%; bottom: 6%; display: flex; flex-direction: column; align-items: center; gap: 7px; }
 .poster .cred i { display: block; height: 14px; background: rgba(247,238,241,.88); }
@@ -249,6 +250,12 @@ const PAL = [
   { a: '#0b120d', b: '#5d7d57', orb: '#e8efd8', g: '#050906', fig: '#050906' },
   { a: '#1a0a0a', b: '#9b2a2a', orb: '#f3c9b0', g: '#0a0404', fig: '#0a0404' },
 ];
+/* Vraies affiches : posters/<slug>.jpg (téléchargées par fetch-posters.js).
+   Si un fichier manque, l'affiche abstraite reste visible dessous. */
+function posterImg(slug) {
+  if (!slug) return '';
+  return `<img class="pimg" data-slug="${slug}" src="posters/${slug}.jpg" alt="">`;
+}
 function posterHTML(i, seed, credits) {
   const p = PAL[i % PAL.length];
   const r = n => { const x = Math.sin(seed * 97.13 + n * 13.7) * 43758.5453; return x - Math.floor(x); };
@@ -263,6 +270,9 @@ function posterHTML(i, seed, credits) {
 }
 
 /* ---------- S2 : mur d'affiches ---------- */
+const WALL = ['interstellar', 'parasite', 'la-la-land', 'mad-max-fury-road', 'spider-verse', 'get-out', 'intouchables',
+  'dune', 'the-dark-knight', 'chihiro', 'whiplash', 'john-wick', 'inception', 'everything-everywhere', 'blade-runner-2049',
+  'joker', 'oppenheimer', 'drive'];
 const wallin = $('wallin');
 const WCOL = [];
 for (let c = 0; c < 3; c++) {
@@ -272,7 +282,7 @@ for (let c = 0; c < 3; c++) {
   for (let k = 0; k < 9; k++) {
     const d = document.createElement('div');
     d.className = 'poster';
-    d.innerHTML = posterHTML(c * 2 + k, c * 10 + k + 1, true);
+    d.innerHTML = posterHTML(c * 2 + k, c * 10 + k + 1, true) + posterImg(WALL[(c * 9 + k * 2 + c) % WALL.length]);
     col.appendChild(d);
   }
   wallin.appendChild(col);
@@ -317,12 +327,12 @@ const CH = CHIPS.map(txt => { const c = document.createElement('div'); c.classNa
 /* ---------- S4 ---------- */
 const FILTERS = [['GENRES', 'HORREUR · FANTASTIQUE'], ['DURÉE', '85 – 105 MIN'], ['SORTIE', '≥ 2010'], ['NOTE', '≥ 6,5'], ['VOTES', '≥ 1 500'], ['PUBLIC', 'À DEUX']];
 const FC = FILTERS.map(([k, v]) => { const c = document.createElement('div'); c.className = 'fchip'; c.innerHTML = `<b>${k}</b>${v}`; $('fchips').appendChild(c); return c; });
-const FILMS = [['It Follows', 'Horreur · 2014 · 1h40', 98, 0], ['Insidious', 'Horreur · 2010 · 1h43', 94, 3], ['Mister Babadook', 'Horreur · 2014 · 1h34', 91, 1], ['Oculus', 'Horreur · 2013 · 1h44', 88, 5], ['The Jane Doe Identity', 'Horreur · 2016 · 1h26', 85, 2]];
-const RC = FILMS.map(([t, m, pc, pal], i) => {
+const FILMS = [['It Follows', 'Horreur · 2014 · 1h40', 98, 0, 'it-follows'], ['Insidious', 'Horreur · 2010 · 1h43', 94, 3, 'insidious'], ['Mister Babadook', 'Horreur · 2014 · 1h34', 91, 1, 'babadook'], ['Oculus', 'Horreur · 2013 · 1h44', 88, 5, 'oculus'], ['The Jane Doe Identity', 'Horreur · 2016 · 1h26', 85, 2, 'jane-doe']];
+const RC = FILMS.map(([t, m, pc, pal, slug], i) => {
   const d = document.createElement('div');
   d.className = 'rcard';
   d.style.left = (140 + i * (304 + 30)) + 'px';
-  d.innerHTML = `<div class="frame"></div><div class="poster">${posterHTML(pal, 50 + i)}</div><div class="rk anton">0${i + 1}</div>
+  d.innerHTML = `<div class="frame"></div><div class="poster">${posterHTML(pal, 50 + i)}${posterImg(slug)}</div><div class="rk anton">0${i + 1}</div>
     <div class="info"><div class="t anton">${t}</div><div class="m">${m}</div><div class="bar"><i></i></div><div class="pc">0%</div></div>`;
   $('rcards').appendChild(d);
   return d;
@@ -637,7 +647,10 @@ function fit() {
 }
 addEventListener('resize', fit);
 
-window.ready = document.fonts.ready.then(() => { fit(); render(0); return true; });
+// attend les polices et chaque affiche (chargée ou absente) avant le premier rendu
+const posterReady = Promise.all([...document.querySelectorAll('.pimg')].map(img =>
+  img.decode().catch(() => img.remove())));
+window.ready = Promise.all([document.fonts.ready, posterReady]).then(() => { fit(); render(0); return true; });
 
 if (!isRender) {
   let playing = true, t0 = performance.now(), cur = 0;
