@@ -58,6 +58,7 @@ body { display: flex; align-items: center; justify-content: center; flex-directi
 .poster .sky { inset: 0; }
 .poster .ground { left: 0; right: 0; bottom: 0; }
 .poster .pimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.rcard .poster::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 34%; background: linear-gradient(180deg, rgba(10,6,8,.85), rgba(10,6,8,0)); }
 .poster .tint { inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(8,4,6,.7) 100%); }
 .poster .cred { position: absolute; left: 12%; right: 12%; bottom: 6%; display: flex; flex-direction: column; align-items: center; gap: 7px; }
 .poster .cred i { display: block; height: 14px; background: rgba(247,238,241,.88); }
@@ -282,7 +283,7 @@ for (let c = 0; c < 3; c++) {
   for (let k = 0; k < 9; k++) {
     const d = document.createElement('div');
     d.className = 'poster';
-    d.innerHTML = posterHTML(c * 2 + k, c * 10 + k + 1, true) + posterImg(WALL[(c * 9 + k * 2 + c) % WALL.length]);
+    d.innerHTML = posterHTML(c * 2 + k, c * 10 + k + 1, true) + posterImg(WALL[(c * 13 + k) % WALL.length]);
     col.appendChild(d);
   }
   wallin.appendChild(col);
@@ -580,7 +581,7 @@ function render(t) {
       c0.style.transformOrigin = '50% 33%';
       c0.style.transform = `translate(${(960 - cx0) * z}px, ${(540 - cy0) * z}px) scale(${1 + z * 9})`;
       c0.style.zIndex = 5;
-      c0.style.filter = z > .05 ? `blur(${(z * z * 9).toFixed(2)}px)` : 'none';
+      c0.style.filter = z > .05 ? `blur(${(z * z * 28).toFixed(2)}px)` : 'none';
       RC.forEach((c, i) => { if (i) { c.style.opacity = (1 - z) * .42; c.style.transform += ` translateX(${(i - 2) * 120 * z}px)`; } });
       ['s4eb', 'bignum', 'best', 'why', 'fchips'].forEach(id => $(id).style.opacity = Math.min(+$(id).style.opacity || 1, 1 - z));
     } else { RC[0].style.zIndex = ''; RC[0].style.filter = 'none'; }
