@@ -4,7 +4,7 @@
 - `sound.py` : design sonore entièrement synthétisé (aucun sample externe), calé sur la timeline ; produit `sound.wav`.
 - `fetch-posters.js` : télécharge les affiches TMDB dans `posters/` (lancé par GitHub Actions avec le secret `TMDB_KEY`).
 - `index.html` : la composition. Ouvre-la dans un navigateur pour la prévisualiser (lecture en boucle, curseur de timeline).
-- `render.js` : rendu image par image (120 i/s fusionnés en 60 i/s pour le flou de mouvement).
+- `render.js` : rendu image par image (240 i/s, 3 échantillons fusionnés par image en 60 i/s pour le flou de mouvement).
 - `stills.js` : captures à des instants précis, ex. `node stills.js ./out 2.5 9.8`.
 
 Rendu complet :
