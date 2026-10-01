@@ -193,6 +193,7 @@ body.render #ui { display: none; }
   <svg class="abs" id="cursor" viewBox="0 0 40 40"><path d="M6 3 L6 33 L13.5 26 L19 37.5 L24.5 35 L19 23.8 L29 23.8 Z" fill="#fff" stroke="#100a0d" stroke-width="2" stroke-linejoin="round"/></svg>
   <div class="abs" id="ring"></div>
 
+  <svg width="0" height="0" style="position:absolute"><filter id="vblur" x="-5%" y="-60%" width="110%" height="220%"><feGaussianBlur id="vbg" stdDeviation="0 0"/></filter></svg>
   <div class="layer" id="vignette"></div>
   <canvas class="abs" id="grain" width="960" height="540" style="left:0;top:0"></canvas>
   <div class="layer" id="fade" style="background:#000"></div>
@@ -459,6 +460,12 @@ function render(t) {
 
     // course des questions
     const run = tw(t, 6.1, 7.2, 'inOutQuint');
+    // flou directionnel vertical proportionnel à la vitesse du défilement
+    const vel = (tw(t + 1 / 240, 6.1, 7.2, 'inOutQuint') - run) * 240 * (QS.length - 1) * 128;
+    const vb = Math.min(22, vel / 110);
+    $('vbg').setAttribute('stdDeviation', `0 ${vb.toFixed(2)}`);
+    $('treel').style.filter = vb > .3 ? 'url(#vblur)' : 'none';
+    $('kreel').style.filter = vb > .3 ? 'url(#vblur)' : 'none';
     const idx = run * (QS.length - 1);
     const n = Math.min(12, Math.round(1 + run * 11));
     $('count').textContent = String(n).padStart(2, '0') + ' / 12';
@@ -563,9 +570,10 @@ function render(t) {
       c0.style.transformOrigin = '50% 33%';
       c0.style.transform = `translate(${(960 - cx0) * z}px, ${(540 - cy0) * z}px) scale(${1 + z * 9})`;
       c0.style.zIndex = 5;
+      c0.style.filter = z > .05 ? `blur(${(z * z * 9).toFixed(2)}px)` : 'none';
       RC.forEach((c, i) => { if (i) { c.style.opacity = (1 - z) * .42; c.style.transform += ` translateX(${(i - 2) * 120 * z}px)`; } });
       ['s4eb', 'bignum', 'best', 'why', 'fchips'].forEach(id => $(id).style.opacity = Math.min(+$(id).style.opacity || 1, 1 - z));
-    } else RC[0].style.zIndex = '';
+    } else { RC[0].style.zIndex = ''; RC[0].style.filter = 'none'; }
   }
 
   /* ---- S5 : trois temps ---- */
