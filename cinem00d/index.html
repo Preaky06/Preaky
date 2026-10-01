@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood — le bon film pour ton moment</title>
+<meta name="description" content="Réponds à 12 questions : CinéMood croise ton humeur, ton contexte, ta durée et tes goûts pour trouver le film taillé pour ta soirée. Trois parcours gratuits par mois, sans inscription.">
+<meta name="theme-color" content="#100a0d">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="assets/icons/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" sizes="180x180">
+<link rel="canonical" href="https://cinem00d.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CinéMood">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="CinéMood — le bon film pour ton moment">
+<meta property="og:description" content="Le film qui colle à ton moment, en une minute. Gratuit, sans inscription.">
+<meta property="og:url" content="https://cinem00d.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="https://cinem00d.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="CinéMood">
+<meta name="twitter:image" content="https://cinem00d.com/og-image.png">
+<meta name="twitter:title" content="CinéMood — le bon film pour ton moment">
+<meta name="twitter:description" content="12 questions, un film qui te correspond vraiment.">
+<link rel="preconnect" href="https://image.tmdb.org">
+<link rel="preconnect" href="https://api.themoviedb.org">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"CinéMood","applicationCategory":"EntertainmentApplication","inLanguage":"fr","description":"Recommandation de films guidée par 12 questions sur ton humeur et ton contexte.","offers":[{"@type":"Offer","name":"Découverte","price":"0","priceCurrency":"EUR","description":"3 parcours par mois"},{"@type":"Offer","name":"Illimité","price":"5.99","priceCurrency":"EUR","description":"Parcours illimité, sans engagement"}]}
+</script>
+<style>
+html,body{background:#100a0d;margin:0}
+x-dc{opacity:0}
+x-dc.cm-on{opacity:1;transition:opacity .45s ease}
+</style>
+<script>
+(function(){
+  function reveal(){var d=document.querySelector('x-dc'); if(d) d.classList.add('cm-on');}
+  function watch(){
+    var d=document.querySelector('x-dc');
+    if(!d) return setTimeout(watch,50);
+    var t0=Date.now();
+    (function poll(){
+      var raw=(d.textContent||'').indexOf('{'+'{')>-1;   /* jamais deux accolades litterales ici */
+      if(!raw || Date.now()-t0>3000) return reveal();
+      setTimeout(poll,60);
+    })();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',watch); else watch();
+})();
+</script>
+<script>/* Site gratuit, sans compte, sans collecte.
+   Le code d'abonnement et de comptes reste en place : passe ces valeurs a false. */
+window.CINEMOOD_FREE_MODE = true;
+window.CINEMOOD_NO_ACCOUNTS = true;
+</script>
+<script src="assets/vendor/react.production.min.js"></script>
+<script src="assets/vendor/react-dom.production.min.js"></script>
+<script src="assets/js/dc-runtime.js"></script>
+
+
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics="">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin">
+<link rel="preconnect" href="https://image.tmdb.org">
+<link rel="preconnect" href="https://api.themoviedb.org">
+<link rel="dns-prefetch" href="https://image.tmdb.org">
+<style>/* vietnamese */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/anton-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/anton-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/anton-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-vietnamese.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("assets/fonts/archivo-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style>
+html,body{margin:0;padding:0;background:#100a0d;color:#f6eef0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input{font:inherit}
+a{color:#ff2d4f;text-decoration:none}
+a:hover{color:#ff6b83}
+@keyframes cIn{from{opacity:0}to{opacity:1}}
+@keyframes cUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes cRight{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
+@keyframes cLeft{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
+@keyframes cSpin{to{transform:rotate(360deg)}}
+@keyframes cBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes cSweep{0%{transform:translateX(-110%)}100%{transform:translateX(240%)}}
+@keyframes cShim{0%{background-position:-360px 0}100%{background-position:360px 0}}
+@keyframes cReveal{0%{clip-path:inset(-30% 0 100% 0)}100%{clip-path:inset(-30% 0 -30% 0)}}
+@keyframes cOut{0%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes cGlow{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes cRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cDash{from{transform:scaleX(0);transform-origin:left}to{transform:scaleX(1)}}
+/* néon de cinéma rétro fatigué :
+   l'enseigne entière grésille et tombe en panne de temps en temps,
+   le É est à moitié mort, le M lâche par moments. Cycles de durées
+   premières entre elles : le motif ne se répète jamais à l'identique. */
+.cm-neon{
+  color:#ff2d4f;
+  text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26);
+  animation:cNeon 11.3s steps(1,end) infinite;
+  will-change:opacity,text-shadow;
+}
+.cm-neon .cm-l{display:inline-block}
+.cm-neon .cm-dead{animation:cDead 3.7s steps(1,end) infinite}
+.cm-neon .cm-weak{animation:cWeak 7.9s steps(1,end) infinite}
+@keyframes cNeon{
+  0%   {opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+  1.2% {opacity:.88; text-shadow:0 0 4px rgba(255,150,165,0.544),0 0 12px rgba(255,45,79,0.496),0 0 28px rgba(255,45,79,0.336),0 0 56px rgba(255,45,79,0.20800000000000002)}
+  1.8% {opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+  17%  {opacity:1}
+  17.4%{opacity:.14; text-shadow:0 0 4px rgba(255,150,165,0.068),0 0 12px rgba(255,45,79,0.062),0 0 28px rgba(255,45,79,0.042),0 0 56px rgba(255,45,79,0.026000000000000002)}
+  18.1%{opacity:.14}
+  18.5%{opacity:.7;  text-shadow:0 0 4px rgba(255,150,165,0.37400000000000005),0 0 12px rgba(255,45,79,0.341),0 0 28px rgba(255,45,79,0.231),0 0 56px rgba(255,45,79,0.14300000000000002)}
+  18.8%{opacity:.14}
+  19.6%{opacity:.14}
+  19.9%{opacity:.85; text-shadow:0 0 4px rgba(255,150,165,0.476),0 0 12px rgba(255,45,79,0.434),0 0 28px rgba(255,45,79,0.294),0 0 56px rgba(255,45,79,0.182)}
+  20.2%{opacity:.3;  text-shadow:0 0 4px rgba(255,150,165,0.136),0 0 12px rgba(255,45,79,0.124),0 0 28px rgba(255,45,79,0.084),0 0 56px rgba(255,45,79,0.052000000000000005)}
+  20.6%{opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.782),0 0 12px rgba(255,45,79,0.713),0 0 28px rgba(255,45,79,0.48299999999999993),0 0 56px rgba(255,45,79,0.299)}
+  21.4%{opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+  44%  {opacity:1}
+  44.3%{opacity:.8;  text-shadow:0 0 4px rgba(255,150,165,0.476),0 0 12px rgba(255,45,79,0.434),0 0 28px rgba(255,45,79,0.294),0 0 56px rgba(255,45,79,0.182)}
+  44.6%{opacity:1}
+  45.1%{opacity:.86; text-shadow:0 0 4px rgba(255,150,165,0.51),0 0 12px rgba(255,45,79,0.46499999999999997),0 0 28px rgba(255,45,79,0.315),0 0 56px rgba(255,45,79,0.195)}
+  45.4%{opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+  63%  {opacity:1}
+  63.2%{opacity:.08; text-shadow:0 0 4px rgba(255,150,165,0.034),0 0 12px rgba(255,45,79,0.031),0 0 28px rgba(255,45,79,0.021),0 0 56px rgba(255,45,79,0.013000000000000001)}
+  67.5%{opacity:.08}
+  67.8%{opacity:.45; text-shadow:0 0 4px rgba(255,150,165,0.238),0 0 12px rgba(255,45,79,0.217),0 0 28px rgba(255,45,79,0.147),0 0 56px rgba(255,45,79,0.091)}
+  68.1%{opacity:.08}
+  68.9%{opacity:.62; text-shadow:0 0 4px rgba(255,150,165,0.34),0 0 12px rgba(255,45,79,0.31),0 0 28px rgba(255,45,79,0.21),0 0 56px rgba(255,45,79,0.13)}
+  69.2%{opacity:.2;  text-shadow:0 0 4px rgba(255,150,165,0.10200000000000001),0 0 12px rgba(255,45,79,0.093),0 0 28px rgba(255,45,79,0.063),0 0 56px rgba(255,45,79,0.039)}
+  69.6%{opacity:.9;  text-shadow:0 0 4px rgba(255,150,165,0.5780000000000001),0 0 12px rgba(255,45,79,0.527),0 0 28px rgba(255,45,79,0.357),0 0 56px rgba(255,45,79,0.221)}
+  70%  {opacity:.55; text-shadow:0 0 4px rgba(255,150,165,0.30600000000000005),0 0 12px rgba(255,45,79,0.279),0 0 28px rgba(255,45,79,0.189),0 0 56px rgba(255,45,79,0.117)}
+  70.5%{opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.8160000000000001),0 0 12px rgba(255,45,79,0.744),0 0 28px rgba(255,45,79,0.504),0 0 56px rgba(255,45,79,0.312)}
+  71.5%{opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+  88%  {opacity:1}
+  88.4%{opacity:.9;  text-shadow:0 0 4px rgba(255,150,165,0.544),0 0 12px rgba(255,45,79,0.496),0 0 28px rgba(255,45,79,0.336),0 0 56px rgba(255,45,79,0.20800000000000002)}
+  88.8%{opacity:1}
+  100% {opacity:1;   text-shadow:0 0 4px rgba(255,150,165,0.68),0 0 12px rgba(255,45,79,0.62),0 0 28px rgba(255,45,79,0.42),0 0 56px rgba(255,45,79,0.26)}
+}
+@keyframes cDead{
+  0%  {opacity:1}   8%  {opacity:.25} 10% {opacity:1}   12% {opacity:.18}
+  15% {opacity:.9}  38% {opacity:.9}  39% {opacity:.12} 55% {opacity:.12}
+  56% {opacity:.6}  58% {opacity:.15} 61% {opacity:1}   79% {opacity:1}
+  80% {opacity:.3}  81% {opacity:1}   100%{opacity:1}
+}
+@keyframes cWeak{
+  0%  {opacity:1}   52% {opacity:1}   53% {opacity:.35} 54% {opacity:1}
+  71% {opacity:1}   72% {opacity:.2}  76% {opacity:.2}  77% {opacity:.8}
+  78% {opacity:.4}  79% {opacity:1}   100%{opacity:1}
+}
+.cm-opt{position:relative;overflow:hidden}
+.cm-opt:hover .cm-opt-bar{transform:scaleY(1)}
+.cm-opt:hover .cm-opt-go{opacity:1;transform:none}
+@keyframes cDrift{0%{transform:scale(1.06) translate3d(0,0,0)}100%{transform:scale(1.13) translate3d(-1.4%,-1.2%,0)}}
+::-webkit-scrollbar{height:6px;width:6px}
+::-webkit-scrollbar-thumb{background:rgba(255,45,79,.35);border-radius:3px}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:.01ms !important}}
+/* le néon reste actif partout : sur beaucoup de PC Windows, l'option système
+   « effets d'animation » désactivée coupait toutes les animations du site */
+@media (prefers-reduced-motion: reduce){
+  .cm-neon{animation:cNeon 11.3s steps(1,end) infinite !important}
+  .cm-neon .cm-dead{animation:cDead 3.7s steps(1,end) infinite !important}
+  .cm-neon .cm-weak{animation:cWeak 7.9s steps(1,end) infinite !important}
+}
+.cm-cta-short{display:none}
+:focus-visible{outline:2px solid #ff2d4f;outline-offset:2px}
+body.cm-locked{overflow:hidden}
+img{max-width:100%}
+@media (max-width:1040px){.cm-nav{display:none !important}}
+@media (max-width:620px){.cm-cta-long{display:none}.cm-cta-short{display:inline}}
+@media (max-width:760px){.cm-pill{display:none !important}}
+@media (max-width:760px){
+  .cm-hero{min-height:auto !important;grid-template-columns:1fr !important}
+  .cm-hero-art{order:-1;min-height:190px !important;aspect-ratio:16/9}
+  .cm-hero-fade{background-image:linear-gradient(0deg,#000 0%,rgba(0,0,0,.42) 40%,transparent 82%) !important}
+  .cm-hero-copy{padding:clamp(22px,6vw,32px) !important}
+  .cm-modal-poster{display:none !important}
+  .cm-modal-body{padding-top:16px !important}
+  .cm-modal-wrap{margin-top:-40px !important}
+}
+@media (max-width:600px){.cm-best{flex-direction:column !important}.cm-best-poster{width:100% !important;flex:1 1 auto !important;max-width:230px}}
+</style>
+<script src="assets/js/tmdb.js"></script>
+<script src="assets/js/comptes.js"></script>
+<script src="assets/js/legal.js"></script>
+</helmet>
+<div style="min-height:100vh;background:#100a0d;color:#f6eef0;font-family:Archivo,Helvetica,sans-serif;overflow-x:hidden">
+
+<sc-if value="{{ introOn }}" hint-placeholder-val="{{ true }}">
+<div sc-camel-on-click="{{ skipIntro }}" style="{{ introStyle }}">
+  <div style="position:absolute;inset:0;background-image:radial-gradient(60% 50% at 50% 50%, rgba(255,45,79,.18) 0%, transparent 70%)"></div>
+  <div style="position:absolute;inset:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.5) .6px,transparent .7px);background-size:40px 40px"></div>
+  <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:26px">
+    <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(40px,9vw,104px);line-height:1.3;padding:0 .04em;letter-spacing:.02em;text-transform:uppercase;animation:cReveal .8s cubic-bezier(.19,1,.22,1) both">CINÉ<span style="color:#ff2d4f">MOOD</span></div>
+    <div style="width:min(240px,58vw);height:2px;background:rgba(246,238,240,.14);overflow:hidden">
+      <div style="height:100%;background:#ff2d4f;transform-origin:left;animation:cBar 1.7s cubic-bezier(.5,0,.2,1) .25s both"></div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<div style="{{ pageStyle }}">
+
+<div style="position:sticky;top:0;z-index:30;background:rgba(16,10,13,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(246,238,240,.08)">
+  <div style="max-width:1320px;margin:0 auto;padding:12px clamp(14px,3vw,22px);display:flex;align-items:center;justify-content:space-between;gap:clamp(10px,2vw,20px)">
+    <button sc-camel-on-click="{{ goHome }}" style="font-family:Anton,Impact,sans-serif;font-size:clamp(18px,4.4vw,22px);letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;flex:none">Ciné<span style="color:#ff2d4f">Mood</span></button>
+    <div class="cm-nav" style="display:flex;align-items:center;gap:26px">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="3">
+        <button sc-camel-on-click="{{ n.onClick }}" style="{{ n.style }}">{{ n.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;flex:none">
+      
+      <sc-if value="{{ showPlans }}" hint-placeholder-val="{{ true }}">
+        <button class="cm-pill" sc-camel-on-click="{{ openPricing }}" aria-label="{{ quotaAria }}" title="{{ quotaAria }}" style="{{ quotaPillStyle }}">{{ quotaPill }}</button>
+      </sc-if>
+      <sc-if value="{{ showAccountBtn }}" hint-placeholder-val="{{ true }}">
+        <button sc-camel-on-click="{{ openAccount }}" aria-label="{{ accountBtnAria }}" title="{{ accountBtnAria }}" style="{{ accountBtnStyle }}">{{ accountBtnLabel }}</button>
+      </sc-if>
+      <button sc-camel-on-click="{{ openSearch }}" aria-label="Rechercher un film" title="Rechercher un film" style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(246,238,240,.16);display:flex;align-items:center;justify-content:center;font-size:15px;flex:none" style-hover="border-color:#ff2d4f;color:#ff2d4f">⌕</button><button sc-camel-on-click="{{ start }}" style="padding:11px clamp(13px,3vw,20px);background:#ff2d4f;color:#fff;font-size:clamp(12px,3vw,13.5px);font-weight:600;letter-spacing:.02em;white-space:nowrap;transition:background .16s ease" style-hover="background:#ff4f6c"><span class="cm-cta-long">Trouver mon film</span><span class="cm-cta-short">Trouver</span></button>
+    </div>
+  </div>
+</div>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="animation:cIn .4s both">
+
+  <div style="position:relative;max-width:1320px;margin:0 auto;padding:0 clamp(14px,3vw,22px)">
+    <div class="cm-hero" style="position:relative;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(300px,1.15fr);min-height:clamp(400px,58vh,560px);background:#000;overflow:hidden;margin-top:clamp(14px,3vw,32px)">
+      <div class="cm-hero-copy" style="position:relative;z-index:2;padding:clamp(30px,4.4vw,62px);display:flex;flex-direction:column;justify-content:center;animation:cLeft .8s cubic-bezier(.19,1,.22,1) .1s both">
+        <div style="display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:22px">
+          <span style="width:22px;height:2px;background:#ff2d4f;display:inline-block"></span>{{ questionCount }} questions
+        </div>
+        <h1 style="font-family:Anton,Impact,sans-serif;font-size:clamp(34px,5.4vw,68px);line-height:1.06;letter-spacing:.005em;text-transform:uppercase;margin:0 0 20px;text-wrap:balance">Ressens le <span class="cm-neon" style="color:#ff2d4f;display:inline-block"><span class="cm-l">C</span><span class="cm-l">I</span><span class="cm-l">N</span><span class="cm-l cm-dead">É</span><span class="cm-l cm-weak">M</span><span class="cm-l">A</span></span>&nbsp;qui te ressemble</h1>
+        <p style="margin:0 0 30px;font-size:15.5px;line-height:1.6;color:rgba(246,238,240,.58);max-width:420px;text-wrap:pretty">Ton humeur, ton contexte, ton temps. On croise tes réponses avec le catalogue mondial et on te sort le film taillé pour ta soirée.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <button sc-camel-on-click="{{ start }}" style="padding:15px 28px;background:#ff2d4f;color:#fff;font-size:14.5px;font-weight:600;letter-spacing:.02em;box-shadow:0 16px 40px -16px rgba(255,45,79,.9);transition:transform .16s ease,background .16s ease" style-hover="background:#ff4f6c;transform:translateY(-2px)">Commencer</button>
+          <button sc-camel-on-click="{{ startDuo }}" style="{{ duoBtnStyle }}" style-hover="border-color:#ff2d4f;color:#ff2d4f"><span style="white-space:nowrap">Mode Duo</span><span style="{{ duoTagStyle }}">{{ duoTag }}</span></button>
+          <button sc-camel-on-click="{{ scrollConcept }}" style="padding:15px 28px;border:1px solid rgba(246,238,240,.14);font-size:14.5px;font-weight:600;letter-spacing:.02em;color:rgba(246,238,240,.62);transition:border-color .16s ease" style-hover="border-color:rgba(246,238,240,.45);color:#f6eef0">Comment ça marche</button>
+        </div>
+      </div>
+      <div class="cm-hero-art" style="{{ heroArtStyle }}">
+        <div style="{{ heroImgStyle }}"></div>
+        <div class="cm-hero-fade" style="position:absolute;inset:0;background-image:linear-gradient(96deg,#000 0%,rgba(0,0,0,.92) 8%,rgba(0,0,0,.5) 26%,rgba(0,0,0,.12) 52%,transparent 78%)"></div>
+        <div style="position:absolute;inset:0;background-image:linear-gradient(0deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.14) 30%,transparent 58%)"></div>
+        <div style="position:absolute;inset:0;box-shadow:inset 0 0 clamp(50px,7vw,110px) rgba(0,0,0,.6)"></div>
+        <div style="position:absolute;inset:0;opacity:.09;mix-blend-mode:overlay;background-image:radial-gradient(rgba(255,255,255,.9) .7px,transparent .8px);background-size:3px 3px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1320px;margin:0 auto;padding:clamp(26px,3.4vw,42px) clamp(14px,3vw,22px) 0">
+    <div style="display:flex;gap:clamp(18px,2.6vw,34px);overflow-x:auto;border-bottom:1px solid rgba(246,238,240,.09);padding-bottom:2px;margin-bottom:20px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="7">
+        <button sc-camel-on-click="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <div key="{{ tabKey }}" style="display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;animation:cIn .35s both">
+      <sc-for list="{{ tabFilms }}" as="f" hint-placeholder-count="5">
+        <button sc-camel-on-click="{{ f.onOpen }}" style="{{ f.cardStyle }}" style-hover="transform:translateY(-5px)">
+          <div style="{{ f.artStyle }}">
+            <div style="position:absolute;inset:0;background-image:linear-gradient(0deg,rgba(16,10,13,.94) 4%,rgba(16,10,13,.1) 62%)"></div>
+            <div style="position:absolute;left:14px;right:14px;bottom:12px;text-align:left">
+              <div style="font-weight:600;font-size:14px;line-height:1.25">{{ f.titre }}</div>
+              <div style="font-size:11.5px;letter-spacing:.06em;color:rgba(246,238,240,.5);margin-top:4px">{{ f.meta }}</div>
+            </div>
+          </div>
+        </button>
+      </sc-for>
+      <sc-for list="{{ tabSkeletons }}" as="k" hint-placeholder-count="5">
+        <div style="{{ k.style }}"></div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div id="concept" style="max-width:1320px;margin:0 auto;padding:clamp(46px,6vw,86px) clamp(14px,3vw,22px) 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:28px">
+      <div>
+        <div style="font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px">Le principe</div>
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(26px,4.2vw,50px);line-height:1.06;text-transform:uppercase;margin:0">Un conseiller cinéma,<br>pas un catalogue de plus</h2>
+      </div>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:rgba(246,238,240,.45);max-width:340px;text-wrap:pretty">Tu passes trente minutes à chercher quoi regarder. <br>On part de ton moment et on répond en une minute.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:1px;background:rgba(246,238,240,.09);border:1px solid rgba(246,238,240,.09)">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+        <div style="background:#160d11;padding:28px 24px 32px;transition:background .2s ease" style-hover="background:#1e1218">
+          <div style="font-family:Anton,Impact,sans-serif;font-size:34px;color:rgba(255,45,79,.9);line-height:1;margin-bottom:16px">{{ s.num }}</div>
+          <div style="font-size:17px;font-weight:600;letter-spacing:-.01em;margin-bottom:10px">{{ s.titre }}</div>
+          <div style="font-size:13.5px;line-height:1.6;color:rgba(246,238,240,.5);text-wrap:pretty">{{ s.txt }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div id="categories" style="max-width:1320px;margin:0 auto;padding:clamp(46px,6vw,86px) clamp(14px,3vw,22px) 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:28px">
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(26px,4.2vw,50px);line-height:1.06;text-transform:uppercase;margin:0">Le catalogue<br>par catégories</h2>
+      <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(246,238,240,.45);max-width:340px;text-wrap:pretty">Chaque rangée est une requête exacte. <br>Le critère est écrit sous le titre : rien n'est choisi à la main.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:34px">
+      <sc-if value="{{ catalogDown }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:22px;border:1px solid rgba(255,45,79,.34);background:rgba(255,45,79,.07);display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+          <div style="font-size:14px;line-height:1.55;color:rgba(246,238,240,.78);max-width:520px">Le catalogue ne répond pas pour le moment. Vérifie ta connexion — les films reviennent dès que le service est joignable.</div>
+          <button sc-camel-on-click="{{ retryCatalog }}" style="padding:12px 20px;background:#ff2d4f;color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="background:#ff4f6c">Réessayer</button>
+        </div>
+      </sc-if>
+      <sc-for list="{{ shelfSkeletons }}" as="k" hint-placeholder-count="3">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
+            <div style="font-family:Anton,Impact,sans-serif;font-size:19px;text-transform:uppercase;opacity:.5">{{ k.label }}</div>
+          </div>
+          <div style="display:flex;gap:12px;overflow:hidden">
+            <sc-for list="{{ k.cards }}" as="c" hint-placeholder-count="7"><div style="{{ c.style }}"></div></sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <sc-for list="{{ shelves }}" as="s" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+            <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(17px,2.2vw,22px);text-transform:uppercase;letter-spacing:.01em">{{ s.label }}</div>
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,45,79,.7)">{{ s.crit }}</div>
+          </div>
+          <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory">
+            <sc-for list="{{ s.films }}" as="f" hint-placeholder-count="8">
+              <button sc-camel-on-click="{{ f.onOpen }}" style="flex:none;width:clamp(118px,32vw,142px);scroll-snap-align:start;text-align:left;transition:transform .2s cubic-bezier(.2,.8,.3,1)" style-hover="transform:translateY(-6px)">
+                <div style="{{ f.posterStyle }}"></div>
+                <div style="font-size:12.5px;font-weight:600;line-height:1.3;margin-top:9px">{{ f.titre }}</div>
+                <div style="font-size:11px;letter-spacing:.05em;color:rgba(246,238,240,.4);margin-top:3px">{{ f.meta }}</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ showPlans }}" hint-placeholder-val="{{ true }}">
+  <div id="abonnement" style="max-width:1320px;margin:0 auto;padding:clamp(46px,6vw,86px) clamp(14px,3vw,22px) 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:28px">
+      <div>
+        <div style="font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px">Abonnement</div>
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(26px,4.2vw,50px);line-height:1.06;text-transform:uppercase;margin:0">Trois séances offertes<br>par mois</h2>
+      </div>
+      <p style="margin:0;font-size:13.5px;line-height:1.6;color:rgba(246,238,240,.45);max-width:340px;text-wrap:pretty">Au-delà, un seul abonnement, sans palier ni option. {{ freeLimit }} parcours par mois restent gratuits, pour toujours.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:1px;background:rgba(246,238,240,.09);border:1px solid rgba(246,238,240,.09)">
+      <div style="background:#160d11;padding:clamp(26px,3vw,36px)">
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,238,240,.45);margin-bottom:18px">Découverte</div>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(34px,4.6vw,52px);line-height:1;text-transform:uppercase;margin-bottom:6px">Gratuit</div>
+        <div style="font-size:13px;color:rgba(246,238,240,.45);margin-bottom:24px">{{ freeLimit }} parcours par mois</div>
+        <div style="display:flex;flex-direction:column;gap:11px;font-size:13.5px;line-height:1.5;color:rgba(246,238,240,.6)">
+          <div>· {{ freeLimit }} séances complètes chaque mois</div>
+          <div>· Catalogue, recherche et fiches en accès libre</div>
+          <div>· Aucun compte demandé</div>
+        </div>
+      </div>
+      <div style="background:linear-gradient(150deg,rgba(255,45,79,.14),#160d11 62%);padding:clamp(26px,3vw,36px);position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#ff2d4f"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+          <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#ff2d4f">Illimité</div>
+          <sc-if value="{{ isPro }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:#ff2d4f;color:#fff;padding:3px 8px">Ton offre</span>
+          </sc-if>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:6px">
+          <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(34px,4.6vw,52px);line-height:1;text-transform:uppercase">{{ price }}</div>
+          <div style="font-size:13px;color:rgba(246,238,240,.5)">{{ pricePeriod }}</div>
+        </div>
+        <div style="font-size:13px;color:rgba(246,238,240,.45);margin-bottom:24px">Sans engagement</div>
+        <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:26px">
+          <sc-for list="{{ perks }}" as="p" hint-placeholder-count="6">
+            <div style="display:flex;gap:10px;align-items:flex-start">
+              <span style="flex:none;width:16px;height:16px;margin-top:2px;background:#ff2d4f;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">✓</span>
+              <div style="min-width:0">
+                <div style="font-size:13.5px;font-weight:600;letter-spacing:-.01em;margin-bottom:2px">{{ p.t }}</div>
+                <div style="font-size:12px;line-height:1.5;color:rgba(246,238,240,.5);text-wrap:pretty">{{ p.d }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <button sc-camel-on-click="{{ openPricing }}" style="{{ planCtaStyle }}">{{ planCta }}</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="max-width:1320px;margin:clamp(52px,7vw,96px) auto 0;padding:0 clamp(14px,3vw,22px)">
+    <div style="border-top:1px solid rgba(246,238,240,.09);padding:26px 0 24px;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-family:Anton,Impact,sans-serif;font-size:19px;text-transform:uppercase;margin-bottom:12px">Ciné<span style="color:#ff2d4f">Mood</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px">
+          <sc-for list="{{ legalLinks }}" as="l" hint-placeholder-count="3">
+            <button sc-camel-on-click="{{ l.onClick }}" style="font-size:12px;letter-spacing:.04em;color:rgba(246,238,240,.5);text-decoration:underline;text-underline-offset:3px;white-space:nowrap" style-hover="color:#ff2d4f">{{ l.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-size:11.5px;line-height:1.6;color:rgba(246,238,240,.36);max-width:520px;text-wrap:pretty">Ce produit utilise l'API TMDB mais n'est ni approuvé ni certifié par TMDB. Données et affiches fournies par The Movie Database.</div>
+    </div>
+    <div style="border-top:1px solid rgba(246,238,240,.06);padding:18px 0 34px;text-align:center;font-size:12.5px;letter-spacing:.04em;color:rgba(246,238,240,.42)">Site conçu avec le <span style="color:#ff2d4f">♥</span> par un passionné de cinéma</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:1320px;margin:0 auto;padding:clamp(24px,3.4vw,44px) clamp(14px,3vw,22px) 80px;animation:cIn .35s both">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:20px">
+    <div style="max-width:660px">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px">Ta séance</div>
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(30px,5vw,58px);line-height:1.04;text-transform:uppercase;margin:0 0 12px">Tes films du moment</h2>
+      <p style="margin:0;font-size:15px;line-height:1.55;color:rgba(246,238,240,.55)">{{ resultSub }}</p>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button sc-camel-on-click="{{ shuffle }}" style="padding:12px 20px;border:1px solid rgba(246,238,240,.24);font-size:13px;font-weight:600;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ shuffleLabel }}</button>
+      <button sc-camel-on-click="{{ start }}" style="padding:12px 20px;border:1px solid rgba(246,238,240,.14);font-size:13px;color:rgba(246,238,240,.6);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em" style-hover="border-color:rgba(246,238,240,.45);color:#f6eef0">Refaire</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasRelax }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ relaxStyle }}"><span>{{ relaxIcon }}</span><span>{{ relaxNote }}</span></div>
+  </sc-if>
+
+  <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px">
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6">
+      <span style="font-size:11px;letter-spacing:.05em;padding:6px 11px;border:1px solid rgba(246,238,240,.12);background:rgba(246,238,240,.03);color:rgba(246,238,240,.6)">{{ c.txt }}</span>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:20px;border:1px solid rgba(255,45,79,.4);background:rgba(255,45,79,.09);font-size:14.5px;line-height:1.55">{{ errorTxt }}</div>
+  </sc-if>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:16px">
+    <sc-for list="{{ results }}" as="f" hint-placeholder-count="5">
+      <div style="{{ f.wrapStyle }}" style-hover="border-color:rgba(255,45,79,.55)">
+        <div class="cm-best" style="{{ f.innerStyle }}">
+          <div class="cm-best-poster" style="{{ f.posterWrap }}"><div style="{{ f.posterStyle }}"></div></div>
+          <div style="flex:1 1 250px;min-width:0;display:flex;flex-direction:column;gap:11px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div style="min-width:0">
+                <div style="{{ f.badgeStyle }}">{{ f.badge }}</div>
+                <div style="{{ f.titleStyle }}">{{ f.titre }}</div>
+                <div style="font-size:11.5px;letter-spacing:.05em;color:rgba(246,238,240,.45);margin-top:8px">{{ f.meta }}</div>
+              </div>
+              <div style="flex:none;text-align:right">
+                <div style="{{ f.scoreStyle }}">{{ f.score }}</div>
+                <div style="font-size:9.5px;letter-spacing:.16em;color:rgba(246,238,240,.4)">{{ f.scoreLabel }}</div>
+                <sc-if value="{{ f.hasDuo }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size:10.5px;letter-spacing:.05em;color:rgba(246,238,240,.42);margin-top:5px;white-space:nowrap">{{ f.duoTxt }}</div>
+                </sc-if>
+              </div>
+            </div>
+            <p style="margin:0;font-size:13.5px;line-height:1.55;color:rgba(246,238,240,.55);text-wrap:pretty">{{ f.resume }}</p>
+            <div style="padding:12px 14px;border-left:2px solid #ff2d4f;background:rgba(255,45,79,.06)">
+              <div style="font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#ff2d4f;margin-bottom:8px">Pourquoi lui</div>
+              <div style="font-size:12.5px;line-height:1.5;color:rgba(246,238,240,.75)">{{ f.why }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ f.criteria }}" as="c" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="flex:0 0 62px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(246,238,240,.42)">{{ c.label }}</div>
+                  <div style="flex:1;height:3px;background:rgba(246,238,240,.09);overflow:hidden"><div style="{{ c.barStyle }}"></div></div>
+                  <div style="flex:0 0 26px;text-align:right;font-size:10.5px;color:rgba(246,238,240,.5)">{{ c.value }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px">
+              <button sc-camel-on-click="{{ f.onOpen }}" style="padding:11px 18px;background:#ff2d4f;color:#fff;font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="background:#ff4f6c">Voir la fiche</button>
+              <a href="{{ f.watchUrl }}" target="_blank" rel="noopener noreferrer" style="padding:11px 16px;border:1px solid rgba(246,238,240,.2);font-size:12.5px;color:rgba(246,238,240,.7);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="border-color:#ff2d4f;color:#ff2d4f">Où le voir</a>
+              <sc-if value="{{ showLists }}" hint-placeholder-val="{{ false }}">
+                <button sc-camel-on-click="{{ f.onSave }}" title="{{ f.saveTitle }}" style="{{ f.saveStyle }}" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ f.saveLabel }}</button>
+              </sc-if>
+              <sc-if value="{{ showLists }}" hint-placeholder-val="{{ false }}">
+                <button sc-camel-on-click="{{ f.onSeen }}" title="{{ f.seenTitle }}" style="{{ f.seenStyle }}" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ f.seenLabel }}</button>
+              </sc-if>
+              <button sc-camel-on-click="{{ f.onSkip }}" style="padding:11px 14px;border:1px solid rgba(246,238,240,.1);font-size:12.5px;color:rgba(246,238,240,.42);text-transform:uppercase;letter-spacing:.04em" style-hover="border-color:rgba(255,45,79,.6);color:#ff8fa1">Pas lui</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{ isFocus }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:55;background:#0c070a;overflow-y:auto;animation:cIn .26s both">
+  <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(70% 46% at 50% 0%, rgba(255,45,79,.2) 0%, transparent 72%)"></div>
+  <div style="position:relative;min-height:100%;display:flex;flex-direction:column;max-width:1020px;margin:0 auto;padding:clamp(14px,3vh,30px) clamp(18px,3vw,34px) clamp(24px,5vh,52px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:clamp(16px,3vh,30px)">
+      <div style="font-family:Anton,Impact,sans-serif;font-size:18px;text-transform:uppercase">Ciné<span style="color:#ff2d4f">Mood</span></div>
+      <button sc-camel-on-click="{{ quitQuiz }}" style="padding:9px 16px;border:1px solid rgba(246,238,240,.18);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:rgba(246,238,240,.6);white-space:nowrap" style-hover="border-color:#ff2d4f;color:#ff2d4f">Quitter ✕</button>
+    </div>
+
+    <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ true }}">
+    <div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+        <button sc-camel-on-click="{{ back }}" style="width:36px;height:36px;border:1px solid rgba(246,238,240,.2);display:flex;align-items:center;justify-content:center;flex:none" style-hover="border-color:#ff2d4f;color:#ff2d4f">←</button>
+        <div style="flex:1;min-width:130px;display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ trail }}" as="t" hint-placeholder-count="3">
+            <span style="{{ t.style }}">{{ t.txt }}</span>
+          </sc-for>
+        </div>
+        <sc-if value="{{ duoOn }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;background:rgba(255,45,79,.18);color:#ff8fa1;white-space:nowrap">Duo · {{ duoWho }}</div>
+        </sc-if>
+        <div style="font-size:12px;letter-spacing:.1em;color:#ff2d4f">{{ stepLabel }}</div>
+      </div>
+      <div style="height:3px;background:rgba(246,238,240,.08);overflow:hidden;margin-bottom:clamp(24px,4vw,44px)"><div style="{{ barStyle }}"></div></div>
+
+      <div key="{{ stepKey }}" style="{{ stepAnim }}">
+        <div style="display:flex;align-items:center;gap:9px;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px;animation:cIn .45s ease both"><span style="width:20px;height:2px;background:#ff2d4f;display:inline-block;animation:cDash .5s cubic-bezier(.19,1,.22,1) both"></span>{{ q.kicker }}</div>
+        <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(27px,4.8vw,52px);line-height:1.08;text-transform:uppercase;margin:0 0 clamp(22px,3.4vw,38px);text-wrap:balance;animation:cRise .5s cubic-bezier(.19,1,.22,1) both">{{ q.titre }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px">
+          <sc-for list="{{ options }}" as="o" hint-placeholder-count="4">
+            <button sc-camel-on-click="{{ o.onClick }}" class="cm-opt" style="{{ o.style }}" style-hover="border-color:#ff2d4f;background:linear-gradient(155deg,rgba(255,45,79,.20),rgba(255,45,79,.04) 62%);transform:translateY(-4px);box-shadow:0 18px 36px -22px rgba(255,45,79,.9)" style-active="transform:scale(.972)">
+              <span class="cm-opt-bar" style="position:absolute;left:0;top:0;bottom:0;width:3px;background:#ff2d4f;transform:scaleY(0);transform-origin:top;transition:transform .26s cubic-bezier(.2,.8,.3,1)"></span>
+              <span style="font-size:10.5px;letter-spacing:.18em;color:rgba(255,45,79,.85);font-variant-numeric:tabular-nums">{{ o.num }}</span>
+              <span style="font-size:clamp(17px,2.2vw,20px);font-weight:600;letter-spacing:-.015em;text-align:left;line-height:1.15">{{ o.label }}</span>
+              <span style="font-size:12.5px;line-height:1.45;color:rgba(246,238,240,.45);text-align:left;text-wrap:pretty">{{ o.sub }}</span>
+              <span class="cm-opt-go" style="position:absolute;right:15px;bottom:14px;font-size:15px;color:#ff2d4f;opacity:0;transform:translateX(-6px);transition:all .24s cubic-bezier(.2,.8,.3,1)">→</span>
+            </button>
+          </sc-for>
+        </div>
+        <div class="cm-nav" style="margin-top:18px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,238,240,.28)">Touches 1–{{ optionCount }} pour répondre · ← pour revenir</div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isHandover }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 0">
+      <div style="font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:18px">Mode Duo · étape 2</div>
+      <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(26px,4.6vw,46px);line-height:1.08;text-transform:uppercase;margin:0 0 18px;text-wrap:balance;animation:cUp .4s cubic-bezier(.2,.8,.3,1) both">Passe l’écran<br>à l’autre personne</h2>
+      <p style="margin:0 0 30px;font-size:15px;line-height:1.6;color:rgba(246,238,240,.55);max-width:440px;text-wrap:pretty">Le premier profil est enregistré. À son tour de répondre, sans voir tes réponses — on ne gardera que les films qui tiennent pour vous deux.</p>
+      <button sc-camel-on-click="{{ startPhaseTwo }}" style="padding:15px 30px;background:#ff2d4f;color:#fff;font-size:14.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase" style-hover="background:#ff4f6c">C’est à moi</button>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 0">
+      <div style="width:56px;height:56px;border:2px solid rgba(246,238,240,.14);border-top-color:#ff2d4f;border-radius:50%;animation:cSpin 1s linear infinite;margin-bottom:26px"></div>
+      <div key="{{ loadingLine }}" style="font-family:Anton,Impact,sans-serif;font-size:clamp(18px,2.6vw,26px);text-transform:uppercase;margin-bottom:16px;animation:cUp .34s cubic-bezier(.2,.8,.3,1) both">{{ loadingLine }}</div>
+      <div style="position:relative;width:min(260px,66vw);height:2px;background:rgba(246,238,240,.1);overflow:hidden;margin-bottom:18px">
+        <div style="position:absolute;inset:0;width:42%;background-image:linear-gradient(90deg,transparent,#ff2d4f,transparent);animation:cSweep 1.15s ease-in-out infinite"></div>
+      </div>
+      <div style="font-size:11.5px;line-height:1.7;color:rgba(246,238,240,.35);max-width:520px">{{ loadingSub }}</div>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ filmOpen }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeFilm }}" style="position:fixed;inset:0;z-index:70;background:rgba(8,4,6,.9);backdrop-filter:blur(10px);display:flex;justify-content:center;overflow-y:auto;padding:clamp(0px,4vh,48px) clamp(0px,2vw,14px);animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:960px;height:max-content;background:#160d11;border:1px solid rgba(246,238,240,.1);overflow:hidden;animation:cUp .34s cubic-bezier(.19,1,.22,1) both">
+    <sc-if value="{{ filmLoading }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:80px 24px;display:flex;justify-content:center">
+        <div style="width:42px;height:42px;border:2px solid rgba(246,238,240,.14);border-top-color:#ff2d4f;border-radius:50%;animation:cSpin 1s linear infinite"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ filmReady }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="{{ film.bannerStyle }}">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(0deg,#160d11 6%,rgba(22,13,17,.35) 70%)"></div>
+        <button sc-camel-on-click="{{ closeFilm }}" aria-label="Fermer la fiche" style="position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(8,4,6,.65);border:1px solid rgba(246,238,240,.16);color:#f6eef0">✕</button>
+      </div>
+      <div style="padding:0 clamp(16px,3.4vw,34px) clamp(26px,4vw,38px);margin-top:-70px;position:relative">
+        <div class="cm-modal-wrap" style="display:flex;flex-wrap:wrap;gap:22px;margin-bottom:26px">
+          <div class="cm-modal-poster" style="{{ film.posterWrap }}"><div style="{{ film.posterStyle }}"></div></div>
+          <div class="cm-modal-body" style="flex:1 1 280px;min-width:0;padding-top:74px">
+            <h3 style="font-family:Anton,Impact,sans-serif;font-size:clamp(24px,3.8vw,40px);line-height:1.1;text-transform:uppercase;margin:0 0 10px;text-wrap:balance">{{ film.titre }}</h3>
+            <div style="font-size:12px;letter-spacing:.05em;color:rgba(246,238,240,.48);margin-bottom:16px">{{ film.meta }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px">
+              <sc-for list="{{ film.tags }}" as="t" hint-placeholder-count="3">
+                <span style="padding:6px 11px;border:1px solid rgba(246,238,240,.14);font-size:11.5px;color:rgba(246,238,240,.7);white-space:nowrap">{{ t.txt }}</span>
+              </sc-for>
+            </div>
+            <div style="font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#ff2d4f;margin-bottom:9px">Synopsis</div>
+            <p style="margin:0 0 20px;font-size:14px;line-height:1.65;color:rgba(246,238,240,.68);text-wrap:pretty">{{ film.synopsis }}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:9px">
+              <a href="{{ film.watchUrl }}" target="_blank" rel="noopener noreferrer" style="padding:13px 22px;background:#ff2d4f;color:#fff;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="background:#ff4f6c">Où le voir</a>
+              <sc-if value="{{ showLists }}" hint-placeholder-val="{{ false }}">
+                <button sc-camel-on-click="{{ film.onSave }}" style="{{ film.saveStyle }}" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ film.saveLabel }}</button>
+              </sc-if>
+              <sc-if value="{{ showLists }}" hint-placeholder-val="{{ false }}">
+                <button sc-camel-on-click="{{ film.onSeen }}" style="{{ film.seenStyle }}" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ film.seenLabel }}</button>
+              </sc-if>
+              <a href="{{ film.tmdbUrl }}" target="_blank" rel="noopener noreferrer" style="padding:13px 18px;border:1px solid rgba(246,238,240,.2);font-size:13px;color:rgba(246,238,240,.7);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="border-color:#ff2d4f;color:#ff2d4f">Fiche TMDB</a>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ film.hasTrailer }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom:26px">
+            <div style="font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#ff2d4f;margin-bottom:10px">Bande-annonce</div>
+            <div style="position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#0a0507;border:1px solid rgba(246,238,240,.1)">
+              <sc-if value="{{ film.playing }}" hint-placeholder-val="{{ false }}">
+                <iframe src="{{ film.trailerUrl }}" title="Bande-annonce" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="origin-when-cross-origin" allowfullscreen="allowfullscreen" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+              </sc-if>
+              <sc-if value="{{ film.notPlaying }}" hint-placeholder-val="{{ true }}">
+                <button sc-camel-on-click="{{ playTrailer }}" style="{{ film.thumbStyle }}">
+                  <span style="width:68px;height:68px;border-radius:50%;background:#ff2d4f;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff">▶</span>
+                </button>
+              </sc-if>
+            </div>
+            <div style="margin-top:9px;font-size:12px;color:rgba(246,238,240,.38)">Le lecteur ne démarre pas ? <a href="{{ film.youtubeUrl }}" target="_blank" rel="noopener noreferrer">Ouvrir sur YouTube</a></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ film.noTrailer }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom:26px;padding:16px;border:1px dashed rgba(246,238,240,.16);font-size:13px;color:rgba(246,238,240,.45)">Aucune bande-annonce disponible pour ce titre.</div>
+        </sc-if>
+
+        <div>
+          <div style="font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px">Distribution</div>
+          <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:6px">
+            <sc-for list="{{ film.cast }}" as="c" hint-placeholder-count="6">
+              <div style="flex:none;width:106px">
+                <div style="{{ c.photoStyle }}"></div>
+                <div style="font-size:12.5px;font-weight:600;line-height:1.3;margin-top:8px">{{ c.nom }}</div>
+                <div style="font-size:11.5px;line-height:1.3;color:rgba(246,238,240,.4);margin-top:2px">{{ c.role }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ film.noCast }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size:13px;color:rgba(246,238,240,.42)">Distribution non renseignée.</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ legalOpen }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeLegal }}" style="position:fixed;inset:0;z-index:90;background:rgba(8,4,6,.92);backdrop-filter:blur(10px);display:flex;justify-content:center;padding:clamp(0px,5vh,60px) clamp(0px,3vw,16px);animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:820px;max-height:100%;display:flex;flex-direction:column;background:#160d11;border:1px solid rgba(246,238,240,.1)">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px clamp(16px,3vw,26px);border-bottom:1px solid rgba(246,238,240,.09);flex:none">
+      <div style="display:flex;gap:clamp(12px,2.4vw,24px);overflow-x:auto">
+        <sc-for list="{{ legalTabs }}" as="t" hint-placeholder-count="3">
+          <button sc-camel-on-click="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+      <button sc-camel-on-click="{{ closeLegal }}" aria-label="Fermer" style="width:36px;height:36px;border:1px solid rgba(246,238,240,.16);flex:none">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:clamp(20px,3vw,30px)">
+      <h3 style="font-family:Anton,Impact,sans-serif;font-size:clamp(22px,3.4vw,32px);line-height:1.15;text-transform:uppercase;margin:0 0 12px">{{ legalTitle }}</h3>
+      <p style="margin:0 0 26px;font-size:13.5px;line-height:1.65;color:rgba(246,238,240,.55);text-wrap:pretty">{{ legalIntro }}</p>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ legalBlocks }}" as="b" hint-placeholder-count="4">
+          <div>
+            <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#ff2d4f;margin-bottom:11px">{{ b.t }}</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ b.lines }}" as="l" hint-placeholder-count="2">
+                <p style="margin:0;font-size:13.5px;line-height:1.7;color:rgba(246,238,240,.72);text-wrap:pretty">{{ l.txt }}</p>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:30px;padding-top:18px;border-top:1px solid rgba(246,238,240,.08);font-size:11.5px;line-height:1.6;color:rgba(246,238,240,.34)">Dernière mise à jour : {{ legalMaj }}. Les mentions entre crochets restent à compléter par l’éditeur.</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ paywallOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:75;background:#0c070a;overflow-y:auto;display:flex;justify-content:center;align-items:center;padding:clamp(16px,5vh,60px) 16px;animation:cIn .24s both">
+  <div style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(66% 44% at 50% 0%, rgba(255,45,79,.22) 0%, transparent 72%)"></div>
+  <div style="position:relative;width:100%;max-width:620px;text-align:center;animation:cUp .4s cubic-bezier(.19,1,.22,1) both">
+    <div style="font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:16px">{{ paywallKicker }}</div>
+    <h2 style="font-family:Anton,Impact,sans-serif;font-size:clamp(28px,5vw,52px);line-height:1.06;text-transform:uppercase;margin:0 0 16px;text-wrap:balance">{{ paywallTitle }}</h2>
+    <p style="margin:0 auto 26px;font-size:15px;line-height:1.6;color:rgba(246,238,240,.6);max-width:460px;text-wrap:pretty">{{ paywallTxt }}</p>
+    <div style="border:1px solid rgba(255,45,79,.34);background:linear-gradient(150deg,rgba(255,45,79,.12),rgba(22,13,17,.9) 64%);padding:clamp(22px,3vw,30px);text-align:left;margin-bottom:20px">
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;margin-bottom:18px">
+        <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(30px,4.2vw,44px);line-height:1;text-transform:uppercase">{{ price }}</div>
+        <div style="font-size:13px;color:rgba(246,238,240,.55)">{{ pricePeriod }} · sans engagement</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px">
+        <sc-for list="{{ perks }}" as="p" hint-placeholder-count="6">
+          <div style="display:flex;gap:11px;align-items:flex-start">
+            <span style="flex:none;width:18px;height:18px;margin-top:2px;background:#ff2d4f;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">✓</span>
+            <div style="min-width:0">
+              <div style="font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px">{{ p.t }}</div>
+              <div style="font-size:12.5px;line-height:1.5;color:rgba(246,238,240,.52);text-wrap:pretty">{{ p.d }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ showTerms }}" hint-placeholder-val="{{ true }}">
+        <button sc-camel-on-click="{{ toggleTerms }}" style="display:flex;align-items:flex-start;gap:11px;text-align:left;margin-bottom:18px;width:100%">
+          <span style="{{ termsBoxStyle }}">{{ termsMark }}</span>
+          <span style="font-size:12.5px;line-height:1.55;color:rgba(246,238,240,.62)">J’accepte les conditions générales et je demande l’accès immédiat au service, en reconnaissant renoncer à mon droit de rétractation de 14 jours.</span>
+        </button>
+      </sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button sc-camel-on-click="{{ subscribe }}" style="{{ subscribeBtnStyle }}" style-hover="background:#ff4f6c">{{ subscribeCta }}</button>
+        <button sc-camel-on-click="{{ closePaywall }}" style="padding:14px 20px;border:1px solid rgba(246,238,240,.2);font-size:13.5px;color:rgba(246,238,240,.65);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="border-color:rgba(246,238,240,.5);color:#f6eef0">Plus tard</button>
+      </div>
+    </div>
+    <div style="font-size:12px;line-height:1.6;color:rgba(246,238,240,.34)">{{ paywallFine }}</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ authVisible }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeAuth }}" style="position:fixed;inset:0;z-index:85;background:rgba(8,4,6,.9);backdrop-filter:blur(10px);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:clamp(16px,8vh,90px) 16px;animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:440px;background:#160d11;border:1px solid rgba(246,238,240,.1);padding:clamp(22px,3vw,30px);animation:cUp .3s cubic-bezier(.19,1,.22,1) both">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:6px">
+      <h3 style="font-family:Anton,Impact,sans-serif;font-size:26px;line-height:1.15;text-transform:uppercase;margin:0">{{ authTitle }}</h3>
+      <button sc-camel-on-click="{{ closeAuth }}" aria-label="Fermer" style="width:34px;height:34px;border:1px solid rgba(246,238,240,.16);flex:none">✕</button>
+    </div>
+    <p style="margin:0 0 22px;font-size:13px;line-height:1.55;color:rgba(246,238,240,.5)">{{ authSub }}</p>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:16px">
+      <input value="{{ authEmail }}" sc-camel-on-change="{{ onAuthEmail }}" type="email" placeholder="Adresse e-mail" style="padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:14.5px;outline:none">
+      <input value="{{ authPass }}" sc-camel-on-change="{{ onAuthPass }}" type="password" placeholder="Mot de passe (8 car., lettres + chiffres)" style="padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:14.5px;outline:none">
+    </div>
+    <sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-bottom:14px;padding:11px 13px;border:1px solid rgba(255,45,79,.4);background:rgba(255,45,79,.09);font-size:12.5px;line-height:1.5">{{ authError }}</div>
+    </sc-if>
+    <sc-if value="{{ showTurnstile }}" hint-placeholder-val="{{ false }}">
+      <div ref="{{ turnstileRef }}" style="display:flex;justify-content:center;margin-bottom:14px;min-height:65px"></div>
+    </sc-if>
+    <button sc-camel-on-click="{{ submitAuth }}" style="{{ authCtaStyle }}" style-hover="background:#ff4f6c">{{ authCta }}</button>
+    <div style="display:flex;flex-direction:column;gap:9px;align-items:center">
+      <button sc-camel-on-click="{{ toggleAuthMode }}" style="font-size:12.5px;color:rgba(246,238,240,.5)" style-hover="color:#ff2d4f">{{ authSwitch }}</button>
+      <sc-if value="{{ showForgot }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ askForgot }}" style="font-size:12px;color:rgba(246,238,240,.38);text-decoration:underline;text-underline-offset:3px" style-hover="color:#ff2d4f">Mot de passe oublié ?</button>
+      </sc-if>
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(246,238,240,.08);font-size:11.5px;line-height:1.6;color:rgba(246,238,240,.32)">{{ authFine }}</div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ activating }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:95;background:rgba(8,4,6,.96);backdrop-filter:blur(14px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 20px;animation:cIn .2s both">
+  <div style="width:52px;height:52px;border:2px solid rgba(246,238,240,.14);border-top-color:#ff2d4f;border-radius:50%;animation:cSpin 1s linear infinite;margin-bottom:26px"></div>
+  <div style="font-family:Anton,Impact,sans-serif;font-size:clamp(22px,4vw,34px);line-height:1.1;text-transform:uppercase;margin-bottom:14px">Paiement accepté</div>
+  <div style="font-size:14px;line-height:1.6;color:rgba(246,238,240,.55);max-width:380px;text-wrap:pretty">On active ton accès illimité. Quelques secondes, ne ferme pas la page.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ activated }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ dismissActivated }}" style="position:fixed;inset:0;z-index:95;background:rgba(8,4,6,.94);backdrop-filter:blur(12px);display:flex;justify-content:center;align-items:center;padding:20px;animation:cIn .2s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:430px;background:#160d11;border:1px solid rgba(255,45,79,.45);padding:clamp(24px,3.4vw,34px);text-align:center;animation:cUp .34s cubic-bezier(.19,1,.22,1) both">
+    <div style="width:54px;height:54px;margin:0 auto 20px;background:#ff2d4f;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px">✓</div>
+    <h3 style="font-family:Anton,Impact,sans-serif;font-size:clamp(24px,4vw,32px);line-height:1.1;text-transform:uppercase;margin:0 0 12px">Te voilà en illimité</h3>
+    <p style="margin:0 0 22px;font-size:13.5px;line-height:1.6;color:rgba(246,238,240,.58);text-wrap:pretty">Parcours sans compteur, mode Duo, ma liste et historique. Ton abonnement suit ton compte : connecte-toi avec cette adresse sur n’importe quel appareil pour le retrouver.</p>
+    <button sc-camel-on-click="{{ startFromWelcome }}" style="width:100%;padding:14px;background:#ff2d4f;color:#fff;font-size:13.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:9px" style-hover="background:#ff4f6c">Trouver un film</button>
+    <button sc-camel-on-click="{{ dismissActivated }}" style="width:100%;font-size:12.5px;color:rgba(246,238,240,.45)" style-hover="color:#ff2d4f">Plus tard</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ codeShown }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:89;background:rgba(8,4,6,.94);backdrop-filter:blur(12px);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:clamp(16px,8vh,90px) 16px;animation:cIn .18s both">
+  <div style="width:100%;max-width:460px;background:#160d11;border:1px solid rgba(255,45,79,.4);padding:clamp(22px,3vw,30px);animation:cUp .3s cubic-bezier(.19,1,.22,1) both">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#ff2d4f;margin-bottom:12px">Note-le maintenant</div>
+    <h3 style="font-family:Anton,Impact,sans-serif;font-size:26px;line-height:1.15;text-transform:uppercase;margin:0 0 12px">Ton code de secours</h3>
+    <p style="margin:0 0 20px;font-size:13.5px;line-height:1.6;color:rgba(246,238,240,.58);text-wrap:pretty">C’est la seule façon de récupérer ton compte si tu perds ton mot de passe. Ton abonnement et tes listes y sont attachés. Nous ne pouvons pas te le redonner.</p>
+    <div style="padding:18px;border:1px dashed rgba(255,45,79,.5);background:rgba(255,45,79,.07);font-family:ui-monospace,Menlo,monospace;font-size:clamp(17px,4.4vw,23px);letter-spacing:.14em;text-align:center;margin-bottom:14px;word-break:break-all">{{ recoveryCode }}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:9px">
+      <button sc-camel-on-click="{{ copyCode }}" style="flex:1 1 auto;padding:13px;border:1px solid rgba(246,238,240,.2);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ copyLabel }}</button>
+      <button sc-camel-on-click="{{ dismissCode }}" style="flex:1 1 auto;padding:13px;background:#ff2d4f;color:#fff;font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap" style-hover="background:#ff4f6c">C’est noté</button>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ recoverVisible }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeRecover }}" style="position:fixed;inset:0;z-index:87;background:rgba(8,4,6,.92);backdrop-filter:blur(10px);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:clamp(16px,8vh,90px) 16px;animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:440px;background:#160d11;border:1px solid rgba(246,238,240,.1);padding:clamp(22px,3vw,30px);animation:cUp .3s cubic-bezier(.19,1,.22,1) both">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:8px">
+      <h3 style="font-family:Anton,Impact,sans-serif;font-size:25px;line-height:1.15;text-transform:uppercase;margin:0">Mot de passe perdu</h3>
+      <button sc-camel-on-click="{{ closeRecover }}" aria-label="Fermer" style="width:34px;height:34px;border:1px solid rgba(246,238,240,.16);flex:none">✕</button>
+    </div>
+    <p style="margin:0 0 20px;font-size:13px;line-height:1.55;color:rgba(246,238,240,.5);text-wrap:pretty">{{ recIntro }}</p>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:16px">
+      <input value="{{ recEmail }}" sc-camel-on-change="{{ onRecEmail }}" type="email" placeholder="Adresse e-mail" style="padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:14.5px;outline:none">
+      <sc-if value="{{ recCodeMode }}" hint-placeholder-val="{{ false }}">
+        <input value="{{ recCode }}" sc-camel-on-change="{{ onRecCode }}" placeholder="XXXX-XXXX-XXXX-XXXX" style="padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-family:ui-monospace,Menlo,monospace;font-size:14.5px;letter-spacing:.1em;outline:none">
+        <input value="{{ recPass }}" sc-camel-on-change="{{ onRecPass }}" type="password" placeholder="Nouveau mot de passe" style="padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:14.5px;outline:none">
+      </sc-if>
+    </div>
+    <sc-if value="{{ recError }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ recNoteStyle }}">{{ recError }}</div>
+    </sc-if>
+    <button sc-camel-on-click="{{ submitRecover }}" style="width:100%;padding:14px;background:#ff2d4f;color:#fff;font-size:13.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px" style-hover="background:#ff4f6c">{{ recCta }}</button>
+    <sc-if value="{{ recShowSwitch }}" hint-placeholder-val="{{ false }}">
+      <button sc-camel-on-click="{{ toggleRecMode }}" style="width:100%;font-size:12px;color:rgba(246,238,240,.4);text-decoration:underline;text-underline-offset:3px" style-hover="color:#ff2d4f">{{ recSwitchLabel }}</button>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ resetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:88;background:rgba(8,4,6,.94);backdrop-filter:blur(12px);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:clamp(16px,8vh,90px) 16px;animation:cIn .18s both">
+  <div style="width:100%;max-width:440px;background:#160d11;border:1px solid rgba(246,238,240,.1);padding:clamp(22px,3vw,30px);animation:cUp .3s cubic-bezier(.19,1,.22,1) both">
+    <h3 style="font-family:Anton,Impact,sans-serif;font-size:26px;line-height:1.15;text-transform:uppercase;margin:0 0 8px">Nouveau mot de passe</h3>
+    <p style="margin:0 0 22px;font-size:13px;line-height:1.55;color:rgba(246,238,240,.5)">Choisis un mot de passe : au moins 8 caractères, une lettre et un chiffre. Toutes tes autres sessions seront fermées.</p>
+    <input value="{{ resetPass }}" sc-camel-on-change="{{ onResetPass }}" type="password" placeholder="Nouveau mot de passe" style="width:100%;padding:13px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:14.5px;outline:none;margin-bottom:14px">
+    <sc-if value="{{ resetError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-bottom:14px;padding:11px 13px;border:1px solid rgba(255,45,79,.4);background:rgba(255,45,79,.09);font-size:12.5px;line-height:1.5">{{ resetError }}</div>
+    </sc-if>
+    <button sc-camel-on-click="{{ submitReset }}" style="width:100%;padding:14px;background:#ff2d4f;color:#fff;font-size:13.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px" style-hover="background:#ff4f6c">Enregistrer</button>
+    <button sc-camel-on-click="{{ cancelReset }}" style="width:100%;font-size:12.5px;color:rgba(246,238,240,.45)" style-hover="color:#ff2d4f">Annuler</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ accountVisible }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeAccount }}" style="position:fixed;inset:0;z-index:84;background:rgba(8,4,6,.9);backdrop-filter:blur(10px);display:flex;justify-content:center;align-items:flex-start;overflow-y:auto;padding:clamp(16px,8vh,90px) 16px;animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:460px;background:#160d11;border:1px solid rgba(246,238,240,.1);padding:clamp(22px,3vw,30px);animation:cUp .3s cubic-bezier(.19,1,.22,1) both">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px">
+      <div style="min-width:0">
+        <h3 style="font-family:Anton,Impact,sans-serif;font-size:24px;line-height:1.15;text-transform:uppercase;margin:0 0 6px">{{ accountTitle }}</h3>
+        <sc-if value="{{ showAccountId }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:12.5px;color:rgba(246,238,240,.5);word-break:break-all">{{ accountEmail }}</div>
+        </sc-if>
+        <sc-if value="{{ noAccounts }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:12.5px;line-height:1.5;color:rgba(246,238,240,.45);text-wrap:pretty">Gardé dans ce navigateur, sans compte ni inscription.</div>
+        </sc-if>
+      </div>
+      <button sc-camel-on-click="{{ closeAccount }}" aria-label="Fermer" style="width:34px;height:34px;border:1px solid rgba(246,238,240,.16);flex:none">✕</button>
+    </div>
+
+    <sc-if value="{{ showAccountId }}" hint-placeholder-val="{{ true }}">
+    <div style="border:1px solid rgba(246,238,240,.1);padding:16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+        <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,238,240,.45)">Formule</div>
+        <div style="{{ planTagStyle }}">{{ planTag }}</div>
+      </div>
+      <div style="font-size:14px;line-height:1.55;color:rgba(246,238,240,.72)">{{ planDetail }}</div>
+      <sc-if value="{{ showGauge }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:14px">
+          <div style="display:flex;gap:5px;margin-bottom:8px">
+            <sc-for list="{{ gauge }}" as="g" hint-placeholder-count="3"><div style="{{ g.style }}"></div></sc-for>
+          </div>
+          <div style="font-size:11.5px;color:rgba(246,238,240,.4)">{{ gaugeTxt }}</div>
+        </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ showLists }}" hint-placeholder-val="{{ false }}">
+      <div style="border:1px solid rgba(246,238,240,.1);margin-bottom:16px">
+        <div style="display:flex;border-bottom:1px solid rgba(246,238,240,.09)">
+          <sc-for list="{{ accTabs }}" as="t" hint-placeholder-count="2">
+            <button sc-camel-on-click="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <div style="max-height:240px;overflow-y:auto;padding:12px">
+          <sc-for list="{{ accItems }}" as="i" hint-placeholder-count="3">
+            <div style="display:flex;gap:11px;align-items:center;padding:8px 4px">
+              <div style="{{ i.artStyle }}"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13.5px;font-weight:600;line-height:1.3">{{ i.titre }}</div>
+                <div style="font-size:11px;letter-spacing:.04em;color:rgba(246,238,240,.4);margin-top:3px">{{ i.meta }}</div>
+              </div>
+              <button sc-camel-on-click="{{ i.onAction }}" title="{{ i.actionTitle }}" style="flex:none;width:30px;height:30px;border:1px solid rgba(246,238,240,.14);font-size:13px;color:rgba(246,238,240,.5)" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ i.action }}</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{ accEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:22px 8px;text-align:center;font-size:12.5px;line-height:1.6;color:rgba(246,238,240,.36);text-wrap:pretty">{{ accEmptyTxt }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <sc-if value="{{ showUpgrade }}" hint-placeholder-val="{{ true }}">
+        <button sc-camel-on-click="{{ openPricing }}" style="padding:14px;background:#ff2d4f;color:#fff;font-size:13.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em" style-hover="background:#ff4f6c">Passer à l'illimité · {{ price }}</button>
+      </sc-if>
+      <sc-if value="{{ isPro }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ cancelSub }}" style="padding:13px;border:1px solid rgba(246,238,240,.18);font-size:13px;color:rgba(246,238,240,.6);text-transform:uppercase;letter-spacing:.04em" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ cancelLabel }}</button>
+      </sc-if>
+      <sc-if value="{{ canSync }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ syncSub }}" style="padding:12px;border:1px solid rgba(246,238,240,.14);font-size:12px;line-height:1.5;color:rgba(246,238,240,.5);text-wrap:pretty" style-hover="border-color:#ff2d4f;color:#ff2d4f">{{ syncLabel }}</button>
+      </sc-if>
+      <sc-if value="{{ needsVerify }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ resendVerify }}" style="padding:13px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.07);font-size:12.5px;color:#f6eef0;letter-spacing:.02em;line-height:1.5;text-wrap:pretty">Adresse non confirmée — renvoyer le lien</button>
+      </sc-if>
+      <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ logout }}" style="padding:13px;border:1px solid rgba(246,238,240,.12);font-size:13px;color:rgba(246,238,240,.45);text-transform:uppercase;letter-spacing:.04em" style-hover="color:#f6eef0">Se déconnecter</button>
+      </sc-if>
+      <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ openAuth }}" style="padding:13px;border:1px solid rgba(246,238,240,.18);font-size:13px;color:rgba(246,238,240,.7);text-transform:uppercase;letter-spacing:.04em" style-hover="border-color:#ff2d4f;color:#ff2d4f">Se connecter ou créer un compte</button>
+      </sc-if>
+      <sc-if value="{{ noAccounts }}" hint-placeholder-val="{{ false }}">
+        <button sc-camel-on-click="{{ askDelete }}" style="{{ deleteStyle }}" style-hover="border-color:rgba(255,45,79,.6);color:#ff8fa1">{{ wipeLabel }}</button>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ showData }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(246,238,240,.08)">
+        <div style="font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,238,240,.34);margin-bottom:11px">Mes données</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-if value="{{ canExport }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ exportData }}" style="padding:10px 14px;border:1px solid rgba(246,238,240,.14);font-size:11.5px;letter-spacing:.04em;color:rgba(246,238,240,.55)" style-hover="border-color:#ff2d4f;color:#ff2d4f">Exporter</button>
+          </sc-if>
+          <sc-if value="{{ canRotate }}" hint-placeholder-val="{{ false }}">
+            <button sc-camel-on-click="{{ rotateCode }}" style="padding:10px 14px;border:1px solid rgba(246,238,240,.14);font-size:11.5px;letter-spacing:.04em;color:rgba(246,238,240,.55)" style-hover="border-color:#ff2d4f;color:#ff2d4f">Nouveau code de secours</button>
+          </sc-if>
+          <button sc-camel-on-click="{{ askDelete }}" style="{{ deleteStyle }}" style-hover="border-color:rgba(255,45,79,.6);color:#ff8fa1">{{ deleteLabel }}</button>
+        </div>
+        <sc-if value="{{ confirmDelete }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:11px;font-size:11.5px;line-height:1.6;color:rgba(246,238,240,.5);text-wrap:pretty">Ton compte, ta liste et ton historique seront effacés. L’abonnement en cours est résilié. Clique une seconde fois pour confirmer.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}">
+<div sc-camel-on-click="{{ closeSearch }}" style="position:fixed;inset:0;z-index:80;background:rgba(8,4,6,.9);backdrop-filter:blur(10px);display:flex;justify-content:center;padding:clamp(0px,7vh,90px) clamp(0px,3vw,16px);animation:cIn .18s both">
+  <div sc-camel-on-click="{{ stop }}" style="width:100%;max-width:760px;max-height:100%;display:flex;flex-direction:column;background:#160d11;border:1px solid rgba(246,238,240,.1);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(246,238,240,.09)">
+      <input value="{{ searchQ }}" sc-camel-on-change="{{ onSearch }}" placeholder="Chercher un film…" style="flex:1;padding:12px 14px;border:1px solid rgba(246,238,240,.16);background:rgba(246,238,240,.04);color:#f6eef0;font-size:15px;outline:none">
+      <button sc-camel-on-click="{{ closeSearch }}" aria-label="Fermer la recherche" style="width:38px;height:38px;border:1px solid rgba(246,238,240,.16)">✕</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:12px">
+      <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="4">
+        <button sc-camel-on-click="{{ r.onOpen }}" style="display:flex;gap:14px;padding:11px;width:100%;text-align:left;color:inherit" style-hover="background:rgba(255,45,79,.1)">
+          <div style="{{ r.posterStyle }}"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:15px;font-weight:600">{{ r.titre }}</div>
+            <div style="font-size:11px;letter-spacing:.05em;color:rgba(246,238,240,.42);margin-top:4px">{{ r.meta }}</div>
+            <div style="font-size:12.5px;line-height:1.45;color:rgba(246,238,240,.45);margin-top:6px">{{ r.resume }}</div>
+          </div>
+        </button>
+      </sc-for>
+      <sc-if value="{{ searchEmpty }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:26px;text-align:center;font-size:13.5px;color:rgba(246,238,240,.38)">{{ searchHint }}</div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1320,&quot;height&quot;:900},&quot;appName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;CinéMood&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;resultCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:5,&quot;min&quot;:3,&quot;max&quot;:8,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = {intro: true, screen: 'home', step: 0, path: [], excluded: [], results: [], chips: [],
+      total: 0, error: '', shelves: [], round: 0, relaxNote: '', autoWidened: false, dir: 1,
+      loadStep: 0, filmId: null, film: null, filmLoading: false, playing: false,
+      searchOpen: false, searchQ: '', searchResults: [], tab: 0, tabCache: {},
+      paywall: false, paywallReason: 'quota', accountOpen: false, catalogDown: false,
+      authOpen: false, authMode: 'signup', authEmail: '', authPass: '', authError: '', justSubscribed: false,
+      legalOpen: false, legalTab: 0, termsOk: false, termsShake: 0,
+      duo: false, duoPhase: 0, pathA: [], relaunches: 0, authBusy: false, accTab: 0,
+      resetPass: '', resetError: '', forgotSent: '', starting: false, confirmDelete: false,
+      recoveryCode: '', copied: false, recoverOpen: false, recEmail: '', recCode: '', recPass: '',
+      recError: '', recMode: 'email', recSent: false, wasPro: null, activated: false, syncing: 0};
+    this.timers = [];
+  }
+  get T() { return window.MoodflixTMDB; }
+  get A() { return window.MoodflixAccount; }
+  get L() { return window.MoodflixLegal; }
+
+  TABS = [{g: 28, l: 'Action'}, {g: 10749, l: 'Romance'}, {g: 35, l: 'Comédie'}, {g: 27, l: 'Horreur'},
+    {g: 16, l: 'Animation'}, {g: 878, l: 'Sci-Fi'}, {g: 53, l: 'Thriller'}, {g: 12, l: 'Aventure'}];
+
+  componentDidMount() {
+    if (!this.T) return void setTimeout(() => this.componentDidMount(), 250);
+    this.timers.push(setTimeout(() => this.setState({intro: false}), 2100));
+    if (this.A) {
+      this.A.onChange(() => {
+        var pro = this.A.isPro();
+        /* premier passage en abonné : on félicite une fois, pas à chaque rendu */
+        if (this.state.wasPro === false && pro && !this.A.activationPending()) {
+          this.setState({activated: true, paywall: false, wasPro: true});
+        } else this.setState({wasPro: pro});
+      });
+      this.A.boot().then(() => this.setState({wasPro: this.A.isPro()}));
+    }
+    this.loadShelves();
+    this.loadTab(0);
+    this.onKeyDown = (ev) => {
+      var st = this.state;
+      if (ev.key === 'Escape') {
+        if (st.recoveryCode) return this.dismissCode();
+        if (st.recoverOpen) return this.closeRecover();
+        if (st.legalOpen) return this.closeLegal();
+        if (st.authOpen) return this.closeAuth();
+        if (st.accountOpen) return this.closeAccount();
+        if (st.paywall) return this.closePaywall();
+        if (st.filmId) return this.closeFilm();
+        if (st.searchOpen) return this.closeSearch();
+      }
+      if (st.filmId || st.searchOpen || st.paywall || st.authOpen || st.accountOpen || st.legalOpen || st.screen !== 'quiz') return;
+      if (ev.key === 'ArrowLeft') { ev.preventDefault(); return this.back(); }
+      var n = parseInt(ev.key, 10);
+      if (!n) return;
+      var q = this.T.questionAt(st.step, st.path);
+      var o = q && q.options && q.options[n - 1];
+      if (o) { ev.preventDefault(); this.choose(q, o); }
+    };
+    window.addEventListener('keydown', this.onKeyDown);
+  }
+  componentDidUpdate() {
+    var s = this.state;
+    var locked = !!(s.filmId || s.searchOpen || s.paywall || s.authOpen || s.accountOpen || s.legalOpen || s.recoverOpen || s.recoveryCode || s.screen === 'quiz' || s.screen === 'loading');
+    try { document.body.classList.toggle('cm-locked', locked); } catch (e) {}
+  }
+  componentWillUnmount() {
+    try { document.body.classList.remove('cm-locked'); } catch (e) {}
+    this.timers.forEach(clearTimeout);
+    clearInterval(this.loadTimer);
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
+  top() { try { window.scrollTo({top: 0, behavior: 'smooth'}); } catch (e) {} }
+  skipIntro = () => this.setState({intro: false});
+
+  loadShelves() {
+    var T = this.T, self = this;
+    var fetchOne = function (def) {
+      return T.shelf(def).then(function (d) {
+        return {def: def, films: (d.results || []).filter(function (m) { return m.poster_path; }).slice(0, 12)};
+      }).catch(function () { return {def: def, films: [], failed: true}; });
+    };
+    var first = T.SHELVES.slice(0, 4), rest = T.SHELVES.slice(4);
+    Promise.all(first.map(fetchOne)).then(function (head) {
+      var down = head.every(function (sh) { return sh.failed; });
+      self.setState({shelves: head.filter(function (sh) { return sh.films.length; }), catalogDown: down});
+      if (down) return;
+      Promise.all(rest.map(fetchOne)).then(function (tail) {
+        self.setState({shelves: head.concat(tail).filter(function (sh) { return sh.films.length; })});
+      });
+    });
+  }
+  retryCatalog = () => {
+    this.setState({catalogDown: false, shelves: [], tabCache: {}});
+    this.loadShelves();
+    this.loadTab(this.state.tab);
+  };
+  loadTab(i) {
+    if (this.state.tabCache[i]) return;
+    var t = this.TABS[i];
+    this.T.shelf({q: {with_genres: t.g, 'vote_average.gte': 6.6, 'vote_count.gte': 1200, sort_by: 'popularity.desc'}})
+      .then((d) => {
+        var films = (d.results || []).filter(function (m) { return m.backdrop_path; }).slice(0, 10);
+        var cache = Object.assign({}, this.state.tabCache);
+        cache[i] = films;
+        this.setState({tabCache: cache});
+      }).catch(() => {});
+  }
+  pickTab = (i) => { this.setState({tab: i}); this.loadTab(i); };
+
+  goHome = () => { this.setState({screen: 'home', step: 0, path: [], excluded: [], dir: -1}); this.top(); };
+  quitQuiz = () => { this.setState({screen: 'home', step: 0, path: [], dir: -1}); this.top(); };
+  start = () => this.begin(false);
+  startDuo = () => {
+    var A = this.A;
+    if (A && !A.can('duo')) return this.setState({paywall: true, paywallReason: 'duo', accountOpen: false});
+    this.begin(true);
+  };
+  begin(duo) {
+    var A = this.A;
+    if (this.state.starting) return;
+    if (!A) return this.enterQuiz(duo);
+    this.setState({starting: true});
+    A.beginRun().then((r) => {
+      this.setState({starting: false});
+      if (r.error === 'quota') return this.setState({paywall: true, paywallReason: 'quota'});
+      if (r.error === 'auth') return this.setState({authOpen: true, authMode: 'signup',
+        authError: 'Crée un compte pour lancer un parcours — il porte ton quota et ton abonnement.'});
+      if (r.error) return this.setState({paywall: false, error: r.message || 'Impossible de démarrer.'});
+      this.enterQuiz(duo);
+    });
+  }
+  enterQuiz(duo) {
+    this.setState({screen: 'quiz', step: 0, path: [], pathA: [], excluded: [], results: [], error: '',
+      dir: 1, paywall: false, justSubscribed: false, duo: !!duo, duoPhase: 0, relaunches: 0});
+    this.top();
+  }
+  startPhaseTwo = () => this.setState({screen: 'quiz', step: 0, path: [], duoPhase: 1, dir: 1});
+  /* films déjà vus : jamais reproposés (abonnés) */
+  baseExcluded() {
+    var A = this.A;
+    return A && A.can('list') ? A.seenIds() : [];
+  }
+  back = () => {
+    if (this.state.step === 0) return this.setState({screen: 'home', dir: -1});
+    this.setState(function (st) { return {dir: -1, step: st.step - 1, path: st.path.slice(0, st.step - 1)}; });
+  };
+  choose = (q, o) => {
+    var st = this.state;
+    var path = st.path.slice(0, st.step);
+    path.push(Object.assign({q: q.id, value: o.v, label: o.l}, o));
+    var step = st.step + 1;
+    if (step >= this.T.TOTAL) {
+      if (st.duo && st.duoPhase === 0) return this.setState({path: path, pathA: path, screen: 'handover'});
+      this.setState({path: path});
+      if (st.duo) this.runDuo(st.pathA, path, this.baseExcluded(), 0);
+      else this.run(path, this.baseExcluded());
+    } else this.setState({path: path, step: step, dir: 1});
+  };
+
+  run(path, excluded, round) {
+    round = round || 0;
+    this.setState({screen: 'loading', error: '', loadStep: 0, excluded: excluded, round: round});
+    clearInterval(this.loadTimer);
+    this.loadTimer = setInterval(() => this.setState({loadStep: this.state.loadStep + 1}), 900);
+    var A = this.A;
+    var n = A ? A.resultCount() : (this.props.resultCount || 5);
+    this.T.recommend(path, n, excluded, round).then((out) => {
+      clearInterval(this.loadTimer);
+      if (!out.results.length) {
+        this.setState({screen: 'results', results: [], chips: out.chips,
+          error: 'Même en ouvrant tous les critères, le catalogue ne rend plus rien de neuf sur ce chemin. Reprends le parcours en changeant une réponse.'});
+        return;
+      }
+      this.setState({screen: 'results', results: out.results, chips: out.chips, total: out.total,
+        round: out.round, relaxNote: out.relaxMessage, autoWidened: !!out.autoWidened});
+      this.remember(out.results, out.chips, false);
+      this.top();
+    }).catch((e) => {
+      clearInterval(this.loadTimer);
+      this.setState({screen: 'results', results: [],
+        error: 'Le catalogue n\u2019a pas répondu (' + e.message + '). Réessaie dans un instant.'});
+    });
+  }
+  shuffle = () => {
+    var A = this.A, s = this.state;
+    if (A && s.relaunches >= A.relaunchLimit()) return this.setState({paywall: true, paywallReason: 'relaunch'});
+    var ids = s.results.map(function (e) { return e.movie.id; });
+    var next = s.excluded.concat(ids);
+    this.setState({relaunches: s.relaunches + 1});
+    if (s.duo) return this.runDuo(s.pathA, s.path, next, s.round + 1);
+    this.run(s.path, next, s.round + 1);
+  };
+  skip = (id) => {
+    var s = this.state, next = s.excluded.concat([id]);
+    if (s.duo) return this.runDuo(s.pathA, s.path, next, s.round);
+    this.run(s.path, next, s.round);
+  };
+
+  /* Mode Duo : deux profils, on ne garde que l'intersection, notée sur le plus faible des deux */
+  runDuo(pathA, pathB, excluded, round) {
+    var A = this.A, T = this.T;
+    var n = A ? A.resultCount() : 5;
+    this.setState({screen: 'loading', error: '', loadStep: 0, excluded: excluded, round: round, duo: true});
+    clearInterval(this.loadTimer);
+    this.loadTimer = setInterval(() => this.setState({loadStep: this.state.loadStep + 1}), 900);
+    Promise.all([T.recommend(pathA, 24, excluded, round), T.recommend(pathB, 24, excluded, round)])
+      .then((rs) => {
+        clearInterval(this.loadTimer);
+        var a = rs[0], b = rs[1], byId = {};
+        b.results.forEach(function (e) { byId[e.movie.id] = e; });
+        var both = a.results.filter(function (e) { return byId[e.movie.id]; }).map(function (e) {
+          var o = byId[e.movie.id];
+          var lo = Math.min(e.global, o.global), avg = (e.global + o.global) / 2;
+          return Object.assign({}, e, {global: Math.round(lo * 0.7 + avg * 0.3), duoA: e.global, duoB: o.global,
+            why: 'Il tient dans les deux profils : ' + e.global + ' % pour le premier, ' + o.global + ' % pour le second. ' + e.why});
+        }).sort(function (x, y) { return y.global - x.global; }).slice(0, n)
+          .map(function (e, i) { return Object.assign({}, e, {rank: i}); });
+        var chips = a.chips.concat(b.chips.filter(function (c) { return a.chips.indexOf(c) < 0; }));
+        if (!both.length) {
+          this.setState({screen: 'results', results: a.results.slice(0, n), chips: chips, total: a.total,
+            round: round, autoWidened: true,
+            relaxNote: 'Vos deux profils ne se recoupent sur aucun film : voici la sélection du premier, la plus proche d\u2019un terrain commun.'});
+          return this.top();
+        }
+        this.setState({screen: 'results', results: both, chips: chips, total: both.length, round: round,
+          autoWidened: false, relaxNote: both.length < n
+            ? 'Seuls ' + both.length + ' films tiennent dans vos deux profils — c\u2019est déjà un vrai terrain d\u2019entente.' : ''});
+        this.remember(both, chips, true);
+        this.top();
+      }).catch((e) => {
+        clearInterval(this.loadTimer);
+        this.setState({screen: 'results', results: [],
+          error: 'Le catalogue n\u2019a pas répondu (' + e.message + '). Réessaie dans un instant.'});
+      });
+  }
+  remember(results, chips, duo) {
+    var A = this.A;
+    if (!A || !A.can('history') || !results.length) return;
+    A.pushHistory({summary: (chips || []).slice(0, 3).join(' · '), chips: chips || [], duo: duo,
+      count: results.length,
+      top: {id: results[0].movie.id, title: results[0].movie.title,
+        poster: results[0].movie.poster_path, score: results[0].global}});
+  }
+
+  toggleSave = (m) => {
+    var A = this.A;
+    if (!A.can('list')) return this.setState({paywall: true, paywallReason: 'list', accountOpen: false, filmId: null});
+    var r = A.toggleSave(m);
+    if (r.error === 'auth') this.setState({authOpen: true, authMode: 'signup'});
+  };
+  toggleSeen = (m) => {
+    var A = this.A;
+    if (!A.can('list')) return this.setState({paywall: true, paywallReason: 'list', accountOpen: false, filmId: null});
+    var r = A.toggleSeen(m);
+    if (r.error === 'auth') this.setState({authOpen: true, authMode: 'signup'});
+  };
+  pickAccTab = (i) => this.setState({accTab: i});
+
+  openFilm = (id) => {
+    this.setState({filmId: id, film: null, filmLoading: true, playing: false});
+    this.T.full(id).then((d) => {
+      if (this.state.filmId !== id) return;
+      this.setState({film: d, filmLoading: false});
+    }).catch(() => this.setState({filmLoading: false, film: null, filmId: null}));
+  };
+  closeFilm = () => this.setState({filmId: null, film: null, filmLoading: false, playing: false});
+  playTrailer = () => this.setState({playing: true});
+  openLegal = (i) => this.setState({legalOpen: true, legalTab: i || 0});
+  closeLegal = () => this.setState({legalOpen: false});
+  toggleTerms = () => this.setState({termsOk: !this.state.termsOk});
+  openPricing = () => this.setState({paywall: true, paywallReason: 'offer', accountOpen: false});
+  closePaywall = () => this.setState({paywall: false, justSubscribed: false});
+  openAccount = () => {
+    if (!this.A.noAccounts() && !this.A.current())
+      return this.setState({authOpen: true, authMode: 'signup', authError: ''});
+    this.setState({accountOpen: true});
+  };
+  closeAccount = () => this.setState({accountOpen: false});
+  openAuth = () => this.setState({authOpen: true, accountOpen: false, authError: ''});
+  closeAuth = () => this.setState({authOpen: false, authError: '', authPass: ''});
+  toggleAuthMode = () => this.setState({authMode: this.state.authMode === 'signup' ? 'login' : 'signup', authError: ''});
+  onAuthEmail = (e) => this.setState({authEmail: e.target.value, authError: ''});
+  onAuthPass = (e) => this.setState({authPass: e.target.value, authError: ''});
+  submitAuth = () => {
+    var A = this.A, s = this.state;
+    if (s.authBusy) return;
+    this.setState({authBusy: true, authError: ''});
+    var p = s.authMode === 'signup' ? A.signup(s.authEmail, s.authPass) : A.login(s.authEmail, s.authPass);
+    p.then((r) => {
+      this.setState({authBusy: false});
+      if (r.error) return this.setState({authError: r.error});
+      this.setState({authOpen: false, authPass: '', authError: '',
+        recoveryCode: r.recoveryCode || '', copied: false});
+      /* on enchaîne sur le paiement si l'utilisateur venait pour ça */
+      if (this.state.pendingSub) { this.state.pendingSub = false; this.subscribe(); }
+    }).catch(() => this.setState({authBusy: false, authError: 'Une erreur est survenue. Réessaie.'}));
+  };
+  subscribe = () => {
+    if (!this.state.termsOk) return this.setState({termsShake: Date.now()});
+    this.A.subscribe(true).then((r) => {
+      if (r.error === 'auth') {
+        this.state.pendingSub = true;
+        return this.setState({authOpen: true, authMode: 'signup', authError: r.message, paywall: true});
+      }
+      if (r.redirect) return;   /* redirection vers la page de paiement */
+      if (r.error) return this.setState({authError: r.message || 'Le paiement n\u2019a pas abouti.'});
+      this.setState({justSubscribed: true});
+    });
+  };
+  cancelSub = () => { this.A.cancel().then(() => this.forceUpdate()); };
+  logout = () => { Promise.resolve(this.A.logout()).then(() => this.setState({accountOpen: false})); };
+  askForgot = () => {
+    this.setState({recoverOpen: true, recEmail: (this.state.authEmail || '').trim(),
+      recCode: '', recPass: '', recError: '', recMode: 'email', recSent: false, authOpen: false});
+  };
+  closeRecover = () => this.setState({recoverOpen: false, recError: '', recPass: '', recCode: '', recSent: false});
+  toggleRecMode = () => this.setState({recMode: this.state.recMode === 'email' ? 'code' : 'email',
+    recError: '', recSent: false});
+  onRecEmail = (e) => this.setState({recEmail: e.target.value, recError: ''});
+  onRecCode = (e) => this.setState({recCode: this.A.cleanCode(e.target.value), recError: ''});
+  onRecPass = (e) => this.setState({recPass: e.target.value, recError: ''});
+  submitRecover = () => {
+    var A = this.A, s = this.state, email = (s.recEmail || '').trim();
+    if (s.recMode === 'email') {
+      if (!email) return this.setState({recError: 'Saisis ton adresse e-mail.'});
+      return A.forgotPassword(email).then((r) => {
+        if (r.ok) return this.setState({recSent: true,
+          recError: 'Si un compte existe avec cette adresse, un lien vient d\u2019être envoyé. Vérifie ta boîte de réception.'});
+        this.setState({recSent: false, recError: r.error
+          || 'L\u2019envoi d\u2019e-mails n\u2019est pas encore activé sur ce site.'});
+      });
+    }
+    A.resetWithCode(email, s.recCode, s.recPass).then((r) => {
+      if (r.error) return this.setState({recError: r.error});
+      this.setState({recoverOpen: false, recCode: '', recPass: '', recError: '', accountOpen: true});
+    });
+  };
+  dismissCode = () => this.setState({recoveryCode: '', copied: false});
+  dismissActivated = () => this.setState({activated: false});
+  startFromWelcome = () => { this.setState({activated: false}); this.start(); };
+  syncSub = () => {
+    this.setState({syncing: 1});
+    this.A.syncSubscription().then((r) => {
+      this.setState({syncing: r && r.pro ? 0 : 2});
+      if (r && r.pro) this.setState({accountOpen: false, activated: true});
+    });
+  };
+  copyCode = () => {
+    var c = this.state.recoveryCode;
+    try {
+      navigator.clipboard.writeText(c).then(() => {
+        this.setState({copied: true});
+        this.timers.push(setTimeout(() => this.setState({copied: false}), 2200));
+      });
+    } catch (e) {}
+  };
+  rotateCode = () => {
+    this.A.newRecoveryCode().then((r) => {
+      if (r.recoveryCode) this.setState({recoveryCode: r.recoveryCode, copied: false, accountOpen: false});
+    });
+  };
+  onResetPass = (e) => this.setState({resetPass: e.target.value, resetError: ''});
+  cancelReset = () => { this.A.clearResetToken(); this.setState({resetPass: '', resetError: ''}); };
+  submitReset = () => {
+    var A = this.A;
+    A.resetPassword(A.resetToken(), this.state.resetPass).then((r) => {
+      if (r.error) return this.setState({resetError: r.error});
+      this.setState({resetPass: '', resetError: '', accountOpen: true});
+    });
+  };
+  exportData = () => {
+    var url = this.A.exportUrl();
+    if (url) window.open(url, '_blank', 'noopener');
+  };
+  askDelete = () => {
+    if (!this.state.confirmDelete) return this.setState({confirmDelete: true});
+    if (this.A.noAccounts()) { this.A.forget(); return this.setState({confirmDelete: false}); }
+    Promise.resolve(this.A.deleteAccount()).then(() => this.setState({accountOpen: false, confirmDelete: false}));
+  };
+  resendVerify = () => { this.A.resendVerification().then(() => this.forceUpdate()); };
+  openSearch = () => this.setState({searchOpen: true});
+  closeSearch = () => this.setState({searchOpen: false});
+  stop = (e) => e.stopPropagation();
+  scrollConcept = () => {
+    var el = document.getElementById('concept');
+    if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'});
+  };
+  scrollPricing = () => {
+    if (this.state.screen !== 'home') this.goHome();
+    var go = () => {
+      var el = document.getElementById('abonnement');
+      if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'});
+    };
+    this.timers.push(setTimeout(go, 60));
+  };
+  scrollCats = () => {
+    var el = document.getElementById('categories');
+    if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth'});
+  };
+  onSearch = (e) => {
+    var q = e.target.value;
+    this.setState({searchQ: q});
+    clearTimeout(this.searchTimer);
+    if (q.trim().length < 2) return this.setState({searchResults: []});
+    this.searchTimer = setTimeout(() => {
+      this.T.search(q.trim()).then((d) => {
+        if (this.state.searchQ.trim() !== q.trim()) return;
+        this.setState({searchResults: (d.results || []).slice(0, 12)});
+      }).catch(() => {});
+    }, 320);
+  };
+
+  art(path, size, ratio) {
+    var url = this.T ? this.T.poster(path, size || 'w500') : null;
+    return {width: '100%', aspectRatio: ratio || '2/3', position: 'relative', overflow: 'hidden',
+      border: '1px solid rgba(246,238,240,.09)',
+      backgroundImage: url ? 'url(' + url + ')' : 'linear-gradient(150deg,#33161f,#150c10)',
+      backgroundSize: 'cover', backgroundPosition: 'center'};
+  }
+  miniBtn(on, allowed) {
+    return {padding: '11px 14px', fontSize: '12.5px', textTransform: 'uppercase', letterSpacing: '.04em',
+      whiteSpace: 'nowrap', transition: 'all .16s ease',
+      border: '1px solid ' + (on ? 'rgba(255,45,79,.6)' : 'rgba(246,238,240,.14)'),
+      background: on ? 'rgba(255,45,79,.12)' : 'transparent',
+      color: on ? '#ff8fa1' : allowed ? 'rgba(246,238,240,.6)' : 'rgba(246,238,240,.32)'};
+  }
+  bigBtn(on, allowed) {
+    var st = this.miniBtn(on, allowed);
+    st.padding = '13px 18px'; st.fontSize = '13px';
+    return st;
+  }
+  skeletons(n) { var a = []; for (var i = 0; i < n; i++) a.push({key: 'sk' + i}); return a; }
+  shimmer(w, ratio) {
+    return {width: w, flex: 'none', aspectRatio: ratio, border: '1px solid rgba(246,238,240,.07)',
+      backgroundImage: 'linear-gradient(100deg, rgba(246,238,240,.03) 30%, rgba(255,45,79,.12) 50%, rgba(246,238,240,.03) 70%)',
+      backgroundSize: '360px 100%', animation: 'cShim 1.5s linear infinite'};
+  }
+  trim(txt, n) {
+    if (txt.length <= n) return txt;
+    var cut = txt.slice(0, n);
+    return cut.slice(0, Math.max(cut.lastIndexOf(' '), n - 24)).replace(/[\s,.;:]+$/, '') + '…';
+  }
+
+  renderVals() {
+    var T = this.T, s = this.state, self = this;
+    var vals = {
+      appName: this.props.appName || 'CinéMood',
+      introOn: s.intro, skipIntro: this.skipIntro,
+      introStyle: {position: 'fixed', inset: 0, zIndex: 99, background: '#100a0d', display: 'flex',
+        alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        animation: 'cOut .55s ease 1.85s both'},
+      pageStyle: {opacity: s.intro ? 0 : 1, transition: 'opacity .6s ease .1s'},
+      isHome: s.screen === 'home', isQuiz: s.screen === 'quiz',
+      isLoading: s.screen === 'loading', isResults: s.screen === 'results',
+      isHandover: s.screen === 'handover',
+      isFocus: s.screen === 'quiz' || s.screen === 'loading' || s.screen === 'handover',
+      duoOn: s.duo, duoWho: s.duoPhase === 0 ? '1re personne' : '2e personne',
+      startPhaseTwo: this.startPhaseTwo, startDuo: this.startDuo,
+      goHome: this.goHome, start: this.start, back: this.back, shuffle: this.shuffle,
+      quitQuiz: this.quitQuiz, scrollConcept: this.scrollConcept, scrollCats: this.scrollCats,
+      openSearch: this.openSearch, closeSearch: this.closeSearch, stop: this.stop,
+      closeFilm: this.closeFilm, playTrailer: this.playTrailer,
+      searchOpen: s.searchOpen, searchQ: s.searchQ, onSearch: this.onSearch,
+      filmOpen: !!s.filmId, filmLoading: s.filmLoading, filmReady: !!s.film,
+      hasError: !!s.error, errorTxt: s.error,
+      relaxNote: s.relaxNote, hasRelax: !!s.relaxNote,
+      relaxIcon: s.autoWidened ? '⚠' : '↻',
+      relaxStyle: {display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '13px 16px',
+        border: '1px solid ' + (s.autoWidened ? 'rgba(251,191,36,.34)' : 'rgba(255,45,79,.34)'),
+        background: s.autoWidened ? 'rgba(251,191,36,.08)' : 'rgba(255,45,79,.08)',
+        fontSize: '13.5px', lineHeight: 1.5, color: 'rgba(246,238,240,.82)', marginBottom: '18px',
+        animation: 'cUp .34s cubic-bezier(.2,.8,.3,1) both'},
+      catalogDown: s.catalogDown, retryCatalog: this.retryCatalog,
+      results: [], shelves: [], trail: [], options: [], searchResults: [], tabFilms: [], tabs: [],
+      shelfSkeletons: [], tabSkeletons: [], steps: []
+    };
+    /* ---- compte, quota, abonnement ---- */
+    var A = this.A;
+    if (A) {
+      var user = A.current(), q = A.quota(), pro = q.unlimited;
+      vals.price = A.PRICE; vals.pricePeriod = A.PRICE_PERIOD; vals.freeLimit = A.FREE_LIMIT;
+      vals.perks = A.PERKS.map(function (p, i) { return {key: i, t: p.t, d: p.d}; });
+      vals.isPro = pro; vals.notPro = !pro;
+      /* mode gratuit : aucune interface d'abonnement, le code reste en place */
+      var freeAll = A.freeMode();
+      var sansCompte = A.noAccounts();
+      vals.showPlans = !freeAll;
+      vals.showUpgrade = !pro && !freeAll && !sansCompte;
+      /* sans comptes : ni connexion, ni déconnexion — la liste reste, en local */
+      vals.noAccounts = sansCompte;
+      vals.showAccountId = !sansCompte;
+      vals.showLogin = !user && !sansCompte;
+      vals.showLists = !sansCompte && pro;
+      vals.showAccountBtn = !sansCompte;
+      vals.accountVisible = s.accountOpen && !sansCompte;
+      vals.accountTitle = sansCompte ? 'Ma liste' : 'Mon compte';
+      vals.authVisible = s.authOpen && !sansCompte;
+      vals.recoverVisible = s.recoverOpen && !sansCompte;
+      vals.wipeLabel = s.confirmDelete ? 'Confirmer l\u2019effacement' : 'Effacer mes données';
+      vals.loggedIn = !!user; vals.loggedOut = !user;
+      vals.showData = !!user && !sansCompte;
+      vals.accountEmail = user ? user.email : 'Aucun compte connecté';
+
+      vals.openPricing = this.openPricing; vals.closePaywall = this.closePaywall;
+      vals.openAccount = this.openAccount; vals.closeAccount = this.closeAccount;
+      vals.openAuth = this.openAuth; vals.closeAuth = this.closeAuth;
+      vals.toggleAuthMode = this.toggleAuthMode; vals.submitAuth = this.submitAuth;
+      vals.onAuthEmail = this.onAuthEmail; vals.onAuthPass = this.onAuthPass;
+      vals.subscribe = this.subscribe; vals.cancelSub = this.cancelSub; vals.logout = this.logout;
+      vals.askForgot = this.askForgot; vals.showForgot = s.authMode === 'login';
+      vals.codeShown = !!s.recoveryCode; vals.recoveryCode = s.recoveryCode;
+      vals.copyCode = this.copyCode; vals.dismissCode = this.dismissCode;
+      vals.copyLabel = s.copied ? 'Copié ✓' : 'Copier';
+      vals.recoverOpen = s.recoverOpen; vals.closeRecover = this.closeRecover;
+      vals.recEmail = s.recEmail; vals.recCode = s.recCode; vals.recPass = s.recPass;
+      vals.recError = s.recError; vals.onRecEmail = this.onRecEmail;
+      var byCode = s.recMode === 'code';
+      vals.recCodeMode = byCode;
+      vals.recCta = byCode ? 'Reprendre mon compte' : 'Envoyer le lien';
+      vals.recIntro = byCode
+        ? 'Saisis le code de secours noté à la création de ton compte, puis ton nouveau mot de passe.'
+        : 'Indique ton adresse : on t\u2019envoie un lien pour choisir un nouveau mot de passe. Ton abonnement, ta liste et ton historique sont conservés.';
+      vals.recShowSwitch = !A.serverMode() || byCode;
+      vals.recSwitchLabel = byCode ? 'Recevoir plutôt un lien par e-mail' : 'J\u2019ai un code de secours';
+      vals.recNoteStyle = {marginBottom: '14px', padding: '11px 13px', fontSize: '12.5px', lineHeight: 1.5,
+        border: '1px solid ' + (s.recSent ? 'rgba(74,222,128,.4)' : 'rgba(255,45,79,.4)'),
+        background: s.recSent ? 'rgba(74,222,128,.09)' : 'rgba(255,45,79,.09)'};
+      vals.toggleRecMode = this.toggleRecMode;
+      vals.onRecCode = this.onRecCode; vals.onRecPass = this.onRecPass;
+      vals.submitRecover = this.submitRecover;
+      vals.canRotate = !A.serverMode() && !!A.current();
+      vals.rotateCode = this.rotateCode;
+      vals.exportData = this.exportData; vals.canExport = !!A.exportUrl();
+      vals.askDelete = this.askDelete; vals.confirmDelete = s.confirmDelete;
+      vals.deleteLabel = s.confirmDelete ? 'Confirmer la suppression' : 'Supprimer mon compte';
+      vals.deleteStyle = {padding: '10px 14px', fontSize: '11.5px', letterSpacing: '.04em',
+        border: '1px solid ' + (s.confirmDelete ? 'rgba(255,45,79,.55)' : 'rgba(246,238,240,.14)'),
+        background: s.confirmDelete ? 'rgba(255,45,79,.1)' : 'transparent',
+        color: s.confirmDelete ? '#ff8fa1' : 'rgba(246,238,240,.55)', transition: 'all .16s ease'};
+      vals.resendVerify = this.resendVerify;
+      vals.activating = A.activationPending();
+      vals.activated = s.activated && !A.activationPending();
+      vals.dismissActivated = this.dismissActivated;
+      vals.startFromWelcome = this.startFromWelcome;
+      /* secours : « j'ai payé mais rien ne s'est passé » */
+      vals.canSync = A.serverMode() && !pro && !!A.current();
+      vals.syncSub = this.syncSub;
+      vals.syncLabel = s.syncing === 1 ? 'Vérification en cours…'
+        : s.syncing === 2 ? 'Aucun abonnement trouvé sur ce compte — réessayer'
+        : 'J\u2019ai payé mais mon accès n\u2019est pas actif';
+      var acct = A.current();
+      vals.needsVerify = !!(A.serverMode() && acct && acct.emailVerified === false);
+      vals.cancelLabel = A.serverMode() ? 'Gérer mon abonnement' : 'Résilier l\u2019abonnement';
+      vals.authFine = A.serverMode()
+        ? 'Ton mot de passe est chiffré côté serveur et ne quitte jamais la connexion sécurisée.'
+        : 'Mode démonstration : les identifiants restent sur cet appareil et ne partent sur aucun serveur.';
+      /* écran de nouveau mot de passe, ouvert par le lien reçu par e-mail */
+      vals.resetOpen = !!A.resetToken();
+      vals.resetPass = s.resetPass; vals.resetError = s.resetError;
+      vals.onResetPass = this.onResetPass; vals.submitReset = this.submitReset;
+      vals.cancelReset = this.cancelReset;
+      vals.accountOpen = s.accountOpen; vals.authOpen = s.authOpen;
+      vals.authEmail = s.authEmail; vals.authPass = s.authPass; vals.authError = s.authError;
+      /* anti-robot : seulement à l'inscription, et seulement si une clé est fournie */
+      vals.showTurnstile = !!A.turnstileKey() && s.authMode === 'signup';
+      vals.turnstileRef = (el) => { if (el) A.mountTurnstile(el); };
+      vals.authCtaStyle = {width: '100%', padding: '14px', fontSize: '13.5px', fontWeight: 600,
+        textTransform: 'uppercase', letterSpacing: '.04em', marginBottom: '14px',
+        background: s.authBusy ? 'rgba(255,45,79,.4)' : '#ff2d4f', color: '#fff',
+        cursor: s.authBusy ? 'progress' : 'pointer', transition: 'background .16s ease'};
+
+      /* bouton Mode Duo */
+      vals.duoTag = pro ? '' : 'Abonnés';
+      vals.duoBtnStyle = {display: 'flex', alignItems: 'center', gap: '9px', padding: '15px 24px',
+        whiteSpace: 'nowrap',
+        border: '1px solid ' + (pro ? 'rgba(255,45,79,.5)' : 'rgba(246,238,240,.28)'),
+        fontSize: '14.5px', fontWeight: 600, letterSpacing: '.02em',
+        background: pro ? 'rgba(255,45,79,.08)' : 'transparent',
+        transition: 'border-color .16s ease, color .16s ease'};
+      vals.duoTagStyle = {display: pro ? 'none' : 'inline-block', fontSize: '9.5px',
+        letterSpacing: '.14em', textTransform: 'uppercase', padding: '3px 7px',
+        background: 'rgba(255,45,79,.2)', color: '#ff8fa1', whiteSpace: 'nowrap'};
+
+      /* ma liste / historique dans le compte */
+      vals.pickAccTab = this.pickAccTab;
+      vals.accTabs = [{l: 'Ma liste'}, {l: 'Déjà vus'}, {l: 'Historique'}].map(function (t, i) {
+        var on = s.accTab === i;
+        return {key: i, label: t.l, onClick: function () { self.pickAccTab(i); },
+          style: {flex: 1, padding: '11px 6px', fontSize: '11.5px', fontWeight: 600,
+            letterSpacing: '.06em', textTransform: 'uppercase',
+            color: on ? '#f6eef0' : 'rgba(246,238,240,.4)',
+            borderBottom: '2px solid ' + (on ? '#ff2d4f' : 'transparent'),
+            background: on ? 'rgba(255,45,79,.06)' : 'transparent', transition: 'all .16s ease'}};
+      });
+      if (pro) {
+        var mini = function (p) { var st = self.art(p, 'w185'); st.width = '38px'; st.flex = 'none'; return st; };
+        if (s.accTab === 0) {
+          vals.accItems = A.saved().map(function (m) {
+            return {key: m.id, titre: m.title, meta: m.year || '', action: '✕',
+              actionTitle: 'Retirer de ma liste', artStyle: mini(m.poster),
+              onAction: function () { A.toggleSave({id: m.id, title: m.title, poster_path: m.poster}); }};
+          });
+          vals.accEmptyTxt = 'Ta liste est vide. Sur une carte de résultat, « Ma liste » met un film de côté.';
+        } else if (s.accTab === 1) {
+          vals.accItems = A.seenList().map(function (m) {
+            return {key: m.id, titre: m.title || 'Film', action: '✕',
+              meta: 'Vu le ' + new Date(m.at).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'}),
+              actionTitle: 'Ne plus considérer comme vu', artStyle: mini(m.poster),
+              onAction: function () { A.toggleSeen({id: m.id, title: m.title}); }};
+          });
+          vals.accEmptyTxt = 'Aucun film marqué comme vu. Ceux que tu marques ne te seront plus jamais proposés.';
+        } else {
+          vals.accItems = A.history().map(function (h, i) {
+            return {key: i, titre: h.top ? h.top.title : 'Séance', artStyle: mini(h.top && h.top.poster),
+              meta: (h.duo ? 'Duo · ' : '') + new Date(h.at).toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'})
+                + ' · ' + h.count + ' films' + (h.top ? ' · ' + h.top.score + ' %' : ''),
+              action: '↗', actionTitle: 'Ouvrir la fiche',
+              onAction: function () { if (h.top) { self.setState({accountOpen: false}); self.openFilm(h.top.id); } }};
+          });
+          vals.accEmptyTxt = 'Aucune séance enregistrée pour l\u2019instant.';
+        }
+        vals.accEmpty = !vals.accItems.length;
+      } else { vals.accItems = []; vals.accEmpty = true; vals.accEmptyTxt = ''; }
+
+      vals.quotaPill = pro ? 'Illimité' : q.left + ' / ' + q.limit + ' ce mois';
+      vals.quotaPillStyle = {padding: '8px 12px', fontSize: '11.5px', letterSpacing: '.06em',
+        textTransform: 'uppercase', whiteSpace: 'nowrap', flex: 'none',
+        border: '1px solid ' + (pro ? 'rgba(255,45,79,.5)' : q.left === 0 ? 'rgba(255,45,79,.5)' : 'rgba(246,238,240,.14)'),
+        background: pro ? 'rgba(255,45,79,.14)' : q.left === 0 ? 'rgba(255,45,79,.1)' : 'transparent',
+        color: pro || q.left === 0 ? '#ff8fa1' : 'rgba(246,238,240,.5)',
+        transition: 'all .16s ease'};
+      vals.accountBtnLabel = sansCompte ? '★' : user ? user.email.charAt(0).toUpperCase() : '⌂';
+      vals.accountBtnAria = sansCompte ? 'Ma liste et mon historique'
+        : user ? 'Mon compte (' + user.email + ')' : 'Se connecter ou créer un compte';
+      vals.quotaAria = pro ? 'Abonnement illimité actif' : 'Il te reste ' + q.left + ' parcours sur ' + q.limit + ' ce mois — voir l\u2019abonnement';
+      vals.accountBtnStyle = {width: '38px', height: '38px', borderRadius: '50%', flex: 'none',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: user ? '14px' : '15px', fontWeight: 600,
+        border: '1px solid ' + (pro ? '#ff2d4f' : 'rgba(246,238,240,.16)'),
+        background: pro ? 'rgba(255,45,79,.16)' : 'transparent',
+        color: pro ? '#ff8fa1' : 'rgba(246,238,240,.7)'};
+
+      vals.planCta = pro ? 'Abonnement actif' : user ? 'M\u2019abonner · ' + A.PRICE : 'Créer un compte et m\u2019abonner';
+      vals.planCtaStyle = {width: '100%', padding: '14px', fontSize: '13.5px', fontWeight: 600,
+        textTransform: 'uppercase', letterSpacing: '.04em',
+        background: pro ? 'transparent' : '#ff2d4f',
+        border: pro ? '1px solid rgba(255,45,79,.5)' : '0',
+        color: pro ? '#ff8fa1' : '#fff', cursor: pro ? 'default' : 'pointer'};
+
+      vals.planTag = pro ? 'Illimité' : 'Gratuit';
+      vals.planTagStyle = {fontSize: '10.5px', letterSpacing: '.14em', textTransform: 'uppercase',
+        padding: '4px 9px', whiteSpace: 'nowrap',
+        background: pro ? '#ff2d4f' : 'rgba(246,238,240,.08)',
+        color: pro ? '#fff' : 'rgba(246,238,240,.6)'};
+      vals.planDetail = pro
+        ? 'Parcours illimité. Prochain prélèvement de ' + A.PRICE + ' le ' + (q.renewsAt || '—') + '.'
+        : q.left > 0
+          ? 'Il te reste ' + q.left + ' parcours sur ' + q.limit + ' pour ' + q.monthLabel + '.'
+          : 'Tes ' + q.limit + ' parcours de ' + q.monthLabel + ' sont utilisés. Remise à zéro le ' + q.resetsOn + '.';
+      vals.showGauge = !pro;
+      vals.gauge = [];
+      for (var gi = 0; gi < (pro ? 0 : q.limit); gi++) {
+        vals.gauge.push({key: gi, style: {flex: 1, height: '5px',
+          background: gi < q.used ? 'rgba(246,238,240,.14)' : '#ff2d4f'}});
+      }
+      vals.gaugeTxt = pro ? '' : q.used + ' parcours utilisés sur ' + q.limit + ' · réinitialisé le ' + q.resetsOn;
+
+      /* paywall / page d'offre */
+      vals.paywallOpen = s.paywall && !freeAll;
+      var REASON = {
+        offer:    {k: 'Abonnement', t: 'Autant de séances que tu veux',
+                   x: 'Le parcours reste gratuit ' + A.FREE_LIMIT + ' fois par mois. Au-delà, un seul abonnement, sans palier.'},
+        quota:    {k: 'Quota atteint', t: 'Tes ' + A.FREE_LIMIT + ' séances du mois sont passées',
+                   x: 'Tu as utilisé tes ' + A.FREE_LIMIT + ' parcours de ' + q.monthLabel + '. Ils reviennent le ' + q.resetsOn + ' — ou tu passes en illimité maintenant.'},
+        duo:      {k: 'Mode Duo', t: 'Deux profils, un seul film',
+                   x: 'Chacun répond de son côté, on croise les deux exigences et on ne garde que les films qui tiennent pour vous deux. C\u2019est le mode le plus utile à deux — il fait partie de l\u2019abonnement.'},
+        list:     {k: 'Ma liste', t: 'Garde tes films, oublie ceux que tu as vus',
+                   x: 'Mets un film de côté pour plus tard, marque ceux que tu as déjà vus — ils disparaissent définitivement de tes recommandations.'},
+        relaunch: {k: 'Relance', t: 'Encore d\u2019autres films ?',
+                   x: 'Sans abonnement tu as droit à une relance par parcours. En illimité, tu peux creuser autant que tu veux jusqu\u2019à tomber sur le bon.'}
+      };
+      var reason = REASON[s.paywallReason] || REASON.offer;
+      vals.paywallKicker = s.justSubscribed ? 'C\u2019est fait' : reason.k;
+      vals.paywallTitle = s.justSubscribed ? 'Bienvenue en illimité' : reason.t;
+      vals.paywallTxt = s.justSubscribed
+        ? 'Ton abonnement est actif : parcours illimité, mode Duo, ma liste, historique. Tout est ouvert.'
+        : reason.x;
+      vals.subscribeCta = s.justSubscribed ? 'Lancer un parcours'
+        : pro ? 'Déjà abonné' : user ? 'M\u2019abonner · ' + A.PRICE : 'Créer un compte et m\u2019abonner';
+      if (s.justSubscribed) vals.subscribe = this.start;
+      var ready = s.justSubscribed || s.termsOk;
+      vals.subscribeBtnStyle = {padding: '14px 24px', fontSize: '13.5px', fontWeight: 600,
+        textTransform: 'uppercase', letterSpacing: '.04em', whiteSpace: 'nowrap', flex: '1 1 auto',
+        background: ready ? '#ff2d4f' : 'rgba(255,45,79,.35)',
+        color: ready ? '#fff' : 'rgba(255,255,255,.7)',
+        transition: 'background .16s ease'};
+      vals.paywallFine = s.justSubscribed
+        ? 'Résiliable à tout moment depuis ton compte.'
+        : s.termsShake && !s.termsOk
+          ? 'Coche la case ci-dessus pour continuer.'
+          : 'Démonstration : aucun paiement réel n\u2019est encaissé et aucune carte n\u2019est demandée.';
+
+      /* auth */
+      var signup = s.authMode === 'signup';
+      vals.authTitle = signup ? 'Créer un compte' : 'Se connecter';
+      vals.authSub = signup
+        ? 'Le compte porte ton abonnement et ton quota — c\u2019est lui qui te suit d\u2019un appareil à l\u2019autre.'
+        : 'Retrouve ton abonnement et ton quota.';
+      vals.authCta = signup ? 'Créer mon compte' : 'Me connecter';
+      vals.authSwitch = signup ? 'J\u2019ai déjà un compte → me connecter' : 'Pas encore de compte → en créer un';
+    }
+
+    /* ---- textes légaux ---- */
+    var L = this.L;
+    if (L) {
+      var pages = L.PAGES, page = pages[Math.min(s.legalTab, pages.length - 1)];
+      vals.legalOpen = s.legalOpen;
+      vals.closeLegal = this.closeLegal;
+      vals.legalMaj = L.MAJ;
+      vals.legalLinks = pages.map(function (p, i) {
+        return {key: p.id, label: p.label, onClick: function () { self.openLegal(i); }};
+      });
+      vals.legalTabs = pages.map(function (p, i) {
+        var on = i === s.legalTab;
+        return {key: p.id, label: p.label, onClick: function () { self.openLegal(i); },
+          style: {fontSize: '12.5px', fontWeight: 600, letterSpacing: '.05em', textTransform: 'uppercase',
+            whiteSpace: 'nowrap', paddingBottom: '5px',
+            color: on ? '#f6eef0' : 'rgba(246,238,240,.42)',
+            borderBottom: '2px solid ' + (on ? '#ff2d4f' : 'transparent'),
+            transition: 'color .16s ease'}};
+      });
+      vals.legalTitle = page.label;
+      vals.legalIntro = page.intro;
+      vals.legalBlocks = page.blocks.map(function (b, i) {
+        return {key: i, t: b.t, lines: b.p.map(function (t, j) { return {key: j, txt: t}; })};
+      });
+    }
+
+    /* case CGV du paiement */
+    vals.toggleTerms = this.toggleTerms;
+    vals.showTerms = !(vals.isPro || s.justSubscribed);
+    vals.termsMark = s.termsOk ? '✓' : '';
+    vals.termsBoxStyle = {width: '20px', height: '20px', flex: 'none', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, marginTop: '1px',
+      border: '1px solid ' + (s.termsOk ? '#ff2d4f' : 'rgba(246,238,240,.3)'),
+      background: s.termsOk ? '#ff2d4f' : 'transparent', color: '#fff',
+      transition: 'all .14s ease'};
+
+    if (!T) return vals;
+
+    vals.questionCount = T.TOTAL;
+    vals.nav = [
+      {key: 'h', label: 'Accueil', on: s.screen === 'home', onClick: this.goHome},
+      {key: 'c', label: 'Le principe', on: false, onClick: this.scrollConcept},
+      {key: 'g', label: 'Catégories', on: false, onClick: this.scrollCats},
+      {key: 'a', label: 'Abonnement', on: false, onClick: this.scrollPricing,
+        hide: !!(window.MoodflixAccount && window.MoodflixAccount.freeMode())}
+    ].filter(function (n) { return !n.hide; }).map(function (n) {
+      return {key: n.key, label: n.label, onClick: n.onClick,
+        style: {fontSize: '13px', fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase',
+          color: n.on ? '#f6eef0' : 'rgba(246,238,240,.5)', whiteSpace: 'nowrap',
+          borderBottom: '2px solid ' + (n.on ? '#ff2d4f' : 'transparent'), paddingBottom: '3px',
+          transition: 'color .16s ease'}};
+    });
+
+    vals.steps = [
+      {key: 1, num: '01', titre: 'Tu réponds à ' + T.TOTAL + ' questions', txt: 'Ton humeur, avec qui tu regardes, le temps que tu as, l\u2019époque, la langue, le niveau de risque. Une minute, pas plus.'},
+      {key: 2, num: '02', titre: 'Tes réponses deviennent des filtres', txt: 'Chaque choix se traduit en critère réel : genres croisés, durée, année de sortie, note minimale, nombre de votes.'},
+      {key: 3, num: '03', titre: 'Cinq films, classés et expliqués', txt: 'Les candidats sont notés sur sept axes, du plus proche au moins proche. Chaque carte dit pourquoi ce film-là.'}
+    ];
+
+    /* image de couverture : plan final de Seven, fixé volontairement */
+    var heroFilm = {backdrop_path: '/dYjZ27hDw2QFaEIfzbNGwW0IkV9.jpg'};
+    vals.heroArtStyle = {position: 'relative', minHeight: '260px', overflow: 'hidden',
+      background: '#000', animation: 'cIn 1.1s ease .1s both'};
+    vals.heroImgStyle = {position: 'absolute', inset: 0,
+      backgroundImage: heroFilm ? 'url(' + T.poster(heroFilm.backdrop_path, 'w1280') + ')' : 'linear-gradient(140deg,#1c1216,#000)',
+      backgroundSize: 'cover', backgroundPosition: 'center 42%',
+      filter: 'saturate(.92) contrast(1.04) brightness(1.02)',
+      animation: 'cDrift 26s ease-in-out .2s infinite alternate'};
+
+    /* onglets de genre */
+    vals.tabs = this.TABS.map(function (t, i) {
+      var on = s.tab === i;
+      return {key: t.g, label: t.l, onClick: function () { self.pickTab(i); },
+        style: {fontFamily: 'Anton, Impact, sans-serif', fontSize: 'clamp(14px,1.7vw,18px)',
+          textTransform: 'uppercase', letterSpacing: '.02em', whiteSpace: 'nowrap', paddingBottom: '10px',
+          color: on ? '#f6eef0' : 'rgba(246,238,240,.38)',
+          borderBottom: '2px solid ' + (on ? '#ff2d4f' : 'transparent'),
+          transition: 'color .16s ease'}};
+    });
+    var tf = s.tabCache[s.tab] || [];
+    vals.tabKey = 'tab' + s.tab;
+    vals.tabFilms = tf.map(function (m) {
+      return {key: m.id, titre: m.title,
+        meta: (m.release_date || '').slice(0, 4) + ' · ★ ' + (m.vote_average || 0).toFixed(1),
+        onOpen: function () { self.openFilm(m.id); },
+        cardStyle: {flex: 'none', width: 'clamp(184px,58vw,268px)', scrollSnapAlign: 'start',
+          transition: 'transform .2s cubic-bezier(.2,.8,.3,1)'},
+        artStyle: self.art(m.backdrop_path, 'w780', '16/9')};
+    });
+    vals.tabSkeletons = tf.length ? [] : this.skeletons(5).map(function (k) {
+      return {key: k.key, style: self.shimmer('clamp(184px,58vw,268px)', '16/9')};
+    });
+
+    /* rayons */
+    vals.shelfSkeletons = (s.shelves.length || s.catalogDown) ? [] : T.SHELVES.slice(0, 4).map(function (def) {
+      return {key: def.id, label: def.l, cards: self.skeletons(7).map(function (k) {
+        return {key: k.key, style: self.shimmer('clamp(118px,32vw,142px)', '2/3')};
+      })};
+    });
+    vals.shelves = s.shelves.map(function (sh) {
+      return {key: sh.def.id, label: sh.def.l, crit: sh.def.crit,
+        films: sh.films.map(function (m) {
+          return {key: m.id, titre: m.title,
+            meta: (m.release_date || '').slice(0, 4) + ' · ★ ' + m.vote_average.toFixed(1),
+            onOpen: function () { self.openFilm(m.id); },
+            posterStyle: self.art(m.poster_path, 'w342')};
+        })};
+    });
+
+    /* quiz */
+    var q = T.questionAt(s.step, s.path) || T.questionAt(0, []);
+    vals.q = {titre: q.titre, kicker: q.kicker};
+    vals.stepKey = 'q' + s.step;
+    vals.stepAnim = {animation: (s.dir < 0 ? 'cLeft' : 'cRight') + ' .34s cubic-bezier(.2,.8,.3,1) both'};
+    vals.stepLabel = String(s.step + 1).padStart(2, '0') + ' / ' + T.TOTAL;
+    vals.barStyle = {height: '100%', width: Math.round(s.step / T.TOTAL * 100) + '%', background: '#ff2d4f',
+      transition: 'width .35s cubic-bezier(.2,.8,.3,1)'};
+    vals.optionCount = (q.options || []).length;
+    vals.options = (q.options || []).map(function (o, i) {
+      return {key: o.v, label: o.l, sub: o.sub || '', num: String(i + 1).padStart(2, '0'),
+        onClick: function () { self.choose(q, o); },
+        style: {display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'flex-start',
+          padding: '20px 20px 24px', minHeight: '138px', border: '1px solid rgba(246,238,240,.13)',
+          background: 'linear-gradient(155deg, rgba(246,238,240,.045), rgba(246,238,240,.015) 60%)',
+          animation: 'cUp .38s cubic-bezier(.2,.8,.3,1) both', animationDelay: (0.05 + i * 0.045) + 's',
+          transition: 'border-color .16s ease, transform .16s cubic-bezier(.2,.8,.3,1), background .16s ease'}};
+    });
+    vals.trail = s.path.map(function (p, i) {
+      var last = i === s.path.length - 1;
+      return {key: i, txt: p.label, style: {fontSize: '10.5px', letterSpacing: '.08em', padding: '4px 9px',
+        textTransform: 'uppercase', whiteSpace: 'nowrap',
+        background: last ? 'rgba(255,45,79,.2)' : 'rgba(246,238,240,.07)',
+        color: last ? '#ff8fa1' : 'rgba(246,238,240,.5)', transition: 'all .2s ease'}};
+    });
+
+    var lines = ['Lecture de tes réponses', 'Construction des filtres', 'Analyse des candidats', 'Classement final'];
+    vals.loadingLine = lines[Math.min(s.loadStep, lines.length - 1)];
+    vals.loadingSub = T.filterChips(T.profile(s.path)).join(' · ');
+
+    /* résultats */
+    vals.chips = (s.chips || []).map(function (c, i) { return {key: i, txt: c}; });
+    vals.shuffleLabel = s.round === 0 ? 'Aucun ne me tente' : 'Encore d\u2019autres';
+    vals.resultSub = s.results.length
+      ? s.total + ' films passent tes filtres. Voici les ' + s.results.length + ' qui collent le mieux.'
+      : 'Ajuste un critère et relance.';
+    var A = this.A, proNow = A ? A.isPro() : false;
+    vals.results = s.results.map(function (e) {
+      var m = e.movie, top = e.rank === 0;
+      return {
+        key: m.id, titre: m.title, why: e.why,
+        resume: self.trim(m.overview || 'Pas de synopsis en français pour ce titre.', 240),
+        meta: [(m.release_date || '').slice(0, 4), e.dureeTxt, e.genresTxt,
+          '★ ' + m.vote_average.toFixed(1) + '/10'].filter(Boolean).join(' · '),
+        score: e.global + '%',
+        badge: top ? '★ ' + (e.profil || 'Meilleur match') : (e.profil || 'Match n°' + (e.rank + 1)),
+        posterStyle: self.art(m.poster_path, 'w500'),
+        watchUrl: 'https://www.justwatch.com/fr/recherche?q=' + encodeURIComponent(m.title),
+        onSkip: function () { self.skip(m.id); },
+        onSave: function () { self.toggleSave(m); },
+        onSeen: function () { self.toggleSeen(m); },
+        saveLabel: (proNow && A.isSaved(m.id)) ? '★ Dans ma liste' : '☆ Ma liste',
+        seenLabel: (proNow && A.isSeen(m.id)) ? '✓ Déjà vu' : 'Déjà vu',
+        saveTitle: proNow ? 'Mettre ce film de côté' : 'Réservé aux abonnés',
+        seenTitle: proNow ? 'Ne plus jamais me le proposer' : 'Réservé aux abonnés',
+        saveStyle: self.miniBtn(proNow && A.isSaved(m.id), proNow),
+        seenStyle: self.miniBtn(proNow && A.isSeen(m.id), proNow),
+        scoreLabel: e.duoA ? 'DUO' : 'MATCH',
+        hasDuo: !!e.duoA,
+        duoTxt: e.duoA ? e.duoA + ' % / ' + e.duoB + ' %' : '',
+        onOpen: function () { self.openFilm(m.id); },
+        criteria: e.criteria.map(function (c) {
+          return {key: c.k, label: c.l, value: c.v,
+            barStyle: {height: '100%', width: c.v + '%', transition: 'width .8s cubic-bezier(.2,.8,.3,1)',
+              background: c.v >= 75 ? '#ff2d4f' : 'rgba(255,45,79,.42)'}};
+        }),
+        wrapStyle: {gridColumn: top ? '1 / -1' : 'auto',
+          border: '1px solid ' + (top ? 'rgba(255,45,79,.45)' : 'rgba(246,238,240,.1)'),
+          background: top ? 'linear-gradient(150deg, rgba(255,45,79,.09), rgba(246,238,240,.02) 58%)' : 'rgba(246,238,240,.022)',
+          padding: top ? '20px' : '15px',
+          transition: 'border-color .18s ease',
+          animation: 'cUp .45s cubic-bezier(.2,.8,.3,1) both', animationDelay: (e.rank * .06) + 's'},
+        innerStyle: {display: 'flex', flexWrap: 'wrap', gap: top ? '22px' : '13px',
+          flexDirection: top ? 'row' : 'column'},
+        posterWrap: {flex: top ? '0 0 188px' : '1 1 auto', width: top ? '188px' : '100%', maxWidth: '100%'},
+        badgeStyle: {display: 'inline-block', fontSize: '9.5px', letterSpacing: '.16em',
+          textTransform: 'uppercase', padding: '5px 9px', marginBottom: '9px', whiteSpace: 'nowrap',
+          background: top ? '#ff2d4f' : 'rgba(246,238,240,.07)',
+          color: top ? '#fff' : 'rgba(246,238,240,.55)'},
+        titleStyle: {fontFamily: 'Anton, Impact, sans-serif', textTransform: 'uppercase', lineHeight: 1.08,
+          fontSize: top ? 'clamp(24px,3.6vw,40px)' : '19px'},
+        scoreStyle: {fontFamily: 'Anton, Impact, sans-serif', lineHeight: 1, color: '#ff2d4f',
+          fontSize: top ? '40px' : '27px'}
+      };
+    });
+
+    /* fiche film */
+    if (s.film) {
+      var d = s.film, year = (d.release_date || '').slice(0, 4), A2 = this.A;
+      vals.film = {
+        titre: d.title,
+        meta: [year, d.runtime ? T.fmt(d.runtime) : null, (d.genres || []).map(function (g) { return g.name; }).join(', '),
+          '★ ' + (d.vote_average || 0).toFixed(1) + '/10 · ' + (d.vote_count || 0).toLocaleString('fr-FR') + ' votes'].filter(Boolean).join(' · '),
+        synopsis: d.overview || 'Aucun synopsis en français n\u2019est disponible pour ce titre.',
+        tags: [d.director ? {key: 'r', txt: 'Réalisé par ' + d.director.name} : null,
+          d.original_language ? {key: 'l', txt: d.original_language.toUpperCase()} : null,
+          d.tagline ? {key: 't', txt: d.tagline} : null].filter(Boolean),
+        bannerStyle: {position: 'relative', width: '100%', aspectRatio: '21/9', minHeight: '180px',
+          backgroundImage: d.backdrop_path ? 'url(' + T.poster(d.backdrop_path, 'w1280') + ')' : 'linear-gradient(140deg,#3a1a24,#150c10)',
+          backgroundSize: 'cover', backgroundPosition: 'center'},
+        posterWrap: {flex: '0 0 168px', width: '168px', maxWidth: '100%', position: 'relative', zIndex: 2},
+        posterStyle: self.art(d.poster_path, 'w500'),
+        hasTrailer: !!d.trailer, noTrailer: !d.trailer,
+        playing: !!s.playing, notPlaying: !s.playing,
+        trailerUrl: d.trailer ? 'https://www.youtube-nocookie.com/embed/' + d.trailer.key + '?rel=0&autoplay=1&playsinline=1' : '',
+        youtubeUrl: d.trailer ? 'https://www.youtube.com/watch?v=' + d.trailer.key : '',
+        thumbStyle: {position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          backgroundImage: 'linear-gradient(0deg,rgba(16,10,13,.55),rgba(16,10,13,.55)), url(' +
+            (d.backdrop_path ? T.poster(d.backdrop_path, 'w780') : 'https://i.ytimg.com/vi/' + (d.trailer ? d.trailer.key : '') + '/hqdefault.jpg') + ')',
+          backgroundSize: 'cover', backgroundPosition: 'center'},
+        watchUrl: 'https://www.justwatch.com/fr/recherche?q=' + encodeURIComponent(d.title),
+        tmdbUrl: 'https://www.themoviedb.org/movie/' + d.id + '?language=fr-FR',
+        onSave: function () { self.toggleSave(d); },
+        onSeen: function () { self.toggleSeen(d); },
+        saveLabel: (vals.isPro && A2 && A2.isSaved(d.id)) ? '★ Dans ma liste' : '☆ Ma liste',
+        seenLabel: (vals.isPro && A2 && A2.isSeen(d.id)) ? '✓ Déjà vu' : 'Déjà vu',
+        saveStyle: self.bigBtn(vals.isPro && A2 && A2.isSaved(d.id), vals.isPro),
+        seenStyle: self.bigBtn(vals.isPro && A2 && A2.isSeen(d.id), vals.isPro),
+        noCast: !(d.cast && d.cast.length),
+        cast: (d.cast || []).map(function (c) {
+          return {key: c.id + '-' + c.order, nom: c.name, role: c.character || '—',
+            photoStyle: self.art(c.profile_path, 'w185', '2/3')};
+        })
+      };
+    }
+
+    /* recherche */
+    vals.searchResults = s.searchResults.map(function (m) {
+      var st = self.art(m.poster_path, 'w185');
+      st.width = '54px'; st.flex = 'none';
+      return {key: m.id, titre: m.title,
+        meta: (m.release_date || '????').slice(0, 4) + ' · ★ ' + (m.vote_average || 0).toFixed(1),
+        resume: self.trim(m.overview || '', 140),
+        /* la recherche se referme d'elle-même : on va droit à la fiche */
+        onOpen: function () { self.setState({searchOpen: false}); self.openFilm(m.id); },
+        posterStyle: st};
+    });
+    vals.searchEmpty = vals.searchResults.length === 0;
+    vals.searchHint = s.searchQ.trim().length < 2
+      ? 'Tape au moins deux lettres — tout le catalogue est interrogeable.'
+      : 'Aucun film trouvé.';
+    return vals;
+  }
+}
+
+</script>
+
+
+</body></html>
