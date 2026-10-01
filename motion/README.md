@@ -1,11 +1,20 @@
 # CinéMood — motion design 15 s
 
-- `cinemood-motion-15s.mp4` : rendu final 1920×1080, 60 i/s, H.264, sans son.
+- `cinemood-motion-15s.mp4` : rendu final 1920×1080, 60 i/s, H.264, son AAC stéréo normalisé à −14 LUFS.
+- `sound.py` : design sonore entièrement synthétisé (aucun sample externe), calé sur la timeline ; produit `sound.wav`.
+- `fetch-posters.js` : télécharge les affiches TMDB dans `posters/` (lancé par GitHub Actions avec le secret `TMDB_KEY`).
 - `index.html` : la composition. Ouvre-la dans un navigateur pour la prévisualiser (lecture en boucle, curseur de timeline).
 - `render.js` : rendu image par image (120 i/s fusionnés en 60 i/s pour le flou de mouvement).
 - `stills.js` : captures à des instants précis, ex. `node stills.js ./out 2.5 9.8`.
 
-Rendu : `NODE_PATH=$(npm root -g) node render.js` (Playwright + ffmpeg requis).
+Rendu complet :
+
+```sh
+NODE_PATH=$(npm root -g) node render.js video.mp4   # image (Playwright + ffmpeg)
+python3 sound.py                                     # son (numpy + scipy)
+ffmpeg -i video.mp4 -i sound.wav -map 0:v -map 1:a -c:v copy \
+  -af "loudnorm=I=-14:TP=-1.5:LRA=11" -c:a aac -b:a 256k -shortest cinemood-motion-15s.mp4
+```
 
 ## Découpage
 
@@ -19,4 +28,4 @@ Rendu : `NODE_PATH=$(npm root -g) node render.js` (Playwright + ffmpeg requis).
 | 10,9 – 12,8 s | Trois temps : 12 questions. / 1 minute. / Le bon film. |
 | 12,8 – 15,0 s | Logo CinéMood, signature, CTA « Trouver mon film », cinem00d.com |
 
-Les textes viennent du site (questions, réponses, accroches). Les affiches sont des illustrations abstraites : aucun visuel de film n'est utilisé.
+Les textes viennent du site (questions, réponses, accroches). Les affiches viennent de TMDB ; si un fichier manque dans `posters/`, une illustration abstraite le remplace.
