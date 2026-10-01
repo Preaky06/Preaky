@@ -327,7 +327,7 @@ const CH = CHIPS.map(txt => { const c = document.createElement('div'); c.classNa
 /* ---------- S4 ---------- */
 const FILTERS = [['GENRES', 'HORREUR · FANTASTIQUE'], ['DURÉE', '85 – 105 MIN'], ['SORTIE', '≥ 2010'], ['NOTE', '≥ 6,5'], ['VOTES', '≥ 1 500'], ['PUBLIC', 'À DEUX']];
 const FC = FILTERS.map(([k, v]) => { const c = document.createElement('div'); c.className = 'fchip'; c.innerHTML = `<b>${k}</b>${v}`; $('fchips').appendChild(c); return c; });
-const FILMS = [['It Follows', 'Horreur · 2014 · 1h40', 98, 0, 'it-follows'], ['Insidious', 'Horreur · 2010 · 1h43', 94, 3, 'insidious'], ['Mister Babadook', 'Horreur · 2014 · 1h34', 91, 1, 'babadook'], ['Oculus', 'Horreur · 2013 · 1h44', 88, 5, 'oculus'], ['The Jane Doe Identity', 'Horreur · 2016 · 1h26', 85, 2, 'jane-doe']];
+const FILMS = [['It Follows', 'Horreur · 2014 · 1h40', 98, 0, 'it-follows'], ['Insidious', 'Horreur · 2010 · 1h43', 94, 3, 'insidious'], ['Mister Babadook', 'Horreur · 2014 · 1h34', 91, 1, 'babadook'], ['The Mirror', 'Horreur · 2013 · 1h44', 88, 5, 'oculus'], ['The Jane Doe Identity', 'Horreur · 2016 · 1h26', 85, 2, 'jane-doe']];
 const RC = FILMS.map(([t, m, pc, pal, slug], i) => {
   const d = document.createElement('div');
   d.className = 'rcard';

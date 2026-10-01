@@ -7,7 +7,7 @@ const path = require('path');
 const KEY = process.env.TMDB_KEY;
 if (!KEY) { console.error('TMDB_KEY manquant'); process.exit(1); }
 
-// slug -> [titre de recherche, année]
+// slug -> [titre de recherche, année, id TMDB facultatif quand la recherche est ambiguë]
 const FILMS = {
   'it-follows': ['It Follows', 2014],
   'insidious': ['Insidious', 2010],
@@ -31,7 +31,7 @@ const FILMS = {
   'blade-runner-2049': ['Blade Runner 2049', 2017],
   'joker': ['Joker', 2019],
   'oppenheimer': ['Oppenheimer', 2023],
-  'drive': ['Drive', 2011],
+  'drive': ['Drive', 2011, 64690],
 };
 
 const OUT = path.join(__dirname, 'posters');
@@ -39,13 +39,20 @@ fs.mkdirSync(OUT, { recursive: true });
 
 (async () => {
   let failed = 0;
-  for (const [slug, [title, year]] of Object.entries(FILMS)) {
+  for (const [slug, [title, year, id]] of Object.entries(FILMS)) {
     try {
-      const q = new URLSearchParams({ api_key: KEY, query: title, year: String(year), language: 'fr-FR' });
-      const res = await fetch(`https://api.themoviedb.org/3/search/movie?${q}`);
-      if (!res.ok) throw new Error(`recherche HTTP ${res.status}`);
-      const hit = (await res.json()).results.find(r => r.poster_path);
-      if (!hit) throw new Error('aucune affiche');
+      let hit;
+      if (id) {
+        const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${KEY}&language=fr-FR`);
+        if (!res.ok) throw new Error(`film HTTP ${res.status}`);
+        hit = await res.json();
+      } else {
+        const q = new URLSearchParams({ api_key: KEY, query: title, year: String(year), language: 'fr-FR' });
+        const res = await fetch(`https://api.themoviedb.org/3/search/movie?${q}`);
+        if (!res.ok) throw new Error(`recherche HTTP ${res.status}`);
+        hit = (await res.json()).results.find(r => r.poster_path);
+      }
+      if (!hit || !hit.poster_path) throw new Error('aucune affiche');
       const img = await fetch(`https://image.tmdb.org/t/p/w780${hit.poster_path}`);
       if (!img.ok) throw new Error(`image HTTP ${img.status}`);
       fs.writeFileSync(path.join(OUT, `${slug}.jpg`), Buffer.from(await img.arrayBuffer()));
