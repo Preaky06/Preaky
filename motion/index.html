@@ -338,7 +338,10 @@ const LOGO = [...'CINÉMOOD'].map((ch, i) => {
 /* ---------- grain déterministe ---------- */
 const gctx = $('grain').getContext('2d');
 const gimg = gctx.createImageData(960, 540);
+let lastGrain = -1;
 function grain(frame) {
+  if (frame === lastGrain) return;
+  lastGrain = frame;
   let s = (frame * 2654435761) >>> 0;
   const d = gimg.data;
   for (let i = 0; i < d.length; i += 4) {
