@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>ExpliSite — motion</title>
+<meta name="viewport" content="width=1920">
+<style>
+@font-face { font-family: "Fraunces"; src: url(../../public/fonts/fraunces-latin-full-normal.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Fraunces"; src: url(../../public/fonts/fraunces-latin-full-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: "Bricolage Grotesque"; src: url(../../public/fonts/bricolage-grotesque-latin-opsz-normal.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "JetBrains Mono"; src: url(../../public/fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2"); font-weight: 600; }
+
+:root {
+  --paper: #f2eee4; --card: #fbf9f4; --ink: #15130f; --ink2: #4a463d; --ink3: #8a8474;
+  --line: rgba(21, 19, 15, 0.14); --hl: #e4ff3d; --orange: #ff9a1f; --red: #d63a1f; --green: #17a86b; --blue: #2c3cff;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #0d0c0a; }
+#stage {
+  position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink);
+  font-family: "Bricolage Grotesque", system-ui, sans-serif; transform-origin: 0 0;
+}
+.abs { position: absolute; will-change: transform, opacity; }
+.mono { font-family: "JetBrains Mono", monospace; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* légende */
+.caption { left: 120px; top: 92px; font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 66px; line-height: 1.05; letter-spacing: -0.02em; white-space: nowrap; }
+.caption em { font-weight: 300; font-style: italic; color: var(--ink3); }
+.caption mark { background: var(--hl); color: var(--ink); padding: 0 10px; border-radius: 8px 16px 10px 18px; }
+
+/* courrier */
+#letter { width: 600px; height: 620px; left: 660px; top: 300px; background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: 0 40px 90px -40px rgba(21, 19, 15, 0.45); padding: 48px 46px; overflow: hidden; }
+#letter .head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+#letter .org { font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 13px; line-height: 1.5; color: var(--ink2); }
+#letter .seal { width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--ink3); }
+#letter .obj { font-family: Fraunces, Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 18px; }
+#letter .jargon { font-family: Fraunces, Georgia, serif; font-size: 18px; line-height: 1.75; color: var(--ink3); text-align: justify; hyphens: auto; }
+#letter .jargon .hl { box-decoration-break: clone; -webkit-box-decoration-break: clone; color: var(--ink); background: linear-gradient(var(--hl), var(--hl)) no-repeat left 60% / 0% 80%; padding: 0 2px; border-radius: 3px; }
+#plain { left: 0; top: 0; width: 600px; height: 620px; padding: 150px 46px 46px; background: var(--card); font-size: 30px; line-height: 1.38; font-weight: 600; }
+#plain mark { box-decoration-break: clone; -webkit-box-decoration-break: clone; background: var(--hl); color: var(--ink); padding: 0 6px; border-radius: 6px; }
+#lens { left: 0; top: 0; width: 300px; height: 300px; border-radius: 50%; border: 4px solid var(--ink);
+  box-shadow: 0 0 0 9px rgba(21, 19, 15, 0.07), 0 30px 60px -20px rgba(0, 0, 0, 0.45); }
+#lens::after { content: ""; position: absolute; width: 22px; height: 110px; right: -60px; bottom: -88px; background: var(--ink); border-radius: 14px; transform: rotate(-45deg); }
+
+/* résultat */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 30px 70px -40px rgba(21, 19, 15, 0.4); }
+.label { font-size: 15px; color: var(--ink2); display: flex; align-items: center; gap: 10px; }
+.ico { width: 32px; height: 32px; border-radius: 9px; background: var(--ink); color: var(--paper); display: inline-flex; align-items: center; justify-content: center; }
+#summary { left: 920px; top: 250px; width: 880px; padding: 34px 38px; }
+#summary p { margin: 16px 0 0; font-size: 36px; line-height: 1.3; font-weight: 500; letter-spacing: -0.01em; }
+#summary .hw { box-decoration-break: clone; -webkit-box-decoration-break: clone; background: linear-gradient(var(--hl), var(--hl)) no-repeat left center / 0% 100%; padding: 0 6px; border-radius: 6px; }
+#gauge { left: 920px; top: 560px; width: 300px; height: 250px; padding: 26px; text-align: center; }
+#gauge .state { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: 32px; margin-top: 2px; }
+#amount { left: 1250px; top: 560px; width: 550px; height: 250px; padding: 30px 34px; }
+#amount .val { font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: 92px; line-height: 1; letter-spacing: -0.03em; color: var(--red); margin-top: 16px; font-variant-numeric: tabular-nums; }
+#amount .chip { display: inline-block; margin-top: 18px; padding: 6px 14px; border-radius: 999px; background: var(--hl); font-family: "JetBrains Mono", monospace; font-weight: 600; font-size: 16px; }
+#todo { left: 920px; top: 840px; width: 880px; padding: 26px 34px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+#todo .label { color: #cfc9ba; }
+#todo .ico { background: var(--hl); color: var(--ink); }
+.item { display: flex; align-items: center; gap: 16px; margin-top: 16px; font-size: 24px; font-weight: 600; }
+.box { width: 32px; height: 32px; border-radius: 9px; border: 2.5px solid var(--paper); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.box svg { width: 20px; height: 20px; }
+
+/* fin */
+#endLogo { left: 0; top: 0; width: 1920px; height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+#endLogo .brand { display: flex; align-items: center; gap: 30px; font-family: Fraunces, Georgia, serif; font-weight: 800; font-size: 150px; letter-spacing: -0.03em; }
+#endLogo .tag { font-family: Fraunces, Georgia, serif; font-size: 52px; font-weight: 400; font-style: italic; color: var(--ink2); }
+#endLogo .tag mark { font-style: normal; font-weight: 700; color: var(--ink); background: var(--hl); padding: 0 12px; border-radius: 8px 16px 10px 18px; }
+#endLogo .mono { font-size: 20px; color: var(--ink2); }
+#progress { left: 0; bottom: 0; height: 6px; background: var(--ink); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- Légendes -->
+  <div class="abs caption" id="c1">Un courrier officiel.<br><em>Une page de jargon.</em></div>
+  <div class="abs caption" id="c2">Que faut-il retenir ?<br><em>Quoi faire, et avant quand ?</em></div>
+  <div class="abs caption" id="c3">ExpliSite le lit <mark>pour vous.</mark></div>
+  <div class="abs caption" id="c4">En clair : quoi, combien,<br><em>et avant quand.</em></div>
+
+  <!-- Le courrier -->
+  <div class="abs" id="letter">
+    <div class="head">
+      <div class="org">DIRECTION GÉNÉRALE<br>DES FINANCES PUBLIQUES<br>SIP — Avis n° 2026-11-004871</div>
+      <div class="seal"></div>
+    </div>
+    <div class="obj">Objet : Avis de mise en recouvrement</div>
+    <div class="jargon">
+      En application des dispositions de l'article L. 256 du Livre des procédures fiscales, et à défaut de règlement de l'imposition primitive à la date limite de paiement, une <span class="hl" id="h1">majoration de 10&nbsp;%</span> prévue à l'article 1730 du Code général des impôts a été appliquée. Le contribuable dispose, à compter de la notification du présent avis, d'un <span class="hl" id="h2">délai de trente jours</span> pour s'acquitter des sommes restant dues ou formuler une réclamation contentieuse assortie, le cas échéant, d'une demande de sursis de paiement. À défaut, il sera procédé au recouvrement forcé, notamment par voie de <span class="hl" id="h3">saisie administrative à tiers détenteur</span>.
+    </div>
+    <div class="abs" id="plain">
+      Vous avez payé vos impôts <mark>en retard</mark>. Une pénalité de <mark>10 %</mark> a été ajoutée. Vous avez <mark>30 jours</mark> pour payer ou contester. Sinon, l'argent peut être <mark>prélevé sur votre compte</mark>.
+    </div>
+    <div class="abs" id="lens"></div>
+  </div>
+
+  <!-- Le résultat -->
+  <div class="abs card" id="summary">
+    <div class="label"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12h14" stroke="#f2eee4" stroke-width="3" stroke-linecap="round"/></svg></span><span class="mono">En clair</span></div>
+    <p>Vous avez payé vos impôts en retard : <span class="hw" id="w1">une pénalité de 10 %</span> a été ajoutée. Il reste <span class="hw" id="w2">2 026 € à régler</span> sous 30 jours.</p>
+  </div>
+  <div class="abs card" id="gauge">
+    <div class="label" style="justify-content: center;"><span class="mono">Urgence</span></div>
+    <svg width="230" height="130" viewBox="0 0 200 115">
+      <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(21,19,15,0.12)" stroke-width="16" stroke-linecap="round"/>
+      <path d="M 22.4 81.6 A 80 80 0 0 1 43.9 44.9" fill="none" stroke="#17a86b" stroke-width="16" stroke-linecap="round"/>
+      <path d="M 52.4 37.3 A 80 80 0 0 1 90.8 20.5" fill="none" stroke="#2c3cff" stroke-width="16" stroke-linecap="round"/>
+      <path d="M 109.2 20.5 A 80 80 0 0 1 147.6 37.3" fill="none" stroke="#ff9a1f" stroke-width="16" stroke-linecap="round"/>
+      <path d="M 156.1 44.9 A 80 80 0 0 1 177.6 81.6" fill="none" stroke="#d63a1f" stroke-width="16" stroke-linecap="round"/>
+      <g id="needle"><line x1="100" y1="100" x2="100" y2="36" stroke="#15130f" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="10" fill="#15130f"/></g>
+    </svg>
+    <div class="state" id="gstate">À traiter</div>
+  </div>
+  <div class="abs card" id="amount">
+    <div class="label"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M16 7.5a5.5 5.5 0 1 0 0 9M5 10.5h8M5 13.5h8" fill="none" stroke="#f2eee4" stroke-width="2.4" stroke-linecap="round"/></svg></span><span class="mono">À payer</span></div>
+    <div class="val" id="amountVal">0,00 €</div>
+    <span class="chip" id="due">Avant le 1er novembre · dans 30 jours</span>
+  </div>
+  <div class="abs card" id="todo">
+    <div class="label"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#15130f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="mono">À faire</span></div>
+    <div class="item" id="t1"><span class="box" id="b1"><svg viewBox="0 0 24 24"><path id="k1" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#15130f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24"/></svg></span>Payez 2 026 € sur impots.gouv.fr, ou demandez un échéancier</div>
+    <div class="item" id="t2"><span class="box" id="b2"><svg viewBox="0 0 24 24"><path id="k2" d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#15130f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24"/></svg></span>Demandez la remise gracieuse de la pénalité — courrier prêt</div>
+  </div>
+
+  <!-- Fin -->
+  <div class="abs" id="endLogo">
+    <div class="brand">
+      <svg width="150" height="150" viewBox="0 0 40 40">
+        <circle id="lc" cx="17" cy="17" r="11" fill="none" stroke="#15130f" stroke-width="3.2" stroke-dasharray="69.2" stroke-dashoffset="69.2" transform="rotate(-90 17 17)"/>
+        <path id="lh" d="M25 25l9 9" stroke="#15130f" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="12.8" stroke-dashoffset="12.8"/>
+        <path id="lb" d="M11.5 17.5h11" stroke="#e4ff3d" stroke-width="5" stroke-linecap="round" stroke-dasharray="11" stroke-dashoffset="11"/>
+      </svg>
+      <span id="lname">ExpliSite</span>
+    </div>
+    <div class="tag" id="ltag">La paperasse, <mark>en clair.</mark></div>
+    <div class="mono" id="lmono">Impôts · CAF · Bail · Factures · Amendes · Contrats · Santé</div>
+  </div>
+  <div class="abs" id="progress"></div>
+</div>
+
+<script>
+// Animation pilotée par le temps : render(t) est une fonction pure de t (secondes),
+// ce qui permet un rendu image par image parfaitement régulier pour la vidéo.
+const DURATION = 24;
+const $ = (id) => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const easeBack = (x) => { const c1 = 1.4, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+const fmt = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+
+// Entrée/sortie d'un élément : glisse de 40 px et fond.
+function inOut(el, t, a, b, { dur = 0.7, dy = 40, dx = 0 } = {}) {
+  const i = easeOut(prog(t, a, a + dur));
+  const o = easeInOut(prog(t, b, b + dur * 0.7));
+  const v = i * (1 - o);
+  el.style.opacity = v;
+  el.style.transform = `translate(${dx * (1 - i) - dx * 0.3 * o}px, ${dy * (1 - i) - dy * 0.5 * o}px)`;
+  el.style.filter = v < 1 ? `blur(${(1 - v) * 6}px)` : "none";
+}
+
+function render(t) {
+  // Légendes
+  inOut($("c1"), t, 0.6, 3.6);
+  inOut($("c2"), t, 4.0, 6.2);
+  inOut($("c3"), t, 6.6, 10.4);
+  inOut($("c4"), t, 11.2, 18.6);
+
+  // Courrier : entrée, puis glisse à gauche pour laisser place au résultat.
+  const enter = easeOut(prog(t, 0, 1.3));
+  const side = easeInOut(prog(t, 10.4, 11.6));
+  const out = easeInOut(prog(t, 18.8, 19.8));
+  const L = $("letter");
+  L.style.opacity = enter * (1 - out);
+  L.style.transform = `translate(${lerp(0, -540, side)}px, ${lerp(220, 0, enter) - 30 * out}px) rotate(${lerp(-4, -1.5, enter) + lerp(0, -1, side)}deg) scale(${lerp(1, 0.93, side) * (1 - 0.06 * out)})`;
+
+  // Surlignage des passages clés.
+  [["h1", 4.2], ["h2", 4.8], ["h3", 5.4]].forEach(([id, a]) => {
+    $(id).style.backgroundSize = `${easeOut(prog(t, a, a + 0.6)) * 100}% 80%`;
+  });
+
+  // Loupe : traverse le courrier et révèle la version claire.
+  const lensOn = easeOut(prog(t, 6.4, 7.0)) * (1 - easeInOut(prog(t, 10.0, 10.6)));
+  const path = easeInOut(prog(t, 6.4, 10.0));
+  const lx = lerp(150, 450, path) + Math.sin(path * Math.PI * 2) * 40;
+  const ly = lerp(240, 420, path) + Math.sin(path * Math.PI * 3) * 40;
+  const r = 150 * lensOn;
+  $("lens").style.opacity = lensOn;
+  $("lens").style.transform = `translate(${lx - 150}px, ${ly - 150}px) scale(${lerp(0.6, 1, lensOn)})`;
+  // Après la loupe, la version claire reste entièrement visible.
+  const full = easeInOut(prog(t, 9.6, 10.6));
+  const radius = Math.max(r, full * 900);
+  $("plain").style.clipPath = `circle(${radius}px at ${lx}px ${ly}px)`;
+
+  // Résultat
+  const stagger = (id, a) => {
+    const v = easeBack(prog(t, a, a + 0.8));
+    const o = easeInOut(prog(t, 18.8, 19.6));
+    const el = $(id);
+    el.style.opacity = clamp(prog(t, a, a + 0.4)) * (1 - o);
+    el.style.transform = `translateY(${(1 - v) * 60 - o * 30}px) scale(${lerp(0.94, 1, clamp(v))})`;
+  };
+  stagger("summary", 11.4);
+  stagger("gauge", 12.6);
+  stagger("amount", 13.2);
+  stagger("todo", 14.6);
+  $("w1").style.backgroundSize = `${easeOut(prog(t, 12.0, 12.7)) * 100}% 100%`;
+  $("w2").style.backgroundSize = `${easeOut(prog(t, 12.5, 13.2)) * 100}% 100%`;
+
+  const needle = lerp(-90, 22.5, easeBack(prog(t, 13.0, 14.4)));
+  $("needle").setAttribute("transform", `rotate(${needle} 100 100)`);
+  $("amountVal").textContent = fmt.format(2026 * easeOut(prog(t, 13.5, 15.0)));
+  $("due").style.opacity = easeOut(prog(t, 15.0, 15.5));
+
+  stagger("t1", 15.0);
+  stagger("t2", 15.4);
+  [["k1", "b1", 16.3], ["k2", "b2", 17.0]].forEach(([k, b, a]) => {
+    const v = easeOut(prog(t, a, a + 0.5));
+    $(k).setAttribute("stroke-dashoffset", 24 * (1 - v));
+    $(b).style.background = v > 0.05 ? "var(--hl)" : "transparent";
+    $(b).style.borderColor = v > 0.05 ? "var(--hl)" : "var(--paper)";
+    $(b).style.transform = `scale(${1 + 0.15 * Math.sin(v * Math.PI)}) rotate(${-6 * v}deg)`;
+  });
+
+  // Fin : le logo se dessine, puis le nom et la signature.
+  const end = $("endLogo");
+  end.style.opacity = clamp(prog(t, 19.6, 20.2));
+  $("lc").setAttribute("stroke-dashoffset", 69.2 * (1 - easeInOut(prog(t, 19.8, 20.8))));
+  $("lh").setAttribute("stroke-dashoffset", 12.8 * (1 - easeOut(prog(t, 20.5, 21.0))));
+  $("lb").setAttribute("stroke-dashoffset", 11 * (1 - easeOut(prog(t, 20.9, 21.4))));
+  inOut($("lname"), t, 20.4, 99, { dy: 0, dx: -40 });
+  inOut($("ltag"), t, 21.3, 99);
+  inOut($("lmono"), t, 21.9, 99, { dy: 20 });
+
+  $("progress").style.width = `${(t / DURATION) * 100}%`;
+}
+
+// Mise à l'échelle dans la fenêtre (aperçu) et lecture en boucle.
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const stage = $("stage");
+  stage.style.transform = `scale(${s})`;
+  document.body.style.height = `${1080 * s}px`;
+}
+window.__render = render;          // utilisé par le script d'export vidéo
+window.__duration = DURATION;
+if (!new URLSearchParams(location.search).has("export")) {
+  addEventListener("resize", fit); fit();
+  const start = performance.now();
+  (function loop(now) { render(((now - start) / 1000) % (DURATION + 1.5)); requestAnimationFrame(loop); })(start);
+} else {
+  $("progress").style.display = "none";
+  render(0);
+}
+</script>
+</body>
+</html>

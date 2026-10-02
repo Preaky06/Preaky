@@ -8,3 +8,4 @@ data/
 *.db-*
 encryption.key
 *.zip
+*.mp4
