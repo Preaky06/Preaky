@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood La course v3</title>
+<style>
+@font-face { font-family: 'Anton'; src: url(../motion/fonts/anton.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-500.woff2) format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-700.woff2) format('woff2'); font-weight: 700; font-display: block; }
+:root { --bg: #0c0709; --ink: #f7eef1; --red: #ff2d4f; --muted: #8f8388; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #000; overflow: hidden; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Archivo', sans-serif; color: var(--ink); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); transform-origin: 0 0; flex: none; }
+.abs { position: absolute; }
+.layer { position: absolute; inset: 0; }
+.anton { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.emo { font-family: 'Noto Color Emoji'; }
+
+/* fond : bokeh qui dérive + halo */
+#bokeh .o { position: absolute; border-radius: 50%; }
+#halo { background: radial-gradient(60% 45% at 50% 55%, rgba(255,45,79,.16), rgba(12,7,9,0) 70%); }
+
+/* monde 3D */
+#world { perspective: 2400px; perspective-origin: 50% 45%; }
+.phone { position: absolute; left: 0; top: 0; width: 500px; height: 1060px; border-radius: 64px; padding: 11px; transform-origin: 50% 50%;
+  background: linear-gradient(145deg, #3a3236, #121011 40%, #26201f); box-shadow: 0 50px 120px rgba(0,0,0,.75), inset 0 0 0 2px rgba(255,255,255,.08); }
+.screen { position: relative; width: 478px; height: 1038px; border-radius: 54px; overflow: hidden; background: #0b0809; }
+.glare { position: absolute; inset: -40% -60%; background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.16) 49%, rgba(255,255,255,.04) 53%, transparent 58%); z-index: 9; pointer-events: none; }
+.shadow { position: absolute; left: 0; top: 0; width: 520px; height: 90px; margin: -45px 0 0 -260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); filter: blur(10px); }
+.status { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 36px; font: 700 21px/1 'Archivo'; color: #fff; z-index: 5; }
+.status .ic { display: flex; gap: 7px; align-items: center; }
+.status .ic i { display: block; background: #fff; border-radius: 2px; }
+.island { position: absolute; left: 50%; top: 12px; width: 120px; height: 32px; margin-left: -60px; background: #000; border-radius: 20px; z-index: 6; }
+#feedwrap { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; overflow: hidden; }
+#nav { position: absolute; left: 0; right: 0; top: 0; height: 64px; display: flex; align-items: center; gap: 20px; padding: 0 22px; background: linear-gradient(#0b0809, rgba(11,8,9,.85)); z-index: 3; font: 500 20px/1 'Archivo'; color: #9a9196; }
+#nav b { color: #fff; font-size: 26px; font-weight: 700; margin-right: 6px; }
+#feed { position: absolute; left: 0; right: 0; top: 64px; }
+.hero { position: relative; margin: 6px 16px 18px; height: 250px; border-radius: 16px; overflow: hidden; }
+.hero img { width: 100%; height: 100%; object-fit: cover; }
+.row { margin: 0 0 18px; }
+.row h4 { font: 700 21px/1 'Archivo'; color: #eee; margin: 0 16px 10px; }
+.strip { display: flex; gap: 10px; padding-left: 16px; }
+.strip img { width: 118px; height: 177px; object-fit: cover; border-radius: 8px; flex: none; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; height: 460px; z-index: 5; background: linear-gradient(transparent, rgba(0,0,0,.85) 38%); }
+.bub { position: absolute; max-width: 360px; width: max-content; padding: 14px 20px; border-radius: 24px; font: 500 26px/1.25 'Archivo'; }
+.bub.me { right: 18px; background: #2f7cf6; color: #fff; border-bottom-right-radius: 6px; transform-origin: 100% 100%; }
+.bub.you { left: 18px; background: #3a3337; color: #fff; border-bottom-left-radius: 6px; transform-origin: 0 100%; }
+#rec { width: 478px; height: 1035px; display: block; }
+.tap { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255,255,255,.35); border: 3px solid rgba(255,255,255,.9); z-index: 4; }
+
+/* chronos en haut */
+#hud { left: 40px; right: 40px; top: 70px; height: 170px; display: flex; gap: 20px; }
+.pill { flex: 1; border-radius: 30px; background: rgba(20,14,17,.72); border: 1px solid rgba(255,255,255,.08); display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+.pill .k { font: 700 24px/1 'Archivo'; letter-spacing: .3em; }
+.pill .d { font-size: 96px; line-height: 1; margin-top: 10px; }
+#pillR { border-color: rgba(255,45,79,.45); box-shadow: 0 0 40px rgba(255,45,79,.18); }
+
+/* titres plein cadre */
+.slam { position: absolute; left: 0; right: 0; text-align: center; line-height: 1; white-space: nowrap; }
+#found { left: 50%; top: 820px; width: 760px; margin-left: -380px; height: 200px; background: var(--red); color: #fff; font: 400 150px/200px 'Anton'; text-align: center; border-radius: 22px; box-shadow: 0 30px 100px rgba(255,45,79,.75); }
+#bigL { top: 330px; font-size: 250px; text-shadow: 0 16px 60px rgba(0,0,0,.9); }
+.vnum { position: absolute; top: 420px; width: 540px; text-align: center; }
+.vnum .n { font-size: 190px; line-height: 1; position: relative; display: inline-block; white-space: nowrap; }
+.vnum .k { font: 700 28px/1 'Archivo'; letter-spacing: .3em; margin-top: 16px; }
+#strike { position: absolute; left: -24px; right: -24px; top: 44%; height: 22px; background: var(--red); transform-origin: 0 50%; box-shadow: 0 0 30px rgba(255,45,79,.8); }
+#recup { background: rgba(12,7,9,.55); }
+#recup .w { font-size: 230px; }
+
+/* accroche */
+#hook { overflow: hidden; }
+#hookwall { left: -260px; top: -500px; width: 1600px; height: 3000px; transform: rotate(-8deg); filter: blur(5px) brightness(.32) saturate(1.2); }
+#hookwall .col { position: absolute; top: 0; width: 300px; display: flex; flex-direction: column; gap: 22px; }
+#hookwall img { width: 300px; height: 450px; object-fit: cover; border-radius: 14px; }
+#day { top: 560px; left: 0; right: 0; text-align: center; font: 700 40px/1 'Archivo'; letter-spacing: .5em; color: var(--red); }
+#clock { top: 640px; left: 0; right: 0; display: flex; justify-content: center; font-size: 330px; line-height: 1; }
+#clock .dig { display: inline-block; height: 330px; overflow: hidden; vertical-align: top; }
+#clock .dig span { display: block; height: 330px; }
+#ask .w { font-size: 250px; }
+
+/* fin */
+#end { background: rgba(12,7,9,.0); }
+#endglow { background: radial-gradient(60% 40% at 50% 42%, rgba(255,45,79,.4), rgba(12,7,9,.3) 60%, rgba(12,7,9,.92) 100%); }
+#logo { left: 0; right: 0; top: 600px; text-align: center; font-size: 210px; line-height: 1.25; white-space: nowrap; }
+#logo .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-top: 34px; }
+#logo .ch span { display: block; }
+#sub { left: 0; right: 0; top: 940px; text-align: center; font: 700 52px/1.3 'Archivo'; }
+#btn { left: 50%; top: 1080px; height: 140px; margin-left: -360px; width: 720px; background: var(--red); color: #fff; font: 700 60px/140px 'Archivo'; text-align: center; box-shadow: 0 18px 60px rgba(255,45,79,.55); border-radius: 18px; }
+#url { left: 0; right: 0; top: 1265px; text-align: center; font: 700 40px/1 'Archivo'; letter-spacing: .3em; color: #c9bec2; }
+
+#flash { background: #fff; pointer-events: none; }
+#grain { width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .1; pointer-events: none; }
+#vig { background: radial-gradient(110% 80% at 50% 50%, transparent 58%, rgba(0,0,0,.55)); pointer-events: none; }
+#ui { margin-top: 10px; display: flex; gap: 10px; width: min(96vw, 600px); font: 500 13px 'Archivo'; color: #aaa; }
+#ui input { flex: 1; accent-color: #ff2d4f; }
+#ui button { background: #ff2d4f; color: #fff; border: 0; padding: 6px 12px; cursor: pointer; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="vb" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur id="vbg" stdDeviation="0 0"/></filter>
+    <filter id="hbL" x="-30%" y="-5%" width="160%" height="110%"><feGaussianBlur id="hbLg" stdDeviation="0 0"/></filter>
+    <filter id="hbR" x="-30%" y="-5%" width="160%" height="110%"><feGaussianBlur id="hbRg" stdDeviation="0 0"/></filter>
+  </svg>
+  <div class="layer" id="bokeh"></div>
+  <div class="layer" id="halo"></div>
+
+  <div class="layer" id="cam">
+    <div class="layer" id="world">
+      <div class="shadow" id="shL"></div><div class="shadow" id="shR"></div>
+      <div class="phone" id="pL"><div class="screen">
+        <div class="island"></div>
+        <div class="status"><span id="clkL">21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+        <div id="feedwrap"><div id="nav"><b>Accueil</b><span>Films</span><span>Séries</span><span>Ma liste</span></div><div id="feed"></div></div>
+        <div id="chat"></div>
+        <div class="glare" id="glL"></div>
+      </div></div>
+      <div class="phone" id="pR"><div class="screen">
+        <img id="rec" alt=""><div id="taps"></div>
+        <div class="island"></div>
+        <div class="status" style="background:linear-gradient(#0d090b,rgba(13,9,11,0))"><span>21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+        <div class="glare" id="glR"></div>
+      </div></div>
+    </div>
+    <div class="abs" id="hud">
+      <div class="pill" id="pillL"><div class="k" style="color:var(--muted)">SANS</div><div class="d anton" id="dL">00:00</div></div>
+      <div class="pill" id="pillR"><div class="k" style="color:var(--red)">AVEC CINÉMOOD</div><div class="d anton" id="dR" style="color:var(--red)">00:00</div></div>
+    </div>
+    <div class="slam anton" id="bigL">38:00</div>
+    <div class="vnum" id="vL" style="left:0"><div class="n anton" id="n47">47 MIN<div id="strike"></div></div><div class="k" style="color:var(--muted)">À SCROLLER</div></div>
+    <div class="vnum" id="vR" style="left:540px"><div class="n anton" id="n59" style="color:var(--red)">59 S</div><div class="k" style="color:var(--red)">AVEC CINÉMOOD</div></div>
+  </div>
+
+  <div class="abs" id="found">TROUVÉ ✓</div>
+
+  <div class="layer" id="hook">
+    <div class="abs" id="hookwall"></div>
+    <div class="layer" style="background:radial-gradient(70% 45% at 50% 45%, rgba(12,7,9,.2), rgba(12,7,9,.85))"></div>
+    <div class="abs" id="day">VENDREDI SOIR</div>
+    <div class="abs anton" id="clock"></div>
+    <div class="layer" id="ask"><div class="slam anton w" style="top:470px">On</div><div class="slam anton w" style="top:735px">regarde</div><div class="slam anton w" style="top:1000px;color:var(--red)">quoi ?</div></div>
+  </div>
+
+  <div class="layer" id="recup"><div class="slam anton w" style="top:540px">Récupère</div><div class="slam anton w" style="top:800px;color:var(--red)">tes</div><div class="slam anton w" style="top:1060px">soirées.</div></div>
+
+  <div class="layer" id="end">
+    <div class="layer" id="endglow"></div>
+    <div class="abs anton" id="logo"></div>
+    <div class="abs" id="sub">12 questions.<br>Moins d’une minute.</div>
+    <div class="abs" id="btn">Trouver mon film</div>
+    <div class="abs" id="url">CINEM00D.COM</div>
+  </div>
+
+  <div class="layer" id="vig"></div>
+  <canvas class="abs" id="grain" width="540" height="960" style="left:0;top:0"></canvas>
+  <div class="layer" id="flash"></div>
+</div>
+<div id="ui"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="15.6" step="0.001" value="0"><span id="tc">0.00</span></div>
+
+<script src="assets.js"></script>
+<script src="../ugc/rec/rec.js"></script>
+<script>
+const BPM = 128, B = 60 / BPM;            // tout est calé sur les temps
+const b = n => n * B;
+const DUR = b(27) + 3.0;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, c = 1) => Math.min(c, Math.max(a, x));
+const P = (t, a, c) => clamp((t - a) / (c - a));
+const lerp = (a, c, k) => a + (c - a) * k;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  inOutExpo: x => x <= 0 ? 0 : x >= 1 ? 1 : x < .5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2,
+  outBack: x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const tw = (t, a, c, e = 'outExpo') => E[e](P(t, a, c));
+const vis = (el, on) => { el.style.visibility = on ? 'visible' : 'hidden'; };
+let seed = 11;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const mmss = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+function slam(el, t, t0, from = 2.2) {
+  const k = tw(t, t0, t0 + .22);
+  el.style.transform = `scale(${lerp(from, 1, k)})`;
+  el.style.opacity = t >= t0 ? Math.min(1, k * 4) : 0;
+  const ca = (1 - tw(t, t0, t0 + .45, 'outCubic')) * 14;
+  el.style.textShadow = ca > .3 ? `${-ca}px 0 rgba(0,255,240,.7), ${ca}px 0 rgba(255,0,70,.8)` : '';
+}
+const IMPACTS = [];
+function shake(t) {
+  let x = 0, y = 0, r = 0;
+  for (const [t0, a] of IMPACTS) {
+    if (t < t0 || t > t0 + .35) continue;
+    const k = Math.exp(-(t - t0) * 12) * a;
+    x += Math.sin(t * 91 + t0) * 18 * k; y += Math.cos(t * 77 + t0 * 3) * 18 * k; r += Math.sin(t * 53) * .5 * k;
+  }
+  return { x, y, r };
+}
+
+/* ---------- découpage (en temps) ---------- */
+// plans : split = les deux côte à côte, L / R = un téléphone en vedette, verdict, recup, end
+const SHOTS = [[0, 'hook'], [4, 'split'], [6, 'L'], [8, 'R'], [10, 'L'], [11.5, 'R'], [13, 'L'], [14, 'R'], [14.5, 'L'], [15, 'R'], [15.5, 'L'], [16, 'R'], [20, 'L'], [23, 'verdict'], [25, 'recup'], [27, 'end']];
+const T_DROP = b(4), T_FOUND = b(16), T_BACK = b(20), T_VERDICT = b(23), T_RECUP = b(25), T_END = b(27);
+const R_FOUND = REC_DATA.events.find(e => e.type === 'results').t;
+const R_SCROLLED = REC_DATA.events.find(e => e.type === 'scroll-others').t - .2;
+const SPEED = R_FOUND / (T_FOUND - T_DROP);
+IMPACTS.push([b(1), .5], [b(2), .7], [b(2.5), .6], [b(3), .9], [T_DROP, .7], [T_FOUND, 1], [b(16.5), .8], [b(20), .7], [b(21), .7], [b(22), .9], [T_VERDICT, .9], [b(23.5), .7], [b(24), .9], [T_RECUP, .6], [b(25.5), .6], [b(26), .9], [T_END, .5]);
+
+// demi-durée de la transition : jamais plus du quart du plan précédent, pour garder des images nettes
+const half = s => { const i = SHOTS.indexOf(s); return i > 0 ? Math.min(.12, b(s[0] - SHOTS[i - 1][0]) * .25) : .12; };
+const shotAt = t => { let s = SHOTS[0]; for (const x of SHOTS) if (t >= b(x[0]) - half(x)) s = x; return s; };
+const prevShot = s => SHOTS[Math.max(0, SHOTS.indexOf(s) - 1)];
+
+// états des téléphones pour chaque plan : centre x/y, échelle, rotation Y, opacité
+function states(mode, t) {
+  const off = 1350, hy = 1110, hs = 1.5;
+  switch (mode) {
+    case 'hook': return { L: { x: 285, y: 2900, s: .95, ry: 30, o: 0 }, R: { x: 795, y: 2900, s: .95, ry: -30, o: 0 } };
+    case 'split': return { L: { x: 288, y: 1090, s: .96, ry: 14, o: 1 }, R: { x: 792, y: 1090, s: .96, ry: -14, o: 1 } };
+    case 'L': return { L: { x: 540, y: hy, s: hs, ry: -7, o: 1 }, R: { x: 540 + off, y: hy, s: hs, ry: -7, o: 1 } };
+    case 'R': {
+      // à partir du résultat : poussée sur le score « 86 % »
+      const pk = tw(t, b(18.5), b(18.5) + .35, 'inOutExpo') * (1 - tw(t, b(19.7), b(19.7) + .2, 'inOutExpo'));
+      return { L: { x: 540 - off, y: hy, s: hs, ry: 7, o: 1 }, R: { x: 540, y: lerp(hy, 1250, pk), s: lerp(hs, 1.95, pk), ry: lerp(7, 0, pk), o: 1 } };
+    }
+    case 'verdict': return { L: { x: 288, y: 1250, s: .9, ry: 14, o: 1 }, R: { x: 792, y: 1250, s: .9, ry: -14, o: 1 } };
+    case 'recup': case 'end': return { L: { x: 300, y: 1320, s: .7, ry: 18, o: .25 }, R: { x: 780, y: 1320, s: .7, ry: -18, o: .25 } };
+  }
+}
+const mix = (a, c, k) => ({ x: lerp(a.x, c.x, k), y: lerp(a.y, c.y, k), s: lerp(a.s, c.s, k), ry: lerp(a.ry, c.ry, k), o: lerp(a.o, c.o, k) });
+
+/* ---------- temps : capture, chronos ---------- */
+function recTime(t) {
+  if (t < T_FOUND) return Math.max(0, (t - T_DROP) * SPEED);
+  return Math.min(R_SCROLLED, R_FOUND + (t - T_FOUND) * ((R_SCROLLED - R_FOUND) / (T_BACK - T_FOUND - .15)));
+}
+const humanSecs = t => Math.min(59, Math.max(0, (t - T_DROP) / (T_FOUND - T_DROP) * 59));
+const leftSecs = t => t < T_DROP ? 0 : t < T_FOUND ? 31 * 60 * Math.pow(P(t, T_DROP, T_FOUND), 1.5) : 31 * 60 + 16 * 60 * P(t, T_FOUND, T_VERDICT);
+
+/* ---------- faux catalogue ---------- */
+const ROWS = ['Tendances', 'Recommandé pour toi', 'Parce que tu as regardé…', 'Nouveautés', 'Top 10 aujourd’hui', 'Classiques', 'À découvrir', 'Comédies', 'Acclamé par la critique'];
+let pi = 0;
+const feed = $('feed');
+const hero = document.createElement('div'); hero.className = 'hero'; hero.innerHTML = `<img src="${BACKDROPS[0]}" alt="">`; feed.appendChild(hero);
+const STRIPS = [];
+for (let r = 0; r < 100; r++) {
+  const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<h4>${ROWS[r % ROWS.length]}</h4>`;
+  const strip = document.createElement('div'); strip.className = 'strip';
+  for (let k = 0; k < 6; k++) { const im = document.createElement('img'); im.src = POSTERS[(pi++ * 37) % POSTERS.length]; strip.appendChild(im); }
+  row.appendChild(strip); feed.appendChild(row); STRIPS.push(strip);
+}
+const FLICKS = [];
+// un coup de pouce par temps : entre deux gestes, les affiches restent lisibles
+for (let n = 4.75; n < 23; n += 1) if (n < 16 || n >= 20) FLICKS.push({ t: b(n), d: .26, dy: 520 + rnd() * 320, dx: rnd() < .3 ? 160 + rnd() * 200 : 0, row: Math.floor(rnd() * 3) });
+function feedScroll(t) {
+  let y = 0, v = 0; const dx = [0, 0, 0];
+  for (const f of FLICKS) {
+    const k = E.outCubic(P(t, f.t, f.t + f.d));
+    y += f.dy * k; dx[f.row] += f.dx * k;
+    if (t > f.t && t < f.t + f.d) v += f.dy * 3 * Math.pow(1 - P(t, f.t, f.t + f.d), 2) / f.d;
+  }
+  return { y, dx, v };
+}
+
+/* ---------- conversation : une bulle par temps ---------- */
+const MSGS = [['me', 'On regarde quoi ?'], ['you', 'Jsp… toi ?'], ['me', 'Celui-là ?'], ['you', 'Déjà vu.'], ['me', 'Et lui ?'], ['you', 'Trop long 😴'],
+  ['me', 'Une comédie ?'], ['you', 'Bof…'], ['me', 'T’as une idée ?'], ['you', 'Non 😩'], ['me', 'Bande-annonce ?'], ['you', '…']];
+const BUBS = MSGS.map(([who, txt], i) => ({ at: b(4.5 + i), who, txt }));
+BUBS.push({ at: b(21), who: 'me', txt: 'On remet un épisode déjà vu ?' });
+BUBS.forEach(m => { const el = document.createElement('div'); el.className = 'bub ' + m.who; el.innerHTML = m.txt.replace(/(\p{Extended_Pictographic})/gu, '<span class="emo">$1</span>'); $('chat').appendChild(el); m.el = el; });
+
+const TAPS = REC_DATA.events.filter(e => e.type === 'tap').map(e => {
+  const el = document.createElement('div'); el.className = 'tap'; el.style.left = (e.x * 478 / 390) + 'px'; el.style.top = (e.y * 478 / 390) + 'px';
+  $('taps').appendChild(el); return { el, at: T_DROP + e.t / SPEED };
+});
+
+/* ---------- décor ---------- */
+const BOKEH = [];
+for (let i = 0; i < 16; i++) {
+  const o = document.createElement('div'); o.className = 'o';
+  const sz = 120 + rnd() * 320, hue = [[255, 45, 79], [140, 40, 160], [255, 140, 60], [60, 90, 220]][i % 4];
+  o.style.width = o.style.height = sz + 'px';
+  o.style.background = `radial-gradient(closest-side, rgba(${hue},.55), rgba(${hue},0))`;
+  o.style.filter = `blur(${10 + rnd() * 20}px)`;
+  $('bokeh').appendChild(o);
+  BOKEH.push({ o, x: rnd() * 1080, y: rnd() * 1920, vx: (rnd() - .5) * 30, vy: -10 - rnd() * 30, a: .25 + rnd() * .45, sz });
+}
+const HCOLS = [];
+for (let c = 0; c < 5; c++) { const col = document.createElement('div'); col.className = 'col'; col.style.left = (c * 322) + 'px'; for (let k = 0; k < 8; k++) { const im = document.createElement('img'); im.src = POSTERS[(c * 13 + k * 7) % POSTERS.length]; col.appendChild(im); } $('hookwall').appendChild(col); HCOLS.push(col); }
+// horloge mécanique : 20:59 -> 21:00
+const DIGS = [['2', '2'], ['0', '1'], [':', ':'], ['5', '0'], ['9', '0']].map(([a, c]) => {
+  const d = document.createElement('div'); d.className = 'dig'; d.innerHTML = `<span>${a}</span><span>${c}</span>`; $('clock').appendChild(d); return { d, roll: a !== c };
+});
+const LOGO = [...'CINÉMOOD'].map((ch, i) => { const w = document.createElement('span'); w.className = 'ch'; const s = document.createElement('span'); s.textContent = ch; if (i >= 4) s.style.color = 'var(--red)'; w.appendChild(s); $('logo').appendChild(w); return s; });
+
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+let lastG = -1;
+function grain(f) {
+  if (f === lastG) return; lastG = f;
+  let s = (f * 2654435761) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i + 1] = d[i + 2] = s & 255; d[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+}
+async function loadRec(i) {
+  if ($('rec').dataset.i == i) return;
+  $('rec').src = `../ugc/rec/${String(i).padStart(5, '0')}.jpg`; $('rec').dataset.i = i;
+  await $('rec').decode().catch(() => {});
+}
+function placePhone(el, sh, st) {
+  el.style.transform = `translate3d(${st.x - 250}px,${st.y - 530}px,0) rotateY(${st.ry}deg) scale(${st.s})`;
+  el.style.opacity = st.o;
+  sh.style.transform = `translate(${st.x}px,${st.y + 530 * st.s + 30}px) scale(${st.s})`;
+  sh.style.opacity = st.o * .9;
+}
+
+async function render(t) {
+  grain(Math.floor(t * 24));
+  const sh = shake(t);
+
+  /* décor */
+  BOKEH.forEach(k => {
+    const x = (k.x + k.vx * t + 1400) % 1400 - 160, y = ((k.y + k.vy * t) % 2200 + 2200) % 2200 - 140;
+    k.o.style.transform = `translate(${x}px,${y}px)`; k.o.style.opacity = k.a * (.8 + .2 * Math.sin(t * 2 + k.sz));
+  });
+
+  /* accroche */
+  const hookOn = t < T_DROP + .1;
+  vis($('hook'), hookOn);
+  if (hookOn) {
+    HCOLS.forEach((c, i) => { c.style.transform = `translateY(${-(i % 2 ? 400 : 150) - t * (i % 2 ? 140 : 100)}px)`; });
+    $('day').style.opacity = tw(t, .05, .3);
+    const roll = tw(t, b(1) - .06, b(1) + .16, 'inOutExpo');
+    DIGS.forEach(d => { d.d.firstChild.style.transform = d.d.lastChild.style.transform = `translateY(${d.roll ? -roll * 330 : 0}px)`; });
+    slam($('clock'), t, 0, 1.6);
+    const up = tw(t, b(2) - .08, b(2) + .14, 'inExpo');
+    $('clock').style.transform += ` translateY(${-up * 1500}px)`;
+    $('day').style.transform = `translateY(${-up * 1500}px)`;
+    [...$('ask').children].forEach((w, i) => slam(w, t, b(2 + i * .5), 1.9));
+    const out = tw(t, T_DROP - .1, T_DROP + .1, 'inExpo');
+    $('hook').style.transform = `translate(${sh.x}px,${sh.y - out * 1920}px) rotate(${sh.r}deg)`;
+  }
+
+  /* monde : téléphones */
+  const shot = shotAt(t), prev = prevShot(shot), tc = b(shot[0]), hw = half(shot);
+  const k = tw(t, tc - hw, tc + hw, 'inOutExpo');
+  const A = states(prev[1], t), C = states(shot[1], t);
+  const L = mix(A.L, C.L, k), R = mix(A.R, C.R, k);
+  const whip = (prev[1] === 'L' && shot[1] === 'R') || (prev[1] === 'R' && shot[1] === 'L');
+  const wb = whip ? Math.sin(Math.PI * P(t, tc - hw, tc + hw)) * 34 : 0;
+  $('hbLg').setAttribute('stdDeviation', `${wb.toFixed(1)} 0`); $('hbRg').setAttribute('stdDeviation', `${wb.toFixed(1)} 0`);
+  const grey = tw(t, T_BACK, T_BACK + .3);
+  $('pL').style.filter = (wb > .5 ? 'url(#hbL) ' : '') + `grayscale(${grey * .9}) brightness(${1 - grey * .35})`;
+  $('pR').style.filter = (wb > .5 ? 'url(#hbR) ' : '') + (shot[1] === 'verdict' ? `drop-shadow(0 0 ${40 * tw(t, b(24), b(24) + .3)}px rgba(255,45,79,.7))` : '');
+  placePhone($('pL'), $('shL'), L); placePhone($('pR'), $('shR'), R);
+  $('pL').style.zIndex = shot[1] === 'L' ? 2 : 1; $('pR').style.zIndex = shot[1] === 'R' ? 2 : 1;
+  // reflet qui balaie l'écran vedette à chaque coupe
+  const gl = P(t, tc, tc + .55);
+  $('glL').style.transform = `translateX(${(shot[1] === 'L' || shot[1] === 'split' ? lerp(-60, 60, gl) : 80)}%)`;
+  $('glR').style.transform = `translateX(${(shot[1] === 'R' || shot[1] === 'split' ? lerp(-60, 60, gl) : 80)}%)`;
+  // caméra : pulsation sur chaque temps pendant la course
+  const pulse = t > T_DROP && t < T_VERDICT ? .015 * Math.exp(-((t / B) % 1) * 6) : 0;
+  $('cam').style.transform = `translate(${sh.x}px,${sh.y}px) translate(540px,960px) scale(${1 + pulse}) rotate(${sh.r}deg) translate(-540px,-960px)`;
+  vis($('cam'), t > T_DROP - .15);
+
+  /* contenu gauche */
+  const ls = leftSecs(t);
+  $('dL').textContent = mmss(ls);
+  $('clkL').textContent = `21:${String(Math.min(59, Math.floor(ls / 60))).padStart(2, '0')}`;
+  const { y, dx, v } = feedScroll(t);
+  feed.style.transform = `translateY(${-y}px)`;
+  STRIPS.forEach((s, i) => { s.style.transform = `translateX(${-dx[i % 3] % 500}px)`; });
+  const vb = Math.min(7, v / 400);
+  $('vbg').setAttribute('stdDeviation', `0 ${vb.toFixed(2)}`);
+  feed.style.filter = vb > .3 ? 'url(#vb)' : 'none';
+  const shown = BUBS.filter(m => t >= m.at);
+  BUBS.forEach(m => vis(m.el, false));
+  let bottom = 26;
+  shown.slice(-3).reverse().forEach((m, rank) => {
+    const kk = tw(t, m.at, m.at + .25, 'outBack');
+    vis(m.el, true); m.el.style.bottom = bottom + 'px'; bottom += m.el.offsetHeight + 14;
+    m.el.style.transform = `scale(${lerp(.5, 1, kk)})`; m.el.style.opacity = Math.min(1, kk * 2) * (rank === 2 ? .5 : 1);
+  });
+
+  /* contenu droit : vraie capture */
+  if (t > T_DROP - .2) await loadRec(Math.min(REC_DATA.count - 1, Math.round(recTime(t) * REC_DATA.fps)));
+  $('dR').textContent = mmss(humanSecs(t));
+  TAPS.forEach(tp => { const kk = P(t, tp.at - .02, tp.at + .22); vis(tp.el, kk > 0 && kk < 1); if (kk > 0 && kk < 1) { tp.el.style.transform = `scale(${lerp(.5, 1.3, E.outCubic(kk))})`; tp.el.style.opacity = 1 - kk; } });
+
+  /* chronos du haut */
+  const hudO = tw(t, T_DROP, T_DROP + .3) * (1 - tw(t, T_VERDICT - .1, T_VERDICT + .1, 'lin'));
+  $('hud').style.opacity = hudO;
+  $('hud').style.transform = `translateY(${lerp(-60, 0, tw(t, T_DROP, T_DROP + .35))}px)`;
+  $('pillL').style.transform = `scale(${shot[1] === 'L' ? 1.04 : .98})`; $('pillR').style.transform = `scale(${shot[1] === 'R' ? 1.04 : .98})`;
+  $('pillL').style.opacity = shot[1] === 'R' ? .6 : 1; $('pillR').style.opacity = shot[1] === 'L' ? .6 : 1;
+  const stopR = t >= T_FOUND ? Math.sin(Math.PI * P(t, T_FOUND, T_FOUND + .35)) : 0;
+  $('dR').style.transform = `scale(${1 + stopR * .2})`;
+
+  /* trouvé */
+  const fOn = t >= b(16.5) && t < b(18.5);
+  vis($('found'), fOn);
+  if (fOn) {
+    const kk = tw(t, b(16.5), b(16.5) + .25, 'outBack');
+    $('found').style.transform = `translate(${sh.x}px,${sh.y}px) scale(${lerp(2.6, 1, kk)}) rotate(${lerp(-14, -5, kk)}deg)`;
+    $('found').style.opacity = Math.min(1, kk * 3) * (1 - tw(t, b(18.2), b(18.5), 'lin'));
+  }
+  /* retour : le chrono s'écrase */
+  const lOn = t >= T_BACK && t < T_VERDICT;
+  vis($('bigL'), lOn);
+  if (lOn) {
+    const steps = [[b(20), '38:00'], [b(21), '43:00'], [b(22), '47:00']];
+    const cur = steps.filter(s => t >= s[0]).pop();
+    $('bigL').textContent = cur[1]; slam($('bigL'), t, cur[0], 1.7);
+    $('bigL').style.color = cur[1] === '47:00' ? 'var(--red)' : '#fff';
+  }
+  /* verdict : chiffres au-dessus de chaque téléphone */
+  const vOn = t >= T_VERDICT && t < T_RECUP + .1;
+  vis($('vL'), vOn); vis($('vR'), vOn && t >= b(24));
+  if (vOn) {
+    slam($('n47'), t, T_VERDICT, 2.2);
+    $('strike').style.transform = `rotate(-7deg) scaleX(${tw(t, b(23.5), b(23.5) + .15, 'outCubic')})`;
+    slam($('n59'), t, b(24), 2.2);
+    const o = 1 - tw(t, T_RECUP - .05, T_RECUP + .1, 'lin');
+    $('vL').style.opacity = o; $('vR').style.opacity = o;
+    $('vL').querySelector('.k').style.opacity = tw(t, T_VERDICT + .1, T_VERDICT + .3);
+    $('vR').querySelector('.k').style.opacity = tw(t, b(24) + .1, b(24) + .3);
+  }
+  /* récupère tes soirées */
+  const rOn = t >= T_RECUP && t < T_END;
+  vis($('recup'), rOn);
+  if (rOn) {
+    [...$('recup').children].forEach((w, i) => slam(w, t, T_RECUP + i * B / 2, 2.0));
+    $('recup').style.transform = `translate(${sh.x}px,${sh.y}px)`;
+  }
+  /* fin */
+  const endOn = t >= T_END;
+  vis($('end'), endOn);
+  if (endOn) {
+    $('endglow').style.opacity = tw(t, T_END, T_END + .3);
+    LOGO.forEach((s, i) => { const kk = tw(t, T_END + .05 + i * .035, T_END + .55 + i * .035); s.style.transform = `translateY(${lerp(110, 0, kk)}%)`; });
+    const sb = tw(t, T_END + .4, T_END + .8); $('sub').style.opacity = sb; $('sub').style.transform = `translateY(${lerp(30, 0, sb)}px)`;
+    const bt = tw(t, T_END + .6, T_END + 1.0, 'outBack'); $('btn').style.opacity = Math.min(1, bt * 2);
+    $('btn').style.transform = `scale(${lerp(.6, 1, bt) * (1 + (t > T_END + 1.1 ? .035 * Math.max(0, Math.sin((t - T_END - 1.1) / B * Math.PI)) : 0))})`;
+    $('url').style.opacity = tw(t, T_END + .8, T_END + 1.2);
+    $('end').style.transform = `translate(${sh.x}px,${sh.y}px)`;
+  }
+
+  /* flashs */
+  let fl = 0;
+  for (const [t0, a] of [[b(1), .25], [T_DROP, .4], [T_FOUND, .55], [T_VERDICT, .25], [b(24), .3], [T_END, .3]]) if (t >= t0) fl = Math.max(fl, a * (1 - P(t, t0, t0 + .18)));
+  $('flash').style.opacity = fl;
+}
+
+window.render = render; window.DUR = DUR;
+const isRender = new URLSearchParams(location.search).has('render');
+if (isRender) document.body.classList.add('render');
+function fit() { if (isRender) return; const k = Math.min(innerWidth / 1080, (innerHeight - 40) / 1920); const st = $('stage'); st.style.transform = `scale(${k})`; st.style.marginRight = (1080 * k - 1080) + 'px'; st.style.marginBottom = (1920 * k - 1920) + 'px'; }
+addEventListener('resize', fit);
+window.ready = (async () => {
+  await document.fonts.ready;
+  await Promise.all([...document.images].filter(i => i.src).map(i => i.decode().catch(() => {})));
+  fit(); await render(0); return true;
+})();
+if (!isRender) {
+  let playing = true, t0 = performance.now(), cur = 0, busy = false;
+  $('play').onclick = () => { playing = !playing; t0 = performance.now() - cur * 1000; };
+  $('scrub').oninput = e => { cur = +e.target.value; t0 = performance.now() - cur * 1000; render(cur); };
+  const loop = async now => { if (playing && !busy) { busy = true; cur = ((now - t0) / 1000) % (DUR + .5); await render(Math.min(cur, DUR)); $('scrub').value = cur; $('tc').textContent = cur.toFixed(2); busy = false; } requestAnimationFrame(loop); };
+  window.ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body>
+</html>
