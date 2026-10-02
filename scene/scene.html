@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood La course</title>
+<style>
+@font-face { font-family: 'Anton'; src: url(../motion/fonts/anton.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-400.woff2) format('woff2'); font-weight: 400; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-500.woff2) format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-700.woff2) format('woff2'); font-weight: 700; font-display: block; }
+:root { --bg: #100a0d; --ink: #f7eef1; --red: #ff2d4f; --muted: #8f8388; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #000; overflow: hidden; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Archivo', sans-serif; color: var(--ink); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); transform-origin: 0 0; flex: none; }
+.abs { position: absolute; }
+.layer { position: absolute; inset: 0; }
+.anton { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.emo { font-family: 'Noto Color Emoji'; }
+#glow { background: radial-gradient(70% 40% at 50% 0%, rgba(255,45,79,.22), rgba(255,45,79,0) 70%); }
+
+/* ouverture */
+#open { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg); }
+#day { font: 700 40px/1 'Archivo'; letter-spacing: .5em; color: var(--red); margin-bottom: 26px; }
+#clock { font-size: 330px; line-height: 1; }
+#quote { font: 500 64px/1.2 'Archivo'; color: #e9dde2; margin-top: 50px; text-align: center; }
+
+/* en-têtes de colonnes */
+.head { top: 150px; width: 540px; text-align: center; }
+.head .k { font: 700 30px/1 'Archivo'; letter-spacing: .4em; }
+.head .v { font-size: 78px; line-height: 1.05; margin-top: 14px; }
+
+/* téléphones */
+.phone { top: 330px; width: 500px; height: 1060px; border-radius: 62px; background: #050304; padding: 10px; box-shadow: 0 40px 90px rgba(0,0,0,.6), inset 0 0 0 2px #2a2226; }
+.screen { position: relative; width: 480px; height: 1040px; border-radius: 52px; overflow: hidden; background: #0b0809; }
+.status { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 36px; font: 700 21px/1 'Archivo'; color: #fff; z-index: 5; }
+.status .ic { display: flex; gap: 7px; align-items: center; }
+.status .ic i { display: block; background: #fff; border-radius: 2px; }
+.island { position: absolute; left: 50%; top: 12px; width: 120px; height: 32px; margin-left: -60px; background: #000; border-radius: 20px; z-index: 6; }
+
+/* faux catalogue de streaming (générique, sans marque) */
+#feedwrap { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; overflow: hidden; }
+#nav { position: absolute; left: 0; right: 0; top: 0; height: 64px; display: flex; align-items: center; gap: 20px; padding: 0 22px; background: linear-gradient(#0b0809, rgba(11,8,9,.85)); z-index: 3; font: 500 20px/1 'Archivo'; color: #9a9196; }
+#nav b { color: #fff; font-size: 26px; font-weight: 700; margin-right: 6px; }
+#feed { position: absolute; left: 0; right: 0; top: 64px; }
+.hero { position: relative; margin: 6px 16px 18px; height: 250px; border-radius: 16px; overflow: hidden; }
+.hero img { width: 100%; height: 100%; object-fit: cover; }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgba(0,0,0,.85)); }
+.hero span { position: absolute; left: 18px; bottom: 16px; z-index: 1; font: 700 18px/1 'Archivo'; color: #ddd; }
+.row { margin: 0 0 18px; }
+.row h4 { font: 700 21px/1 'Archivo'; color: #eee; margin: 0 16px 10px; }
+.strip { display: flex; gap: 10px; padding-left: 16px; }
+.strip img { width: 118px; height: 177px; object-fit: cover; border-radius: 8px; flex: none; }
+#sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; background: #1b1518; border-radius: 26px 26px 0 0; z-index: 4; padding: 26px; display: flex; gap: 20px; box-shadow: 0 -20px 50px rgba(0,0,0,.6); }
+#sheet img { width: 150px; height: 225px; object-fit: cover; border-radius: 10px; }
+#sheet .l { flex: 1; display: flex; flex-direction: column; gap: 14px; padding-top: 6px; }
+#sheet .l i { display: block; height: 18px; background: #3a3135; border-radius: 6px; }
+#sheet .meta { font: 500 20px/1.3 'Archivo'; color: #aaa; }
+#sheet .btn { margin-top: auto; height: 52px; border-radius: 10px; background: #fff; color: #000; font: 700 20px/52px 'Archivo'; text-align: center; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; height: 430px; z-index: 5; background: linear-gradient(transparent, rgba(0,0,0,.82) 38%); }
+.bub { position: absolute; max-width: 360px; padding: 14px 20px; border-radius: 24px; font: 500 25px/1.25 'Archivo'; width: max-content; }
+.bub.me { right: 18px; background: #2f7cf6; color: #fff; border-bottom-right-radius: 6px; }
+.bub.you { left: 18px; background: #3a3337; color: #fff; border-bottom-left-radius: 6px; }
+
+/* capture CinéMood */
+#rec { width: 480px; height: 1039px; display: block; }
+#found { left: 50%; top: 470px; margin-left: -170px; width: 340px; height: 96px; background: var(--red); color: #fff; font: 400 58px/96px 'Anton'; text-align: center; border-radius: 14px; box-shadow: 0 20px 60px rgba(255,45,79,.6); z-index: 7; text-transform: uppercase; }
+
+/* chronos */
+.timer { top: 1420px; width: 540px; text-align: center; }
+.timer .d { font-size: 150px; line-height: 1; font-variant-numeric: tabular-nums; }
+.timer .k { font: 700 24px/1 'Archivo'; letter-spacing: .3em; color: var(--muted); margin-top: 14px; }
+#strike { left: 70px; top: 1488px; width: 400px; height: 12px; background: var(--red); transform-origin: 0 50%; border-radius: 6px; box-shadow: 0 0 30px rgba(255,45,79,.7); }
+
+/* verdict */
+#verdict { top: 1660px; left: 0; right: 0; text-align: center; font: 700 56px/1.25 'Archivo'; }
+#verdict .r { color: var(--red); }
+
+/* fin */
+#end { background: var(--bg); }
+#endglow { background: radial-gradient(60% 40% at 50% 40%, rgba(255,45,79,.35), rgba(255,45,79,0) 70%); }
+#logo { left: 0; right: 0; top: 520px; text-align: center; font-size: 190px; line-height: 1.25; white-space: nowrap; }
+#logo .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-top: 30px; }
+#logo .ch span { display: block; }
+#tag { left: 0; right: 0; top: 800px; text-align: center; font: 700 70px/1.2 'Archivo'; }
+#sub { left: 0; right: 0; top: 990px; text-align: center; font: 500 40px/1.3 'Archivo'; color: #c9bec2; }
+#btn { left: 50%; top: 1110px; height: 140px; margin-left: -360px; width: 720px; background: var(--red); color: #fff; font: 700 60px/140px 'Archivo'; text-align: center; box-shadow: 0 18px 60px rgba(255,45,79,.5); }
+#url { left: 0; right: 0; top: 1295px; text-align: center; font: 700 40px/1 'Archivo'; letter-spacing: .3em; color: #b9adb2; }
+
+#ui { margin-top: 10px; display: flex; gap: 10px; width: min(96vw, 600px); font: 500 13px 'Archivo'; color: #aaa; }
+#ui input { flex: 1; accent-color: #ff2d4f; }
+#ui button { background: #ff2d4f; color: #fff; border: 0; padding: 6px 12px; cursor: pointer; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="glow"></div>
+
+  <div class="layer" id="race">
+    <div class="abs head" id="hL" style="left:0"><div class="k" style="color:var(--muted)">SANS</div><div class="v anton" style="color:#cfc4c8">Le scroll infini</div></div>
+    <div class="abs head" id="hR" style="left:540px"><div class="k red" style="color:var(--red)">AVEC</div><div class="v anton">Ciné<span style="color:var(--red)">mood</span></div></div>
+
+    <div class="abs phone" id="pL" style="left:20px"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span id="clkL">21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+      <div id="feedwrap">
+        <div id="nav"><b>Accueil</b><span>Films</span><span>Séries</span><span>Ma liste</span></div>
+        <div id="feed"></div>
+        <div id="sheet"><img id="sheetimg" alt=""><div class="l"><i style="width:90%"></i><i style="width:60%"></i><div class="meta" id="sheetmeta"></div><div class="btn">▶ Bande-annonce</div></div></div>
+      </div>
+      <div id="chat"></div>
+    </div></div>
+
+    <div class="abs phone" id="pR" style="left:560px"><div class="screen">
+      <img id="rec" alt="">
+      <div class="island"></div>
+      <div class="status" style="background:linear-gradient(#0d090b,rgba(13,9,11,0))"><span id="clkR">21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+      <div class="abs" id="found">Trouvé ✓</div>
+    </div></div>
+
+    <div class="abs timer" id="tL" style="left:0"><div class="d anton" id="dL">00:00</div><div class="k">POUR CHOISIR</div></div>
+    <div class="abs timer" id="tR" style="left:540px"><div class="d anton" id="dR" style="color:var(--red)">00:00</div><div class="k">POUR CHOISIR</div></div>
+    <div class="abs" id="strike"></div>
+    <div class="abs" id="verdict">Même objectif : un film.<br><span class="r">Pas la même soirée.</span></div>
+  </div>
+
+  <div class="layer" id="open"><div id="day">VENDREDI</div><div id="clock" class="anton">21:00</div><div id="quote">« On regarde quoi ce soir ? »</div></div>
+
+  <div class="layer" id="end">
+    <div class="layer" id="endglow"></div>
+    <div class="abs anton" id="logo"></div>
+    <div class="abs" id="tag">Récupère<br>tes soirées.</div>
+    <div class="abs" id="sub">12 questions · moins d'une minute</div>
+    <div class="abs" id="btn">Trouver mon film</div>
+    <div class="abs" id="url">CINEM00D.COM</div>
+  </div>
+</div>
+<div id="ui"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="26" step="0.001" value="0"><span id="tc">0.00</span></div>
+
+<script src="assets.js"></script>
+<script src="../ugc/rec/rec.js"></script>
+<script>
+const DUR = 26;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  outBack: x => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const tw = (t, a, b, e = 'outExpo') => E[e](P(t, a, b));
+function S(el, o) {
+  const tf = [];
+  if (o.x || o.y) tf.push(`translate(${o.x || 0}px,${o.y || 0}px)`);
+  if (o.s !== undefined) tf.push(`scale(${o.s})`);
+  el.style.transform = tf.join(' ');
+  if (o.o !== undefined) el.style.opacity = o.o;
+}
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+/* ---------- la course : repères ---------- */
+const START = 3.0;             // départ des deux chronos
+const SPEED = 1.6;             // lecture de la capture (taps scriptés plus rapides qu'un humain)
+const HUMAN = 3.2;             // chrono CinéMood = temps de capture × 3,2 : 18,4 s scriptées ≈ 59 s pour un humain
+const R_FOUND = REC_DATA.events.find(e => e.type === 'results').t;
+const T_FOUND = START + R_FOUND / SPEED;                    // ≈ 14,5 s
+const T_VERDICT = 19.6, T_END = 22.0;
+const LEFT_TOTAL = 47 * 60;    // la soirée « classique » de la scène : 47 min
+
+function recTime(t) {          // temps dans la capture
+  if (t < T_FOUND) return Math.max(0, (t - START) * SPEED);
+  return R_FOUND + (t - T_FOUND);                           // puis temps réel : défilement jusqu'au score
+}
+function leftSecs(t) {         // chrono de gauche : s'emballe
+  return LEFT_TOTAL * Math.pow(P(t, START, T_VERDICT - .3), 1.7);
+}
+const mmss = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+/* ---------- faux catalogue ---------- */
+const ROWS = ['Tendances', 'Recommandé pour toi', 'Parce que tu as regardé…', 'Nouveautés', 'Top 10 aujourd’hui', 'Classiques', 'À découvrir', 'Comédies', 'Acclamé par la critique'];
+let pi = 0;
+const nextPoster = () => POSTERS[(pi++ * 37) % POSTERS.length];
+const feed = $('feed');
+const hero = document.createElement('div'); hero.className = 'hero';
+hero.innerHTML = `<img src="${BACKDROPS[0]}" alt=""><span>À la une</span>`; feed.appendChild(hero);
+const STRIPS = [];
+for (let r = 0; r < 120; r++) {  // assez de rangées pour tout le défilement de la scène
+  const row = document.createElement('div'); row.className = 'row';
+  row.innerHTML = `<h4>${ROWS[r % ROWS.length]}</h4>`;
+  const strip = document.createElement('div'); strip.className = 'strip';
+  for (let k = 0; k < 9; k++) { const im = document.createElement('img'); im.src = nextPoster(); strip.appendChild(im); }
+  row.appendChild(strip); feed.appendChild(row); STRIPS.push(strip);
+}
+// défilements « au pouce » : rafales de plus en plus nerveuses
+const FLICKS = [];
+for (let t = START + .4; t < T_VERDICT; ) {
+  const k = P(t, START, T_VERDICT);
+  FLICKS.push({ t, d: .45, dy: 260 + rnd() * 380 + k * 300, dx: rnd() < .35 ? (120 + rnd() * 260) : 0, row: Math.floor(rnd() * 3) });
+  t += lerp(1.15, .45, k) + rnd() * .25;
+}
+function feedScroll(t) {
+  let y = 0, dx = [0, 0, 0];
+  for (const f of FLICKS) {
+    const k = E.outCubic(P(t, f.t, f.t + f.d));
+    y += f.dy * k; dx[f.row] += f.dx * k;
+  }
+  return { y, dx };
+}
+// fiches ouvertes puis refermées (synchronisées avec « Celui-là ? » et « Bande-annonce ? »)
+const SHEETS = [{ a: 6.6, b: 7.9, meta: '★ 2,9/5 · 2h41 · Drame' }, { a: 11.4, b: 12.9, meta: '★ 3,1/5 · 2h12 · Thriller' }, { a: 16.0, b: 17.0, meta: '★ 2,7/5 · 1h58 · Comédie' }];
+SHEETS.forEach((s, i) => s.img = POSTERS[(i * 29 + 5) % POSTERS.length]);
+
+/* ---------- conversation ---------- */
+const MSGS = [
+  [4.1, 'me', 'On regarde quoi ?'], [5.2, 'you', 'Jsp… toi ?'], [6.7, 'me', 'Celui-là ?'], [7.7, 'you', 'Déjà vu.'],
+  [9.1, 'me', 'Et lui ?'], [10.1, 'you', 'Trop long 😴'], [11.5, 'me', 'Bande-annonce ?'], [13.0, 'you', 'Bof…'],
+  [15.3, 'me', 'T’as une idée toi ?'], [16.6, 'you', '…'], [18.0, 'me', 'On remet un épisode déjà vu ?'],
+];
+const BUBS = MSGS.map(([at, who, txt]) => {
+  const b = document.createElement('div'); b.className = 'bub ' + who;
+  b.innerHTML = txt.replace(/(\p{Extended_Pictographic})/gu, '<span class="emo">$1</span>');
+  $('chat').appendChild(b); return { at, el: b };
+});
+
+/* ---------- logo de fin ---------- */
+const LOGO = [...'CINÉMOOD'].map((ch, i) => { const w = document.createElement('span'); w.className = 'ch'; const s = document.createElement('span'); s.textContent = ch; if (i >= 4) s.style.color = 'var(--red)'; w.appendChild(s); $('logo').appendChild(w); return s; });
+
+async function loadRec(i) {
+  if ($('rec').dataset.i == i) return;
+  $('rec').src = `../ugc/rec/${String(i).padStart(5, '0')}.jpg`; $('rec').dataset.i = i;
+  await $('rec').decode().catch(() => {});
+}
+
+async function render(t) {
+  /* ouverture */
+  const op = t < 3.0;
+  $('open').style.visibility = op ? 'visible' : 'hidden';
+  if (op) {
+    S($('day'), { o: tw(t, .1, .5), y: lerp(20, 0, tw(t, .1, .5)) });
+    S($('clock'), { o: tw(t, .15, .55), s: lerp(1.15, 1, tw(t, .15, .9)) });
+    S($('quote'), { o: tw(t, .9, 1.4), y: lerp(30, 0, tw(t, .9, 1.4)) });
+    const ex = tw(t, 2.55, 3.0, 'inExpo');
+    $('open').style.transform = `translateY(${-ex * 1920}px)`;
+  }
+
+  /* course */
+  const race = t >= 2.55 && t < T_END + .2;
+  $('race').style.visibility = race ? 'visible' : 'hidden';
+  if (race) {
+    const inK = tw(t, 2.7, 3.3);
+    S($('pL'), { y: lerp(900, 0, tw(t, 2.65, 3.25)) });
+    S($('pR'), { y: lerp(900, 0, tw(t, 2.75, 3.35)) });
+    S($('hL'), { o: tw(t, 3.0, 3.4), y: lerp(-30, 0, tw(t, 3.0, 3.4)) });
+    S($('hR'), { o: tw(t, 3.1, 3.5), y: lerp(-30, 0, tw(t, 3.1, 3.5)) });
+    S($('tL'), { o: tw(t, 3.0, 3.4) }); S($('tR'), { o: tw(t, 3.1, 3.5) });
+
+    // gauche : catalogue + horloge du téléphone
+    const ls = leftSecs(t);
+    $('dL').textContent = mmss(ls);
+    $('dL').style.color = `rgb(${Math.round(lerp(247, 255, P(ls, 600, 2400)))},${Math.round(lerp(238, 120, P(ls, 600, 2400)))},${Math.round(lerp(241, 140, P(ls, 600, 2400)))})`;
+    const m = Math.floor(ls / 60);
+    $('clkL').textContent = `21:${String(m).padStart(2, '0')}`;
+    const { y, dx } = feedScroll(t);
+    feed.style.transform = `translateY(${-y}px)`;
+    STRIPS.forEach((s, i) => { s.style.transform = `translateX(${-dx[i % 3] % 700}px)`; });
+    let sh = 0;
+    for (const s of SHEETS) {
+      if (t >= s.a && t < s.b) { sh = tw(t, s.a, s.a + .3) * (1 - tw(t, s.b - .25, s.b, 'inCubic')); if ($('sheetimg').dataset.s != s.img) { $('sheetimg').src = s.img; $('sheetimg').dataset.s = s.img; } $('sheetmeta').textContent = s.meta; }
+    }
+    $('sheet').style.transform = `translateY(${(1 - sh) * 360}px)`;
+    // conversation : les 3 derniers messages, qui remontent
+    const shown = BUBS.filter(b => t >= b.at);
+    BUBS.forEach(b => { b.el.style.visibility = 'hidden'; });
+    let bottom = 26;
+    shown.slice(-3).reverse().forEach((b, rank) => {  // rank 0 = le plus récent, en bas
+      const k = tw(t, b.at, b.at + .35, 'outBack');
+      b.el.style.visibility = 'visible';
+      b.el.style.bottom = bottom + 'px';
+      bottom += b.el.offsetHeight + 14;
+      S(b.el, { s: lerp(.6, 1, k), o: Math.min(1, k * 2) * (rank === 2 ? .55 : 1) });
+      b.el.style.transformOrigin = b.el.classList.contains('me') ? '100% 100%' : '0 100%';
+    });
+
+    // droite : vraie capture CinéMood
+    const r = recTime(t);
+    await loadRec(Math.min(REC_DATA.count - 1, Math.round(r * REC_DATA.fps)));
+    const humanSecs = Math.min(R_FOUND, Math.max(0, (t - START) * SPEED)) * HUMAN;
+    $('dR').textContent = mmss(humanSecs);
+    $('clkR').textContent = `21:${String(Math.floor(humanSecs / 60)).padStart(2, '0')}`;
+    const fd = tw(t, T_FOUND + .05, T_FOUND + .5, 'outBack');
+    $('found').style.visibility = t >= T_FOUND && t < T_FOUND + 1.6 ? 'visible' : 'hidden';
+    S($('found'), { s: lerp(.4, 1, fd) * (1 - tw(t, T_FOUND + 1.3, T_FOUND + 1.6, 'inCubic') * .3), o: 1 - tw(t, T_FOUND + 1.3, T_FOUND + 1.6, 'lin') });
+    // chrono arrêté : il pulse une fois
+    const pulse = t >= T_FOUND ? Math.sin(Math.PI * P(t, T_FOUND, T_FOUND + .4)) : 0;
+    S($('dR'), { s: 1 + pulse * .15 });
+
+    // verdict : on barre 47 min, la capture se met en avant
+    const v = tw(t, T_VERDICT, T_VERDICT + .5);
+    $('pL').style.filter = `grayscale(${v}) brightness(${1 - v * .45})`;
+    S($('strike'), { o: v > 0 ? 1 : 0 });
+    $('strike').style.transform = `rotate(-6deg) scaleX(${tw(t, T_VERDICT + .1, T_VERDICT + .45, 'outCubic')})`;
+    S($('verdict'), { o: tw(t, T_VERDICT + .5, T_VERDICT + 1.0), y: lerp(30, 0, tw(t, T_VERDICT + .5, T_VERDICT + 1.0)) });
+    const out = tw(t, T_END - .25, T_END + .2, 'inExpo');
+    $('race').style.transform = `scale(${1 - out * .08})`;
+    $('race').style.opacity = 1 - out;
+  }
+
+  /* fin */
+  const endOn = t >= T_END;
+  $('end').style.visibility = endOn ? 'visible' : 'hidden';
+  if (endOn) {
+    $('end').style.opacity = tw(t, T_END, T_END + .3, 'lin');
+    LOGO.forEach((s, i) => { const k = tw(t, T_END + .1 + i * .04, T_END + .8 + i * .04); s.style.transform = `translateY(${lerp(110, 0, k)}%)`; });
+    const tg = tw(t, T_END + .5, T_END + 1.1); S($('tag'), { o: tg, y: lerp(30, 0, tg) });
+    const sb = tw(t, T_END + .8, T_END + 1.4); S($('sub'), { o: sb, y: lerp(20, 0, sb) });
+    const bt = tw(t, T_END + 1.0, T_END + 1.6, 'outBack'); S($('btn'), { o: Math.min(1, bt * 2), s: lerp(.7, 1, bt) * (1 + .03 * Math.sin(Math.max(0, t - T_END - 1.8) * 6)) });
+    const ur = tw(t, T_END + 1.3, T_END + 1.9); S($('url'), { o: ur, y: lerp(20, 0, ur) });
+  }
+}
+
+window.render = render; window.DUR = DUR; window.T_FOUND = T_FOUND;
+const isRender = new URLSearchParams(location.search).has('render');
+if (isRender) document.body.classList.add('render');
+function fit() { if (isRender) return; const k = Math.min(innerWidth / 1080, (innerHeight - 40) / 1920); const st = $('stage'); st.style.transform = `scale(${k})`; st.style.marginRight = (1080 * k - 1080) + 'px'; st.style.marginBottom = (1920 * k - 1920) + 'px'; }
+addEventListener('resize', fit);
+window.ready = (async () => {
+  await document.fonts.ready;
+  await Promise.all([...document.images].filter(i => i.src).map(i => i.decode().catch(() => {})));
+  fit(); await render(0); return true;
+})();
+if (!isRender) {
+  let playing = true, t0 = performance.now(), cur = 0, busy = false;
+  $('play').onclick = () => { playing = !playing; t0 = performance.now() - cur * 1000; };
+  $('scrub').oninput = e => { cur = +e.target.value; t0 = performance.now() - cur * 1000; render(cur); };
+  const loop = async now => { if (playing && !busy) { busy = true; cur = ((now - t0) / 1000) % (DUR + .5); await render(Math.min(cur, DUR)); $('scrub').value = cur; $('tc').textContent = cur.toFixed(2); busy = false; } requestAnimationFrame(loop); };
+  window.ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body>
+</html>
