@@ -1,4 +1,16 @@
-# CinéMood — « La course » (9:16, 26 s)
+# CinéMood — « La course » (9:16)
+
+## v2 — 16,5 s, montée au temps (recommandée)
+
+- `cinemood-la-course-v2-9x16.mp4` : 1080×1920, 60 i/s avec flou de mouvement, son AAC −14 LUFS.
+- `v2.html` : tout est calé sur 128 BPM (`b(n)` = n-ième temps). Accroche « 21:00 / ON REGARDE QUOI ? »,
+  drop à l'entrée 3D des téléphones, course (une bulle par temps, caméra qui pousse vers chaque téléphone),
+  CinéMood plein écran « TROUVÉ ✓ » + zoom sur 86 %, retour éclair sur le scroll (38 → 43 → 47 min),
+  verdict « 47 MIN » barré / « 59 S », « RÉCUPÈRE TES SOIRÉES. », carte de fin.
+- `sound_v2.py` : le morceau (128 BPM, deux drops, filtre qui s'ouvre, sidechain) et les effets calés sur les taps et les messages.
+- Rendu : `PAGE=v2.html BLUR=1 node render.js build/v2-video.mp4 && python3 sound_v2.py`, puis le même `ffmpeg` que ci-dessous avec `build/v2-sound.wav`.
+
+## v1 — 26 s
 
 Mise en scène du gain de temps : deux téléphones côte à côte depuis vendredi 21:00.
 

@@ -6,7 +6,7 @@ const out = process.argv[2], times = process.argv.slice(3).map(Number);
   const browser = await chromium.launch({ args: ['--allow-file-access-from-files'] });
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
   page.on('pageerror', e => console.log('ERR', e.message));
-  await page.goto('file://' + path.join(__dirname, 'scene.html') + '?render');
+  await page.goto('file://' + path.join(__dirname, process.env.PAGE || 'scene.html') + '?render');
   await page.evaluate(() => window.ready);
   for (const t of times) {
     await page.evaluate(t => render(t), t);

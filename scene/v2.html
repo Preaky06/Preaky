@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood La course v2</title>
+<style>
+@font-face { font-family: 'Anton'; src: url(../motion/fonts/anton.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-500.woff2) format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-700.woff2) format('woff2'); font-weight: 700; font-display: block; }
+:root { --bg: #100a0d; --ink: #f7eef1; --red: #ff2d4f; --muted: #8f8388; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #000; overflow: hidden; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Archivo', sans-serif; color: var(--ink); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); transform-origin: 0 0; flex: none; }
+.abs { position: absolute; }
+.layer { position: absolute; inset: 0; }
+.anton { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.emo { font-family: 'Noto Color Emoji'; }
+.center { display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+
+#cam { transform-origin: 0 0; }
+#glow { background: radial-gradient(70% 40% at 50% 0%, rgba(255,45,79,.25), rgba(255,45,79,0) 70%); }
+
+/* accroche */
+#hook { background: #050304; }
+#clock { font-size: 360px; line-height: 1; }
+#day { font: 700 40px/1 'Archivo'; letter-spacing: .5em; color: var(--red); margin-bottom: 30px; }
+#ask { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+#ask .w { position: absolute; left: 0; right: 0; text-align: center; font-size: 270px; line-height: 1; }
+
+/* course */
+.head { top: 120px; width: 540px; text-align: center; }
+.head .k { font: 700 30px/1 'Archivo'; letter-spacing: .4em; }
+.head .v { font-size: 74px; line-height: 1.05; margin-top: 12px; }
+.phone { top: 300px; width: 500px; height: 1060px; border-radius: 62px; background: #050304; padding: 10px; box-shadow: 0 40px 90px rgba(0,0,0,.65), inset 0 0 0 2px #2a2226; transform-origin: 50% 50%; }
+.screen { position: relative; width: 480px; height: 1040px; border-radius: 52px; overflow: hidden; background: #0b0809; }
+.status { position: absolute; left: 0; right: 0; top: 0; height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 36px; font: 700 21px/1 'Archivo'; color: #fff; z-index: 5; }
+.status .ic { display: flex; gap: 7px; align-items: center; }
+.status .ic i { display: block; background: #fff; border-radius: 2px; }
+.island { position: absolute; left: 50%; top: 12px; width: 120px; height: 32px; margin-left: -60px; background: #000; border-radius: 20px; z-index: 6; }
+#feedwrap { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; overflow: hidden; }
+#nav { position: absolute; left: 0; right: 0; top: 0; height: 64px; display: flex; align-items: center; gap: 20px; padding: 0 22px; background: linear-gradient(#0b0809, rgba(11,8,9,.85)); z-index: 3; font: 500 20px/1 'Archivo'; color: #9a9196; }
+#nav b { color: #fff; font-size: 26px; font-weight: 700; margin-right: 6px; }
+#feed { position: absolute; left: 0; right: 0; top: 64px; }
+.hero { position: relative; margin: 6px 16px 18px; height: 250px; border-radius: 16px; overflow: hidden; }
+.hero img { width: 100%; height: 100%; object-fit: cover; }
+.row { margin: 0 0 18px; }
+.row h4 { font: 700 21px/1 'Archivo'; color: #eee; margin: 0 16px 10px; }
+.strip { display: flex; gap: 10px; padding-left: 16px; }
+.strip img { width: 118px; height: 177px; object-fit: cover; border-radius: 8px; flex: none; }
+#chat { position: absolute; left: 0; right: 0; bottom: 0; height: 460px; z-index: 5; background: linear-gradient(transparent, rgba(0,0,0,.85) 38%); }
+.bub { position: absolute; max-width: 360px; width: max-content; padding: 14px 20px; border-radius: 24px; font: 500 26px/1.25 'Archivo'; }
+.bub.me { right: 18px; background: #2f7cf6; color: #fff; border-bottom-right-radius: 6px; transform-origin: 100% 100%; }
+.bub.you { left: 18px; background: #3a3337; color: #fff; border-bottom-left-radius: 6px; transform-origin: 0 100%; }
+#rec { width: 480px; height: 1039px; display: block; }
+.tap { position: absolute; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: rgba(255,255,255,.35); border: 3px solid rgba(255,255,255,.9); z-index: 4; }
+.timer { top: 1390px; width: 540px; text-align: center; }
+.timer .d { font-size: 150px; line-height: 1; }
+.timer .k { font: 700 24px/1 'Archivo'; letter-spacing: .3em; color: var(--muted); margin-top: 12px; }
+
+/* trouvé */
+#found { left: 50%; top: 760px; width: 720px; margin-left: -360px; height: 190px; background: var(--red); color: #fff; font: 400 140px/190px 'Anton'; text-align: center; border-radius: 20px; box-shadow: 0 30px 90px rgba(255,45,79,.7); transform-origin: 50% 50%; }
+#bigR { left: 0; right: 0; top: 1500px; padding-top: 60px; height: 420px; background: linear-gradient(transparent, rgba(8,4,6,.92) 35%); text-align: center; font-size: 230px; line-height: 1; color: #fff; text-shadow: 0 10px 50px rgba(0,0,0,.8); }
+#bigR small { display: block; font: 700 34px/1 'Archivo'; letter-spacing: .3em; color: #fff; margin-bottom: 14px; text-shadow: 0 4px 20px rgba(0,0,0,.9); }
+#bigL { left: 0; right: 0; top: 300px; text-align: center; font-size: 300px; line-height: 1; color: #fff; text-shadow: 0 10px 50px rgba(0,0,0,.8); }
+
+/* verdict */
+.card { display: flex; align-items: center; justify-content: center; flex-direction: column; }
+.card .n { font-size: 330px; line-height: .9; white-space: nowrap; position: relative; }
+.card .l { font: 700 54px/1 'Archivo'; letter-spacing: .25em; margin-top: 40px; }
+#strike { left: -40px; top: 46%; width: calc(100% + 80px); height: 34px; background: var(--red); transform-origin: 0 50%; box-shadow: 0 0 40px rgba(255,45,79,.8); }
+#recup .w { position: absolute; left: 0; right: 0; text-align: center; font-size: 230px; line-height: 1; }
+
+/* fin */
+#end { background: var(--bg); }
+#endwall { left: -200px; top: -300px; width: 1500px; height: 2600px; transform: rotate(-8deg); opacity: .22; filter: blur(2px); }
+#endwall .col { position: absolute; top: 0; width: 280px; display: flex; flex-direction: column; gap: 20px; }
+#endwall img { width: 280px; height: 420px; object-fit: cover; border-radius: 12px; }
+#endglow { background: radial-gradient(60% 40% at 50% 42%, rgba(255,45,79,.4), rgba(16,10,13,.2) 60%, rgba(16,10,13,.9) 100%); }
+#logo { left: 0; right: 0; top: 560px; text-align: center; font-size: 210px; line-height: 1.25; white-space: nowrap; }
+#logo .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-top: 34px; }
+#logo .ch span { display: block; }
+#sub { left: 0; right: 0; top: 900px; text-align: center; font: 700 52px/1.3 'Archivo'; }
+#btn { left: 50%; top: 1040px; height: 140px; margin-left: -360px; width: 720px; background: var(--red); color: #fff; font: 700 60px/140px 'Archivo'; text-align: center; box-shadow: 0 18px 60px rgba(255,45,79,.5); }
+#url { left: 0; right: 0; top: 1225px; text-align: center; font: 700 40px/1 'Archivo'; letter-spacing: .3em; color: #c9bec2; }
+
+#flash { background: #fff; pointer-events: none; }
+#grain { width: 1080px; height: 1920px; mix-blend-mode: overlay; opacity: .12; pointer-events: none; }
+#vig { background: radial-gradient(110% 80% at 50% 50%, transparent 60%, rgba(0,0,0,.5)); pointer-events: none; }
+#ui { margin-top: 10px; display: flex; gap: 10px; width: min(96vw, 600px); font: 500 13px 'Archivo'; color: #aaa; }
+#ui input { flex: 1; accent-color: #ff2d4f; }
+#ui button { background: #ff2d4f; color: #fff; border: 0; padding: 6px 12px; cursor: pointer; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg width="0" height="0" style="position:absolute"><filter id="vb" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur id="vbg" stdDeviation="0 0"/></filter>
+    <filter id="hb" x="-30%" y="-5%" width="160%" height="110%"><feGaussianBlur id="hbg" stdDeviation="0 0"/></filter></svg>
+  <div class="layer" id="cam">
+    <div class="layer" id="glow"></div>
+    <div class="abs head" id="hL" style="left:0"><div class="k" style="color:var(--muted)">SANS</div><div class="v anton" style="color:#cfc4c8">Le scroll infini</div></div>
+    <div class="abs head" id="hR" style="left:540px"><div class="k" style="color:var(--red)">AVEC</div><div class="v anton">Ciné<span style="color:var(--red)">mood</span></div></div>
+    <div class="abs timer" id="tL" style="left:0"><div class="d anton" id="dL">00:00</div><div class="k">POUR CHOISIR</div></div>
+    <div class="abs timer" id="tR" style="left:540px"><div class="d anton" id="dR" style="color:var(--red)">00:00</div><div class="k">POUR CHOISIR</div></div>
+
+    <div class="abs phone" id="pL" style="left:20px"><div class="screen">
+      <div class="island"></div>
+      <div class="status"><span id="clkL">21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+      <div id="feedwrap"><div id="nav"><b>Accueil</b><span>Films</span><span>Séries</span><span>Ma liste</span></div><div id="feed"></div></div>
+      <div id="chat"></div>
+    </div></div>
+
+    <div class="abs phone" id="pR" style="left:560px"><div class="screen">
+      <img id="rec" alt=""><div id="taps"></div>
+      <div class="island"></div>
+      <div class="status" style="background:linear-gradient(#0d090b,rgba(13,9,11,0))"><span id="clkR">21:00</span><span class="ic"><i style="width:22px;height:12px"></i><i style="width:30px;height:14px;border-radius:4px"></i></span></div>
+    </div></div>
+  </div>
+
+  <div class="abs" id="found">TROUVÉ ✓</div>
+  <div class="abs anton" id="bigR"><small>POUR CHOISIR</small>00:59</div>
+  <div class="abs anton" id="bigL">38:00</div>
+
+  <div class="layer center" id="hook"><div id="day">VENDREDI</div><div id="clock" class="anton">21:00</div>
+    <div id="ask"><div class="w anton" style="top:470px">On</div><div class="w anton" style="top:740px">regarde</div><div class="w anton red" style="top:1010px;color:var(--red)">quoi ?</div></div></div>
+
+  <div class="layer card" id="v47" style="background:#050304"><div class="n anton" id="n47">47 MIN<div class="abs" id="strike"></div></div><div class="l" style="color:var(--muted)">À SCROLLER</div></div>
+  <div class="layer card" id="v59" style="background:var(--red);color:var(--bg)"><div class="n anton" id="n59">59 S</div><div class="l">AVEC CINÉMOOD</div></div>
+  <div class="layer" id="recup" style="background:var(--bg)"><div class="w anton" style="top:530px">Récupère</div><div class="w anton" style="top:800px;color:var(--red)">tes</div><div class="w anton" style="top:1070px">soirées.</div></div>
+
+  <div class="layer" id="end">
+    <div class="abs" id="endwall"></div>
+    <div class="layer" id="endglow"></div>
+    <div class="abs anton" id="logo"></div>
+    <div class="abs" id="sub">12 questions.<br>Moins d’une minute.</div>
+    <div class="abs" id="btn">Trouver mon film</div>
+    <div class="abs" id="url">CINEM00D.COM</div>
+  </div>
+
+  <div class="layer" id="vig"></div>
+  <canvas class="abs" id="grain" width="540" height="960" style="left:0;top:0"></canvas>
+  <div class="layer" id="flash"></div>
+</div>
+<div id="ui"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="16.5" step="0.001" value="0"><span id="tc">0.00</span></div>
+
+<script src="assets.js"></script>
+<script src="../ugc/rec/rec.js"></script>
+<script>
+const DUR = 16.5;
+const BPM = 128, B = 60 / BPM;   // tout est calé sur les temps
+const b = n => n * B;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, c = 1) => Math.min(c, Math.max(a, x));
+const P = (t, a, c) => clamp((t - a) / (c - a));
+const lerp = (a, c, k) => a + (c - a) * k;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  inOutExpo: x => x <= 0 ? 0 : x >= 1 ? 1 : x < .5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2,
+  outBack: x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const tw = (t, a, c, e = 'outExpo') => E[e](P(t, a, c));
+const vis = (el, on) => { el.style.visibility = on ? 'visible' : 'hidden'; };
+let seed = 11;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const mmss = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+// impact : « slam » (grand -> taille réelle) + aberration chromatique qui retombe
+function slam(el, t, t0, from = 2.2) {
+  const k = tw(t, t0, t0 + .22);
+  el.style.transform = `scale(${lerp(from, 1, k)})`;
+  el.style.opacity = t >= t0 ? Math.min(1, k * 4) : 0;
+  const ca = (1 - tw(t, t0, t0 + .45, 'outCubic')) * 14;
+  el.style.textShadow = ca > .3 ? `${-ca}px 0 rgba(0,255,240,.7), ${ca}px 0 rgba(255,0,70,.8)` : '';
+}
+// tremblement déterministe après un impact
+const IMPACTS = [];
+function shake(t) {
+  let x = 0, y = 0, r = 0;
+  for (const [t0, a] of IMPACTS) {
+    if (t < t0 || t > t0 + .35) continue;
+    const k = Math.exp(-(t - t0) * 12) * a;
+    x += Math.sin(t * 91 + t0) * 18 * k; y += Math.cos(t * 77 + t0 * 3) * 18 * k; r += Math.sin(t * 53) * .6 * k;
+  }
+  return { x, y, r };
+}
+
+/* ---------- repères (en temps) ---------- */
+const T_DROP = b(4), T_FOUND = b(16), T_BACK = b(20), T_V47 = b(23), T_V59 = b(25), T_RECUP = b(27), T_END = b(29);
+const R_FOUND = REC_DATA.events.find(e => e.type === 'results').t;
+const SPEED = R_FOUND / (T_FOUND - T_DROP);           // capture ×3,3
+const R_SCROLLED = REC_DATA.events.find(e => e.type === 'scroll-others').t - .2;
+IMPACTS.push([0, 1], [T_DROP, .8], [T_FOUND, 1], [b(20), .6], [b(20.5), .5], [b(21), .7], [T_V47, 1], [b(23.5), .8], [T_V59, 1], [T_RECUP, .7], [b(27.5), .7], [b(28), .9], [T_END, .6]);
+
+function recTime(t) {
+  if (t < T_FOUND) return Math.max(0, (t - T_DROP) * SPEED);
+  return Math.min(R_SCROLLED, R_FOUND + (t - T_FOUND) * ((R_SCROLLED - R_FOUND) / (T_BACK - T_FOUND - .15)));
+}
+const humanSecs = t => Math.min(59, Math.max(0, (t - T_DROP) / (T_FOUND - T_DROP) * 59));
+const leftSecs = t => t < T_DROP ? 0 : t < T_FOUND ? 31 * 60 * Math.pow(P(t, T_DROP, T_FOUND), 1.5) : 31 * 60 + 9 * 60 * P(t, T_FOUND, T_BACK);
+
+/* ---------- faux catalogue ---------- */
+const ROWS = ['Tendances', 'Recommandé pour toi', 'Parce que tu as regardé…', 'Nouveautés', 'Top 10 aujourd’hui', 'Classiques', 'À découvrir', 'Comédies', 'Acclamé par la critique'];
+let pi = 0;
+const feed = $('feed');
+const hero = document.createElement('div'); hero.className = 'hero'; hero.innerHTML = `<img src="${BACKDROPS[0]}" alt="">`; feed.appendChild(hero);
+const STRIPS = [];
+for (let r = 0; r < 100; r++) {  // assez de rangées pour tous les coups de pouce
+  const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<h4>${ROWS[r % ROWS.length]}</h4>`;
+  const strip = document.createElement('div'); strip.className = 'strip';
+  for (let k = 0; k < 6; k++) { const im = document.createElement('img'); im.src = POSTERS[(pi++ * 37) % POSTERS.length]; strip.appendChild(im); }
+  row.appendChild(strip); feed.appendChild(row); STRIPS.push(strip);
+}
+// un coup de pouce par demi-temps pendant la course, puis encore après le retour
+const FLICKS = [];
+for (let n = 4.5; n < 23; n += .5) if (n < 16 || n >= 20) FLICKS.push({ t: b(n), d: .28, dy: 380 + rnd() * 320, dx: rnd() < .3 ? 160 + rnd() * 200 : 0, row: Math.floor(rnd() * 3) });
+function feedScroll(t) {
+  let y = 0, v = 0; const dx = [0, 0, 0];
+  for (const f of FLICKS) {
+    const k = E.outCubic(P(t, f.t, f.t + f.d));
+    y += f.dy * k; dx[f.row] += f.dx * k;
+    if (t > f.t && t < f.t + f.d) v += f.dy * 3 * Math.pow(1 - P(t, f.t, f.t + f.d), 2) / f.d;
+  }
+  return { y, dx, v };
+}
+
+/* ---------- conversation : une bulle par temps ---------- */
+const MSGS = [['me', 'On regarde quoi ?'], ['you', 'Jsp… toi ?'], ['me', 'Celui-là ?'], ['you', 'Déjà vu.'], ['me', 'Et lui ?'], ['you', 'Trop long 😴'],
+  ['me', 'Une comédie ?'], ['you', 'Bof…'], ['me', 'T’as une idée ?'], ['you', 'Non 😩'], ['me', 'Bande-annonce ?'], ['you', '…']];
+const BUBS = MSGS.map(([who, txt], i) => ({ at: b(4.5 + i), who, txt }));
+BUBS.push({ at: b(21), who: 'me', txt: 'On remet un épisode déjà vu ?' });
+BUBS.forEach(m => { const el = document.createElement('div'); el.className = 'bub ' + m.who; el.innerHTML = m.txt.replace(/(\p{Extended_Pictographic})/gu, '<span class="emo">$1</span>'); $('chat').appendChild(el); m.el = el; });
+
+/* ---------- taps de la capture ---------- */
+const TAPS = REC_DATA.events.filter(e => e.type === 'tap').map(e => {
+  const el = document.createElement('div'); el.className = 'tap'; el.style.left = (e.x * 480 / 390) + 'px'; el.style.top = (e.y * 480 / 390) + 'px';
+  $('taps').appendChild(el); return { el, at: T_DROP + e.t / SPEED };
+});
+
+/* ---------- fin ---------- */
+const LOGO = [...'CINÉMOOD'].map((ch, i) => { const w = document.createElement('span'); w.className = 'ch'; const s = document.createElement('span'); s.textContent = ch; if (i >= 4) s.style.color = 'var(--red)'; w.appendChild(s); $('logo').appendChild(w); return s; });
+const ECOLS = [];
+for (let c = 0; c < 5; c++) { const col = document.createElement('div'); col.className = 'col'; col.style.left = (c * 300) + 'px'; for (let k = 0; k < 7; k++) { const im = document.createElement('img'); im.src = POSTERS[(c * 11 + k * 5) % POSTERS.length]; col.appendChild(im); } $('endwall').appendChild(col); ECOLS.push(col); }
+
+/* ---------- grain ---------- */
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+let lastG = -1;
+function grain(f) {
+  if (f === lastG) return; lastG = f;
+  let s = (f * 2654435761) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i + 1] = d[i + 2] = s & 255; d[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+}
+
+async function loadRec(i) {
+  if ($('rec').dataset.i == i) return;
+  $('rec').src = `../ugc/rec/${String(i).padStart(5, '0')}.jpg`; $('rec').dataset.i = i;
+  await $('rec').decode().catch(() => {});
+}
+
+// transform d'un téléphone : position de base (cx, cy) -> plein écran (540, 960, ×2.25)
+function phoneTf(el, cx, cy, full, extra = '', ty = 960) {
+  const s = lerp(1, 2.25, full), x = lerp(cx, 540, full) - cx, y = lerp(cy, ty, full) - cy;
+  el.style.transform = `translate(${x}px,${y}px) scale(${s}) ${extra}`;
+}
+
+async function render(t) {
+  grain(Math.floor(t * 24));
+  const sh = shake(t);
+
+  /* --- accroche --- */
+  const hookOn = t < T_DROP + .05;
+  vis($('hook'), hookOn);
+  if (hookOn) {
+    slam($('clock'), t, 0, 2.6);
+    $('day').style.opacity = tw(t, .1, .3);
+    const up = tw(t, b(2) - .05, b(2) + .2);
+    $('clock').parentElement.style.justifyContent = 'center';
+    $('clock').style.transform += ` translateY(${-up * 1400}px)`;
+    $('day').style.transform = `translateY(${-up * 1400}px)`;
+    [...$('ask').children].forEach((w, i) => slam(w, t, b(2 + i * .5), 1.9));
+    $('hook').style.transform = `translate(${sh.x}px,${sh.y}px) rotate(${sh.r}deg)`;
+  }
+
+  /* --- course --- */
+  const raceOn = t >= T_DROP - .05 && t < T_V47;
+  vis($('cam'), raceOn);
+  if (raceOn) {
+    // entrée 3D des téléphones sur le drop
+    const kL = tw(t, T_DROP, T_DROP + .4), kR = tw(t, T_DROP + .06, T_DROP + .46);
+    // caméra : pulsation sur chaque temps + poussée vers un téléphone par mesure
+    const beatK = (t / B) % 1, pulse = t < T_FOUND ? .018 * Math.exp(-beatK * 6) : 0;
+    const toL = tw(t, b(8), b(8) + .25, 'inOutExpo') * (1 - tw(t, b(12), b(12) + .25, 'inOutExpo'));
+    const toR = tw(t, b(12), b(12) + .25, 'inOutExpo') * (1 - tw(t, T_FOUND, T_FOUND + .2, 'inOutExpo'));
+    const punch = tw(t, b(18.5), b(18.5) + .3, 'inOutExpo') * (1 - tw(t, b(19.6), b(19.6) + .2, 'inOutExpo'));
+    const zoom = 1 + pulse + .12 * (toL + toR) + .16 * punch;
+    const fx = 540 - 270 * toL + 270 * toR + 40 * punch, fy = 900 - 260 * punch;
+    $('cam').style.transform = `translate(${sh.x}px,${sh.y}px) translate(${fx}px,${fy}px) scale(${zoom}) rotate(${sh.r + (toL - toR) * 1.2}deg) translate(${-fx}px,${-fy}px)`;
+
+    // plein écran : CinéMood à T_FOUND, puis retour éclair sur le scroll
+    const fullR = tw(t, T_FOUND, T_FOUND + .32) * (1 - tw(t, T_BACK - .12, T_BACK + .08, 'inExpo'));
+    const fullL = tw(t, T_BACK, T_BACK + .28);
+    const backWhip = t >= T_BACK - .12 && t < T_BACK + .2;
+    $('pL').style.zIndex = fullL > 0 ? 3 : 1; $('pR').style.zIndex = fullR > 0 ? 3 : 2;
+    phoneTf($('pL'), 270, 830, fullL, `perspective(1600px) rotateY(${lerp(38, 0, kL)}deg)`, 1920 - 1060 * 2.25 / 2 + 40);
+    $('pL').style.translate = `${lerp(-700, 0, kL)}px 0`;
+    phoneTf($('pR'), 810, 830, fullR, `perspective(1600px) rotateY(${lerp(-38, 0, kR)}deg)`);
+    $('pR').style.translate = `${lerp(700, 0, kR) + (backWhip ? lerp(0, 1400, tw(t, T_BACK - .12, T_BACK + .08, 'inExpo')) : 0)}px 0`;
+    vis($('pR'), t < T_BACK + .08);
+    $('pL').style.filter = fullL > 0 ? `grayscale(${fullL * .85}) brightness(${1 - fullL * .3})` : 'none';
+    $('hbg').setAttribute('stdDeviation', `${backWhip ? 40 * Math.sin(Math.PI * P(t, T_BACK - .12, T_BACK + .2)) : 0} 0`);
+    $('cam').style.filter = backWhip ? 'url(#hb)' : 'none';
+
+    const uiO = (1 - Math.max(fullR, fullL)) * tw(t, T_DROP + .15, T_DROP + .45);
+    ['hL', 'hR', 'tL', 'tR'].forEach(id => $(id).style.opacity = uiO);
+
+    // gauche : catalogue nerveux + horloge du téléphone
+    const ls = leftSecs(t);
+    $('dL').textContent = mmss(ls);
+    $('clkL').textContent = `21:${String(Math.min(59, Math.floor(ls / 60))).padStart(2, '0')}`;
+    const { y, dx, v } = feedScroll(t);
+    feed.style.transform = `translateY(${-y}px)`;
+    STRIPS.forEach((s, i) => { s.style.transform = `translateX(${-dx[i % 3] % 500}px)`; });
+    const vb = Math.min(14, v / 260);
+    $('vbg').setAttribute('stdDeviation', `0 ${vb.toFixed(2)}`);
+    feed.style.filter = vb > .3 ? 'url(#vb)' : 'none';
+    const shown = BUBS.filter(m => t >= m.at);
+    BUBS.forEach(m => vis(m.el, false));
+    let bottom = 26;
+    shown.slice(-3).reverse().forEach((m, rank) => {
+      const k = tw(t, m.at, m.at + .25, 'outBack');
+      vis(m.el, true); m.el.style.bottom = bottom + 'px'; bottom += m.el.offsetHeight + 14;
+      m.el.style.transform = `scale(${lerp(.5, 1, k)})`; m.el.style.opacity = Math.min(1, k * 2) * (rank === 2 ? .5 : 1);
+    });
+
+    // droite : vraie capture CinéMood, taps visibles
+    const r = recTime(t);
+    await loadRec(Math.min(REC_DATA.count - 1, Math.round(r * REC_DATA.fps)));
+    const hs = humanSecs(t);
+    $('dR').textContent = mmss(hs);
+    $('clkR').textContent = '21:00';
+    TAPS.forEach(tp => { const k = P(t, tp.at - .02, tp.at + .22); vis(tp.el, k > 0 && k < 1); if (k > 0 && k < 1) { tp.el.style.transform = `scale(${lerp(.5, 1.3, E.outCubic(k))})`; tp.el.style.opacity = 1 - k; } });
+  }
+
+  /* --- trouvé (plein écran CinéMood) --- */
+  const fOn = t >= T_FOUND && t < T_BACK - .1;
+  vis($('found'), fOn && t < b(18.5)); vis($('bigR'), fOn);
+  if (fOn) {
+    const k = tw(t, b(16.5), b(16.5) + .25, 'outBack');
+    $('found').style.transform = `translate(${sh.x}px,${sh.y}px) scale(${lerp(2.5, 1, k)}) rotate(${lerp(-12, -4, k)}deg)`;
+    $('found').style.opacity = t >= b(16.5) ? Math.min(1, k * 3) * (1 - tw(t, b(18.2), b(18.5), 'lin')) : 0;
+    slam($('bigR'), t, b(17), 1.8);
+  }
+  /* --- retour sur le scroll : le chrono s'écrase --- */
+  const lOn = t >= T_BACK + .05 && t < T_V47;
+  vis($('bigL'), lOn);
+  if (lOn) {
+    const steps = [[b(20), '38:00'], [b(21), '43:00'], [b(22), '47:00']];
+    const cur = steps.filter(s => t >= s[0]).pop();
+    $('bigL').textContent = cur[1];
+    slam($('bigL'), t, cur[0], 1.7);
+    $('bigL').style.color = cur[1] === '47:00' ? 'var(--red)' : '#fff';
+    $('clkL').textContent = `21:${cur[1].slice(0, 2)}`;
+  }
+
+  /* --- verdict --- */
+  const on47 = t >= T_V47 && t < T_V59;
+  vis($('v47'), on47);
+  if (on47) {
+    slam($('n47'), t, T_V47, 2.4);
+    const st = $('strike');
+    st.style.transform = `rotate(-8deg) scaleX(${tw(t, b(23.5), b(23.5) + .16, 'outCubic')})`;
+    $('v47').style.transform = `translate(${sh.x}px,${sh.y}px)`;
+  }
+  const on59 = t >= T_V59 && t < T_RECUP;
+  vis($('v59'), on59);
+  if (on59) {
+    $('v59').style.clipPath = `circle(${tw(t, T_V59, T_V59 + .25) * 1400}px at 540px 960px)`;
+    slam($('n59'), t, T_V59 + .03, 2.4);
+    $('v59').style.transform = `translate(${sh.x}px,${sh.y}px)`;
+  }
+  const onR = t >= T_RECUP && t < T_END;
+  vis($('recup'), onR);
+  if (onR) {
+    [...$('recup').children].forEach((w, i) => slam(w, t, T_RECUP + i * B / 2, 2.0));
+    $('recup').style.transform = `translate(${sh.x}px,${sh.y}px)`;
+  }
+
+  /* --- fin --- */
+  const endOn = t >= T_END;
+  vis($('end'), endOn);
+  if (endOn) {
+    $('end').style.clipPath = `inset(${(1 - tw(t, T_END, T_END + .3)) * 50}% 0)`;
+    ECOLS.forEach((c, i) => { c.style.transform = `translateY(${-(i % 2 ? 300 : 100) - (t - T_END) * (i % 2 ? 60 : -60)}px)`; });
+    LOGO.forEach((s, i) => { const k = tw(t, T_END + .1 + i * .035, T_END + .6 + i * .035); s.style.transform = `translateY(${lerp(110, 0, k)}%)`; });
+    const sb = tw(t, T_END + .45, T_END + .85); $('sub').style.opacity = sb; $('sub').style.transform = `translateY(${lerp(30, 0, sb)}px)`;
+    const bt = tw(t, T_END + .7, T_END + 1.1, 'outBack'); $('btn').style.opacity = Math.min(1, bt * 2);
+    $('btn').style.transform = `scale(${lerp(.6, 1, bt) * (1 + .035 * Math.max(0, Math.sin((t - T_END - 1.2) / B * Math.PI)) * (t > T_END + 1.2 ? 1 : 0))})`;
+    const ur = tw(t, T_END + .9, T_END + 1.3); $('url').style.opacity = ur;
+    $('end').style.transform = `translate(${sh.x}px,${sh.y}px) scale(${1 + .02 * (t - T_END) / 3})`;
+  }
+
+  /* --- flashs sur les gros impacts --- */
+  let fl = 0;
+  for (const [t0, a] of [[0, .7], [T_DROP, .45], [T_FOUND, .6], [T_V47, .3], [T_V59, .4], [T_END, .35]]) if (t >= t0) fl = Math.max(fl, a * (1 - P(t, t0, t0 + .18)));
+  $('flash').style.opacity = fl;
+}
+
+window.render = render; window.DUR = DUR;
+const isRender = new URLSearchParams(location.search).has('render');
+if (isRender) document.body.classList.add('render');
+function fit() { if (isRender) return; const k = Math.min(innerWidth / 1080, (innerHeight - 40) / 1920); const st = $('stage'); st.style.transform = `scale(${k})`; st.style.marginRight = (1080 * k - 1080) + 'px'; st.style.marginBottom = (1920 * k - 1920) + 'px'; }
+addEventListener('resize', fit);
+window.ready = (async () => {
+  await document.fonts.ready;
+  await Promise.all([...document.images].filter(i => i.src).map(i => i.decode().catch(() => {})));
+  fit(); await render(0); return true;
+})();
+if (!isRender) {
+  let playing = true, t0 = performance.now(), cur = 0, busy = false;
+  $('play').onclick = () => { playing = !playing; t0 = performance.now() - cur * 1000; };
+  $('scrub').oninput = e => { cur = +e.target.value; t0 = performance.now() - cur * 1000; render(cur); };
+  const loop = async now => { if (playing && !busy) { busy = true; cur = ((now - t0) / 1000) % (DUR + .5); await render(Math.min(cur, DUR)); $('scrub').value = cur; $('tc').textContent = cur.toFixed(2); busy = false; } requestAnimationFrame(loop); };
+  window.ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body>
+</html>
