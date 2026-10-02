@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood UGC</title>
+<style>
+@font-face { font-family: 'Anton'; src: url(../motion/fonts/anton.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-500.woff2) format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-700.woff2) format('woff2'); font-weight: 700; font-display: block; }
+:root { --bg: #100a0d; --ink: #f7eef1; --red: #ff2d4f; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #000; overflow: hidden; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Archivo', sans-serif; color: var(--ink); }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); transform-origin: 0 0; flex: none; }
+.abs { position: absolute; }
+.layer { position: absolute; inset: 0; }
+.anton { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.emo { font-family: 'Noto Color Emoji'; }
+
+/* accroche : mur d'affiches qui défile */
+#hook { background: #050304; }
+#wall { left: -260px; top: -400px; width: 1600px; height: 2900px; transform: rotate(-7deg); filter: blur(2.5px) brightness(.42) saturate(1.15); }
+.col { position: absolute; top: 0; width: 330px; display: flex; flex-direction: column; gap: 22px; }
+.col img { width: 330px; height: 495px; object-fit: cover; border-radius: 14px; display: block; }
+#hookshade { background: radial-gradient(80% 50% at 50% 45%, rgba(16,10,13,.35), rgba(16,10,13,.9)); }
+
+/* capture d'écran */
+#recwrap { left: 0; top: 0; width: 1170px; height: 2532px; transform-origin: 0 0; }
+#frame { width: 1170px; height: 2532px; display: block; }
+.tap { position: absolute; width: 150px; height: 150px; margin: -75px 0 0 -75px; border-radius: 50%; background: rgba(255,255,255,.35); border: 5px solid rgba(255,255,255,.9); box-shadow: 0 0 30px rgba(0,0,0,.4); }
+#recshade { background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 78%, rgba(0,0,0,.2) 100%); }
+
+/* sous-titres */
+.cap { position: absolute; left: 60px; right: 60px; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0 18px; }
+.cap .w { display: inline-block; font: 700 78px/1.12 'Archivo'; letter-spacing: -.01em; color: #fff;
+  -webkit-text-stroke: 12px #000; paint-order: stroke fill; text-shadow: 0 8px 26px rgba(0,0,0,.55); }
+.cap .w.hl { color: #fff; background: var(--red); -webkit-text-stroke: 0; padding: 0 16px; border-radius: 10px; text-shadow: none; box-shadow: 0 10px 30px rgba(255,45,79,.45); }
+.cap .w.big { font: 400 250px/1 'Anton'; -webkit-text-stroke: 0; color: var(--red); text-shadow: 0 0 60px rgba(255,45,79,.55), 0 10px 40px rgba(0,0,0,.6); }
+.cap .w.mid { font: 400 150px/1.05 'Anton'; -webkit-text-stroke: 0; text-shadow: 0 10px 40px rgba(0,0,0,.7); }
+.cap .w.sm { font: 700 52px/1.2 'Archivo'; letter-spacing: .02em; }
+.cap .w.emo { -webkit-text-stroke: 0; font-size: 84px; }
+
+/* fin */
+#end { background: var(--bg); }
+#endglow { background: radial-gradient(60% 40% at 50% 42%, rgba(255,45,79,.35), rgba(255,45,79,0) 70%); }
+#endposters { left: -40px; right: -40px; top: 1300px; height: 600px; display: flex; gap: 22px; justify-content: center; filter: brightness(.55); }
+#endposters img { width: 230px; height: 345px; object-fit: cover; border-radius: 12px; }
+#logo { left: 0; right: 0; top: 520px; text-align: center; font-size: 190px; line-height: 1.25; white-space: nowrap; }
+#logo .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-top: 30px; }
+#logo .ch span { display: block; }
+#tag { left: 0; right: 0; top: 800px; text-align: center; font: 700 62px/1.25 'Archivo'; color: #f2e8ec; }
+#btn { left: 50%; top: 990px; height: 140px; margin-left: -360px; width: 720px; background: var(--red); color: #fff; font: 700 60px/140px 'Archivo'; text-align: center; box-shadow: 0 18px 60px rgba(255,45,79,.5); }
+#url { left: 0; right: 0; top: 1175px; text-align: center; font: 700 40px/1 'Archivo'; letter-spacing: .3em; color: #b9adb2; }
+
+#flash { background: #fff; }
+#ui { margin-top: 10px; display: flex; gap: 10px; width: min(96vw, 600px); font: 500 13px 'Archivo'; color: #aaa; }
+#ui input { flex: 1; accent-color: #ff2d4f; }
+#ui button { background: #ff2d4f; color: #fff; border: 0; padding: 6px 12px; cursor: pointer; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="recl">
+    <div class="abs" id="recwrap"><img id="frame" alt=""><div id="taps"></div></div>
+    <div class="layer" id="recshade"></div>
+  </div>
+  <div class="layer" id="hook"><div class="abs" id="wall"></div><div class="layer" id="hookshade"></div></div>
+  <div class="layer" id="end">
+    <div class="layer" id="endglow"></div>
+    <div class="abs" id="endposters"></div>
+    <div class="abs anton" id="logo"></div>
+    <div class="abs" id="tag">Ton film. Ton mood.<br>En une minute.</div>
+    <div class="abs" id="btn">Trouver mon film</div>
+    <div class="abs" id="url">CINEM00D.COM</div>
+  </div>
+  <div id="caps"></div>
+  <div class="layer" id="flash"></div>
+</div>
+<div id="ui"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="22.6" step="0.001" value="0"><span id="tc">0.00</span></div>
+
+<script src="rec/rec.js"></script>
+<script>
+const DUR = 22.6;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  outBack: x => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const tw = (t, a, b, e = 'outExpo') => E[e](P(t, a, b));
+
+/* ---------- capture : remappage temps sortie -> temps capture ---------- */
+// [temps sortie, temps capture] ; entre deux clés, vitesse linéaire
+const KF = [
+  [2.40, 0.60], [3.30, 1.50], [3.70, 1.90], [4.00, 2.50], [5.00, 3.75],
+  [9.30, 18.00], [9.60, 18.60], [10.60, 19.75], [11.40, 20.75], [12.20, 21.40],
+  [12.21, 22.08], [12.90, 22.95], [16.60, 25.05], [18.60, 27.55],
+];
+function recT(t) {
+  if (t <= KF[0][0]) return KF[0][1];
+  for (let i = 1; i < KF.length; i++) {
+    if (t <= KF[i][0]) return lerp(KF[i - 1][1], KF[i][1], P(t, KF[i - 1][0], KF[i][0]));
+  }
+  return KF[KF.length - 1][1];
+}
+function outT(r) { // inverse, pour placer les taps
+  for (let i = 1; i < KF.length; i++) {
+    if (r <= KF[i][1]) return lerp(KF[i - 1][0], KF[i][0], P(r, KF[i - 1][1], KF[i][1]));
+  }
+  return KF[KF.length - 1][0];
+}
+
+const S = 1080 / 1170;   // capture affichée pleine largeur
+const OFFY = -250;       // recadrage vertical par défaut
+// zooms : [début, fin du zoom aller, début retour, fin, échelle, foyer x, foyer y]
+const ZOOMS = [
+  [12.95, 13.35, 14.05, 14.45, 1.2, 540, 560],
+  [14.45, 14.95, 16.25, 16.65, 1.18, 540, 1250],
+];
+
+/* ---------- sous-titres ---------- */
+// mots : texte, classes ; 'br' force un retour à la ligne
+const CAPS = [
+  { a: 0.12, b: 1.25, y: 560, words: [['POV :', 'sm'], ['br'], ['t’as passé', ''], ['br'], ['45 MIN', 'big'], ['br'], ['à choisir un film', '']] },
+  { a: 1.25, b: 2.38, y: 760, words: [['…et au final', ''], ['br'], ['t’as rien regardé', 'hl'], ['😩', 'emo']] },
+  { a: 2.45, b: 3.62, y: 1330, words: [['Ce soir, essaie', ''], ['ça', 'hl'], ['👇', 'emo']] },
+  { a: 3.75, b: 5.45, y: 1330, words: [['12 questions', 'hl'], ['br'], ['sur ton mood', '']] },
+  { a: 5.45, b: 7.45, y: 1330, words: [['avec qui tu regardes,', ''], ['br'], ['le temps que t’as…', '']] },
+  { a: 7.45, b: 9.45, y: 1330, words: [['même ton niveau', ''], ['br'], ['de fatigue', 'hl'], ['😅', 'emo']] },
+  { a: 9.62, b: 11.35, y: 1330, words: [['103 films', 'hl'], ['matchent…', ''], ['br'], ['il garde les 8 meilleurs', 'sm']] },
+  { a: 11.45, b: 12.9, y: 1330, words: [['et le n°1', ''], ['br'], ['c’est…', 'mid']] },
+  { a: 12.95, b: 14.4, y: 1330, words: [['86 % compatible', 'hl'], ['br'], ['avec TON mood', ''], ['🎯', 'emo']] },
+  { a: 14.45, b: 16.62, y: 1200, words: [['il t’explique', ''], ['br'], ['POURQUOI', 'hl'], ['ce film', ''], ['🤯', 'emo']] },
+  { a: 16.62, b: 18.6, y: 1330, words: [['+ 7 autres films,', ''], ['br'], ['classés pour toi', 'hl']] },
+];
+const CAPEL = CAPS.map(c => {
+  const d = document.createElement('div'); d.className = 'cap'; d.style.top = c.y + 'px';
+  c.els = c.words.map(([txt, cls]) => {
+    if (txt === 'br') { const b = document.createElement('div'); b.style.flexBasis = '100%'; b.style.height = '0'; d.appendChild(b); return null; }
+    const s = document.createElement('span'); s.className = 'w ' + cls; s.textContent = txt; d.appendChild(s); return s;
+  }).filter(Boolean);
+  $('caps').appendChild(d); return d;
+});
+
+/* ---------- affiches ---------- */
+const POSTERS = ['interstellar', 'parasite', 'la-la-land', 'mad-max-fury-road', 'spider-verse', 'get-out', 'intouchables', 'dune',
+  'the-dark-knight', 'chihiro', 'whiplash', 'john-wick', 'inception', 'everything-everywhere', 'blade-runner-2049', 'joker',
+  'oppenheimer', 'drive', 'it-follows', 'insidious', 'babadook', 'oculus', 'jane-doe'];
+const COLS = [];
+for (let c = 0; c < 5; c++) {
+  const col = document.createElement('div'); col.className = 'col'; col.style.left = (c * 352) + 'px';
+  for (let k = 0; k < 10; k++) { const im = document.createElement('img'); im.src = `../motion/posters/${POSTERS[(c * 7 + k * 3) % POSTERS.length]}.jpg`; col.appendChild(im); }
+  $('wall').appendChild(col); COLS.push(col);
+}
+['interstellar', 'dune', 'spider-verse', 'parasite', 'la-la-land'].forEach(p => { const im = document.createElement('img'); im.src = `../motion/posters/${p}.jpg`; $('endposters').appendChild(im); });
+const LOGO = [...'CINÉMOOD'].map((ch, i) => { const w = document.createElement('span'); w.className = 'ch'; const s = document.createElement('span'); s.textContent = ch; if (i >= 4) s.style.color = 'var(--red)'; w.appendChild(s); $('logo').appendChild(w); return s; });
+
+/* ---------- taps ---------- */
+let REC = null, TAPS = [];
+const frameCache = new Map();
+async function loadFrame(i) {
+  const src = `rec/${String(i).padStart(5, '0')}.jpg`;
+  if ($('frame').dataset.i == i) return;
+  $('frame').src = src; $('frame').dataset.i = i;
+  await $('frame').decode().catch(() => {});
+}
+
+function S_(el, o) {
+  const tf = [];
+  if (o.x || o.y) tf.push(`translate(${o.x || 0}px,${o.y || 0}px)`);
+  if (o.s !== undefined) tf.push(`scale(${o.s})`);
+  if (o.r) tf.push(`rotate(${o.r}deg)`);
+  el.style.transform = tf.join(' ');
+  if (o.o !== undefined) el.style.opacity = o.o;
+  if (o.blur !== undefined) el.style.filter = o.blur > .05 ? `blur(${o.blur}px)` : 'none';
+}
+
+async function render(t) {
+  /* accroche */
+  const hookOn = t < 2.62;
+  $('hook').style.visibility = hookOn ? 'visible' : 'hidden';
+  if (hookOn) {
+    COLS.forEach((c, i) => { c.style.transform = `translateY(${-((i % 2 ? 500 : 200) + t * (i % 2 ? 900 : 700))}px)`; });
+    // sortie : le mur part vers le haut en glissant
+    const ex = tw(t, 2.3, 2.62, 'inExpo');
+    $('hook').style.transform = `translateY(${-ex * 1920}px)`;
+  }
+
+  /* capture */
+  const recOn = t >= 2.3 && t < 18.9;
+  $('recl').style.visibility = recOn ? 'visible' : 'hidden';
+  if (recOn && REC) {
+    const r = recT(t);
+    await loadFrame(Math.min(REC.count - 1, Math.round(r * REC.fps)));
+    let z = 1, fx = 540, fy = 960;
+    for (const [a, b, c, d, zz, x, y] of ZOOMS) {
+      if (t >= a && t <= d) { const k = t < c ? tw(t, a, b, 'inOutCubic') : 1 - tw(t, c, d, 'inOutCubic'); z = lerp(1, zz, k); fx = x; fy = y; }
+    }
+    const pop = 1 + .05 * (1 - tw(t, 2.3, 2.9)); // léger effet d'arrivée
+    const sc = S * z * pop;
+    $('recwrap').style.transform = `translate(${fx}px,${fy}px) scale(${z * pop}) translate(${-fx}px,${-fy}px) translate(0px,${OFFY}px) scale(${S})`;
+    $('recl').style.transform = `translateY(${(1 - tw(t, 2.3, 2.75, 'outCubic')) * 1920 * .0}px)`;
+    // ronds de doigt
+    TAPS.forEach(tp => {
+      const k = P(t, tp.ot - .05, tp.ot + .38);
+      const on = k > 0 && k < 1;
+      tp.el.style.visibility = on ? 'visible' : 'hidden';
+      if (on) S_(tp.el, { s: lerp(.55, 1.15, E.outCubic(k)), o: k < .25 ? 1 : 1 - (k - .25) / .75 });
+    });
+  }
+
+  /* sous-titres : mots qui pop un par un */
+  CAPS.forEach((c, ci) => {
+    const el = CAPEL[ci], on = t >= c.a && t < c.b;
+    el.style.visibility = on ? 'visible' : 'hidden';
+    if (!on) return;
+    const out = tw(t, c.b - .12, c.b, 'lin');
+    c.els.forEach((w, wi) => {
+      const k = P(t, c.a + wi * .085, c.a + wi * .085 + .22);
+      S_(w, { s: lerp(.55, 1, E.outBack(k)) * (1 - out * .15), o: Math.min(1, k * 3) * (1 - out) });
+    });
+  });
+  // « 45 MIN » : compteur qui défile jusqu'à 45
+  const big = CAPS[0].els[2];
+  if (t < 1.25) { const m = Math.round(lerp(0, 45, tw(t, .3, 1.0, 'outCubic'))); big.textContent = m + ' MIN'; }
+
+  /* fin */
+  const endOn = t >= 18.6;
+  $('end').style.visibility = endOn ? 'visible' : 'hidden';
+  if (endOn) {
+    const k = tw(t, 18.6, 18.95, 'outCubic');
+    $('end').style.clipPath = `circle(${k * 1400}px at 540px 1100px)`;
+    LOGO.forEach((s, i) => { const kk = tw(t, 18.75 + i * .04, 19.45 + i * .04); s.style.transform = `translateY(${lerp(110, 0, kk)}%)`; });
+    const tg = tw(t, 19.3, 19.9); S_($('tag'), { o: tg, y: lerp(30, 0, tg) });
+    const bt = tw(t, 19.55, 20.2, 'outBack'); S_($('btn'), { o: Math.min(1, bt * 2), s: lerp(.7, 1, bt) * (1 + .03 * Math.sin(Math.max(0, t - 20.4) * 6)) });
+    const ur = tw(t, 19.8, 20.4); S_($('url'), { o: ur, y: lerp(20, 0, ur) });
+    const pp = tw(t, 19.0, 20.0, 'outCubic');
+    [...$('endposters').children].forEach((im, i) => S_(im, { y: lerp(200, 0, tw(t, 19.0 + i * .06, 19.8 + i * .06)) + Math.sin(t * 1.3 + i) * 6, o: pp, r: (i - 2) * 3 }));
+  }
+
+  /* flashs blancs sur les coupes fortes */
+  const fl = Math.max(1 - P(t, 2.3, 2.5), 0) * (t >= 2.3 ? .0 : 0) + Math.max(0, 1 - P(t, 12.15, 12.45)) * (t >= 12.15 ? .35 : 0) + Math.max(0, 1 - P(t, 18.6, 18.85)) * (t >= 18.6 ? .25 : 0);
+  $('flash').style.opacity = fl;
+}
+
+/* ---------- lecture ---------- */
+window.render = render; window.DUR = DUR;
+const isRender = new URLSearchParams(location.search).has('render');
+if (isRender) document.body.classList.add('render');
+function fit() { if (isRender) return; const k = Math.min(innerWidth / 1080, (innerHeight - 40) / 1920); const st = $('stage'); st.style.transform = `scale(${k})`; st.style.marginRight = (1080 * k - 1080) + 'px'; st.style.marginBottom = (1920 * k - 1920) + 'px'; }
+addEventListener('resize', fit);
+window.ready = (async () => {
+  REC = window.REC_DATA;
+  TAPS = REC.events.filter(e => e.type === 'tap').map(e => {
+    const el = document.createElement('div'); el.className = 'tap';
+    el.style.left = (e.x * 3) + 'px'; el.style.top = (e.y * 3) + 'px';
+    $('taps').appendChild(el);
+    return { el, ot: outT(e.t) };
+  });
+  await document.fonts.ready;
+  await Promise.all([...document.images].filter(i => i.src).map(i => i.decode().catch(() => {})));
+  fit(); await render(0); return true;
+})();
+if (!isRender) {
+  let playing = true, t0 = performance.now(), cur = 0, busy = false;
+  $('play').onclick = () => { playing = !playing; t0 = performance.now() - cur * 1000; };
+  $('scrub').oninput = e => { cur = +e.target.value; t0 = performance.now() - cur * 1000; render(cur); };
+  const loop = async now => { if (playing && !busy) { busy = true; cur = ((now - t0) / 1000) % (DUR + .5); await render(Math.min(cur, DUR)); $('scrub').value = cur; $('tc').textContent = cur.toFixed(2); busy = false; } requestAnimationFrame(loop); };
+  window.ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body>
+</html>
