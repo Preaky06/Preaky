@@ -1,6 +1,16 @@
 # CinéMood — « La course » (9:16)
 
-## v2 — 16,5 s, montée au temps (recommandée)
+## v3 — 15,7 s (recommandée)
+
+- `cinemood-la-course-v3-9x16.mp4` : 1080×1920, 60 i/s avec flou de mouvement, son AAC −14 LUFS.
+- `v3.html` : même idée que la v2, mieux réalisée. Montage alterné en plein cadre entre les deux téléphones
+  (`SHOTS`, en temps à 128 BPM), panoramiques éclair dont la durée suit la longueur des plans, chronos
+  toujours visibles en haut, téléphones en 3D (reflet, ombre) sur fond bokeh, horloge mécanique 20:59 → 21:00,
+  verdict côte à côte « 47 MIN » barré / « 59 S ».
+- `sound_v3.py` : morceau de la v2 recalé sur ce découpage (souffle à chaque coupe, horloge, verdict avancé).
+- Rendu : `PAGE=v3.html BLUR=1 node render.js build/v3-video.mp4 && python3 sound_v3.py`, puis le même `ffmpeg` avec `build/v3-sound.wav`.
+
+## v2 — 16,5 s, montée au temps
 
 - `cinemood-la-course-v2-9x16.mp4` : 1080×1920, 60 i/s avec flou de mouvement, son AAC −14 LUFS.
 - `v2.html` : tout est calé sur 128 BPM (`b(n)` = n-ième temps). Accroche « 21:00 / ON REGARDE QUOI ? »,
