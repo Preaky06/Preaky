@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>ExpliSite — motion 15 s</title>
+<meta name="viewport" content="width=1920">
+<style>
+@font-face { font-family: "Fraunces"; src: url(../../public/fonts/fraunces-latin-full-normal.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Fraunces"; src: url(../../public/fonts/fraunces-latin-full-italic.woff2) format("woff2"); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: "Bricolage Grotesque"; src: url(../../public/fonts/bricolage-grotesque-latin-opsz-normal.woff2) format("woff2"); font-weight: 200 800; }
+@font-face { font-family: "JetBrains Mono"; src: url(../../public/fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "JetBrains Mono"; src: url(../../public/fonts/jetbrains-mono-latin-600-normal.woff2) format("woff2"); font-weight: 600; }
+
+:root {
+  --paper: #f2eee4; --paper2: #e9e3d5; --card: #fbf9f4; --ink: #15130f; --ink2: #4a463d; --ink3: #8a8474;
+  --line: rgba(21, 19, 15, 0.14); --hl: #e4ff3d; --orange: #ff9a1f; --red: #ff4a2c; --green: #17a86b; --blue: #2c3cff;
+  --display: "Fraunces", Georgia, serif; --ui: "Bricolage Grotesque", system-ui, sans-serif; --mono: "JetBrains Mono", monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #0d0c0a; }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink);
+  font-family: var(--ui); transform-origin: 0 0; }
+.abs { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+.layer { position: absolute; inset: 0; will-change: transform, opacity, filter; }
+.mono { font-family: var(--mono); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.disp { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-variation-settings: "SOFT" 50, "WONK" 0; }
+.mask { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.04em 0.12em; margin: 0 -0.04em -0.12em; }
+.mask > span { display: inline-block; will-change: transform; }
+.mark { position: relative; z-index: 0; white-space: nowrap; }
+.mark::before { content: ""; position: absolute; z-index: -1; left: -0.08em; right: -0.08em; top: 0.12em; bottom: 0.02em; background: var(--hl);
+  border-radius: 0.08em 0.16em 0.1em 0.18em; transform-origin: left center; transform: scaleX(var(--k, 0)); }
+.hlbg { box-decoration-break: clone; -webkit-box-decoration-break: clone; background: linear-gradient(var(--hl), var(--hl)) no-repeat left center / 0% 100%; border-radius: 6px; padding: 0 4px; }
+.pill { display: inline-flex; align-items: center; padding: 10px 22px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); font-size: 22px; white-space: nowrap; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 34px; box-shadow: 0 40px 90px -50px rgba(21, 19, 15, 0.5); }
+
+/* 1. charabia */
+#jargon span { position: absolute; left: 0; top: 0; white-space: nowrap; font-family: var(--display); color: var(--ink3); }
+#h1 { left: 150px; top: 250px; font-size: 176px; line-height: 0.98; }
+#h1 .l { display: block; height: 188px; }
+#h1 em { font-style: italic; font-weight: 300; color: var(--ink3); display: inline-block; }
+#wipe { background: var(--hl); border-radius: 18px; }
+
+/* 2. dépôt */
+#drop { left: 160px; top: 140px; width: 1600px; height: 800px; }
+#drop .lab { position: absolute; left: 64px; top: 56px; font-size: 18px; color: var(--ink2); }
+#drop .seg { position: absolute; right: 56px; top: 40px; display: flex; gap: 4px; padding: 6px; background: var(--paper2); border-radius: 999px; font-size: 21px; font-weight: 600; }
+#drop .seg span { padding: 12px 24px; border-radius: 999px; color: var(--ink2); }
+#drop .seg span:first-child { background: var(--ink); color: var(--paper); }
+#zone { position: absolute; left: 64px; top: 120px; width: 1472px; height: 480px; border: 3px dashed var(--ink); border-radius: 30px; background: var(--paper); }
+#zone .t { position: absolute; left: 0; right: 0; top: 200px; text-align: center; font-size: 66px; }
+#zone .s { position: absolute; left: 0; right: 0; top: 290px; text-align: center; font-size: 25px; color: var(--ink2); }
+#drop .row { position: absolute; left: 64px; right: 56px; bottom: 56px; display: flex; align-items: center; gap: 22px; }
+#drop .sel { padding: 16px 26px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--paper); font-size: 24px; font-weight: 600; }
+#drop .tog { display: flex; padding: 5px; border-radius: 999px; background: var(--paper2); font-size: 22px; font-weight: 600; }
+#drop .tog span { padding: 12px 24px; border-radius: 999px; color: var(--ink2); }
+#drop .tog span:first-child { background: var(--ink); color: var(--paper); }
+#go { margin-left: auto; padding: 22px 44px; border-radius: 999px; font-size: 28px; font-weight: 700; color: var(--paper); background: #a8a397; }
+#cursor { width: 44px; height: 44px; }
+
+/* le courrier (partagé entre dépôt et analyse) */
+#doc { width: 470px; height: 620px; padding: 42px 40px; background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+  box-shadow: 0 50px 100px -40px rgba(21, 19, 15, 0.5); overflow: hidden; transform-origin: 50% 50%; }
+#doc .hd { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--ink2); margin-bottom: 24px; }
+#doc .ob { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.3; margin-bottom: 14px; }
+#doc .bd { font-family: var(--display); font-size: 15.5px; line-height: 1.68; color: var(--ink3); text-align: justify; hyphens: auto; }
+#doc .bd .hlbg { color: var(--ink); padding: 0 2px; border-radius: 3px; }
+#plain { left: 0; top: 0; width: 470px; height: 620px; padding: 150px 40px 0; background: var(--card); font-size: 31px; line-height: 1.4; font-weight: 600; }
+#plain mark { background: var(--hl); color: var(--ink); padding: 0 6px; border-radius: 6px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+#scan { left: -20px; width: 510px; height: 120px; background: linear-gradient(to bottom, rgba(228, 255, 61, 0) 0%, rgba(228, 255, 61, 0.55) 86%, #d6f02a 92%, rgba(228, 255, 61, 0) 100%); }
+#lens { width: 230px; height: 230px; border-radius: 50%; border: 5px solid var(--ink); box-shadow: 0 0 0 10px rgba(21, 19, 15, 0.06), 0 30px 60px -20px rgba(0, 0, 0, 0.45); }
+#lens::after { content: ""; position: absolute; width: 24px; height: 104px; right: -50px; bottom: -84px; background: var(--ink); border-radius: 14px; transform: rotate(-45deg); }
+
+/* 3. analyse */
+#ring { left: 1010px; top: 210px; width: 170px; height: 170px; }
+#ring .n { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 800; font-size: 54px; }
+#ring .n small { font-size: 22px; margin-left: 2px; margin-top: 10px; }
+#stat { left: 1010px; top: 420px; width: 780px; height: 100px; overflow: hidden; }
+#stat div { position: absolute; left: 0; top: 0; font-size: 80px; white-space: nowrap; }
+#log { left: 1010px; top: 560px; width: 760px; font-family: var(--mono); font-size: 22px; line-height: 1.55; color: var(--ink2); }
+#log p { margin-bottom: 14px; min-height: 1.55em; }
+
+/* 4. résultat */
+#res { will-change: transform; }
+#chips { left: 120px; top: 120px; display: flex; gap: 12px; }
+#chips .pill:first-child { background: var(--hl); border-color: var(--hl); font-weight: 700; }
+#rtitle { left: 120px; top: 196px; width: 1320px; font-size: 104px; line-height: 1.02; }
+#rsum { left: 120px; top: 440px; width: 1240px; font-size: 46px; line-height: 1.32; font-weight: 500; letter-spacing: -0.01em; }
+#rsum .hlbg { padding: 0 8px; }
+#gauge { left: 1470px; top: 200px; width: 340px; text-align: center; }
+#gauge .st { font-family: var(--display); font-weight: 800; font-size: 50px; margin-top: 10px; }
+#gauge .sb { font-size: 21px; line-height: 1.45; color: var(--ink2); margin-top: 8px; }
+#sep { left: 120px; top: 720px; width: 1680px; height: 2px; background: var(--ink); transform-origin: left; }
+#todo { left: 120px; top: 780px; width: 1010px; padding: 38px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.lbl { display: flex; align-items: center; gap: 16px; font-size: 20px; }
+.ico { width: 42px; height: 42px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; font-family: var(--ui); font-weight: 700; }
+#todo .ico { background: var(--hl); color: var(--ink); }
+.task { position: relative; margin-top: 22px; padding: 26px 26px 26px 92px; border: 1.5px solid rgba(241, 236, 223, 0.16); border-radius: 22px; background: #1f1d18; }
+.task .bx { position: absolute; left: 26px; top: 28px; width: 40px; height: 40px; border-radius: 11px; border: 2.5px solid #f1ecdf; }
+.task .bx svg { position: absolute; inset: 4px; }
+.task b { display: block; font-size: 29px; }
+.task p { font-size: 22px; color: #c3bcab; margin-top: 6px; }
+.task .dt { display: inline-block; margin-top: 12px; padding: 5px 14px; border-radius: 8px; background: var(--hl); color: var(--ink); font-family: var(--mono); font-size: 17px; }
+#amts { left: 1170px; top: 780px; width: 630px; padding: 38px 44px; }
+#amts .ico { background: var(--ink); color: var(--paper); }
+#amts .k { margin-top: 30px; font-size: 17px; color: var(--ink2); }
+#amts .v { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
+#amts .d { font-size: 22px; color: var(--ink2); margin-top: 6px; }
+#chat { left: 1380px; top: 940px; display: flex; align-items: center; gap: 16px; padding: 16px 30px 16px 16px; border-radius: 999px; background: var(--ink); color: var(--paper); font-size: 27px; font-weight: 600; box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.6); transform-origin: 85% 50%; }
+#chat i { width: 52px; height: 52px; border-radius: 50%; background: var(--hl); color: var(--ink); display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 800; font-size: 28px; }
+
+/* 5. catégories */
+#eh { left: 150px; top: 330px; font-size: 136px; line-height: 1.04; }
+#eh em { font-style: italic; }
+.band { left: -200px; width: 2400px; height: 150px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; }
+.band .tr { display: flex; align-items: center; gap: 56px; padding-left: 40px; will-change: transform; }
+.band .it { font-family: var(--display); font-style: italic; font-weight: 600; font-size: 66px; }
+.band .st { font-size: 60px; color: var(--hl); }
+#band1 { top: 770px; background: var(--ink); color: var(--paper); }
+#band2 { top: 70px; height: 120px; background: var(--hl); color: var(--ink); }
+#band2 .it { font-family: var(--ui); font-style: normal; font-weight: 700; font-size: 46px; }
+#band2 .st { color: var(--ink); font-size: 42px; }
+
+/* 6. tarifs */
+#ph { left: 0; width: 1920px; top: 100px; text-align: center; font-size: 92px; }
+.plan { top: 300px; width: 520px; height: 600px; padding: 44px; }
+.plan h3 { font-size: 36px; font-weight: 700; }
+.plan .pr { font-family: var(--display); font-weight: 800; font-size: 112px; letter-spacing: -0.04em; line-height: 1; margin-top: 22px; }
+.plan .pr small { font-family: var(--ui); font-weight: 400; font-size: 26px; letter-spacing: 0; color: var(--ink3); margin-left: 6px; }
+.plan ul { list-style: none; margin-top: 34px; font-size: 24px; line-height: 1.35; }
+.plan li { padding-left: 36px; position: relative; margin-bottom: 16px; }
+.plan li::before { content: "✓"; position: absolute; left: 0; }
+.plan .btn { position: absolute; left: 44px; right: 44px; bottom: 44px; padding: 22px; border-radius: 999px; text-align: center; font-size: 25px; font-weight: 700; }
+#p3 { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+#p3 .pr small, #p3 li { color: #c3bcab; }
+#p3 .badge { position: absolute; right: 40px; top: 46px; padding: 8px 14px; border-radius: 999px; background: var(--hl); color: var(--ink); font-family: var(--mono); font-weight: 600; font-size: 15px; }
+
+/* 7. logo */
+#wm { left: 0; width: 1920px; top: 330px; text-align: center; }
+#wm .w { position: relative; display: inline-block; font-family: var(--display); font-weight: 900; font-style: italic; font-size: 250px; letter-spacing: -0.045em; line-height: 1;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1; padding-right: 0.08em; }
+#wm .w .ch { display: inline-block; will-change: transform, opacity; }
+#wmlens { position: absolute; left: -0.16em; top: -0.2em; width: 0.48em; height: 0.48em; }
+#tag { left: 0; width: 1920px; top: 650px; text-align: center; font-size: 50px; font-weight: 600; letter-spacing: -0.01em; }
+#cats { left: 0; width: 1920px; top: 760px; text-align: center; font-size: 22px; color: var(--ink2); }
+#cats i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--green); margin-right: 14px; vertical-align: 2px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Charabia -->
+  <div class="layer" id="A">
+    <div id="jargon"></div>
+    <div class="abs disp" id="h1">
+      <span class="l"><span class="mask"><span>Votre</span></span> <span class="mask"><span>courrier</span></span></span>
+      <span class="l"><span class="mask"><span>parle</span></span> <span class="mask"><span><em id="chara">charabia.</em></span></span></span>
+      <span class="l"><span class="mask"><span>On</span></span> <span class="mask"><span><span class="mark" id="trad">traduit.</span></span></span></span>
+    </div>
+  </div>
+
+  <!-- 2. Dépôt -->
+  <div class="layer" id="B">
+    <div class="abs card" id="drop">
+      <div class="lab mono">01 — Déposez le document</div>
+      <div class="seg"><span>Photo ou PDF</span><span>Coller du texte</span></div>
+      <div id="zone"><div class="t disp">Glissez votre courrier ici</div><div class="s">ou prenez-le en photo — même froissé, même en plusieurs pages.</div></div>
+      <div class="row"><div class="sel">Français ▾</div><div class="tog"><span>Simple</span><span>Détaillé</span></div><div id="go">Expliquer →</div></div>
+    </div>
+  </div>
+
+  <!-- 3. Analyse (le courrier est partagé avec la scène 2) -->
+  <div class="layer" id="C">
+    <div class="abs" id="ring">
+      <svg viewBox="0 0 170 170" width="170" height="170"><circle cx="85" cy="85" r="74" fill="none" stroke="rgba(21,19,15,.14)" stroke-width="12"/>
+        <circle id="ringArc" cx="85" cy="85" r="74" fill="none" stroke="#15130f" stroke-width="12" stroke-linecap="round" transform="rotate(-90 85 85)" stroke-dasharray="465 465" stroke-dashoffset="465"/></svg>
+      <div class="n"><span id="pct">0</span><small>%</small></div>
+    </div>
+    <div class="abs" id="stat">
+      <div class="disp">Lecture ligne à ligne…</div>
+      <div class="disp">Traduction en clair…</div>
+      <div class="disp">C'est <span class="mark" id="pret">prêt.</span></div>
+    </div>
+    <div class="abs" id="log"><p></p><p></p><p></p></div>
+  </div>
+
+  <div class="abs" id="doc">
+    <div class="hd"><span>CABINET DELAUNAY GESTION<br>14 RUE DES TANNEURS · 69002 LYON</span><span>LYON, LE 28/09/2026</span></div>
+    <div class="ob">Objet : Régularisation annuelle des charges locatives — exercice 2025</div>
+    <div class="bd">Madame, Monsieur, conformément aux dispositions de l'article 23 de la loi n° 89-462 du 6 juillet 1989, nous vous adressons le décompte de régularisation des charges récupérables afférentes à l'exercice clos. Les provisions appelées s'élevant à 1 080,00 € et les dépenses réelles imputables à votre lot à <span class="hlbg">1&nbsp;327,40&nbsp;€</span>, il ressort un solde débiteur de <span class="hlbg">247,40&nbsp;€</span>, exigible sous <span class="hlbg">trente jours</span> à compter de la présente. Le montant de la provision mensuelle est en conséquence porté à <span class="hlbg">110,00&nbsp;€</span> à compter de la prochaine échéance. Les pièces justificatives sont tenues à votre disposition pendant six mois.</div>
+    <div class="abs" id="plain">Vous devez <mark>247,40&nbsp;€</mark> de charges, à payer sous <mark>30&nbsp;jours</mark>. Votre provision passe à <mark>110&nbsp;€</mark> par mois.</div>
+    <div class="abs" id="scan"></div>
+  </div>
+  <div class="abs" id="lens"></div>
+
+  <!-- 4. Résultat -->
+  <div class="layer" id="D">
+    <div class="layer" id="res">
+      <div class="abs" id="chips"><span class="pill">Logement</span><span class="pill">Cabinet Delaunay Gestion (votre propriétaire)</span><span class="pill">Daté du 28 septembre 2026</span></div>
+      <div class="abs disp" id="rtitle"><span class="mask"><span>Régularisation</span></span> <span class="mask"><span>annuelle</span></span> <span class="mask"><span>des</span></span> <span class="mask"><span>charges</span></span> <span class="mask"><span>locatives</span></span></div>
+      <div class="abs" id="rsum">Vous avez payé moins de charges que ce que votre logement a réellement coûté : votre propriétaire vous réclame <span class="hlbg">247,40&nbsp;€</span> et augmente votre provision de <span class="hlbg">20&nbsp;€</span> par mois.</div>
+      <div class="abs" id="gauge">
+        <svg viewBox="0 0 200 120" width="340">
+          <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="rgba(21,19,15,.12)" stroke-width="18" stroke-linecap="round"/>
+          <path class="seg" d="M20 100 A80 80 0 0 1 43.4 43.4" fill="none" stroke="#17a86b" stroke-width="16" stroke-linecap="round"/>
+          <path class="seg" d="M50 37 A80 80 0 0 1 96 20.1" fill="none" stroke="#2c3cff" stroke-width="16" stroke-linecap="round"/>
+          <path class="seg" d="M104 20.1 A80 80 0 0 1 150 37" fill="none" stroke="#ff9a1f" stroke-width="16" stroke-linecap="round"/>
+          <path class="seg" d="M156.6 43.4 A80 80 0 0 1 180 100" fill="none" stroke="#ff4a2c" stroke-width="16" stroke-linecap="round"/>
+          <g id="needle" style="transform-origin:100px 100px"><path d="M100 100 L100 32" stroke="#15130f" stroke-width="6" stroke-linecap="round"/></g>
+          <circle cx="100" cy="100" r="11" fill="#15130f"/>
+        </svg>
+        <div class="st">À traiter</div>
+        <div class="sb">Paiement demandé sous 30 jours, mais vous pouvez d'abord vérifier les justificatifs.</div>
+      </div>
+      <div class="abs" id="sep"></div>
+      <div class="abs card" id="todo">
+        <div class="lbl mono"><span class="ico">✓</span>À faire</div>
+        <div class="task"><span class="bx"></span><b>Demandez le détail des justificatifs</b><p>Vous y avez droit pendant 6 mois. La réponse est déjà rédigée.</p><span class="dt">lun. 12 octobre 2026 · dans 10 j</span></div>
+        <div class="task"><span class="bx"></span><b>Payez 247,40 € ou demandez un échéancier</b><p>Un paiement en plusieurs fois peut être demandé par écrit.</p><span class="dt">mer. 28 octobre 2026 · dans 26 j</span></div>
+        <div class="task"><span class="bx"></span><b>Ajustez votre virement mensuel à 110 €</b><p>Dans votre application bancaire, en deux minutes.</p><span class="dt">ven. 6 novembre 2026 · dans 35 j</span></div>
+      </div>
+      <div class="abs card" id="amts">
+        <div class="lbl mono"><span class="ico">€</span>Montants</div>
+        <div class="k mono">À payer</div><div class="v" id="amt" style="font-size:118px;color:var(--red)">0,00 €</div><div class="d">Solde de charges à payer</div>
+        <div class="k mono">Pour info</div><div class="v" style="font-size:76px">1 327,40 €</div><div class="d">Charges réelles de l'année</div>
+        <div class="k mono">À payer</div><div class="v" style="font-size:76px">110,00 €</div><div class="d">Nouvelle provision mensuelle</div>
+      </div>
+    </div>
+    <div class="abs" id="chat"><i>?</i>Une question sur ce document ?</div>
+  </div>
+
+  <!-- 5. Catégories et langues -->
+  <div class="layer" id="E">
+    <div class="abs disp" id="eh">
+      <span class="mask"><span>Trois secondes pour déposer.</span></span><br>
+      <span class="mask"><span><em class="mark" id="zero">Zéro</em> pour comprendre.</span></span>
+    </div>
+    <div class="abs band" id="band2"><div class="tr" id="tr2"></div></div>
+    <div class="abs band" id="band1"><div class="tr" id="tr1"></div></div>
+  </div>
+
+  <!-- 6. Tarifs -->
+  <div class="layer" id="F">
+    <div class="abs disp" id="ph">Un courrier par mois, c'est <span class="mark" id="off">offert.</span></div>
+    <div class="abs card plan" id="p1" style="left:160px"><h3>Gratuit</h3><div class="pr">0 €<small>pour toujours</small></div>
+      <ul><li>1 document expliqué par mois</li><li>Jusqu'à 2 questions par document</li><li>Réponse prête à envoyer</li></ul>
+      <div class="btn" style="border:1.5px solid var(--line);color:var(--ink3)">Votre formule actuelle</div></div>
+    <div class="abs card plan" id="p2" style="left:700px"><h3>Essentiel</h3><div class="pr">4,99 €<small>/ mois</small></div>
+      <ul><li>10 documents expliqués par mois</li><li>Jusqu'à 10 questions par document</li><li>Documents gardés dans votre compte</li></ul>
+      <div class="btn" style="background:var(--ink);color:var(--paper)">Choisir Essentiel</div></div>
+    <div class="abs card plan" id="p3" style="left:1240px"><span class="badge">LE PLUS CHOISI</span><h3>Plus</h3><div class="pr">9,99 €<small>/ mois</small></div>
+      <ul><li>20 documents expliqués par mois</li><li>Jusqu'à 15 questions par document</li><li>Notre IA la plus précise</li></ul>
+      <div class="btn" style="background:var(--hl);color:var(--ink)">Choisir Plus</div></div>
+  </div>
+
+  <!-- 7. Logo -->
+  <div class="layer" id="G">
+    <div class="abs" id="wm"><span class="w" id="wmw"><svg id="wmlens" viewBox="0 0 40 40"><circle cx="16" cy="16" r="11" fill="none" stroke="#15130f" stroke-width="4.5"/><path d="M24.5 24.5l10 10" stroke="#15130f" stroke-width="5.5" stroke-linecap="round"/></svg></span></div>
+    <div class="abs" id="tag">Votre courrier parle charabia. <span class="mark" id="tagm">On traduit.</span></div>
+    <div class="abs mono" id="cats"><i></i>Impôts · CAF · Bail · Factures · Amendes · Contrats · Santé</div>
+  </div>
+
+  <div class="abs" id="wipe"></div>
+  <svg class="abs" id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.6L9 19z" fill="#15130f" stroke="#fbf9f4" stroke-width="1.4" stroke-linejoin="round"/></svg>
+</div>
+
+<script src="timeline-15s.js"></script>
+<script>
+const TL = window.EXPLISITE_TIMELINE;
+const DURATION = TL.duration;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+
+// --- courbes ---
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const p = (t, a, b) => clamp((t - a) / (b - a));
+const expoOut = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
+const expoIn = (x) => (x <= 0 ? 0 : Math.pow(2, 10 * x - 10));
+const expoInOut = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2);
+const cubicOut = (x) => 1 - Math.pow(1 - x, 3);
+const cubicInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const backOut = (x) => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+const spring = (x, f = 4.2, d = 6.5) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.exp(-d * x) * Math.cos(f * Math.PI * x));
+
+function tf(el, { x = 0, y = 0, s = 1, sx, sy, r = 0, o = 1, blur = 0 } = {}) {
+  el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${r}deg) scale(${sx ?? s}, ${sy ?? s})`;
+  el.style.opacity = o;
+  el.style.filter = blur > 0.05 ? `blur(${blur}px)` : "";
+}
+const show = (el, on) => { el.style.visibility = on ? "visible" : "hidden"; };
+// révélation d'un mot masqué : monte depuis le bas
+function rise(inner, t, a, d = 0.42, from = 110) { const k = expoOut(p(t, a, a + d)); inner.style.transform = `translateY(${(1 - k) * from}%)`; }
+function sink(inner, t, a, d = 0.35) { const k = expoIn(p(t, a, a + d)); return k; }
+
+// --- données ---
+const S = TL.scenes;
+const JARGON = ["majoration", "recouvrement", "tiers détenteur", "article L. 256", "imposition primitive", "réclamation contentieuse",
+  "sursis de paiement", "solde débiteur", "charges récupérables", "mise en demeure", "forclusion", "quote-part", "CGI art. 1730",
+  "exigible", "notification", "afférentes à l'exercice"];
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const jWrap = $("#jargon");
+const jItems = JARGON.map((w, i) => {
+  const el = document.createElement("span");
+  el.textContent = w;
+  const size = 30 + Math.round(rnd() * 34);
+  el.style.fontSize = size + "px";
+  el.style.fontStyle = i % 3 === 0 ? "italic" : "normal";
+  el.style.fontWeight = i % 4 === 0 ? 600 : 400;
+  jWrap.appendChild(el);
+  // grille 4 × 4 décalée, avec un peu de hasard, pour couvrir tout l'écran
+  const order = [5, 10, 2, 15, 8, 0, 13, 6, 11, 3, 14, 9, 1, 12, 7, 4][i];
+  const col = order % 4, row = Math.floor(order / 4);
+  const x = 250 + col * 470 + (row % 2) * 140 + (rnd() - 0.5) * 120;
+  const y = 150 + row * 255 + (rnd() - 0.5) * 80;
+  return { el, x, y, r: (rnd() - 0.5) * 14, t0: TL.sfx[i].t, o: 0.5 + rnd() * 0.4 };
+});
+
+const CATS = ["Avis d'impôt", "Régularisation de charges", "Courrier CAF", "Contrat de travail", "Amende", "Facture d'énergie", "Bail", "Résultats d'analyses", "URSSAF", "Mise en demeure"];
+const LANGS = ["Français", "English", "Español", "Português", "Italiano", "Deutsch", "العربية", "Türkçe", "Română", "Polski", "Українська", "中文", "Tiếng Việt", "Wolof"];
+function fillBand(el, items, star) { el.innerHTML = [...items, ...items].map((w) => `<span class="it">${w}</span><span class="st">${star}</span>`).join(""); }
+fillBand($("#tr1"), CATS, "✳");
+fillBand($("#tr2"), LANGS, "✳");
+
+// logo lettre par lettre
+const wmw = $("#wmw");
+"explisite".split("").forEach((c) => { const s = document.createElement("span"); s.className = "ch"; s.textContent = c; wmw.appendChild(s); });
+const wmChars = $$("#wmw .ch");
+// le surlignage de « site »
+const siteMark = document.createElement("span");
+siteMark.style.cssText = "position:absolute;z-index:-1;background:var(--hl);border-radius:.06em .14em .08em .16em;transform-origin:left center;top:.18em;bottom:.04em";
+wmw.style.zIndex = 0; wmw.appendChild(siteMark);
+
+const LOG = [
+  "Provisions versées : 1 080 €. Charges réelles : 1 327,40 €.",
+  "Reste à payer : 247,40 €, sous 30 jours.",
+  "Je rédige la demande de justificatifs.",
+];
+const logPs = $$("#log p");
+
+// mesures faites une fois les polices prêtes
+let M = null;
+function measure() {
+  const st = $("#stage").getBoundingClientRect(); const k = st.width / 1920;
+  const rel = (el) => { const r = el.getBoundingClientRect(); return { x: (r.left - st.left) / k, y: (r.top - st.top) / k, w: r.width / k, h: r.height / k }; };
+  // la marque « traduit. » sans transformation
+  const tr = $("#trad");
+  const inner = tr.parentElement; const prev = inner.style.transform; inner.style.transform = "none";
+  const m = rel(tr); inner.style.transform = prev;
+  // position de « site » dans le logo
+  wmChars.forEach((c) => (c.style.transform = "none"));
+  const a = rel(wmChars[5]), b = rel(wmChars[8]), w = rel(wmw);
+  M = { mark: { x: m.x - 0.08 * 176, y: m.y + 0.12 * 176, w: m.w + 0.16 * 176, h: m.h - 0.14 * 176 },
+    site: { l: a.x - w.x - 6, w: b.x + b.w - a.x + 10 }, lensLogo: rel($("#wmlens")) };
+  siteMark.style.left = M.site.l + "px"; siteMark.style.width = M.site.w + "px";
+}
+
+// --- rendu ---
+const els = { A: $("#A"), B: $("#B"), C: $("#C"), D: $("#D"), E: $("#E"), F: $("#F"), G: $("#G"), doc: $("#doc"), lens: $("#lens"), wipe: $("#wipe"),
+  cursor: $("#cursor"), go: $("#go"), zone: $("#zone"), drop: $("#drop"), plain: $("#plain"), scan: $("#scan") };
+
+function render(t) {
+  if (!M) measure();
+  for (const k of "ABCDEFG") show(els[k], false);
+
+  // ===== 1. CHARABIA (0 → 3) =====
+  if (t < 3.05) {
+    show(els.A, true);
+    const push = 1 + t * 0.018;
+    tf(els.A, { s: push });
+    const scatter = expoIn(p(t, 1.85, 2.45));
+    jItems.forEach((j, i) => {
+      const k = expoOut(p(t, j.t0, j.t0 + 0.35));
+      const drift = t * 10 * (i % 2 ? 1 : -1);
+      const dx = (j.x - 960) * scatter * 1.1, dy = (j.y - 540) * scatter * 1.1;
+      j.el.style.transform = `translate(-50%,-50%) translate(${j.x + drift + dx}px, ${j.y + dy}px) rotate(${j.r + (1 - k) * 12}deg) scale(${0.6 + 0.4 * k})`;
+      j.el.style.opacity = j.o * k * (1 - scatter) * (1 - 0.55 * p(t, 0.9, 1.6));
+      j.el.style.filter = `blur(${(1 - k) * 8 + scatter * 10}px)`;
+    });
+    const ws = $$("#h1 .mask > span");
+    [0.5, 0.58, 1.0, 1.08, 1.5, 1.58].forEach((a, i) => rise(ws[i], t, a, 0.45));
+    // « charabia. » tremble tant qu'il n'est pas traduit
+    const jit = t > 1.0 && t < 2.0 ? 1 : 0;
+    $("#chara").style.transform = `rotate(${jit * Math.sin(t * 38) * 2.2}deg) translateY(${jit * Math.sin(t * 27) * 4}px)`;
+    $("#chara").style.filter = `blur(${jit * (0.6 + 0.6 * Math.sin(t * 19))}px)`;
+    $("#trad").style.setProperty("--k", expoOut(p(t, 1.72, 2.02)));
+    // le titre s'efface derrière le surligneur qui envahit l'écran
+    $("#h1").style.opacity = 1 - p(t, 2.75, 2.9);
+  }
+
+  // surligneur plein écran : 2,45 → 3,35
+  if (t >= 2.45 && t < 3.4) {
+    show(els.wipe, true);
+    const k = expoInOut(p(t, 2.45, 2.92));
+    const m = M.mark, pad = 40;
+    // le repère du titre suit la poussée de caméra de la scène 1
+    const push = 1 + Math.min(t, 3) * 0.018;
+    const mx = 960 + (m.x - 960) * push, my = 540 + (m.y - 540) * push;
+    const x = lerp(mx, -pad, k), y = lerp(my, -pad, k), w = lerp(m.w * push, 1920 + 2 * pad, k), h = lerp(m.h * push, 1080 + 2 * pad, k);
+    const out = expoInOut(p(t, 3.0, 3.35));
+    els.wipe.style.left = x + "px"; els.wipe.style.top = y - out * 1200 + "px";
+    els.wipe.style.width = w + "px"; els.wipe.style.height = h + "px";
+    els.wipe.style.borderRadius = lerp(18, 0, k) + "px";
+    els.wipe.style.transform = "none"; els.wipe.style.opacity = 1;
+  } else show(els.wipe, false);
+
+  // ===== 2. DÉPÔT (3 → 5) =====
+  if (t >= 2.9 && t < 5.1) {
+    show(els.B, true);
+    const kin = expoOut(p(t, 3.0, 3.5));
+    const kout = expoIn(p(t, 4.55, 4.95));
+    tf(els.B, { y: (1 - kin) * 140 - kout * 40, s: 1 - kout * 0.06, o: 1 - kout, blur: kout * 10 });
+    const landed = p(t, 3.7, 3.85);
+    els.zone.style.borderStyle = landed > 0 ? "solid" : "dashed";
+    els.zone.style.background = landed > 0 ? `color-mix(in srgb, var(--hl) ${30 * (1 - p(t, 3.85, 4.4))}%, var(--paper))` : "var(--paper)";
+    for (const c of els.zone.children) c.style.opacity = 1 - p(t, 3.45, 3.65);
+    const act = p(t, 3.9, 4.05);
+    const press = t > 4.45 && t < 4.6 ? 0.93 : 1;
+    els.go.style.background = act > 0 ? "#15130f" : "#a8a397";
+    els.go.style.transform = `scale(${act > 0 ? (press < 1 ? press : backOut(act) * 0.04 + 0.96 + (1 - act) * 0) : 1})`;
+    // curseur
+    const kc = cubicInOut(p(t, 3.95, 4.45));
+    show(els.cursor, t > 3.9 && t < 4.75);
+    tf(els.cursor, { x: lerp(1500, 1610, kc), y: lerp(1060, 868, kc), s: t > 4.45 && t < 4.6 ? 0.85 : 1, o: 1 - p(t, 4.6, 4.75) });
+  } else show(els.cursor, false);
+
+  // ===== le courrier (3 → 7) =====
+  if (t >= 3.0 && t < 7.4) {
+    show(els.doc, true);
+    // atterrissage dans la zone (échelle 0,72) puis place dans l'écran d'analyse
+    const kf = spring(p(t, 3.12, 3.95), 2.4, 6);
+    const kl = expoOut(p(t, 3.12, 3.72));
+    let x = lerp(1560, 725, kl), y = lerp(-760, 230, kf), r = lerp(24, -3, kf), s = 0.72;
+    const km = expoInOut(p(t, 4.55, 5.15));
+    x = lerp(x, 300, km); y = lerp(y, 230, km); r = lerp(r, -2, km); s = lerp(s, 1, km);
+    const kx = cubicInOut(p(t, 6.85, 7.35));
+    tf(els.doc, { x, y: y - kx * 1200, r, s });
+    // surlignages du courrier pendant l'analyse
+    $$("#doc .bd .hlbg").forEach((h, i) => { h.style.backgroundSize = `${expoOut(p(t, 5.25 + i * 0.3, 5.5 + i * 0.3)) * 100}% 100%`; });
+    // balayage
+    const scanOn = t > 5.0 && t < 6.7;
+    show(els.scan, scanOn);
+    if (scanOn) { const ph = ((t - 5.0) / 0.8) % 1; tf(els.scan, { y: lerp(-120, 640, cubicInOut(ph)), o: Math.sin(Math.PI * ph) }); }
+  } else { show(els.doc, false); show(els.scan, false); }
+
+  // ===== la loupe (5 → 7) puis le logo =====
+  const lensOn = (t >= 4.9 && t < 7.4) || (t >= 13.3 && t < 13.95);
+  show(els.lens, lensOn);
+  show(els.plain, t >= 4.9 && t < 7.4);
+  if (t >= 4.9 && t < 7.4) {
+    const kin = expoOut(p(t, 4.95, 5.35));
+    // trajet en lacets sur le corps du courrier (coordonnées du courrier)
+    const u = cubicInOut(p(t, 5.2, 6.6));
+    const lx = 140 + Math.sin(u * Math.PI * 2.2) * 120 + u * 40;
+    const ly = 240 + u * 210;
+    const kx = cubicInOut(p(t, 6.85, 7.35));
+    const docX = 300, docY = 230 - kx * 1200;
+    const R = 115;
+    tf(els.lens, { x: lerp(1300, docX + lx - R, kin), y: lerp(900, docY + ly - R, kin) + (1 - kin) * 0, r: (1 - kin) * 30, s: lerp(0.6, 1, kin), o: kin });
+    els.plain.style.clipPath = `circle(${R - 6}px at ${lx}px ${ly}px)`;
+    els.plain.style.opacity = kin;
+  }
+
+  // ===== 3. ANALYSE (5 → 7) =====
+  if (t >= 4.6 && t < 7.4) {
+    show(els.C, true);
+    const kin = expoOut(p(t, 4.75, 5.25));
+    const kx = cubicInOut(p(t, 6.85, 7.35));
+    tf(els.C, { x: (1 - kin) * 260, y: -kx * 1200, o: kin });
+    const kp = p(t, 5.0, 6.55);
+    const pct = Math.round(cubicInOut(kp) * 100);
+    $("#pct").textContent = pct;
+    $("#ringArc").setAttribute("stroke-dashoffset", 465 * (1 - pct / 100));
+    const stats = $$("#stat div");
+    const bounds = [[4.6, 5.75], [5.75, 6.55], [6.55, 9]];
+    stats.forEach((d, i) => {
+      const [a, b] = bounds[i];
+      const ki = expoOut(p(t, a, a + 0.3)), ko = expoIn(p(t, b - 0.18, b));
+      d.style.transform = `translateY(${(1 - ki) * 110 - ko * 110}px)`; d.style.opacity = ki * (1 - ko);
+    });
+    $("#pret").style.setProperty("--k", expoOut(p(t, 6.62, 6.9)));
+    logPs.forEach((el, i) => {
+      const a = 5.1 + i * 0.5, n = LOG[i].length;
+      const c = Math.floor(p(t, a, a + 0.42) * n);
+      el.textContent = LOG[i].slice(0, c) + (c > 0 && c < n ? "▍" : "");
+      el.style.color = i === Math.min(2, Math.floor((t - 5.1) / 0.5)) ? "var(--ink)" : "var(--ink2)";
+    });
+  }
+
+  // ===== 4. RÉSULTAT (7 → 10,5) =====
+  if (t >= 6.85 && t < 10.75) {
+    show(els.D, true);
+    const kin = cubicInOut(p(t, 6.85, 7.35));
+    const kout = expoIn(p(t, 10.3, 10.65));
+    tf(els.D, { y: (1 - kin) * 1080, s: 1 - kout * 0.08, o: 1 - kout, blur: kout * 14 });
+    // caméra qui descend vers les cartes
+    const pan = expoInOut(p(t, 8.45, 9.05));
+    tf($("#res"), { y: -pan * 470 });
+    tf($("#chips"), { y: (1 - expoOut(p(t, 6.95, 7.35))) * 30, o: p(t, 6.95, 7.15) });
+    $$("#rtitle .mask > span").forEach((w, i) => rise(w, t, 7.0 + i * 0.06, 0.5));
+    tf($("#rsum"), { y: (1 - expoOut(p(t, 7.3, 7.75))) * 40, o: p(t, 7.3, 7.55) });
+    $$("#rsum .hlbg").forEach((h, i) => { h.style.backgroundSize = `${expoOut(p(t, 7.9 + i * 0.25, 8.15 + i * 0.25)) * 100}% 100%`; });
+    const kg = expoOut(p(t, 7.15, 7.55));
+    tf($("#gauge"), { y: (1 - kg) * 40, o: kg });
+    $("#needle").style.transform = `rotate(${lerp(-90, 38, spring(p(t, 7.7, 8.6), 3.2, 5))}deg)`;
+    $$("#gauge .seg").forEach((sg, i) => { sg.style.opacity = p(t, 7.3 + i * 0.06, 7.45 + i * 0.06); });
+    tf($("#sep"), { sx: expoOut(p(t, 7.6, 8.3)), sy: 1 });
+    const kc = expoOut(p(t, 8.6, 9.1));
+    tf($("#todo"), { y: (1 - kc) * 160, o: p(t, 8.6, 8.85) });
+    const ka = expoOut(p(t, 8.7, 9.2));
+    tf($("#amts"), { y: (1 - ka) * 160, o: p(t, 8.7, 8.95) });
+    const v = 247.4 * cubicOut(p(t, 8.9, 9.6));
+    $("#amt").textContent = v.toFixed(2).replace(".", ",") + " €";
+    $$(".task").forEach((task, i) => {
+      const a = 9.25 + i * 0.35, k = p(t, a, a + 0.18);
+      const bx = task.querySelector(".bx");
+      bx.style.background = k > 0 ? "var(--hl)" : "transparent";
+      bx.style.borderColor = k > 0 ? "var(--hl)" : "#f1ecdf";
+      bx.style.transform = `scale(${k > 0 ? lerp(0.6, 1, backOut(k)) : 1})`;
+      bx.innerHTML = k > 0 ? `<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#15130f" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="${24 * (1 - k)}"/></svg>` : "";
+      task.style.borderColor = k > 0 ? "rgba(228,255,61,.5)" : "rgba(241,236,223,.16)";
+    });
+    const kq = spring(p(t, 10.0, 10.5), 2.2, 6);
+    tf($("#chat"), { s: kq, o: p(t, 10.0, 10.1) });
+  }
+
+  // ===== 5. CATÉGORIES (10,5 → 12) =====
+  if (t >= 10.3 && t < 12.3) {
+    show(els.E, true);
+    const kout = expoIn(p(t, 11.85, 12.2));
+    tf(els.E, { o: 1 });
+    const ws = $$("#eh .mask > span");
+    rise(ws[0], t, 10.45, 0.45); rise(ws[1], t, 10.65, 0.45);
+    $("#eh").style.transform = `translateY(${-kout * 160}px)`; $("#eh").style.opacity = 1 - kout;
+    $("#zero").style.setProperty("--k", expoOut(p(t, 11.0, 11.25)));
+    const b1 = expoOut(p(t, 10.35, 10.8)), b2 = expoOut(p(t, 10.5, 10.95));
+    tf($("#band1"), { y: (1 - b1) * 420 + kout * 420, r: -4 });
+    tf($("#band2"), { y: -(1 - b2) * 320 - kout * 320, r: 2.5 });
+    $("#tr1").style.transform = `translateX(${-(t - 10.3) * 620 - expoIn(p(t, 11.8, 12.3)) * 900}px)`;
+    $("#tr2").style.transform = `translateX(${-2200 + (t - 10.3) * 520 + expoIn(p(t, 11.8, 12.3)) * 700}px)`;
+  }
+
+  // ===== 6. TARIFS (12 → 13,5) =====
+  if (t >= 11.9 && t < 13.6) {
+    show(els.F, true);
+    const kh = expoOut(p(t, 11.95, 12.35));
+    const ko = p(t, 13.1, 13.4);
+    tf($("#ph"), { y: (1 - kh) * 60 - expoIn(ko) * 80, o: kh * (1 - ko) });
+    $("#off").style.setProperty("--k", expoOut(p(t, 12.6, 12.85)));
+    ["#p1", "#p2", "#p3"].forEach((id, i) => {
+      const a = 12.1 + i * 0.2, k = spring(p(t, a, a + 0.6), 2.2, 6.5), kk = expoIn(p(t, 13.1 + i * 0.05, 13.42 + i * 0.05));
+      tf($(id), { y: (1 - k) * 380 + kk * 700, s: 0.88 + 0.12 * Math.min(1, k), r: (1 - Math.min(1, k)) * (i - 1) * 6 + kk * (i - 1) * 8, o: p(t, a, a + 0.12) });
+    });
+  }
+
+  // ===== 7. LOGO (13,5 → 15) =====
+  if (t >= 13.3) {
+    show(els.G, true);
+    // la loupe arrive et se pose sur le logo
+    const kl = expoInOut(p(t, 13.3, 13.9));
+    const L = M.lensLogo, R = 115;
+    if (lensOn) {
+      const sc = lerp(1, (L.w * 0.7) / (2 * R), kl);
+      const tx = lerp(1250, L.x + L.w * 0.4 - R, kl), ty = lerp(1150, L.y + L.h * 0.4 - R, kl);
+      tf(els.lens, { x: tx, y: ty, s: sc, r: lerp(-40, 0, kl), o: 1 });
+      els.lens.style.transformOrigin = "50% 50%";
+    }
+    tf($("#wmlens"), { s: 0.5 + 0.5 * spring(p(t, 13.82, 14.3), 2.4, 6), r: lerp(-60, -8, expoOut(p(t, 13.82, 14.2))), o: p(t, 13.82, 13.9) });
+    wmChars.forEach((c, i) => {
+      const a = 13.5 + i * 0.035, k = expoOut(p(t, a, a + 0.45));
+      c.style.transform = `translateY(${(1 - k) * 120}px) rotate(${(1 - k) * 10}deg)`; c.style.opacity = p(t, a, a + 0.12);
+    });
+    siteMark.style.transform = `scaleX(${expoOut(p(t, 14.0, 14.3))})`;
+    const kt = expoOut(p(t, 14.1, 14.5));
+    tf($("#tag"), { y: (1 - kt) * 40, o: kt });
+    $("#tagm").style.setProperty("--k", expoOut(p(t, 14.35, 14.6)));
+    const kc = expoOut(p(t, 14.3, 14.7));
+    tf($("#cats"), { y: (1 - kc) * 30, o: kc });
+    tf(els.G, { s: 1 + p(t, 13.5, 15) * 0.025 });
+  }
+}
+
+window.__render = render;
+window.__duration = DURATION;
+
+function fit() {
+  const k = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const st = $("#stage");
+  st.style.transform = `translate(${(innerWidth - 1920 * k) / 2}px, ${(innerHeight - 1080 * k) / 2}px) scale(${k})`;
+}
+document.fonts.ready.then(() => {
+  if (location.search.includes("export")) { document.body.style.background = "transparent"; render(0); return; }
+  document.body.style.overflow = "hidden"; fit(); addEventListener("resize", fit);
+  M = null; $("#stage").style.transform = "none"; measure(); fit();
+  // aperçu : le son se lance au premier clic (les navigateurs bloquent la lecture automatique)
+  const audio = new Audio("explisite-15s.wav");
+  let start = performance.now();
+  addEventListener("click", () => { start = performance.now(); audio.currentTime = 0; audio.play().catch(() => {}); });
+  (function loop(now) {
+    const t = ((now - start) / 1000) % (DURATION + 1);
+    if (t < 0.03 && !audio.paused) audio.currentTime = 0;
+    render(Math.min(t, DURATION - 0.001));
+    requestAnimationFrame(loop);
+  })(start);
+});
+</script>
+</body>
+</html>

@@ -9,3 +9,4 @@ data/
 encryption.key
 *.zip
 *.mp4
+*.wav
