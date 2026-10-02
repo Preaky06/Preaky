@@ -1,5 +1,5 @@
 """Convertit la capture horodatée (capture.js) en séquence à cadence fixe 30 i/s.
-Usage : python3 prep_frames.py <dossier-capture>  ->  rec/00000.jpg… (liens) + rec/rec.js"""
+Usage : python3 prep_frames.py <dossier-capture> [dossier-sortie]  ->  rec/00000.jpg… (liens) + rec/rec.js"""
 import bisect, json, os, sys
 
 cap = os.path.abspath(sys.argv[1])
@@ -9,7 +9,7 @@ ts = [float(f[:-4]) for f in frames]
 events = json.load(open(os.path.join(cap, 'events.json')))
 t0 = events[0]['t']
 
-out = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rec')
+out = os.path.abspath(sys.argv[2]) if len(sys.argv) > 2 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rec')
 os.makedirs(out, exist_ok=True)
 for f in os.listdir(out):
     os.remove(os.path.join(out, f))

@@ -13,8 +13,8 @@ const REQ = path.join(__dirname, 'tmdb-requests.txt');
 // de n'importe où, un film très connu, entre les deux, un peu, celui qui met tout le monde d'accord
 const ANSWERS = '611225611225';
 
-async function openSite(browser) {
-  const ctx = await browser.newContext({ ...devices['iPhone 13'] });
+async function openSite(browser, context = devices['iPhone 13']) {
+  const ctx = await browser.newContext({ ...context });
   const page = await ctx.newPage();
   const misses = new Set();
   await page.route(/^https:\/\/(api\.themoviedb\.org|image\.tmdb\.org)\//, route => {

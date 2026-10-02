@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CinéMood Film</title>
+<style>
+@font-face { font-family: 'Anton'; src: url(../motion/fonts/anton.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-400.woff2) format('woff2'); font-weight: 400; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-500.woff2) format('woff2'); font-weight: 500; font-display: block; }
+@font-face { font-family: 'Archivo'; src: url(../motion/fonts/archivo-700.woff2) format('woff2'); font-weight: 700; font-display: block; }
+:root { --bg: #080506; --ink: #f7eef1; --red: #ff2d4f; --muted: #9a8e93; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #000; overflow: hidden; height: 100%; }
+body { display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Archivo', sans-serif; color: var(--ink); }
+#stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); transform-origin: 0 0; flex: none; }
+.abs { position: absolute; }
+.layer { position: absolute; inset: 0; }
+.anton { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.red { color: var(--red); }
+
+/* fond */
+#bglight { background: radial-gradient(45% 55% at 58% 52%, rgba(255,45,79,.3), rgba(255,45,79,0) 70%), radial-gradient(35% 45% at 72% 30%, rgba(255,236,242,.09), rgba(255,236,242,0) 70%); }
+#bokeh .o { position: absolute; border-radius: 50%; }
+
+/* scène 3D : l'origine du monde est le centre de l'image */
+#viewport { perspective: 1400px; perspective-origin: 50% 50%; }
+#world { position: absolute; left: 960px; top: 540px; width: 0; height: 0; transform-style: preserve-3d; transform-origin: 0 0; }
+.grp { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+.p3 { position: absolute; left: 0; top: 0; backface-visibility: hidden; }
+.tile { width: 300px; height: 450px; margin: -225px 0 0 -150px; border-radius: 10px; object-fit: cover; display: block; }
+
+/* portable */
+#laptop { transform-style: preserve-3d; }
+.lid { position: absolute; left: -760px; top: -980px; width: 1520px; height: 980px; transform-origin: 50% 100%; transform-style: preserve-3d; }
+.lidface { position: absolute; inset: 0; border-radius: 30px 30px 8px 8px; background: #0a090b; box-shadow: inset 0 0 0 2px #2b2a2e; }
+.lidback { position: absolute; inset: 0; border-radius: 30px 30px 8px 8px; background: linear-gradient(160deg, #3b3a40, #1d1c20); transform: translateZ(-10px); }
+.lscr { position: absolute; left: 40px; top: 38px; width: 1440px; height: 900px; overflow: hidden; border-radius: 6px; background: #000; box-shadow: 0 0 120px rgba(255,45,79,.18), 0 0 40px rgba(255,255,255,.06); }
+.lscr img.f, .pscr img.f { filter: brightness(1.18) contrast(1.05) saturate(1.1); }
+.lscr img.f { width: 1440px; height: 900px; display: block; }
+.base { position: absolute; left: -800px; top: 0; width: 1600px; height: 1020px; transform-origin: 50% 0; transform: rotateX(90deg); border-radius: 10px 10px 34px 34px;
+  background: linear-gradient(180deg, #2e2d32, #4a4950 50%, #3a3940); box-shadow: inset 0 0 0 2px rgba(255,255,255,.07); }
+.kbd { position: absolute; left: 150px; top: 70px; width: 1300px; height: 470px; border-radius: 14px; background: repeating-linear-gradient(90deg, #121114 0 84px, #1d1c20 84px 92px), #121114; opacity: .9; }
+.pad { position: absolute; left: 560px; top: 610px; width: 480px; height: 330px; border-radius: 18px; background: linear-gradient(#4f4e55, #43424a); box-shadow: inset 0 0 0 2px rgba(255,255,255,.06); }
+.baseedge { position: absolute; left: -800px; top: 0; width: 1600px; height: 22px; background: linear-gradient(#5a5960, #26252a); transform-origin: 50% 0; border-radius: 0 0 18px 18px; }
+.cursor { position: absolute; width: 34px; height: 34px; z-index: 5; filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); }
+
+/* iPhone */
+#phone { transform-style: preserve-3d; }
+.ph { position: absolute; left: -250px; top: -530px; width: 500px; height: 1060px; transform-style: preserve-3d; }
+.phface { position: absolute; inset: 0; border-radius: 70px; padding: 12px; background: linear-gradient(145deg, #4a4148, #151214 42%, #2c2528); box-shadow: inset 0 0 0 2px rgba(255,255,255,.1); }
+.phback { position: absolute; inset: 0; border-radius: 70px; background: linear-gradient(145deg, #5a4f55, #231e21); transform: translateZ(-16px); }
+.phmid { position: absolute; inset: 0; border-radius: 70px; background: #3a3236; transform: translateZ(-8px); }
+.pscr { position: relative; width: 476px; height: 1036px; border-radius: 58px; overflow: hidden; background: #000; }
+.pscr img.f { width: 476px; height: 1030px; display: block; }
+.island { position: absolute; left: 50%; top: 14px; width: 124px; height: 34px; margin-left: -62px; background: #000; border-radius: 20px; z-index: 6; }
+.tap { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; background: rgba(255,255,255,.35); border: 3px solid rgba(255,255,255,.9); z-index: 4; }
+.glare { position: absolute; inset: -40% -60%; background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.13) 49%, rgba(255,255,255,.03) 53%, transparent 58%); z-index: 9; pointer-events: none; }
+.floorsh { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.8), rgba(0,0,0,0)); }
+
+/* mur d'affiches du filtrage */
+#wall .tile { transition: none; }
+
+/* typographie */
+.line { position: absolute; white-space: nowrap; overflow: hidden; padding: 0 10px; }
+.line > span { display: inline-block; }
+.statement { font: 500 92px/1.12 'Archivo'; letter-spacing: -.025em; }
+.statement b { font-weight: 500; color: var(--red); }
+.kick { font: 700 22px/1 'Archivo'; letter-spacing: .5em; color: var(--red); }
+#ask { left: 0; right: 0; top: 0; bottom: 0; }
+#ask .w { position: absolute; left: 0; right: 0; text-align: center; font-size: 250px; line-height: 1; }
+#redline { left: 0; top: 538px; height: 4px; width: 1920px; background: var(--red); box-shadow: 0 0 30px rgba(255,45,79,.9), 0 0 90px rgba(255,45,79,.5); transform-origin: 50% 50%; }
+#logo { left: 0; right: 0; text-align: center; font-size: 230px; line-height: 1.2; white-space: nowrap; }
+#logo .ch { display: inline-block; overflow: hidden; vertical-align: top; padding-top: 40px; }
+#logo .ch span { display: block; }
+#logosub { left: 0; right: 0; text-align: center; font: 400 44px/1 'Archivo'; letter-spacing: .02em; color: #e6dbe0; }
+#counter { left: 0; right: 0; top: 250px; text-align: center; font-size: 260px; line-height: 1; text-shadow: 0 10px 60px rgba(0,0,0,.8); }
+#counterk { left: 0; right: 0; top: 540px; text-align: center; font: 700 26px/1 'Archivo'; letter-spacing: .5em; color: #d8cdd2; }
+#pct { left: 140px; top: 300px; font-size: 300px; line-height: 1; color: var(--red); text-shadow: 0 0 60px rgba(255,45,79,.45); }
+#pctk { left: 150px; top: 620px; font: 500 44px/1.25 'Archivo'; }
+#cta { left: 0; right: 0; }
+#ctalogo { left: 1040px; width: 820px; top: 250px; text-align: center; font-size: 150px; line-height: 1.2; }
+#ctatag { left: 1040px; width: 820px; top: 470px; text-align: center; font: 500 42px/1.3 'Archivo'; letter-spacing: -.01em; }
+#ctabtn { left: 1190px; top: 590px; width: 520px; height: 104px; border-radius: 16px; background: var(--red); color: #fff; font: 700 44px/104px 'Archivo'; text-align: center; box-shadow: 0 20px 70px rgba(255,45,79,.55); }
+#ctaurl { left: 1040px; width: 820px; top: 740px; text-align: center; font: 700 28px/1 'Archivo'; letter-spacing: .45em; color: #cfc4c8; }
+
+/* finitions */
+.bar { left: 0; right: 0; height: 140px; background: #000; }
+#flare { left: -400px; width: 2720px; height: 260px; background: radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,.9), rgba(255,90,120,.45) 8%, rgba(255,45,79,.12) 30%, rgba(255,45,79,0) 70%); mix-blend-mode: screen; transform-origin: 50% 50%; }
+#flash { background: #fff; }
+#fade { background: #000; }
+#grain { width: 1920px; height: 1080px; mix-blend-mode: overlay; opacity: .09; }
+#vig { background: radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.6)); }
+#ui { margin-top: 10px; display: flex; gap: 10px; width: min(96vw, 900px); font: 500 13px 'Archivo'; color: #aaa; }
+#ui input { flex: 1; accent-color: #ff2d4f; }
+#ui button { background: #ff2d4f; color: #fff; border: 0; padding: 6px 12px; cursor: pointer; }
+body.render #ui { display: none; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="bokeh"></div>
+  <div class="layer" id="bglight"></div>
+
+  <div class="layer" id="viewport"><div id="world">
+    <div class="grp" id="tunnel"></div>
+    <div class="grp" id="wall"></div>
+    <div class="grp" id="devices">
+      <div class="p3 floorsh" id="shLap"></div>
+      <div class="p3 floorsh" id="shPh"></div>
+      <div class="grp" id="laptop">
+        <div class="base p3"><div class="kbd"></div><div class="pad"></div></div>
+        <div class="lid">
+          <div class="lidback"></div>
+          <div class="lidface"><div class="lscr"><img class="f" id="fD" alt=""><svg class="cursor" id="cur" viewBox="0 0 40 40"><path d="M6 3 L6 33 L13.5 26 L19 37.5 L24.5 35 L19 23.8 L29 23.8 Z" fill="#fff" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg><div class="glare" id="glD"></div></div></div>
+        </div>
+      </div>
+      <div class="grp" id="phone"><div class="ph">
+        <div class="phback"></div><div class="phmid"></div>
+        <div class="phface"><div class="pscr"><img class="f" id="fM" alt=""><div id="taps"></div><div class="island"></div><div class="glare" id="glM"></div></div></div>
+      </div></div>
+    </div>
+  </div></div>
+
+  <!-- typographie (2D, au-dessus de la scène) -->
+  <div class="layer" id="scrimC" style="background:radial-gradient(38% 30% at 50% 50%, rgba(5,3,4,.88), rgba(5,3,4,0))"></div>
+  <div class="layer" id="scrimL" style="background:linear-gradient(90deg, rgba(5,3,4,.92) 0%, rgba(5,3,4,.7) 32%, rgba(5,3,4,0) 55%)"></div>
+  <div class="layer" id="scrimT" style="background:linear-gradient(180deg, rgba(5,3,4,.92) 0%, rgba(5,3,4,.6) 26%, rgba(5,3,4,0) 45%)"></div>
+  <div class="layer" id="scrimR" style="background:linear-gradient(270deg, rgba(5,3,4,.95) 0%, rgba(5,3,4,.8) 40%, rgba(5,3,4,0) 62%)"></div>
+  <div class="layer" id="type">
+    <div class="line statement" id="s1" style="left:0;right:0;text-align:center;top:470px"><span>Des milliers de films<b>.</b></span></div>
+    <div class="line statement" id="s2" style="left:0;right:0;text-align:center;top:470px"><span>Un seul soir<b>.</b></span></div>
+    <div class="line statement" id="s3" style="left:0;right:0;text-align:center;top:470px"><span>Et toujours la même question<b>.</b></span></div>
+    <div id="ask" class="abs"><div class="w anton" style="top:290px">On regarde</div><div class="w anton red" style="top:550px">quoi ?</div></div>
+    <div class="abs" id="redline"></div>
+    <div class="abs anton" id="logo" style="top:370px"></div>
+    <div class="abs" id="logosub" style="top:700px">Le bon film pour ton moment.</div>
+    <div class="line kick" id="k12" style="left:130px;top:120px"><span>LE PRINCIPE</span></div>
+    <div class="line statement" id="q1" style="left:120px;top:160px;font-size:84px"><span>Douze questions<b>.</b></span></div>
+    <div class="line statement" id="q2" style="left:120px;top:262px;font-size:84px"><span>Une minute<b>.</b></span></div>
+    <div class="line statement" id="h1" style="left:250px;top:84px;font-size:70px"><span>Ton humeur<b>.</b></span></div>
+    <div class="line statement" id="h2" style="left:740px;top:84px;font-size:70px"><span>Ton contexte<b>.</b></span></div>
+    <div class="line statement" id="h3" style="left:1260px;top:84px;font-size:70px"><span>Ton temps<b>.</b></span></div>
+    <div class="line statement" id="c1" style="left:0;right:0;text-align:center;top:150px;font-size:64px"><span>Le catalogue mondial, filtré pour toi<b>.</b></span></div>
+    <div class="abs anton" id="counter">1 000 000</div>
+    <div class="abs" id="counterk">FILMS</div>
+    <div class="abs anton" id="pct">86%</div>
+    <div class="abs" id="pctk">compatible avec<br>ton mood<b class="red">.</b></div>
+    <div class="line statement" id="w1" style="left:140px;top:420px;font-size:88px"><span>Et il t’explique</span></div>
+    <div class="line statement" id="w2" style="left:140px;top:525px;font-size:88px"><span><b>pourquoi.</b></span></div>
+    <div class="line statement" id="r1" style="left:0;right:0;text-align:center;top:70px;font-size:72px"><span>Huit films. Classés. Expliqués<b>.</b></span></div>
+    <div class="layer" id="cta">
+      <div class="abs anton" id="ctalogo"></div>
+      <div class="abs" id="ctatag">Ressens le cinéma qui te ressemble.</div>
+      <div class="abs" id="ctabtn">Trouver mon film</div>
+      <div class="abs" id="ctaurl">CINEM00D.COM</div>
+    </div>
+  </div>
+
+  <div class="abs bar" id="barT" style="top:0"></div>
+  <div class="abs bar" id="barB" style="bottom:0"></div>
+  <div class="abs" id="flare"></div>
+  <div class="layer" id="vig"></div>
+  <canvas class="abs" id="grain" width="960" height="540" style="left:0;top:0"></canvas>
+  <div class="layer" id="flash"></div>
+  <div class="layer" id="fade"></div>
+</div>
+<div id="ui"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="30" step="0.001" value="0"><span id="tc">0.00</span></div>
+
+<script src="../scene/assets.js"></script>
+<script src="rec-desktop/rec.js"></script>
+<script>window.REC_D = window.REC_DATA;</script>
+<script src="../ugc/rec/rec.js"></script>
+<script>window.REC_M = window.REC_DATA;</script>
+<script>
+const BPM = 100, B = 60 / BPM;          // un temps = 0,6 s
+const b = n => n * B;
+const DUR = 30;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, c = 1) => Math.min(c, Math.max(a, x));
+const P = (t, a, c) => clamp((t - a) / (c - a));
+const lerp = (a, c, k) => a + (c - a) * k;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  inOutSine: x => -(Math.cos(Math.PI * x) - 1) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  inOutExpo: x => x <= 0 ? 0 : x >= 1 ? 1 : x < .5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2,
+  outQuint: x => 1 - Math.pow(1 - x, 5),
+  inOutQuint: x => x < .5 ? 16 * x ** 5 : 1 - Math.pow(-2 * x + 2, 5) / 2,
+  outBack: x => { const c1 = 1.7, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const tw = (t, a, c, e = 'outExpo') => E[e](P(t, a, c));
+const vis = (el, on) => { el.style.visibility = on ? 'visible' : 'hidden'; };
+let seed = 21;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+/* ---------- textes : apparition masquée (glisse + net) et sortie ---------- */
+function line(el, t, a, c, { out = .35 } = {}) {
+  const on = t >= a - .01 && t < c;
+  vis(el, on);
+  if (!on) return;
+  const k = tw(t, a, a + .7, 'outQuint'), o = 1 - tw(t, c - out, c, 'inCubic');
+  const sp = el.firstElementChild;
+  sp.style.transform = `translateY(${lerp(105, 0, k)}%)`;
+  sp.style.filter = k < .98 ? `blur(${(1 - k) * 10}px)` : 'none';
+  el.style.opacity = o;
+  el.style.letterSpacing = `${lerp(.02, -.025, k)}em`;
+}
+function slam(el, t, t0, from = 2) {
+  const k = tw(t, t0, t0 + .25);
+  el.style.transform = `scale(${lerp(from, 1, k)})`;
+  el.style.opacity = t >= t0 ? Math.min(1, k * 4) : 0;
+  const ca = (1 - tw(t, t0, t0 + .5, 'outCubic')) * 12;
+  el.style.textShadow = ca > .3 ? `${-ca}px 0 rgba(0,255,240,.6), ${ca}px 0 rgba(255,0,70,.7)` : '';
+}
+
+/* ---------- tunnel d'affiches (acte 1) ---------- */
+const TUN = [];
+const GAP_W = 340, GAP_F = 500, LEN = 7200;
+function addTile(src, kind, a, c) {
+  const im = document.createElement('img'); im.className = 'p3 tile'; im.src = src; $('tunnel').appendChild(im);
+  TUN.push({ el: im, kind, a, c, phase: rnd() * LEN });
+}
+let ti = 0;
+const nextP = () => POSTERS[(ti++ * 29) % POSTERS.length];
+for (let i = 0; i < LEN / GAP_W; i++) for (const side of [-1, 1]) for (const y of [-470, 0, 470]) addTile(nextP(), 'wall', side, y);
+for (let i = 0; i < LEN / GAP_F; i++) for (const s of [-1, 1]) for (const x of [-800, -480, -160, 160, 480, 800]) addTile(nextP(), 'floor', s, x);
+TUN.forEach((p, i) => { p.phase = p.kind === 'wall' ? Math.floor(i / 6) * GAP_W : Math.floor((i - TUN.findIndex(q => q.kind === 'floor')) / 12) * GAP_F; });
+// distance parcourue : dérive, puis accélération jusqu'à la vitesse lumière
+const tunnelD = t => 500 * t + (t > 3.4 ? 5200 * Math.pow(t - 3.4, 2.6) : 0);
+function renderTunnel(t) {
+  const d = tunnelD(t);
+  for (const p of TUN) {
+    const rel = ((p.phase - d) % LEN + LEN) % LEN - 300;     // distance devant la caméra
+    const z = -rel;
+    let tf;
+    if (p.kind === 'wall') tf = `translate3d(${p.a * 1060}px,${p.c}px,${z}px) rotateY(${p.a * -90}deg)`;
+    else tf = `translate3d(${p.c}px,${p.a * 760}px,${z}px) rotateX(${p.a * 90}deg)`;
+    p.el.style.transform = tf;
+    p.el.style.opacity = clamp(1 - (rel - 1800) / 4200) * clamp((rel + 300) / 400);  // brouillard au loin
+  }
+}
+
+/* ---------- mur d'affiches du filtrage ---------- */
+const WALL = [];
+const WC = 13, WR = 6;
+const INTER = POSTERS.findIndex(s => true);   // remplacé ci-dessous par l'affiche Interstellar
+for (let r = 0; r < WR; r++) for (let c = 0; c < WC; c++) {
+  const im = document.createElement('img'); im.className = 'p3 tile';
+  const center = r === 2 && c === 6;
+  im.src = center ? '../motion/posters/interstellar.jpg' : POSTERS[(r * WC + c) * 7 % POSTERS.length];
+  $('wall').appendChild(im);
+  // 7 survivantes autour d'Interstellar : avec elle, 8 affiches au palier « 8 »
+  const near = [[1, 5], [1, 7], [2, 5], [2, 7], [3, 5], [3, 7], [3, 6]].some(([rr, cc]) => rr === r && cc === c);
+  WALL.push({ el: im, r, c, center, near, out: rnd() });
+}
+
+/* ---------- appareils ---------- */
+const CUR_D = REC_D.events.filter(e => e.type === 'mouse' || e.type === 'click');
+const TAPS = REC_M.events.filter(e => e.type === 'tap').map(e => {
+  const el = document.createElement('div'); el.className = 'tap'; el.style.left = (e.x * 476 / 390) + 'px'; el.style.top = (e.y * 476 / 390) + 'px';
+  $('taps').appendChild(el); return { el, r: e.t };
+});
+const cache = {};
+async function setFrame(img, dir, rec, r) {
+  const i = Math.max(0, Math.min(rec.count - 1, Math.round(r * rec.fps)));
+  if (img.dataset.i == i) return;
+  img.src = `${dir}/${String(i).padStart(5, '0')}.jpg`; img.dataset.i = i;
+  await img.decode().catch(() => {});
+}
+function cursorAt(r) {
+  let last = CUR_D[0];
+  for (const e of CUR_D) { if (e.t > r) break; last = e; }
+  return last;
+}
+const ev = (rec, type) => rec.events.find(e => e.type === type).t;
+const RD = { results: ev(REC_D, 'results'), card: ev(REC_D, 'scroll-card'), others: ev(REC_D, 'scroll-others') };
+const RM = { results: ev(REC_M, 'results'), title: ev(REC_M, 'scroll-title') };
+
+/* ---------- plans : temps des captures ---------- */
+// [temps film, temps capture] ; interpolation linéaire entre les clés
+const KD = [[b(17), .6], [b(19.5), 2.7], [b(23), 9.5], [b(29), RD.results - .1], [b(38), RD.results + .3], [b(40), RD.card + 1.2], [b(43), RD.others + 2.3], [b(50), RD.others + 2.3]];
+const KM = [[b(23), 6.2], [b(29), RM.results], [b(33), RM.results + 2.2], [b(34.5), RM.title + .9], [b(50), RM.title + .9]];
+const remap = (K, t) => { if (t <= K[0][0]) return K[0][1]; for (let i = 1; i < K.length; i++) if (t <= K[i][0]) return lerp(K[i - 1][1], K[i][1], P(t, K[i - 1][0], K[i][0])); return K[K.length - 1][1]; };
+const inv = (K, r) => { for (let i = 1; i < K.length; i++) if (r <= K[i][1] && K[i][1] > K[i - 1][1]) return lerp(K[i - 1][0], K[i][0], P(r, K[i - 1][1], K[i][1])); return -1; };
+TAPS.forEach(tp => tp.at = inv(KM, tp.r));
+
+/* ---------- caméra ---------- */
+// clés : [temps, x, y, z, rotX, rotY] ; z = position de la caméra (plus grand = plus près de la scène)
+const CAM = [
+  [b(17), -420, -360, 1300, 16, 28], [b(19), -420, -234, 320, 10, 12], [b(23), -380, -240, 260, 8, 6],
+  [b(24), -100, -230, 380, 7, 2], [b(29), -20, -210, 280, 6, -6],
+  [b(29.6), 200, -260, -700, 4, 0], [b(32.6), 0, -300, -800, 3, 0],
+  [b(33), 485, -233, -225, 0, 0], [b(36), 480, -233, -240, 0, 2], [b(37.6), 480, 64, -240, 0, 2],
+  [b(38), 0, -270, -80, 4, 8], [b(43), 110, -250, 10, 4, -6],
+  [b(44.5), 714, 36, 1100, 6, 6], [b(50), 690, 30, 1020, 6, 4],
+];
+const HARD = [b(29.6), b(33), b(38)];   // coupes franches (pas d'interpolation)
+function camAt(t) {
+  let i = 1; while (i < CAM.length - 1 && t > CAM[i][0]) i++;
+  const A = CAM[i - 1], C = CAM[i];
+  const hard = HARD.some(h => Math.abs(h - C[0]) < 1e-6) && t < C[0];
+  const k = hard ? 0 : E.inOutSine(P(t, A[0], C[0]));
+  if (t >= C[0]) return C.slice(1);
+  return A.slice(1).map((v, j) => lerp(v, C[j + 1], k));
+}
+
+/* ---------- logo ---------- */
+function buildLogo(el) { return [...'CINÉMOOD'].map((ch, i) => { const w = document.createElement('span'); w.className = 'ch'; const s = document.createElement('span'); s.textContent = ch; if (i >= 4) s.className = 'red'; w.appendChild(s); el.appendChild(w); return s; }); }
+const LOGO = buildLogo($('logo')), CTALOGO = buildLogo($('ctalogo'));
+
+/* ---------- décor ---------- */
+const BOKEH = [];
+for (let i = 0; i < 18; i++) {
+  const o = document.createElement('div'); o.className = 'o';
+  const sz = 140 + rnd() * 360, hue = [[255, 45, 79], [150, 40, 170], [255, 150, 70], [70, 90, 220]][i % 4];
+  o.style.width = o.style.height = sz + 'px';
+  o.style.background = `radial-gradient(closest-side, rgba(${hue},.5), rgba(${hue},0))`;
+  o.style.filter = `blur(${12 + rnd() * 24}px)`;
+  $('bokeh').appendChild(o);
+  BOKEH.push({ o, x: rnd() * 2100, y: rnd() * 1200, vx: (rnd() - .5) * 40, vy: -8 - rnd() * 20, a: .2 + rnd() * .4, sz });
+}
+const gctx = $('grain').getContext('2d'), gimg = gctx.createImageData(960, 540);
+let lastG = -1;
+function grain(f) {
+  if (f === lastG) return; lastG = f;
+  let s = (f * 2654435761) >>> 0; const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; d[i] = d[i + 1] = d[i + 2] = s & 255; d[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+}
+
+/* =============================== RENDU =============================== */
+async function render(t) {
+  grain(Math.floor(t * 24));
+  BOKEH.forEach(k => {
+    const x = (k.x + k.vx * t + 2300) % 2300 - 200, y = ((k.y + k.vy * t) % 1400 + 1400) % 1400 - 200;
+    k.o.style.transform = `translate(${x}px,${y}px)`; k.o.style.opacity = k.a * (.8 + .2 * Math.sin(t + k.sz));
+  });
+  const act1 = t < b(10), act2 = t >= b(17);
+  $('bokeh').style.opacity = act2 ? tw(t, b(16.5), b(18)) : 0;
+  $('bglight').style.opacity = act2 ? tw(t, b(16.5), b(18)) * (t > b(29.5) && t < b(33) ? .4 : 1) : (t >= b(13) ? .6 * tw(t, b(13), b(15)) : 0);
+
+  /* --- acte 1 : tunnel --- */
+  vis($('tunnel'), act1);
+  if (act1) renderTunnel(t);
+  const warp = P(t, 3.6, 6.0);
+  $('viewport').style.filter = act1 && warp > .05 ? `blur(${warp * warp * 3}px) brightness(${1 + warp * .4})` : 'none';
+  line($('s1'), t, .5, 2.3); line($('s2'), t, 2.5, 4.0); line($('s3'), t, 4.2, 5.85);
+
+  /* --- « on regarde quoi ? » --- */
+  const askOn = t >= b(10) && t < b(13);
+  vis($('ask'), askOn);
+  if (askOn) {
+    slam($('ask').children[0], t, b(10), 1.8); slam($('ask').children[1], t, b(11), 2.2);
+    const col = tw(t, b(12.4), b(13), 'inExpo');
+    $('ask').style.transform = `scaleY(${1 - col})`; $('ask').style.opacity = 1 - col * .5;
+  }
+  /* --- ligne rouge -> logo --- */
+  const rl = $('redline'), rlOn = t >= b(12.6) && t < b(15.5);
+  vis(rl, rlOn);
+  if (rlOn) {
+    const grow = tw(t, b(12.7), b(13.6), 'inOutExpo'), lift = tw(t, b(14), b(14.8), 'inOutExpo');
+    rl.style.transform = `translateY(${lerp(0, 150, lift)}px) scaleX(${lerp(.002, 1, grow) * lerp(1, .35, lift)})`;
+    rl.style.opacity = 1 - tw(t, b(15), b(15.5), 'lin');
+  }
+  const logoOn = t >= b(13.8) && t < b(18.5);
+  vis($('logo'), logoOn); vis($('logosub'), logoOn);
+  if (logoOn) {
+    LOGO.forEach((s, i) => { const k = tw(t, b(13.9) + i * .05, b(13.9) + .9 + i * .05, 'outQuint'); s.style.transform = `translateY(${lerp(110, 0, k)}%)`; });
+    const sb = tw(t, b(15.2), b(16.4), 'outQuint');
+    $('logosub').style.opacity = sb * (1 - tw(t, b(16.5), b(17), 'inCubic')); $('logosub').style.transform = `translateY(${lerp(24, 0, sb)}px)`;
+    const up = tw(t, b(16.8), b(17.9), 'inOutQuint');
+    $('logo').style.transform = `translateY(${-up * 520}px) scale(${1 - up * .3})`; $('logo').style.opacity = 1 - tw(t, b(17.2), b(17.9), 'inCubic');
+  }
+  // bandes cinéma : ouvertes à l'arrivée du produit
+  const bars = 1 - tw(t, b(16), b(17.2), 'inOutQuint');
+  $('barT').style.transform = `translateY(${-(1 - bars) * 140}px)`; $('barB').style.transform = `translateY(${(1 - bars) * 140}px)`;
+
+  /* --- actes 2-4 : appareils dans la scène --- */
+  const devOn = t >= b(16.8);
+  vis($('devices'), devOn);
+  const wallOn = t >= b(29.3) && t < b(33.2);
+  vis($('wall'), wallOn);
+  if (devOn) {
+    const [cx, cy, cz, rx, ry] = camAt(t);
+    $('world').style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translate3d(${-cx}px,${-cy}px,${-cz}px)`;
+    // portable : s'élève à l'entrée
+    const rise = tw(t, b(17.3), b(19.3), 'outQuint');
+    $('laptop').style.transform = `translate3d(0px,${lerp(700, 330, rise)}px,0px) rotateX(${lerp(-30, 0, rise)}deg)`;
+    $('laptop').querySelector('.lid').style.transform = `rotateX(${lerp(-70, 8, tw(t, b(17.5), b(19.6), 'outQuint'))}deg)`;
+    $('shLap').style.cssText += `;width:1900px;height:520px;margin:-260px 0 0 -950px;transform:translate3d(0px,${lerp(720, 352, rise)}px,420px) rotateX(90deg);opacity:${rise * .9}`;
+    // iPhone : entre de la droite
+    const pin = tw(t, b(23), b(24.4), 'outQuint');
+    const pout = t > b(38) && t < b(43) ? 1 : 0;
+    const solo = t >= b(33) && t < b(38);   // gros plan iPhone : moins tourné, lisible
+    const PX = lerp(2200, 520, pin), PZ = 300;
+    $('phone').style.transform = `translate3d(${PX}px,-80px,${PZ}px) rotateY(${solo ? -6 : lerp(-60, -16, pin)}deg) rotateZ(${lerp(-8, 0, pin)}deg)`;
+    $('shPh').style.cssText += `;width:700px;height:200px;margin:-100px 0 0 -350px;transform:translate3d(${PX}px,600px,${PZ}px) rotateX(90deg);opacity:${pin * .8}`;
+    vis($('phone'), t >= b(22.8));
+
+    // écrans
+    const rd = remap(KD, t);
+    await setFrame($('fD'), 'rec-desktop', REC_D, rd);
+    const cu = cursorAt(rd), cur = $('cur');
+    cur.style.transform = `translate(${cu.x}px,${cu.y}px)`;
+    cur.style.opacity = rd < RD.results ? 1 : 0;
+    if (t >= b(22.8)) await setFrame($('fM'), '../ugc/rec', REC_M, remap(KM, t));
+    TAPS.forEach(tp => { const k = P(t, tp.at - .02, tp.at + .3); vis(tp.el, k > 0 && k < 1); if (k > 0 && k < 1) { tp.el.style.transform = `scale(${lerp(.5, 1.3, E.outCubic(k))})`; tp.el.style.opacity = 1 - k; } });
+    // reflets qui balaient les écrans
+    $('glD').style.transform = `translateX(${lerp(-70, 70, P((t - b(18)) % 6, 0, 2.2))}%)`;
+    $('glM').style.transform = `translateX(${lerp(-70, 70, P((t - b(23.5)) % 5, 0, 1.8))}%)`;
+    // filtrage : les appareils s'effacent derrière le mur
+    const dim = tw(t, b(29.3), b(29.8)) * (1 - tw(t, b(33), b(33.2)));
+    const lapAway = t >= b(33) && t < b(38), phAway = t >= b(38) && t < b(43.4);
+    $('laptop').style.opacity = (1 - dim) * (lapAway ? 0 : 1); $('shLap').style.opacity = lapAway ? 0 : $('shLap').style.opacity;
+    $('phone').style.opacity = (1 - dim) * (phAway ? 0 : 1);
+  }
+  if (wallOn) {
+    const k = tw(t, b(29.4), b(30.4), 'outQuint');
+    WALL.forEach(w => {
+      const x = (w.c - (WC - 1) / 2) * 330, y = (w.r - 2) * 480 - 40, curve = Math.pow((w.c - 6) / 6, 2) * 600;
+      // les affiches s'éteignent par vagues : 103, puis 8, puis 1
+      // vagues calées sur le compteur : il reste ~8 affiches au palier « 8 », plus qu'Interstellar au « 1 »
+      const killAt = w.near ? b(32) : b(30.4) + w.out * .25;
+      const gone = w.center ? 0 : tw(t, killAt, killAt + .3, 'inCubic');
+      const pop = w.center ? .55 * tw(t, b(31.8), b(32.6), 'inOutQuint') + .45 * tw(t, b(32.6), b(33.1), 'inExpo') : 0;
+      w.el.style.transform = `translate3d(${x}px,${y}px,${-1500 + curve - gone * 600 + pop * 1650}px) scale(${1 + pop * .2})`;
+      w.el.style.opacity = k * (1 - gone);
+      w.el.style.filter = w.center && t > b(31.6) ? `brightness(${.6 + tw(t, b(31.6), b(32.2)) * .7}) drop-shadow(0 0 ${50 * tw(t, b(31.6), b(32.2))}px rgba(255,45,79,.9))` : 'brightness(.55)';
+    });
+  }
+
+  /* --- voiles derrière les textes --- */
+  const sc = (a, c) => tw(t, a, a + .5, 'lin') * (1 - tw(t, c - .3, c, 'lin'));
+  $('scrimC').style.opacity = Math.max(t < 6 ? 1 : 0, sc(b(29.6), b(33)));
+  $('scrimL').style.opacity = Math.max(sc(b(18.2), b(23)), sc(b(33.4), b(38)));
+  $('scrimT').style.opacity = Math.max(sc(b(23.4), b(29)), sc(b(29.6), b(33)), sc(b(38.4), b(43.2)));
+  $('scrimR').style.opacity = t >= b(43.4) ? tw(t, b(43.4), b(44.4)) : 0;
+  /* --- typographie actes 2-4 --- */
+  line($('k12'), t, b(18.5), b(22.8)); line($('q1'), t, b(18.7), b(22.8)); line($('q2'), t, b(20.5), b(22.8));
+  line($('h1'), t, b(23.6), b(28.8)); line($('h2'), t, b(25), b(28.8)); line($('h3'), t, b(26.4), b(28.8));
+  line($('w2'), t, b(36.1), b(37.8));
+  line($('c1'), t, b(29.6), b(32.9));
+  const cOn = t >= b(29.8) && t < b(33);
+  vis($('counter'), cOn); vis($('counterk'), cOn);
+  if (cOn) {
+    const steps = [[b(29.8), 1000000], [b(30.5), 103], [b(31.5), 8], [b(32.4), 1]];
+    let v = 1000000;
+    for (let i = 0; i < steps.length; i++) if (t >= steps[i][0]) v = steps[i][1];
+    // entre deux paliers, le nombre roule
+    for (let i = 0; i < steps.length - 1; i++) if (t >= steps[i][0] && t < steps[i + 1][0]) {
+      const k = tw(t, steps[i + 1][0] - .35, steps[i + 1][0], 'inCubic');
+      v = Math.round(Math.exp(lerp(Math.log(steps[i][1]), Math.log(steps[i + 1][1]), k)));
+    }
+    $('counter').textContent = v.toLocaleString('fr-FR').replace(/ | /g, ' ');
+    $('counterk').textContent = v === 1 ? 'FILM' : 'FILMS';
+    $('counter').style.color = v === 1 ? 'var(--red)' : '#fff';
+    const o = tw(t, b(29.8), b(30.2)) * (1 - tw(t, b(32.6), b(32.85), 'lin'));
+    $('counter').style.opacity = $('counterk').style.opacity = o;
+  }
+  const pOn = t >= b(33.6) && t < b(36);
+  vis($('pct'), pOn); vis($('pctk'), pOn);
+  if (pOn) {
+    const k = tw(t, b(33.8), b(35.2), 'outQuint');
+    $('pct').textContent = Math.round(86 * k) + '%';
+    $('pct').style.opacity = tw(t, b(33.6), b(34)) * (1 - tw(t, b(35.4), b(35.9), 'lin'));
+    $('pct').style.transform = `translateY(${lerp(40, 0, tw(t, b(33.6), b(34.4), 'outQuint'))}px)`;
+    $('pctk').style.opacity = tw(t, b(34.6), b(35.2)) * (1 - tw(t, b(35.4), b(35.9), 'lin'));
+  }
+  line($('w1'), t, b(35.8), b(37.8));
+  line($('r1'), t, b(38.6), b(43));
+
+  /* --- appel à l'action --- */
+  const ctaOn = t >= b(43.4);
+  vis($('cta'), ctaOn);
+  if (ctaOn) {
+    CTALOGO.forEach((s, i) => { const k = tw(t, b(43.6) + i * .05, b(43.6) + .9 + i * .05, 'outQuint'); s.style.transform = `translateY(${lerp(110, 0, k)}%)`; });
+    const tg = tw(t, b(45), b(46.4), 'outQuint'); $('ctatag').style.opacity = tg; $('ctatag').style.transform = `translateY(${lerp(24, 0, tg)}px)`;
+    const bt = tw(t, b(46), b(47), 'outBack'); $('ctabtn').style.opacity = Math.min(1, bt * 2); $('ctabtn').style.transform = `scale(${lerp(.75, 1, bt)})`;
+    $('ctaurl').style.opacity = tw(t, b(46.6), b(47.6));
+  }
+
+  /* --- éclats de lumière, flashs, fondu --- */
+  const flares = [[b(13.6), 1], [b(14.6), .8], [b(33), 1], [b(43.6), .9]];
+  let fo = 0, fy = 540, fs = 1;
+  for (const [t0, a] of flares) if (t >= t0 && t < t0 + 1.4) { const k = P(t, t0, t0 + 1.4); fo = Math.max(fo, a * Math.sin(Math.PI * Math.min(1, k * 2)) * (1 - k)); fs = lerp(.4, 1.4, k); fy = t0 === b(43.6) ? 250 : 540; }
+  $('flare').style.opacity = fo; $('flare').style.top = (fy - 130) + 'px'; $('flare').style.transform = `scaleX(${fs})`;
+  let fl = 0;
+  for (const [t0, a] of [[6.0, .9], [b(11), .25], [b(33), .7], [b(29.6), .3], [b(38), .25]]) if (t >= t0) fl = Math.max(fl, a * (1 - P(t, t0, t0 + .25)));
+  $('flash').style.opacity = fl;
+  $('fade').style.opacity = Math.max(1 - tw(t, 0, .6, 'lin'), tw(t, DUR - .6, DUR, 'lin'), t >= 6 && t < b(10) ? 1 - P(t, 6, 6.15) * 0 : 0) * (t >= 6.0 && t < b(10) ? 1 : 1);
+  if (t >= 6.0 && t < b(10)) $('fade').style.opacity = 1;   // noir absolu avant « on regarde quoi ? »
+}
+
+window.render = render; window.DUR = DUR;
+const isRender = new URLSearchParams(location.search).has('render');
+if (isRender) document.body.classList.add('render');
+function fit() { if (isRender) return; const k = Math.min(innerWidth / 1920, (innerHeight - 40) / 1080); const st = $('stage'); st.style.transform = `scale(${k})`; st.style.marginRight = (1920 * k - 1920) + 'px'; st.style.marginBottom = (1080 * k - 1080) + 'px'; }
+addEventListener('resize', fit);
+window.ready = (async () => {
+  await document.fonts.ready;
+  await Promise.all([...document.images].filter(i => i.src).map(i => i.decode().catch(() => {})));
+  fit(); await render(0); return true;
+})();
+if (!isRender) {
+  let playing = true, t0 = performance.now(), cur = 0, busy = false;
+  $('play').onclick = () => { playing = !playing; t0 = performance.now() - cur * 1000; };
+  $('scrub').oninput = e => { cur = +e.target.value; t0 = performance.now() - cur * 1000; render(cur); };
+  const loop = async now => { if (playing && !busy) { busy = true; cur = ((now - t0) / 1000) % (DUR + .5); await render(Math.min(cur, DUR)); $('scrub').value = cur; $('tc').textContent = cur.toFixed(2); busy = false; } requestAnimationFrame(loop); };
+  window.ready.then(() => requestAnimationFrame(loop));
+}
+</script>
+</body>
+</html>
