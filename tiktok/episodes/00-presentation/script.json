@@ -1,0 +1,35 @@
+{
+  "title": "Présentation de la chaîne",
+  "handle": "@preaky",
+  "voice": { "model": "fr_FR-tom-medium", "speed": 1.06 },
+  "leadIn": 0.25,
+  "tail": 2.6,
+  "lines": [
+    { "id": "hook1", "text": "Ma vie est tellement absurde… que j'ai décidé de la dessiner.", "pause": 0.25 },
+    { "id": "hook2", "text": "Moi, c'est Maël. J'ai 20 ans.", "tts": "Moi, c'est Maël. J'ai vingt ans.", "pause": 0.2 },
+    { "id": "hook3", "text": "Et oui, je me suis dessiné plus beau qu'en vrai.", "pause": 0.55 },
+
+    { "id": "kid1", "text": "Petit, j'avais un seul talent : dessiner partout.", "pause": 0.15 },
+    { "id": "kid2", "text": "Sur mes cahiers. Sur la table. Sur le mur du salon.", "pause": 0.25 },
+    { "id": "kid3", "text": "Ma mère a… moyennement apprécié.", "pause": 0.6 },
+
+    { "id": "school1", "text": "À l'école, les profs disaient que j'étais tout le temps dans la lune.", "pause": 0.3 },
+    { "id": "school2", "text": "Faux. J'étais en train de la dessiner.", "pause": 0.6 },
+
+    { "id": "design1", "text": "Alors j'en ai fait mon truc : logos, affiches, identités visuelles…", "pause": 0.15 },
+    { "id": "design2", "text": "Et aujourd'hui, je suis en formation community manager.", "tts": "Et aujourd'hui, je suis en formation kommiouniti manadjeur.", "pause": 0.3 },
+
+    { "id": "night1", "text": "Mon job : garder les gens scotchés aux réseaux.", "pause": 0.2 },
+    { "id": "night2", "text": "Le problème… c'est que le premier scotché, c'est moi.", "pause": 0.6 },
+
+    { "id": "chan1", "text": "Alors tant qu'à scroller, autant créer.", "pause": 0.2 },
+    { "id": "chan2", "text": "Ici, je dessine mes galères, mes pires hontes…", "pause": 0.1 },
+    { "id": "chan3", "text": "et vos histoires les plus folles.", "pause": 0.3 },
+
+    { "id": "dm1", "text": "T'as vécu un truc de dingue ? Envoie-le-moi en DM : je le dessine.", "tts": "T'as vécu un truc de dingue ? Envoie-le-moi en dé aime : je le dessine.", "pause": 0.4 },
+
+    { "id": "cta1", "text": "Et abonne-toi.", "pause": 0.15 },
+    { "id": "cta2", "text": "Sinon je te dessine en patate.", "pause": 0.8 },
+    { "id": "end1", "text": "Premier épisode… très vite.", "pause": 0 }
+  ]
+}

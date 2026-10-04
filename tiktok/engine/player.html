@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Draw My Life — lecteur</title>
+<style>
+  @font-face { font-family: 'Permanent Marker'; src: url('fonts/PermanentMarker-Regular.ttf'); }
+  @font-face { font-family: 'Gochi Hand'; src: url('fonts/GochiHand-Regular.ttf'); }
+  @font-face { font-family: 'Titan One'; src: url('fonts/TitanOne-Regular.ttf'); }
+  @font-face { font-family: 'Fredoka'; src: url('fonts/Fredoka-SemiBold.ttf'); font-weight: 600; }
+  html, body { margin: 0; padding: 0; background: #111; overflow: hidden; }
+  svg { display: block; }
+  /* précharge les polices */
+  .preload span { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<div class="preload">
+  <span style="font-family:'Permanent Marker'">a</span><span style="font-family:'Gochi Hand'">a</span>
+  <span style="font-family:'Titan One'">a</span><span style="font-family:'Fredoka';font-weight:600">a</span>
+</div>
+<script src="engine.js"></script>
+<script src="characters.js"></script>
+<script src="props.js"></script>
+<script>
+  // Charge l'épisode demandé (?ep=00-presentation) puis expose setup()/render().
+  const ep = new URLSearchParams(location.search).get('ep') || '00-presentation';
+  const s = document.createElement('script');
+  s.src = `../episodes/${ep}/scenes.js`;
+  document.head.appendChild(s);
+  window.setup = async (timing, opts = {}) => {
+    await document.fonts.ready;
+    await Promise.all(['Permanent Marker', 'Gochi Hand', 'Titan One'].map((f) => document.fonts.load(`40px '${f}'`)));
+    await document.fonts.load(`600 40px 'Fredoka'`);
+    E.init(timing, opts);
+    window.EPISODE(E);
+    E.finalize();
+    return { duration: E.duration, events: E.events };
+  };
+</script>
+</body>
+</html>

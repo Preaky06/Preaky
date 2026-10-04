@@ -1,0 +1,14 @@
+{
+  "name": "preaky-draw-my-life",
+  "private": true,
+  "type": "module",
+  "description": "Moteur d'animation Draw My Life pour les vidéos TikTok de Preaky",
+  "scripts": {
+    "voice": "python3 tools/voice.py episodes/00-presentation",
+    "stills": "node tools/render.mjs 00-presentation --stills",
+    "render": "node tools/render.mjs 00-presentation"
+  },
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}
