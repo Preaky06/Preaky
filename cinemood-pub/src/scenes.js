@@ -1,14 +1,5 @@
-/* Découpage du film (30 s, 120 BPM : 1 temps = 0,5 s, 1 mesure = 2 s)
-   0–2    néon « CINÉMA » qui s'allume
-   2–6    le scroll infini : « Tu passes 30 minutes à chercher quoi regarder »
-   6–8    « On part de ton moment »
-   8–10   l'interface : « Ce soir, il te faut quoi ? »
-   10–14  les 8 humeurs, une par temps
-   14–17  le parcours en accéléré (12 questions)
-   17–18  le moteur filtre le catalogue
-   18–22  les résultats
-   22–26  les arguments (12 questions, Duo, gratuit, sans inscription)
-   26–30  le logo : CINÉMA devient CINÉMOOD */
+/* Scènes du film. Le découpage et les transitions sont dans edit.js,
+   la pellicule des humeurs dans gate.js, les arguments dans features.js. */
 'use strict';
 
 let NB, NX;
@@ -60,18 +51,14 @@ const QS = [
 QS.forEach(q => { q.options = q.options.map((o, i) => ({ num: String(i + 1).padStart(2, '0'), label: o[0], sub: o[1] })); });
 
 /* ---------- éléments partagés ---------- */
-function bgStudio(x, t, tint = RED, k = 1) {
-  x.fillStyle = '#050304';
+function bgStudio(x, t) {
+  x.fillStyle = '#030203';
   x.fillRect(0, 0, W, H);
-  const a = x.createRadialGradient(W * (0.2 + 0.05 * Math.sin(t * 0.7)), H * 0.05, 0, W * 0.2, H * 0.05, Math.max(W, H) * 0.8);
-  a.addColorStop(0, rgba(tint, 0.28 * k));
-  a.addColorStop(1, rgba(tint, 0));
-  x.fillStyle = a;
-  x.fillRect(0, 0, W, H);
-  const b = x.createRadialGradient(W * (0.85 - 0.04 * Math.sin(t * 0.5)), H * 1.0, 0, W * 0.85, H, Math.max(W, H) * 0.7);
-  b.addColorStop(0, rgba(tint, 0.18 * k));
-  b.addColorStop(1, rgba(tint, 0));
-  x.fillStyle = b;
+  const g = x.createRadialGradient(CX, -H * 0.35, 0, CX, -H * 0.35, H * 1.35);
+  g.addColorStop(0, 'rgba(90,26,38,0.55)');
+  g.addColorStop(0.55, 'rgba(30,9,14,0.35)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g;
   x.fillRect(0, 0, W, H);
 }
 function dust(x, t, col, alpha, region) {
@@ -91,18 +78,49 @@ function dust(x, t, col, alpha, region) {
   }
   x.restore();
 }
+let FLIP, FLX;
 function placePanel(x, img, o) {
   const dw = img.width * o.s, dh = img.height * o.s;
   const X = o.cx - dw / 2, Y = o.cy - dh / 2;
   const al = o.a == null ? 1 : o.a;
-  // halo derrière l'écran
-  const g = x.createRadialGradient(o.cx, o.cy + dh * 0.1, 0, o.cx, o.cy, Math.max(dw, dh) * 0.75);
-  g.addColorStop(0, `rgba(255,45,79,${0.16 * al})`);
-  g.addColorStop(1, 'rgba(255,45,79,0)');
-  x.fillStyle = g;
-  x.fillRect(0, 0, W, H);
+  const ry = o.ry || 0;
+  const q = panelQuad(X, Y, dw, dh, ry);
+  // lumière que l'écran projette sur le sol
+  const bottom = (q[2].y + q[3].y) / 2;
+  const spill = x.createRadialGradient(o.cx, bottom, 0, o.cx, bottom, dw * 0.65);
+  spill.addColorStop(0, `rgba(120,30,48,${0.32 * al})`);
+  spill.addColorStop(1, 'rgba(0,0,0,0)');
+  x.save();
+  x.translate(o.cx, bottom); x.scale(1, 0.22); x.translate(-o.cx, -bottom);
+  x.fillStyle = spill;
+  x.fillRect(o.cx - dw, bottom - dw, dw * 2, dw * 2);
+  x.restore();
+  // reflet : chaque bande verticale est miroitée sous son propre bord inférieur
+  if (o.reflect !== false) {
+    if (!FLIP || FLIP.width !== img.width || FLIP.height !== img.height) { FLIP = mkCanvas(img.width, img.height); FLX = FLIP.getContext('2d'); }
+    resetCtx(FLX);
+    FLX.clearRect(0, 0, FLIP.width, FLIP.height);
+    FLX.translate(0, FLIP.height); FLX.scale(1, -1);
+    FLX.drawImage(img, 0, 0);
+    clearCanvas(TMP2, T2X);
+    T2X.setTransform(x.getTransform());
+    T2X.globalAlpha = 0.16 * al;
+    drawPanelY(T2X, FLIP, X, Y, dw, dh, ry, { strips: Math.round(dw / 4), mirrorBelow: true });
+    resetCtx(T2X);
+    const m = x.getTransform();
+    const by = m.d * bottom + m.f;
+    T2X.globalCompositeOperation = 'destination-in';
+    const fade = T2X.createLinearGradient(0, by, 0, by + dh * m.d * 0.32);
+    fade.addColorStop(0, 'rgba(0,0,0,1)');
+    fade.addColorStop(1, 'rgba(0,0,0,0)');
+    T2X.fillStyle = fade;
+    T2X.fillRect(0, 0, W, H);
+    x.save();
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.drawImage(TMP2, 0, 0);
+    x.restore();
+  }
   // ombre portée, calée sur les coins projetés
-  const q = panelQuad(X, Y, dw, dh, o.ry || 0);
   x.save();
   x.globalAlpha = al * 0.85;
   x.filter = `blur(${40 * U}px)`;
@@ -113,14 +131,14 @@ function placePanel(x, img, o) {
   x.restore();
   x.save();
   x.globalAlpha = al;
-  drawPanelY(x, img, X, Y, dw, dh, o.ry || 0, { strips: Math.round(dw / 3) });
-  // liseré fin autour de l'écran
-  x.strokeStyle = 'rgba(255,255,255,0.07)';
+  drawPanelY(x, img, X, Y, dw, dh, ry, { strips: Math.round(dw / 3) });
+  x.strokeStyle = 'rgba(255,255,255,0.08)';
   x.lineWidth = 1.5 * U;
   x.beginPath();
   x.moveTo(q[0].x, q[0].y); x.lineTo(q[1].x, q[1].y); x.lineTo(q[2].x, q[2].y); x.lineTo(q[3].x, q[3].y);
   x.closePath(); x.stroke();
   x.restore();
+  return q;
 }
 /* facteur d'allumage d'un tube néon : salves rapides puis stable */
 function ignite(dt, seed, dur = 0.3) {
@@ -194,25 +212,72 @@ function drawWallScene(x, t, intensity, drawSign, camZ) {
   x.restore();
   x.save();
   x.drawImage(NB, 0, 0);
-  // reflet : miroir autour de la ligne d'horizon (à l'écran)
-  const hz = m.d * L.horizon + m.f;
-  x.beginPath(); x.rect(0, hz, W, H - hz); x.clip();
-  x.translate(0, hz * 2);
-  x.scale(1, -1);
-  x.globalAlpha = 0.34;
-  x.filter = `blur(${4 * U}px)`;
-  x.drawImage(NB, 0, 0);
-  x.filter = 'none';
   x.restore();
-  // halo + poussière
+  // reflet : miroir autour de la ligne d'horizon, troublé par la pluie (bandes décalées)
+  const hz = m.d * L.horizon + m.f;
+  clearCanvas(TMP2, T2X);
+  T2X.save();
+  T2X.translate(0, hz * 2); T2X.scale(1, -1);
+  T2X.filter = `blur(${3 * U}px)`;
+  T2X.drawImage(NB, 0, 0);
+  T2X.restore();
+  const band = Math.max(2, Math.round(3 * U));
+  x.save();
+  for (let yy = Math.floor(hz); yy < H; yy += band) {
+    const depth = (yy - hz) / Math.max(1, H - hz);
+    const off = (Math.sin(yy * 0.09 + t * 7.0) * 0.6 + Math.sin(yy * 0.031 - t * 4.3) * 0.4) * (1.5 + 7 * depth) * U;
+    x.globalAlpha = 0.36 * (1 - depth * 0.55);
+    x.drawImage(TMP2, 0, yy, W, band, off, yy, W, band);
+  }
+  x.restore();
+  // halo de l'enseigne
   const ly = (L.base - L.size * 0.36) * m.d + m.f;
   const hg = x.createRadialGradient(CX, ly, 0, CX, ly, Math.max(W, H) * 0.55);
   hg.addColorStop(0, `rgba(255,45,79,${0.12 * intensity})`);
   hg.addColorStop(1, 'rgba(255,45,79,0)');
   x.fillStyle = hg;
   x.fillRect(0, 0, W, H);
-  dust(x, t, [255, 140, 160], 0.55 * intensity, (px, py) => clamp(1 - Math.hypot(px - CX, py - ly) / (Math.max(W, H) * 0.6)));
+  rain(x, t, CX, ly, hz, intensity);
   return L;
+}
+
+/* pluie : traits fins éclairés par l'enseigne, impacts qui s'élargissent sur le sol */
+function rain(x, t, lx, ly, hz, inten) {
+  const R = Math.max(W, H);
+  x.save();
+  x.globalCompositeOperation = 'lighter';
+  x.lineCap = 'round';
+  const n = PORT ? 520 : 460;
+  for (let i = 0; i < n; i++) {
+    const sp = (1700 + rnd(i * 2.7) * 900) * U;
+    const len = sp / 75; // traînée = vitesse × temps d'obturation
+    const x0 = rnd(i * 1.3) * W * 1.25 - W * 0.12;
+    const cyc = H * 1.35;
+    const y = ((rnd(i * 3.1) * cyc + t * sp) % cyc) - H * 0.2;
+    const near = rnd(i * 5.9);
+    const px = x0 + (y - CY) * 0.13;
+    const prox = clamp(1 - Math.hypot(px - lx, y - ly) / (R * 0.55));
+    const a = (0.035 + 0.5 * prox * prox * inten) * (0.4 + 0.6 * near);
+    if (a < 0.008) continue;
+    x.strokeStyle = `rgba(255,${170 + near * 50 | 0},${185 + near * 40 | 0},${a})`;
+    x.lineWidth = (0.6 + near * 1.3) * U;
+    x.beginPath(); x.moveTo(px, y); x.lineTo(px + len * 0.13, y + len); x.stroke();
+  }
+  // impacts au sol
+  for (let j = 0; j < 70; j++) {
+    const per = 0.45 + rnd(j * 4.4) * 0.4;
+    const ph = (t / per + rnd(j * 7.3)) % 1;
+    const cyc = Math.floor(t / per + rnd(j * 7.3));
+    const fx = rnd(j * 3.3 + cyc * 1.7) * W, fy = hz + (0.04 + rnd(j * 9.1 + cyc * 2.3) * 0.9) * (H - hz);
+    const prox = clamp(1 - Math.abs(fx - lx) / (W * 0.7));
+    const a = (1 - ph) * 0.4 * inten * (0.3 + 0.7 * prox);
+    if (a < 0.01) continue;
+    const r = (3 + 26 * E.outCubic(ph)) * U * (0.5 + (fy - hz) / (H - hz));
+    x.strokeStyle = `rgba(255,150,170,${a})`;
+    x.lineWidth = 1.2 * U;
+    x.beginPath(); x.ellipse(fx, fy, r, r * 0.22, 0, 0, Math.PI * 2); x.stroke();
+  }
+  x.restore();
 }
 
 /* ---------- 1. néon d'ouverture ---------- */
@@ -297,10 +362,31 @@ function sceneScroll(x, lt) {
   x.fillStyle = cg;
   x.fillRect(0, 0, W, H);
 
+  // à l'arrêt, le mur d'affiches s'éteint : il ne reste que le texte
+  const off = prog(lt, 3.45, 3.62);
+  if (off > 0) { x.fillStyle = `rgba(0,0,0,${off})`; x.fillRect(0, 0, W, H); }
+
   // texte
   const big = PORT ? 250 * U : 280 * U;
   const yMid = CY + big * 0.36;
+  const ms = PORT ? fitSize('30 MINUTES', W * 0.88, big, { fam: 'Anton' }) : big;
+  // plongée dans le creux du « 0 » de 30 : il grossit jusqu'à remplir l'écran de noir
+  const zt = prog(lt, 3.6, 4.0);
+  x.save();
+  if (zt > 0) {
+    const lay = layoutChars('30 MINUTES', ms, { fam: 'Anton' });
+    const c0 = lay.chars[1];
+    const px = CX - lay.w / 2 + c0.x + c0.w / 2;
+    const py = yMid - textAscent('0', ms, { fam: 'Anton' }) * 0.5;
+    const z = Math.exp(Math.log(70) * E.inCubic(zt));
+    const e2 = E.inOutCubic(zt);
+    const sx = lerp(px, CX, e2), sy = lerp(py, CY, e2);
+    x.translate(sx, sy); x.scale(z, z); x.translate(-px, -py);
+  }
+  const fadeTxt = 1 - prog(lt, 3.45, 3.6);
+  x.globalAlpha = fadeTxt;
   revealWords(x, 'TU PASSES', CX, yMid - big * 0.98, PORT ? 92 * U : 84 * U, lt - 0.15, { fam: 'Anton', align: 'center', color: COL.ink, track: 0.02 });
+  x.globalAlpha = 1;
   // chronomètre puis « 30 MINUTES »
   const cnt = clamp((lt - 0.35) / 2.75);
   const secs = Math.floor(E.inQuad(cnt) * 1800);
@@ -310,15 +396,15 @@ function sceneScroll(x, lt) {
     const ap = E.outCubic(prog(lt, 0.3, 0.55));
     x.save();
     x.globalAlpha = ap * (1 - lock);
-    const s = big * (PORT ? 0.95 : 1);
+    const sz = big * (PORT ? 0.95 : 1);
     const digits = mm + ':' + ss;
-    const cellW = textWidth('0', s, { fam: 'Anton' }) * 1.04;
-    const colonW = textWidth(':', s, { fam: 'Anton' }) * 1.3;
+    const cellW = textWidth('0', sz, { fam: 'Anton' }) * 1.04;
+    const colonW = textWidth(':', sz, { fam: 'Anton' }) * 1.3;
     const tot = cellW * 4 + colonW;
     let dx = CX - tot / 2;
     for (const ch of digits) {
       const cw = ch === ':' ? colonW : cellW;
-      drawText(x, ch, dx + cw / 2, yMid, s, { fam: 'Anton', align: 'center', color: cnt > 0.85 ? COL.red : COL.ink });
+      drawText(x, ch, dx + cw / 2, yMid, sz, { fam: 'Anton', align: 'center', color: cnt > 0.85 ? COL.red : COL.ink });
       dx += cw;
     }
     x.restore();
@@ -329,18 +415,19 @@ function sceneScroll(x, lt) {
       x.scale(lerp(1.25, 1, ls), lerp(1.25, 1, ls));
       x.translate(-CX, -(yMid - big * 0.35));
       x.globalAlpha = clamp(lock * 3);
-      const ms = PORT ? fitSize('30 MINUTES', W * 0.88, big, { fam: 'Anton' }) : big;
       drawText(x, '30 MINUTES', CX, yMid, ms, { fam: 'Anton', align: 'center', color: COL.red });
       x.restore();
     }
   }
   const subS = PORT ? 64 * U : 66 * U;
+  x.globalAlpha = fadeTxt;
   if (PORT) {
     revealWords(x, 'À CHERCHER', CX, yMid + subS * 1.45, subS, lt - 1.0, { fam: 'Anton', align: 'center', color: COL.ink });
     revealWords(x, 'QUOI REGARDER.', CX, yMid + subS * 2.5, subS, lt - 1.15, { fam: 'Anton', align: 'center', color: COL.ink });
   } else {
     revealWords(x, 'À CHERCHER QUOI REGARDER.', CX, yMid + subS * 1.5, subS, lt - 1.0, { fam: 'Anton', align: 'center', color: COL.ink, stagger: 0.07 });
   }
+  x.restore();
 }
 
 /* ---------- 3. « On part de ton moment » ---------- */
@@ -366,7 +453,7 @@ function sceneTurn(x, lt) {
   x.filter = 'none';
   x.restore();
   dust(x, lt + 3, [255, 160, 175], 0.6 * beam, (px, py) => clamp(1 - Math.abs(px - CX) / (W * 0.25 + py * 0.5)));
-  const z = 1 + 0.05 * E.inOutCubic(prog(lt, 0, 2)) + 0.25 * E.inExpo(prog(lt, 1.7, 2.0));
+  const z = 1 + 0.05 * E.inOutCubic(prog(lt, 0, 2));
   x.save();
   camera(x, { z });
   const s1 = PORT ? fitSize('ON PART DE', W * 0.8, 210 * U, { fam: 'Anton' }) : 170 * U;
@@ -380,303 +467,90 @@ function sceneTurn(x, lt) {
 }
 
 /* ---------- 4. la question ---------- */
+/* cadrage d'une question : la zone utile (haut de l'écran jusqu'aux cartes) remplit l'image */
+function quizFrame(q) {
+  const G = quizGeom(q.title, q.options.length);
+  const sc = Math.min(PORT ? 1.04 : 1.16, (H * (PORT ? 0.7 : 0.88)) / G.bottom);
+  const top = (H - G.bottom * sc) / 2;
+  return { s: sc, cy: top + (UIB.height * sc) / 2 };
+}
+/* point de l'écran (approximation sans perspective) correspondant à un point de l'interface */
+function uiToScreen(px, py, s, cy) {
+  return { x: CX + (px - UIB.width / 2) * s, y: cy + (py - UIB.height / 2) * s };
+}
 function sceneQuestion(x, lt, t) {
   bgStudio(x, t);
-  dust(x, t, [255, 120, 140], 0.3);
   const img = drawQuiz({
     step: 1, total: 12, kicker: Q1.kicker, title: Q1.title, options: Q1.options,
-    titleT: lt - 0.2, optT: lt - 0.75, kickerP: prog(lt, 0.05, 0.4), trail: [], progress: (1 / 12) * E.outCubic(prog(lt, 0.2, 0.8)),
+    titleT: lt - 0.3, optT: lt - 0.85, kickerP: prog(lt, 0.2, 0.5), trail: [], progress: (1 / 12) * E.outCubic(prog(lt, 0.3, 0.9)),
   });
-  const intro = E.outQuint(prog(lt, 0, 1.1));
-  const push = E.inCubic(prog(lt, 1.55, 2.0));
-  const ry = lerp(PORT ? 0.0 : 0.42, PORT ? 0 : 0.07, intro) - (PORT ? 0 : 0.07) * push;
-  const s = lerp(0.82, 0.97, intro) + 0.9 * push;
-  const cy = CY + lerp(60 * U, 0, intro) + (PORT ? 0 : 0) - push * 120 * U;
+  const F = quizFrame(Q1);
+  const ry = PORT ? 0 : lerp(0.11, 0.06, E.outCubic(prog(lt, 0, 1.7)));
+  let s = F.s * (1 + 0.015 * prog(lt, 0, 1.7));
   x.save();
-  if (PORT) camera(x, { z: 1, r: lerp(-0.03, 0, intro) });
-  placePanel(x, img, { cx: CX, cy, s, ry, a: clamp(lt / 0.25) });
-  x.restore();
-}
-
-/* ---------- 5. les humeurs ---------- */
-function moodWord(x, m, size, y, o = {}) {
-  drawText(x, m.w, CX + (o.dx || 0), y + (o.dy || 0), size, { fam: 'Anton', align: 'center', color: o.color || COL.ink, track: o.track || 0 });
-}
-function sceneMood(x, lt, t, idx) {
-  const m = MOODS[idx];
-  const p = lt; // 0..0.5
-  const col = m.col;
-  const maxW = PORT ? W * 0.88 : W * 0.8;
-  let size = Math.min(PORT ? 300 * U : 320 * U, fitSize(m.w, maxW, 400 * U, { fam: 'Anton' }));
-  const y = CY + size * 0.36;
-  x.fillStyle = '#040203';
-  x.fillRect(0, 0, W, H);
-  const glow = (a, r = 0.75) => {
-    const g = x.createRadialGradient(CX, CY, 0, CX, CY, Math.max(W, H) * r);
-    g.addColorStop(0, rgba(col, a));
-    g.addColorStop(1, rgba(col, 0));
-    x.fillStyle = g;
-    x.fillRect(0, 0, W, H);
-  };
-  x.save();
-  if (m.kind === 'laugh') {
-    glow(0.42);
-    // confettis
-    for (let i = 0; i < 90; i++) {
-      const a = rnd(i * 1.3) * Math.PI * 2, v = (700 + rnd(i * 2.1) * 1300) * U;
-      const tt = p + 0.02;
-      const px = CX + Math.cos(a) * v * tt, py = CY + Math.sin(a) * v * tt + 2400 * U * tt * tt;
-      const cc = [col, RED, INK][i % 3];
-      x.save();
-      x.translate(px, py);
-      x.rotate(rnd(i) * 6 + tt * (6 + rnd(i * 3) * 10));
-      x.fillStyle = rgba(cc, 0.9);
-      const s = (10 + rnd(i * 5) * 14) * U;
-      if (i % 2) x.fillRect(-s / 2, -s / 4, s, s / 2); else { x.beginPath(); x.arc(0, 0, s / 2.6, 0, Math.PI * 2); x.fill(); }
-      x.restore();
-    }
-    const b = E.outBack(prog(p, 0, 0.22));
-    x.translate(CX, CY);
-    x.rotate(lerp(-0.12, 0, E.outBackSoft(prog(p, 0, 0.3))));
-    x.scale(lerp(0.5, 1, b), lerp(0.5, 1, b) * (1 + 0.06 * Math.sin(p * 30) * (1 - prog(p, 0, 0.4))));
-    x.translate(-CX, -CY);
-    moodWord(x, m, size, y, { color: rgba(col, 1) });
-  } else if (m.kind === 'fear') {
-    const strobe = rnd(Math.floor(p * 60 / 2) * 1.91 + 3) > 0.35 ? 1 : 0.15;
-    glow(0.5 * strobe, 0.6);
-    const lg = x.createLinearGradient(0, H, 0, H * 0.4);
-    lg.addColorStop(0, rgba(col, 0.35 * strobe));
-    lg.addColorStop(1, rgba(col, 0));
-    x.fillStyle = lg;
-    x.fillRect(0, 0, W, H);
-    // rayures de pellicule
-    x.fillStyle = 'rgba(255,255,255,0.12)';
-    for (let i = 0; i < 4; i++) x.fillRect(rnd(Math.floor(p * 60) + i * 9) * W, 0, 1.5 * U, H);
-    const j = 7 * U * (1 - prog(p, 0.3, 0.5) * 0.6);
-    const jx = (rnd(Math.floor(p * 60) * 3.3) - 0.5) * j * 2, jy = (rnd(Math.floor(p * 60) * 5.1) - 0.5) * j * 2;
-    const zs = lerp(1.15, 1, E.outExpo(prog(p, 0, 0.18)));
-    x.translate(CX, CY); x.scale(zs, zs); x.translate(-CX, -CY);
-    x.globalCompositeOperation = 'lighter';
-    moodWord(x, m, size, y, { dx: jx - 9 * U, dy: jy, color: 'rgba(255,0,40,0.9)' });
-    moodWord(x, m, size, y, { dx: jx + 9 * U, dy: jy, color: 'rgba(0,200,255,0.55)' });
-    x.globalCompositeOperation = 'source-over';
-    moodWord(x, m, size, y, { dx: jx, dy: jy, color: rgba(INK, strobe > 0.5 ? 1 : 0.5) });
-  } else if (m.kind === 'emu') {
-    const bg = x.createLinearGradient(0, 0, W, H);
-    bg.addColorStop(0, '#1d0a14'); bg.addColorStop(1, '#3a1222');
-    x.fillStyle = bg; x.fillRect(0, 0, W, H);
-    glow(0.25);
-    x.globalCompositeOperation = 'lighter';
-    for (let i = 0; i < 34; i++) {
-      const r = (30 + rnd(i * 4.4) * 120) * U;
-      const px = rnd(i * 1.7) * W + Math.sin(p * 2 + i) * 30 * U, py = rnd(i * 2.9) * H - p * (40 + rnd(i) * 80) * U;
-      x.fillStyle = rgba(col, 0.05 + rnd(i * 8.1) * 0.12);
-      x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
-      x.strokeStyle = rgba(col, 0.08);
-      x.lineWidth = 2 * U; x.stroke();
-    }
-    x.globalCompositeOperation = 'source-over';
-    const bl = 24 * (1 - E.outCubic(prog(p, 0, 0.3)));
-    x.filter = bl > 0.3 ? `blur(${bl * U}px)` : 'none';
-    x.shadowColor = rgba(col, 0.8);
-    x.shadowBlur = 50 * U;
-    const zs = lerp(1.08, 1, E.outCubic(prog(p, 0, 0.5)));
-    x.translate(CX, CY); x.scale(zs, zs); x.translate(-CX, -CY);
-    moodWord(x, m, size, y, { color: '#ffe3e8' });
-    x.filter = 'none';
-    x.shadowBlur = 0;
-  } else if (m.kind === 'rush') {
-    glow(0.5);
-    x.save();
-    const sk = shake(p, 16, 22, 5);
-    x.translate(sk.x, sk.y);
-    x.globalCompositeOperation = 'lighter';
-    const R = Math.max(W, H) * 0.8;
-    for (let i = 0; i < 110; i++) {
-      const a = rnd(i * 3.7) * Math.PI * 2;
-      const r0 = ((rnd(i * 1.1) + p * 3.2) % 1) * R;
-      const len = (0.12 + rnd(i * 6.3) * 0.25) * R;
-      x.strokeStyle = rgba(i % 4 ? col : INK, 0.08 + 0.5 * (r0 / R));
-      x.lineWidth = (2 + rnd(i * 2.2) * 4) * U * (r0 / R + 0.2);
-      x.beginPath();
-      x.moveTo(CX + Math.cos(a) * r0, CY + Math.sin(a) * r0);
-      x.lineTo(CX + Math.cos(a) * (r0 + len), CY + Math.sin(a) * (r0 + len));
-      x.stroke();
-    }
-    x.globalCompositeOperation = 'source-over';
-    const sl = E.outExpo(prog(p, 0, 0.14));
-    const zs = lerp(2.4, 1, sl) + 0.03 * Math.sin(p * 40) * (1 - sl);
-    // fantômes de flou de mouvement
-    for (let g = 3; g >= 0; g--) {
-      const zz = zs * (1 + g * 0.06 * (1 - sl * 0.7));
-      x.save();
-      x.translate(CX, CY); x.scale(zz, zz); x.skewX ? 0 : 0; x.translate(-CX, -CY);
-      x.globalAlpha = g === 0 ? 1 : 0.18;
-      x.transform(1, 0, -0.12, 1, 0, 0);
-      x.translate(y * 0.12, 0);
-      moodWord(x, m, size, y, { color: g === 0 ? '#fff4e8' : rgba(col, 1) });
-      x.restore();
-    }
-    x.restore();
-  } else if (m.kind === 'think') {
-    x.fillStyle = '#04070d'; x.fillRect(0, 0, W, H);
-    glow(0.2);
-    x.strokeStyle = rgba(col, 0.25);
-    x.lineWidth = 1.5 * U;
-    const R = Math.min(W, H) * 0.48;
-    for (let i = 1; i <= 6; i++) {
-      x.save();
-      x.translate(CX, CY);
-      x.rotate((i % 2 ? 1 : -1) * p * 0.6 + i);
-      x.setLineDash([(6 + i * 4) * U, (10 + i * 6) * U]);
-      x.beginPath(); x.arc(0, 0, R * (0.25 + i * 0.16) * lerp(0.92, 1, E.outCubic(prog(p, 0, 0.5))), 0, Math.PI * 2); x.stroke();
-      x.restore();
-    }
-    x.setLineDash([]);
-    const tr = lerp(0.5, 0.06, E.outQuint(prog(p, 0, 0.45)));
-    size = Math.min(size, fitSize(m.w, maxW, 400 * U, { fam: 'Anton', track: 0.06 }));
-    x.globalAlpha = E.outCubic(prog(p, 0, 0.2));
-    moodWord(x, m, size, y, { color: '#eef3ff', track: tr });
-  } else if (m.kind === 'glitch') {
-    const fl = p < 0.06 ? 1 : 0;
-    glow(0.35 + fl * 0.5);
-    clearCanvas(TMP, TX);
-    moodWord(TX, m, size, y, { color: COL.ink });
-    const settle = 1 - E.outCubic(prog(p, 0.02, 0.32));
-    const slices = 18;
-    const asc = textAscent(m.w, size, { fam: 'Anton' });
-    const top = y - asc - 6 * U, hh = asc + size * 0.08;
-    for (let s = 0; s < slices; s++) {
-      const sy = top + (hh * s) / slices, sh = hh / slices + 1;
-      const off = (rnd(s * 9.1 + Math.floor(p * 60 / 3) * 1.3) - 0.5) * 220 * U * settle;
-      x.drawImage(TMP, 0, sy, W, sh, off, sy, W, sh);
-      if (settle > 0.2 && rnd(s * 2.2 + Math.floor(p * 30)) > 0.75) {
-        x.fillStyle = rgba(col, 0.6 * settle);
-        x.fillRect(CX - size * 1.5 + rnd(s * 4.4) * size * 3, sy, (80 + rnd(s) * 300) * U, sh);
-      }
-    }
-  } else if (m.kind === 'chill') {
-    const bg = x.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#04110f'); bg.addColorStop(1, '#0a2a24');
-    x.fillStyle = bg; x.fillRect(0, 0, W, H);
-    glow(0.18);
-    for (let i = 0; i < 40; i++) {
-      const r = (6 + rnd(i * 3.3) * 34) * U;
-      const px = rnd(i * 1.9) * W + Math.sin(p * 3 + i * 2) * 14 * U;
-      const py = ((rnd(i * 5.5) * H * 1.2 - p * (120 + rnd(i) * 160) * U) % (H * 1.2) + H * 1.2) % (H * 1.2);
-      x.strokeStyle = rgba(col, 0.35);
-      x.lineWidth = 2 * U;
-      x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.stroke();
-    }
-    const d = E.outCubic(prog(p, 0, 0.45));
-    x.globalAlpha = d;
-    moodWord(x, m, size, y, { dy: lerp(-60 * U, 0, d), color: '#e9fff8' });
-  } else if (m.kind === 'warp') {
-    const sp = lerp(0.9, 2.6, prog(p, 0, 0.5));
-    const tt = 10 + p * sp;
-    x.fillStyle = '#02040a'; x.fillRect(0, 0, W, H);
-    glow(0.3, 0.6);
-    x.globalCompositeOperation = 'lighter';
-    x.lineCap = 'round';
-    const F = Math.max(W, H) * 0.32;
-    for (const s of STARS) {
-      let z = ((s.z - tt * 0.35) % 1 + 1) % 1;
-      if (z < 0.03) continue;
-      const z2 = z + 0.05 * sp;
-      const sx = CX + (s.x / z) * F, sy = CY + (s.y / z) * F * 0.7;
-      const px = CX + (s.x / z2) * F, py = CY + (s.y / z2) * F * 0.7;
-      if (sx < -50 || sx > W + 50 || sy < -50 || sy > H + 50) continue;
-      const br = (1 - z) * s.b;
-      x.strokeStyle = rgba(mixc(col, INK, s.b), br);
-      x.lineWidth = Math.max(1, (1 - z) * 4 * U);
-      x.beginPath(); x.moveTo(px, py); x.lineTo(sx, sy); x.stroke();
-    }
-    x.globalCompositeOperation = 'source-over';
-    const f = E.outCubic(prog(p, 0, 0.4));
-    x.globalAlpha = f;
-    const zs = lerp(0.9, 1.04, E.outCubic(prog(p, 0, 0.5)));
-    x.translate(CX, CY); x.scale(zs, zs); x.translate(-CX, -CY);
-    x.shadowColor = rgba(col, 0.9);
-    x.shadowBlur = 40 * U;
-    moodWord(x, m, size, y, { color: '#eaf6ff' });
-    x.shadowBlur = 0;
+  // plongée vers la carte « 01 Rire » : elle remplit l'écran et ouvre sur la pellicule
+  const pz = prog(lt, 1.72, 2.0);
+  if (pz > 0) {
+    const r = quizCardRect(0, 8);
+    const P = uiToScreen(r.x + r.w / 2, r.y + r.h / 2, s, F.cy);
+    const z = Math.exp(Math.log(9) * E.inCubic(pz));
+    const e2 = E.inOutCubic(pz);
+    x.translate(lerp(P.x, CX, e2), lerp(P.y, CY, e2)); x.scale(z, z); x.translate(-P.x, -P.y);
   }
+  placePanel(x, img, { cx: CX, cy: F.cy, s, ry });
   x.restore();
-  // numéro + sous-titre (mêmes codes que les cartes du site)
-  const ns = (PORT ? 30 : 28) * U;
-  const subY = y + (PORT ? 120 : 110) * U;
-  x.save();
-  x.globalAlpha = E.outCubic(prog(p, 0.05, 0.2));
-  drawText(x, m.num, CX, y - textAscent(m.w, size, { fam: 'Anton' }) - 30 * U, ns, { fam: 'Archivo', wt: 600, track: 0.2, align: 'center', color: rgba(m.kind === 'fear' ? INK : COL.red === '' ? RED : RED, 1) });
-  drawText(x, m.sub, CX, subY, (PORT ? 50 : 46) * U, { fam: 'Archivo', wt: 500, align: 'center', color: 'rgba(246,238,240,0.82)' });
-  x.restore();
-}
-function sceneMoods(x, lt, t) {
-  const idx = Math.min(7, Math.floor(lt / 0.5));
-  const p = lt - idx * 0.5;
-  if (idx === 7 && p > 0.3) {
-    // zoom arrière : on ressort de la carte « M'évader » choisie
-    const z = E.inOutCubic(prog(p, 0.3, 0.5));
-    sceneMood(x, p, t, idx);
-    const img = drawQuiz({ step: 1, total: 12, kicker: Q1.kicker, title: Q1.title, options: Q1.options, sel: 5, selP: 1, trail: [], progress: 1 / 12 });
-    const r = quizCardRect(5, 8);
-    const s0 = 0.97;
-    const cardCx = (r.x + r.w / 2 - img.width / 2) * s0, cardCy = (r.y + r.h / 2 - img.height / 2) * s0;
-    const big = Math.max(W / (r.w * s0), H / (r.h * s0)) * 1.15;
-    const zz = Math.exp(lerp(Math.log(big), 0, z));
-    const wgt = (zz - 1) / (big - 1);
-    x.save();
-    x.globalAlpha = clamp(z * 2.5);
-    x.translate(CX, CY);
-    x.scale(zz, zz);
-    x.translate(-(CX + cardCx * wgt), -(CY + cardCy * wgt));
-    placePanel(x, img, { cx: CX, cy: CY, s: s0, ry: 0 });
-    x.restore();
-    return;
-  }
-  sceneMood(x, p, t, idx);
 }
 
 /* ---------- 6. le parcours en accéléré ---------- */
+/* questions du parcours accéléré : début et durée de chacune */
+function speedSlots() {
+  const sl = [];
+  for (let i = 0; i < 5; i++) sl.push({ qi: i, a: i * 0.5, d: 0.5, push: 0.16 });
+  for (let i = 0; i < 6; i++) sl.push({ qi: 5 + i, a: 2.5 + i * (0.5 / 6), d: 0.5 / 6, push: 0.055 });
+  return sl;
+}
+const SPEED_SLOTS = speedSlots();
 function sceneSpeed(x, lt, t) {
   bgStudio(x, t);
-  dust(x, t, [255, 120, 140], 0.3);
-  // 02 → 06 : un temps chacun ; 07 → 12 : une croche… et plus vite
-  let qi, ql;
-  if (lt < 2.5) { qi = Math.floor(lt / 0.5); ql = lt - qi * 0.5; }
-  else { qi = 5 + Math.min(5, Math.floor((lt - 2.5) / (0.5 / 6))); ql = (lt - 2.5) % (0.5 / 6); }
-  const q = QS[qi];
-  const fast = qi >= 5;
+  let si = 0;
+  for (let i = 0; i < SPEED_SLOTS.length; i++) if (lt >= SPEED_SLOTS[i].a) si = i;
+  const S = SPEED_SLOTS[si], q = QS[S.qi], ql = lt - S.a;
+  const fast = S.qi >= 5;
+  const prevQ = si > 0 ? QS[SPEED_SLOTS[si - 1].qi] : Q1;
   const trail = [];
-  for (let i = 0; i <= qi; i++) trail.push(QS[i].chip);
-  const selAt = fast ? 0.03 : 0.3;
-  const opts = q.options;
-  const img = drawQuiz({
-    step: q.step, total: 12, kicker: q.kicker, title: q.title, options: opts,
-    titleT: fast ? 9 : ql * 1.6 + 0.05, optT: fast ? 9 : ql * 1.5 + 0.12, kickerP: fast ? 1 : prog(ql, 0, 0.15),
-    slide: fast ? 0 : 34 * (1 - E.outCubic(prog(ql, 0, 0.22))), alpha: fast ? 1 : E.outCubic(prog(ql, 0, 0.18)),
-    sel: ql > selAt ? q.sel : -1, selP: prog(ql, selAt, selAt + (fast ? 0.04 : 0.12)),
-    trail, trailP: prog(ql, 0, 0.2), progress: lerp((q.step - 1) / 12, q.step / 12, E.outCubic(prog(ql, 0, fast ? 0.06 : 0.25))),
-  });
-  const ry = PORT ? 0 : lerp(0.09, -0.07, E.inOutCubic(prog(lt, 0, 3)));
-  // cadrage : la zone utile (haut de l'écran jusqu'aux cartes) remplit l'image
-  const frameFor = (qq) => {
-    const G = quizGeom(qq.title, qq.options.length);
-    const sc = Math.min(PORT ? 1.04 : 1.16, (H * (PORT ? 0.7 : 0.88)) / G.bottom);
-    const top = (H - G.bottom * sc) / 2;
-    return { s: sc, cy: top + (UIB.height * sc) / 2 };
+  for (let i = 0; i <= S.qi; i++) trail.push(QS[i].chip);
+  const selAt = fast ? 0.035 : 0.3;
+  // poussée latérale : la question précédente sort à gauche, la nouvelle arrive de la droite
+  const e = E.inOutCubic(prog(ql, 0, S.push));
+  const cw = UIL.cw;
+  const prevState = {
+    kicker: prevQ.kicker, title: prevQ.title, options: prevQ.options, sel: si > 0 ? prevQ.sel : 5, selP: 1,
+    dx: -cw * 0.95 * e, alpha: 1 - e,
   };
-  const cur = frameFor(q), prev = frameFor(qi > 0 ? QS[qi - 1] : Q1);
+  const img = drawQuiz({
+    step: q.step, total: 12, kicker: q.kicker, title: q.title, options: q.options,
+    titleT: fast ? 9 : ql * 1.7 + 0.1, optT: fast ? 9 : ql * 1.6 + 0.3, kickerP: fast ? 1 : prog(ql, 0.02, 0.16),
+    dx: cw * 0.6 * (1 - e), alpha: Math.sqrt(e),
+    sel: ql > selAt ? q.sel : -1, selP: prog(ql, selAt, selAt + (fast ? 0.03 : 0.12)),
+    trail, trailP: prog(ql, 0, 0.2), progress: lerp((q.step - 1) / 12, q.step / 12, E.outCubic(prog(ql, 0, fast ? 0.05 : 0.25))),
+    prev: e < 1 ? prevState : null,
+  });
+  const ry = PORT ? 0 : lerp(0.06, -0.06, E.inOutCubic(prog(lt, 0, 3)));
+  const cur = quizFrame(q), prev = quizFrame(prevQ);
   const blend = fast ? 1 : E.inOutCubic(prog(ql, 0, 0.2));
-  const s = lerp(prev.s, cur.s, blend) * (1 + 0.012 * Math.sin(lt * 1.3));
-  const pcy = lerp(prev.cy, cur.cy, blend);
-  placePanel(x, img, { cx: CX, cy: pcy, s, ry });
+  let sc = lerp(prev.s, cur.s, blend) * (1 + 0.012 * Math.sin(lt * 1.3));
+  let pcy = lerp(prev.cy, cur.cy, blend);
+  // l'écran recule et se replie en un point : le catalogue va apparaître
+  const rc = E.inCubic(prog(lt, 2.8, 3.0));
+  sc *= lerp(1, 0.12, rc);
+  pcy = lerp(pcy, globeY(), rc);
+  placePanel(x, img, { cx: CX, cy: pcy, s: sc, ry, a: 1 - rc * rc, reflect: rc < 0.5 });
   // chrono discret sous l'écran
   const secs = Math.floor(lerp(9, 52, prog(lt, 0, 3)));
   const lab = '00:' + String(secs).padStart(2, '0');
-  const yy = PORT ? H - 150 * U : H - 34 * U;
+  const yy = PORT ? H - 150 * U : H - 30 * U;
   x.save();
-  x.globalAlpha = 0.85;
+  x.globalAlpha = 0.8 * (1 - rc);
   x.fillStyle = COL.red;
   x.beginPath(); x.arc(CX - 62 * U, yy - 11 * U, 6 * U, 0, Math.PI * 2); x.fill();
   drawText(x, lab, CX - 46 * U, yy, 30 * U, { fam: 'Archivo', wt: 600, track: 0.1, color: COL.ink });
@@ -695,11 +569,13 @@ function buildGlobe() {
   }
   for (let k = 0; k < 5; k++) GLOBE[k * 197 + 11].keep = true;
 }
+function globeY() { return PORT ? CY - 120 * U : CY - 70 * U; }
 function sceneLoading(x, lt, t) {
   if (!GLOBE) buildGlobe();
-  bgStudio(x, t, RED, 0.6);
-  const R = Math.min(W, H) * (PORT ? 0.36 : 0.3);
-  const gy = PORT ? CY - 120 * U : CY - 70 * U;
+  bgStudio(x, t);
+  // le globe naît du point où l'écran s'est replié
+  const R = Math.min(W, H) * (PORT ? 0.36 : 0.3) * lerp(0.04, 1, E.outCubic(prog(lt, 0, 0.32)));
+  const gy = globeY();
   const rot = 0.6 + lt * 1.4;
   const stage = lt / 1.0; // 0..1
   const cut = [0, 0.55, 0.85, 0.97, 1.0];
@@ -760,7 +636,15 @@ function sceneLoading(x, lt, t) {
 /* ---------- 8. les résultats ---------- */
 function sceneResults(x, lt, t) {
   bgStudio(x, t);
-  dust(x, t, [255, 120, 140], 0.25);
+  // plongée finale dans le rouge du « I » d'EXPLIQUÉS : l'écran devient rouge, raccord avec la suite
+  const cap = resultsCaption();
+  const zt = prog(lt, 3.82, 4.0);
+  x.save();
+  if (zt > 0) {
+    const z = Math.exp(Math.log(160) * E.inCubic(zt));
+    const e2 = E.inOutCubic(zt);
+    x.translate(lerp(cap.ix, CX, e2), lerp(cap.iy, CY, e2)); x.scale(z, z); x.translate(-cap.ix, -cap.iy);
+  }
   const img = drawResults({ t: lt, restAt: 1.05 });
   const k = UIL.k;
   // la caméra part serrée sur la carte n°1 puis recule
@@ -803,104 +687,22 @@ function sceneResults(x, lt, t) {
   }
   // légende éditoriale
   if (aside > 0) {
-    const ls = PORT ? 118 * U : 124 * U;
-    const lx = PORT ? CX : W * 0.075;
-    const al = PORT ? 'center' : 'left';
-    const l0 = PORT ? H * 0.14 : CY - ls * 0.62;
     const tl = lt - 2.75;
-    revealWords(x, 'CINQ FILMS,', lx, l0, ls, tl, { fam: 'Anton', align: al, color: COL.ink });
-    revealWords(x, 'CLASSÉS ET', lx, l0 + ls * 1.02, ls, tl - 0.1, { fam: 'Anton', align: al, color: COL.ink });
-    revealWords(x, 'EXPLIQUÉS.', lx, l0 + ls * 2.04, ls, tl - 0.2, { fam: 'Anton', align: al, color: COL.red });
-  }
-}
-
-/* ---------- 9. les arguments ---------- */
-function sceneFeature(x, lt, t, i) {
-  bgStudio(x, t, RED, 0.7);
-  const p = lt;
-  const e = E.outQuint(prog(p, 0, 0.35));
-  const big = PORT ? 330 * U : 300 * U;
-  x.save();
-  const z = 1 + 0.04 * p;
-  camera(x, { z });
-  if (i === 0) {
-    // 12 graduations qui se remplissent
-    const R = PORT ? 330 * U : 300 * U;
-    const cy = PORT ? CY - 160 * U : CY;
-    const cx0 = PORT ? CX : W * 0.3;
-    for (let k = 0; k < 12; k++) {
-      const a = -Math.PI / 2 + (k / 12) * Math.PI * 2;
-      const on = prog(p, 0.05 + k * 0.045, 0.12 + k * 0.045);
-      x.strokeStyle = on > 0 ? rgba(RED, 0.35 + 0.65 * on) : 'rgba(246,238,240,0.12)';
-      x.lineWidth = 9 * U;
-      x.lineCap = 'butt';
-      x.beginPath();
-      x.moveTo(cx0 + Math.cos(a) * R * 0.86, cy + Math.sin(a) * R * 0.86);
-      x.lineTo(cx0 + Math.cos(a) * R, cy + Math.sin(a) * R);
-      x.stroke();
-    }
-    x.globalAlpha = e;
-    drawText(x, '12', cx0, cy + big * 0.36, big * 0.95, { fam: 'Anton', align: 'center', color: COL.red });
-    x.globalAlpha = 1;
-    const tx = PORT ? CX : W * 0.53, al = PORT ? 'center' : 'left';
-    const ty = PORT ? cy + R + 170 * U : CY + 20 * U;
-    revealWords(x, 'QUESTIONS', tx, ty, PORT ? 150 * U : 160 * U, p - 0.12, { fam: 'Anton', align: al, color: COL.ink });
-    x.globalAlpha = E.outCubic(prog(p, 0.3, 0.55));
-    drawText(x, 'Ton humeur, ton contexte, ton temps.', tx, ty + 80 * U, PORT ? 40 * U : 40 * U, { fam: 'Archivo', wt: 500, align: al, color: 'rgba(246,238,240,0.75)' });
-  } else if (i === 1) {
-    const d = E.inOutCubic(prog(p, 0.05, 0.55));
-    const R = PORT ? 230 * U : 210 * U;
-    const cy = PORT ? CY - 200 * U : CY - 40 * U;
-    const sep = lerp(R * 1.6, R * 0.62, d);
-    x.lineWidth = 6 * U;
-    x.strokeStyle = COL.ink;
-    x.beginPath(); x.arc(CX - sep / 2, cy, R, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = COL.red;
-    x.beginPath(); x.arc(CX + sep / 2, cy, R, 0, Math.PI * 2); x.stroke();
-    // intersection remplie
-    x.save();
-    x.beginPath(); x.arc(CX - sep / 2, cy, R, 0, Math.PI * 2); x.clip();
-    x.beginPath(); x.arc(CX + sep / 2, cy, R, 0, Math.PI * 2);
-    x.fillStyle = rgba(RED, 0.75 * d);
-    x.fill();
-    x.restore();
-    x.globalAlpha = clamp(d * 1.5 - 0.3);
-    drawText(x, '94 %', CX, cy + 26 * U, 70 * U, { fam: 'Anton', align: 'center', color: '#fff' });
-    x.globalAlpha = 1;
-    const ty = cy + R + (PORT ? 210 : 175) * U;
-    revealWords(x, 'MODE DUO', CX, ty, PORT ? 170 * U : 150 * U, p - 0.1, { fam: 'Anton', align: 'center', color: COL.ink });
-    x.globalAlpha = E.outCubic(prog(p, 0.3, 0.55));
-    drawText(x, 'Un film qui tient pour vous deux.', CX, ty + 72 * U, 40 * U, { fam: 'Archivo', wt: 500, align: 'center', color: 'rgba(246,238,240,0.75)' });
-  } else if (i === 2) {
-    const s = PORT ? fitSize('GRATUIT', W * 0.86, 420 * U, { fam: 'Anton' }) : 380 * U;
-    const y = CY + s * 0.24;
-    const zs = lerp(1.35, 1, E.outExpo(prog(p, 0, 0.25)));
-    x.save();
-    x.translate(CX, CY); x.scale(zs, zs); x.translate(-CX, -CY);
-    x.globalAlpha = clamp(p / 0.08);
-    drawText(x, 'GRATUIT', CX, y, s, { fam: 'Anton', align: 'center', color: COL.red });
-    x.restore();
-    x.globalAlpha = E.outCubic(prog(p, 0.25, 0.5));
-    drawText(x, 'Parcours illimités, catalogue en accès libre.', CX, y + 100 * U, PORT ? fitSize('Parcours illimités, catalogue en accès libre.', W * 0.88, 40 * U, { fam: 'Archivo', wt: 500 }) : 40 * U, { fam: 'Archivo', wt: 500, align: 'center', color: 'rgba(246,238,240,0.78)' });
-  } else {
-    const s = PORT ? 200 * U : 200 * U;
-    const y0 = CY - s * 0.15;
-    if (PORT) {
-      revealWords(x, 'SANS', CX, y0, s * 1.2, p - 0.02, { fam: 'Anton', align: 'center', color: COL.ink });
-      revealWords(x, 'INSCRIPTION', CX, y0 + s * 1.15, fitSize('INSCRIPTION', W * 0.88, 260 * U, { fam: 'Anton' }), p - 0.1, { fam: 'Anton', align: 'center', color: COL.ink });
-    } else {
-      revealWords(x, 'SANS INSCRIPTION', CX, y0 + s * 0.5, s * 1.25, p - 0.02, { fam: 'Anton', align: 'center', color: COL.ink, stagger: 0.1 });
-    }
-    // trait barré façon formulaire supprimé
-    const lw = E.inOutCubic(prog(p, 0.3, 0.6));
-    x.globalAlpha = E.outCubic(prog(p, 0.35, 0.6));
-    drawText(x, 'Aucun compte demandé.', CX, (PORT ? y0 + s * 1.15 + 120 * U : y0 + s * 0.5 + 105 * U), 40 * U, { fam: 'Archivo', wt: 500, align: 'center', color: 'rgba(246,238,240,0.78)' });
-    x.globalAlpha = 1;
-    x.fillStyle = COL.red;
-    const bw = (PORT ? W * 0.5 : W * 0.24) * lw;
-    x.fillRect(CX - (PORT ? W * 0.25 : W * 0.12), (PORT ? y0 + s * 1.15 + 160 * U : y0 + s * 0.5 + 140 * U), bw, 5 * U);
+    revealWords(x, 'CINQ FILMS,', cap.lx, cap.l0, cap.ls, tl, { fam: 'Anton', align: cap.al, color: COL.ink });
+    revealWords(x, 'CLASSÉS ET', cap.lx, cap.l0 + cap.ls * 1.02, cap.ls, tl - 0.1, { fam: 'Anton', align: cap.al, color: COL.ink });
+    revealWords(x, 'EXPLIQUÉS.', cap.lx, cap.l0 + cap.ls * 2.04, cap.ls, tl - 0.2, { fam: 'Anton', align: cap.al, color: COL.red });
   }
   x.restore();
+}
+function resultsCaption() {
+  const ls = PORT ? 118 * U : 124 * U;
+  const lx = PORT ? CX : W * 0.075;
+  const al = PORT ? 'center' : 'left';
+  const l0 = PORT ? H * 0.14 : CY - ls * 0.62;
+  const L = layoutChars('EXPLIQUÉS.', ls, { fam: 'Anton' });
+  const x0 = PORT ? CX - L.w / 2 : lx;
+  const ci = L.chars[4]; // le I
+  return { ls, lx, al, l0, ix: x0 + ci.x + ci.w / 2, iy: l0 + ls * 2.04 - textAscent('I', ls, { fam: 'Anton' }) * 0.5 };
 }
 
 /* ---------- 10. le logo ---------- */
@@ -946,6 +748,23 @@ function sceneLogo(x, lt, t) {
       x.moveTo(px, py);
       x.lineTo(px - Math.cos(a) * 18 * U, py - Math.sin(a) * 18 * U - 24 * U * st);
       x.stroke();
+    }
+    x.restore();
+  }
+  // reflet d'objectif anamorphique : une ligne de lumière horizontale quand MOOD s'allume
+  const fl = E.outCubic(prog(lt, 1.08, 1.6)) * (0.8 + 0.2 * Math.sin(lt * 2.3));
+  if (fl > 0.01) {
+    const fy = L.base - L.size * 0.38;
+    x.save();
+    x.globalCompositeOperation = 'lighter';
+    for (const [hh, a, col] of [[46, 0.22, [255, 70, 100]], [10, 0.45, [255, 150, 170]], [2.5, 0.8, [255, 235, 240]]]) {
+      const g = x.createLinearGradient(0, 0, W, 0);
+      g.addColorStop(0, rgba(col, 0)); g.addColorStop(0.5, rgba(col, a * fl)); g.addColorStop(1, rgba(col, 0));
+      x.fillStyle = g;
+      x.save();
+      x.filter = `blur(${hh * 0.6 * U}px)`;
+      x.fillRect(-W * 0.1, fy - hh * U / 2, W * 1.2, hh * U);
+      x.restore();
     }
     x.restore();
   }
@@ -1058,50 +877,3 @@ function drawNeonGlass(ctx, s, x0, y, size, levels, cols, glass) {
   ctx.restore();
 }
 
-/* ---------- montage ---------- */
-const TIMELINE = [
-  { a: 0.0, b: 2.0, fn: sceneNeonOpen },
-  { a: 2.0, b: 6.0, fn: sceneScroll },
-  { a: 6.0, b: 8.0, fn: sceneTurn },
-  { a: 8.0, b: 10.0, fn: sceneQuestion },
-  { a: 10.0, b: 14.0, fn: sceneMoods },
-  { a: 14.0, b: 17.0, fn: sceneSpeed },
-  { a: 17.0, b: 18.0, fn: sceneLoading },
-  { a: 18.0, b: 22.0, fn: sceneResults },
-  { a: 22.0, b: 23.0, fn: (x, lt, t) => sceneFeature(x, lt, t, 0) },
-  { a: 23.0, b: 24.0, fn: (x, lt, t) => sceneFeature(x, lt, t, 1) },
-  { a: 24.0, b: 25.0, fn: (x, lt, t) => sceneFeature(x, lt, t, 2) },
-  { a: 25.0, b: 26.0, fn: (x, lt, t) => sceneFeature(x, lt, t, 3) },
-  { a: 26.0, b: 30.01, fn: sceneLogo },
-];
-
-/* effets globaux : flashs aux coupes, aberration aux impacts, tremblements, barres */
-const CUTS = [2.0, 6.0, 8.0, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 17.0, 18.0, 22.0, 23.0, 24.0, 25.0, 26.0];
-const IMPACTS = [{ t: 6.0, a: 1 }, { t: 10.0, a: 0.8 }, { t: 18.0, a: 1.4 }, { t: 22.0, a: 0.7 }, { t: 24.0, a: 0.9 }, { t: 26.72, a: 0.8 }];
-function fxAt(t) {
-  const fx = { letterbox: 0, grain: 0.13, vignette: 0.85, bloom: 0.3, chroma: 0, shake: { x: 0, y: 0 }, flash: 0, flashCol: [255, 255, 255], fade: 0 };
-  // barres 2.39:1 pendant l'ouverture, qui s'ouvrent sur « On part de ton moment »
-  if (!PORT) fx.letterbox = t < 6.0 ? 1 : 1 - E.inOutCubic(prog(t, 6.0, 6.6));
-  else fx.letterbox = 0;
-  if (t < 2.0 || t >= 26.0) { fx.grain = 0.17; fx.bloom = 0.85; }
-  if (t >= 2.0 && t < 6.0) fx.grain = 0.16;
-  for (const c of CUTS) {
-    const d = t - c;
-    if (c === 2.0 || c === 26.0) continue; // pas de flash sur les plans néon : il délaverait les noirs
-    if (d >= 0 && d < 0.07) fx.flash = Math.max(fx.flash, 0.14 * (1 - d / 0.07));
-  }
-  for (const im of IMPACTS) {
-    const d = t - im.t;
-    if (d >= 0 && d < 0.35) {
-      const k = 1 - d / 0.35;
-      fx.chroma = Math.max(fx.chroma, 9 * im.a * k * k);
-      const s = shake(t, 14 * im.a * k * k, 30, im.t);
-      fx.shake.x += s.x; fx.shake.y += s.y;
-      if (d < 0.06) { fx.flash = Math.max(fx.flash, 0.4 * im.a * (1 - d / 0.06)); fx.flashCol = [255, 120, 140]; }
-    }
-  }
-  // glitch de sortie du scroll
-  if (t > 5.82 && t < 6.0) fx.chroma = Math.max(fx.chroma, 14);
-  fx.fade = Math.max(1 - prog(t, 0, 0.12), E.inCubic(prog(t, 29.35, 30)));
-  return fx;
-}

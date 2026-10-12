@@ -1,0 +1,17 @@
+{
+  "name": "cinemood-pub",
+  "private": true,
+  "description": "Film publicitaire CinéMood (30 s) généré par code",
+  "scripts": {
+    "build": "./build.sh"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1",
+    "@audio-samples/piano-mp3-velocity4": "1.0.5",
+    "@audio-samples/piano-mp3-velocity8": "1.0.5",
+    "@audio-samples/piano-mp3-velocity12": "1.0.5",
+    "@fluid-music/tr-808": "0.0.2",
+    "soundfont-for-samplers": "0.0.3",
+    "uisfx": "0.4.0"
+  }
+}

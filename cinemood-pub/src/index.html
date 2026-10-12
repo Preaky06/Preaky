@@ -20,40 +20,80 @@ canvas { display: block; }
 <script src="assets.js"></script>
 <script src="ui.js"></script>
 <script src="scenes.js"></script>
+<script src="gate.js"></script>
+<script src="features.js"></script>
+<script src="edit.js"></script>
 <script>
 async function setup(w, h) {
   const faces = ['400 40px Anton', '400 40px Archivo', '500 40px Archivo', '600 40px Archivo', '700 40px Archivo', '800 40px Archivo'];
   await Promise.all(faces.map(f => document.fonts.load(f, 'CINÉMOOD àéè’ 0123')));
   setupEngine(w, h);
   NB = mkCanvas(w, h); NX = NB.getContext('2d');
+  ACC = mkCanvas(w, h); AX = ACC.getContext('2d');
   setupAssets();
   setupUI();
   return true;
 }
 
-function renderFrame(f) {
-  const t = f / FPS;
+/* une image de scène au temps tk ; les scènes sont choisies au temps central tc
+   pour qu'une coupe franche ne se mélange jamais avec le plan suivant */
+function renderScene(tk, tc) {
   resetCtx(SX);
   SX.fillStyle = '#000';
   SX.fillRect(0, 0, W, H);
   for (const sc of TIMELINE) {
-    if (t >= sc.a && t < sc.b) {
+    if (tc >= sc.a && tc < sc.b) {
+      const tt = Math.min(Math.max(tk, sc.a), sc.b - 1e-4);
       SX.save();
-      sc.fn(SX, t - sc.a, t);
+      sc.fn(SX, tt - sc.a, tt);
       SX.restore();
       resetCtx(SX);
     }
   }
-  post(t, f);
+}
+
+/* flou de mouvement : moyenne de n sous-images réparties sur l'obturateur.
+   Au-delà de 4 sous-images, l'accumulation se fait en flottant (pas de perte sur 8 bits). */
+let ACCF = null, ACCI = null;
+function renderFrame(f) {
+  const t = f / FPS;
+  const mb = motionBlurAt(t);
+  let src = SB;
+  const sub = (k) => t + (((k + 0.5) / mb.n) - 0.5) * mb.shutter / FPS;
+  if (mb.n <= 1) renderScene(t, t);
+  else if (mb.n <= 4) {
+    resetCtx(AX);
+    for (let k = 0; k < mb.n; k++) {
+      renderScene(sub(k), t);
+      AX.globalAlpha = 1 / (k + 1);
+      AX.drawImage(SB, 0, 0);
+    }
+    src = ACC;
+  } else {
+    const N = W * H * 4;
+    if (!ACCF) { ACCF = new Float32Array(N); ACCI = AX.createImageData(W, H); }
+    ACCF.fill(0);
+    for (let k = 0; k < mb.n; k++) {
+      renderScene(sub(k), t);
+      const d = SX.getImageData(0, 0, W, H).data;
+      for (let i = 0; i < N; i++) ACCF[i] += d[i];
+    }
+    const od = ACCI.data, inv = 1 / mb.n;
+    for (let i = 0; i < N; i++) od[i] = ACCF[i] * inv + 0.5;
+    resetCtx(AX);
+    AX.putImageData(ACCI, 0, 0);
+    src = ACC;
+  }
+  post(t, f, src);
   return true;
 }
 
-function post(t, f) {
+function post(t, f, src) {
   const fx = fxAt(t);
   resetCtx(MX);
   const sc = 1 + (Math.abs(fx.shake.x) + Math.abs(fx.shake.y) > 0 ? 0.02 : 0);
-  if (fx.chroma > 0.4) chromaCopy(MX, SB, fx.chroma, fx.shake.x, fx.shake.y, sc);
-  else { MX.fillStyle = '#000'; MX.fillRect(0, 0, W, H); drawScaled(MX, SB, fx.shake.x, fx.shake.y, sc); }
+  if (fx.chroma > 0.4) chromaCopy(MX, src, fx.chroma, fx.shake.x, fx.shake.y, sc);
+  else { MX.fillStyle = '#000'; MX.fillRect(0, 0, W, H); drawScaled(MX, src, fx.shake.x, fx.shake.y, sc); }
   applyBloom(MX, MAIN, fx.bloom);
   if (fx.flash > 0) {
     // flash d'exposition : on surexpose les lumières de l'image plutôt que de voiler les noirs

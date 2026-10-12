@@ -3,7 +3,7 @@
 #   ./build.sh            → 16:9 (1920×1080) et 9:16 (1080×1920), 60 i/s
 #   ./build.sh 169        → seulement le 16:9
 #   ./build.sh 916        → seulement le 9:16
-# Prérequis : node + playwright (Chromium), python3 + numpy + scipy + pyloudnorm, ffmpeg.
+# Prérequis : npm install (Playwright + banques de sons), python3 + numpy + scipy + pyloudnorm, ffmpeg.
 set -euo pipefail
 cd "$(dirname "$0")"
 WORK="${WORK:-/tmp/cinemood-frames}"
@@ -13,7 +13,7 @@ mkdir -p out "$WORK"
 
 # 1. son : intensité du néon image par image, puis synthèse de la bande-son
 node render.mjs neon 640 360 audio
-python3 audio/synth.py audio/neon.json audio/music.wav
+python3 audio/score.py audio/neon.json audio/music.wav
 
 encode() { # $1 dossier d'images, $2 fichier de sortie
   ffmpeg -hide_banner -loglevel warning -stats -y \

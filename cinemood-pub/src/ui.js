@@ -102,34 +102,43 @@ function drawQuiz(st) {
   x.fillStyle = COL.red;
   x.fillRect(x0, py, cw * clamp(st.progress == null ? st.step / 12 : st.progress), 3 * k);
 
-  // contenu de la question (glisse latéralement à chaque changement)
+  // contenu : la question précédente sort pendant que la nouvelle entre (poussée latérale)
+  if (st.prev) quizContent(x, st.prev);
+  quizContent(x, st);
+  return UIB;
+}
+
+/* titre + cartes d'une question ; c.dx décale le bloc (px), c.alpha l'estompe */
+function quizContent(x, c) {
+  const { k, x0 } = UIL;
   x.save();
-  x.translate((st.slide || 0) * k, 0);
-  x.globalAlpha = clamp(st.alpha == null ? 1 : st.alpha);
+  x.translate((c.dx || 0) + (c.slide || 0) * k, 0);
+  const A = clamp(c.alpha == null ? 1 : c.alpha);
+  x.globalAlpha = A;
   const ky = 197 * k;
-  const kp = clamp(st.kickerP == null ? 1 : st.kickerP);
+  const kp = clamp(c.kickerP == null ? 1 : c.kickerP);
   x.fillStyle = COL.red;
   x.fillRect(x0, ky - 4 * k, 20 * k * E.outCubic(kp), 2 * k);
-  x.globalAlpha *= E.outCubic(kp);
-  drawText(x, st.kicker.toUpperCase(), x0 + 29 * k, ky, 11.5 * k, { fam: 'Archivo', wt: 600, track: 0.22, color: COL.red });
-  x.globalAlpha = clamp(st.alpha == null ? 1 : st.alpha);
+  x.globalAlpha = A * E.outCubic(kp);
+  drawText(x, c.kicker.toUpperCase(), x0 + 29 * k, ky, 11.5 * k, { fam: 'Archivo', wt: 600, track: 0.22, color: COL.red });
+  x.globalAlpha = A;
   // titre
-  const opts = st.options || [];
-  const G = quizGeom(st.title, opts.length);
+  const opts = c.options || [];
+  const G = quizGeom(c.title, opts.length);
   let ty = G.ty;
   G.lines.forEach((ln, li) => {
-    revealWords(x, ln, x0, ty, G.ts, (st.titleT == null ? 9 : st.titleT) - li * 0.08, { fam: 'Anton', color: COL.ink, stagger: 0.05, dur: 0.5, asc: 1.05 });
+    revealWords(x, ln, x0, ty, G.ts, (c.titleT == null ? 9 : c.titleT) - li * 0.08, { fam: 'Anton', color: COL.ink, stagger: 0.05, dur: 0.5, asc: 1.05 });
     ty += G.ts * 1.06;
   });
   // options
   const { gap, colsN, cwid, ch, gy } = G;
   opts.forEach((o, i) => {
-    const c = i % colsN, r = Math.floor(i / colsN);
-    const appearT = (st.optT == null ? 9 : st.optT) - (0.05 + i * 0.045);
+    const cc = i % colsN, r = Math.floor(i / colsN);
+    const appearT = (c.optT == null ? 9 : c.optT) - (0.05 + i * 0.045);
     const ap = E.outCubic(clamp(appearT / 0.38));
     if (ap <= 0) return;
-    const X = x0 + c * (cwid + gap), Y = gy + r * (ch + gap) + (1 - ap) * 22 * k;
-    const sel = st.sel === i ? E.outCubic(clamp(st.selP == null ? 1 : st.selP)) : 0;
+    const X = x0 + cc * (cwid + gap), Y = gy + r * (ch + gap) + (1 - ap) * 22 * k;
+    const sel = c.sel === i ? E.outCubic(clamp(c.selP == null ? 1 : c.selP)) : 0;
     x.save();
     x.globalAlpha *= ap;
     // halo rouge sous la carte choisie
@@ -155,7 +164,6 @@ function drawQuiz(st) {
       x.fillRect(X, Y, cwid, ch);
     }
     boxStroke(x, X, Y, cwid, ch, sel > 0 ? `rgba(255,45,79,${0.25 + 0.6 * sel})` : 'rgba(246,238,240,0.13)', Math.max(1, k));
-    // barre gauche
     if (sel > 0) { x.fillStyle = COL.red; x.fillRect(X, Y + ch * (1 - sel), 3 * k, ch * sel); }
     drawText(x, o.num, X + 21 * k, Y + 30 * k, 10.5 * k, { fam: 'Archivo', wt: 500, track: 0.2, color: COL.red });
     const ls = Math.min(19 * k, fitSize(o.label, cwid - 42 * k, 19 * k, { fam: 'Archivo', wt: 600 }));
@@ -168,7 +176,6 @@ function drawQuiz(st) {
     x.restore();
   });
   x.restore();
-  return UIB;
 }
 
 function wrapWords(s, size, maxW, o = { fam: 'Anton' }) {

@@ -20,6 +20,7 @@ const INK = [246, 238, 240];
 let W = 1920, H = 1080, U = 1, PORT = false, CX = 960, CY = 540;
 let MAIN, MX;      // canvas visible (sortie)
 let SB, SX;        // tampon de scène
+let ACC, AX;       // accumulation du flou de mouvement
 let MB, MM;        // contexte de mesure
 let TMP, TX, TMP2, T2X;
 let HB, HX, HB2, H2X; // demi-résolution (lueurs)
@@ -400,7 +401,9 @@ function drawPanelY(ctx, img, dx, dy, dw, dh, angle, o = {}) {
     const k = (p0.k + p1.k) / 2;
     const h = dh * k;
     const x0 = Math.min(p0.x, p1.x), w = Math.abs(p1.x - p0.x) + 0.6;
-    ctx.drawImage(img, i * sw, 0, sw, img.height, x0, ccy - h / 2, w, h);
+    // mirrorBelow : l'image (déjà retournée) est posée sous le bord inférieur de la bande
+    const y0 = o.mirrorBelow ? ccy + h / 2 : ccy - h / 2;
+    ctx.drawImage(img, i * sw, 0, sw, img.height, x0, y0, w, h);
   }
 }
 
@@ -419,7 +422,7 @@ function setupEngine(w, h) {
   MAIN = document.getElementById('c');
   MAIN.width = w; MAIN.height = h;
   MX = MAIN.getContext('2d');
-  SB = mkCanvas(w, h); SX = SB.getContext('2d');
+  SB = mkCanvas(w, h); SX = SB.getContext('2d', { willReadFrequently: true });
   MB = mkCanvas(8, 8); MM = MB.getContext('2d');
   TMP = mkCanvas(w, h); TX = TMP.getContext('2d');
   TMP2 = mkCanvas(w, h); T2X = TMP2.getContext('2d');
