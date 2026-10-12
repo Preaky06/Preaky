@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, 'src');
 const HOST = 'http://film.local/';
+const PAGE = process.env.PAGE || 'index.html'; // motion.html pour la version motion design
 const TYPES = { '.html': 'text/html', '.js': 'application/javascript', '.woff2': 'font/woff2' };
 
 const [mode, ws, hs, outDir, ...rest] = process.argv.slice(2);
@@ -21,14 +22,14 @@ async function openPage(browser) {
   await page.route('**/*', (route) => {
     const u = route.request().url();
     if (!u.startsWith(HOST)) return route.abort();
-    const rel = decodeURIComponent(u.slice(HOST.length).split('?')[0]) || 'index.html';
+    const rel = decodeURIComponent(u.slice(HOST.length).split('?')[0]) || PAGE;
     const file = path.join(SRC, rel);
     if (!file.startsWith(SRC) || !fs.existsSync(file)) return route.fulfill({ status: 404, body: '' });
     return route.fulfill({ status: 200, contentType: TYPES[path.extname(file)] || 'application/octet-stream', body: fs.readFileSync(file) });
   });
   page.on('pageerror', (e) => console.error('pageerror:', e.message));
   page.on('console', (m) => { if (m.type() === 'error') console.error('console:', m.text()); });
-  await page.goto(HOST + 'index.html');
+  await page.goto(HOST + PAGE);
   await page.evaluate(([w, h]) => window.setup(w, h), [W, H]);
   return page;
 }
