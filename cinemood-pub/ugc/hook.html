@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogue</title>
+<style>
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(/fonts/archivo-500.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 700; src: url(/fonts/archivo-700.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 800; src: url(/fonts/archivo-800.woff2) format('woff2'); }
+html, body { margin: 0; background: #0b0c10; color: #eef0f5; font-family: Archivo, sans-serif; }
+header { position: sticky; top: 0; z-index: 2; padding: 14px 16px 10px; background: linear-gradient(#0b0c10 70%, rgba(11,12,16,0)); }
+.top { display: flex; align-items: center; justify-content: space-between; }
+.top b { font-weight: 800; font-size: 22px; letter-spacing: -.01em; }
+.icons { display: flex; gap: 16px; align-items: center; }
+.icons span { width: 22px; height: 22px; border: 2px solid #c9ccd6; border-radius: 50%; box-sizing: border-box; }
+.icons i { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #4b6cb7, #182848); display: block; }
+.tabs { display: flex; gap: 10px; margin-top: 12px; }
+.tabs span { font-size: 13px; font-weight: 700; padding: 7px 13px; border: 1px solid #3a3d48; border-radius: 18px; color: #c9ccd6; }
+.hero { margin: 4px 16px 18px; height: 400px; border-radius: 10px; background-size: cover; background-position: center; position: relative; overflow: hidden; }
+.hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,0) 45%, rgba(11,12,16,.95)); }
+.hero div { position: absolute; left: 0; right: 0; bottom: 18px; z-index: 1; display: flex; gap: 10px; justify-content: center; }
+.hero div span { font-weight: 700; font-size: 15px; padding: 10px 26px; border-radius: 6px; background: #eef0f5; color: #0b0c10; }
+.hero div span + span { background: rgba(255,255,255,.18); color: #eef0f5; }
+h3 { margin: 0 16px 9px; font-size: 17px; font-weight: 700; }
+.row { display: flex; gap: 8px; padding: 0 16px 20px; overflow: hidden; }
+.row img { width: 112px; height: 168px; border-radius: 6px; flex: none; object-fit: cover; background: #222; }
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><b>Pour toi</b><div class="icons"><span></span><i></i></div></div>
+  <div class="tabs"><span>Films</span><span>Séries</span><span>Catégories ▾</span></div>
+</header>
+<div class="hero" id="hero"><div><span>▶ Lecture</span><span>+ Ma liste</span></div></div>
+<div id="rows"></div>
+<script>
+const ids = new URLSearchParams(location.search).get('ids').split(',');
+document.getElementById('hero').style.backgroundImage = `url(/img/cmb${ids[3]}.png)`;
+const titles = ['Tendances actuelles', 'Parce que tu as regardé « Haute Mer »', 'Les plus regardés cette semaine', 'Nouveautés',
+  'Reprendre la lecture', 'Comédies', 'Pépites à découvrir', 'Thrillers haletants', 'Films primés', 'Science-fiction',
+  'Pour une soirée à deux', 'Classiques', 'Coups de cœur', 'Ils arrivent bientôt', 'Tu vas adorer'];
+let k = 0;
+for (const t of titles) {
+  const row = document.createElement('div');
+  row.innerHTML = `<h3>${t}</h3><div class="row">${Array.from({ length: 5 }, () => `<img src="/img/cm${ids[(k++ * 7) % ids.length]}.png">`).join('')}</div>`;
+  document.getElementById('rows').appendChild(row);
+}
+</script>
+</body>
+</html>

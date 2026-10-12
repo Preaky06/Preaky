@@ -63,6 +63,35 @@ Les titres de films et le « Pourquoi lui » sont des exemples fictifs, signalé
 
 Reconstruire : `node carousel/export.mjs` (source : `carousel/slides.html`).
 
+## Vidéo UGC (enregistrement d'écran, 9:16)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/ugc/cinemood-ugc-9x16.mp4` | 1080×1920, 30 i/s, H.264 + AAC, 24 s | TikTok, Reels, Shorts (format « POV » sans visage) |
+| `out/ugc/couverture-ugc.png` | image de l'accroche | couverture |
+
+Le format imite un utilisateur qui filme son écran : accroche dans une appli de streaming générique
+(« pov : ça fait 40 min que tu scrolles… »), saisie de l'adresse dans le navigateur, puis le **vrai
+site** — page d'accueil, les 12 questions (M'évader → Un autre monde → L'espace → …), le chargement
+et les résultats calculés par le moteur du site. Sous-titres façon TikTok, doigt visible, zooms de
+montage, musique lo-fi qui s'ouvre quand le site apparaît.
+
+Comment c'est fait : le site (archive fournie) tourne dans un Chromium mobile hors ligne ; les appels
+à TMDB sont servis par un **catalogue fictif** (`ugc/catalog.mjs`, affiches générées par
+`ugc/posters.mjs`). L'interface, les questions, le classement et les textes « Pourquoi lui » sont ceux
+du site ; les films, eux, n'existent pas — d'où la mention « démo · titres fictifs » sur les résultats.
+L'horloge, les animations CSS et le défilement sont pilotés image par image (`ugc/site.mjs`).
+
+Reconstruire :
+
+```bash
+unzip cinem00d.zip -d /tmp/site              # l'archive du site
+node ugc/posters.mjs /tmp/ugc-img
+SITE_DIR=/tmp/site/site-simple IMG_DIR=/tmp/ugc-img node ugc/capture.mjs /tmp/ugc-raw
+node ugc/compose.mjs /tmp/ugc-raw /tmp/ugc-final
+python3 audio/score_ugc.py /tmp/ugc-raw/meta.json audio/music_ugc.wav
+```
+
 ## Version cinématographique
 
 ### Fichiers livrés
@@ -101,7 +130,7 @@ et se résout sur le la au logo. Bruitages conçus en couches : pluie, transform
 du néon, claquement de griffe et moteur du projecteur, whooshes à effet Doppler, cymbales
 inversées, impacts (taiko, timbales, 808, sous-grave), ralentissement de bande.
 
-## Crédits des sons (deux versions — à reprendre dans la description de la publication)
+## Crédits des sons (toutes les vidéos — à reprendre dans la description de la publication)
 
 - Piano : *Salamander Grand Piano V3* par Alexander Holm — licence [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
 - Cordes, chœur, taiko, timbales : *FluidR3 GM* par Frank Wen — licence MIT
