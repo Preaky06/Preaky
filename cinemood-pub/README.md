@@ -57,8 +57,9 @@ souligne « TON MOMENT ? », relie les questions, choisit « M'ÉVADER », passe
 devient la séparation du mode duo, raye le formulaire d'inscription et finit en soulignement du logo.
 Chaque bord de slide reprend le fil exactement là où la précédente l'a laissé.
 
-Textes repris du site (questions, humeurs et sous-titres, étapes du parcours). Les titres de films
-et le « Pourquoi lui » de la slide 6 sont des exemples fictifs, signalés par la pastille EXEMPLE.
+Textes repris du site (questions, humeurs et sous-titres, étapes du parcours). La slide 6 montre
+huit films, le nombre que le site renvoie en mode gratuit (`PRO_RESULTS = 8` dans moodflix-account.js).
+Les titres de films et le « Pourquoi lui » sont des exemples fictifs, signalés par la pastille EXEMPLE.
 
 Reconstruire : `node carousel/export.mjs` (source : `carousel/slides.html`).
 
