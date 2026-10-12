@@ -228,9 +228,9 @@ function mTwelve(x, t) {
     qs = fitSize('QUESTIONS.', W * 0.84, W, { fam: 'Anton' }); qx = CX; qy = ny + qs * 1.15; lx = CX; ly = qy + 80 * U; al = 'center';
   } else {
     big = H * 0.56; ny = CY + capH(big) / 2;
-    const w12 = textWidth('12', big, { fam: 'Anton' });
-    nx = M + w12 / 2;
-    qs = H * 0.2; qx = M + w12 + 50 * U; qy = CY + capH(qs) * 0.15; lx = qx; ly = qy + 70 * U; al = 'left';
+    const c12 = textWidth('0', big, { fam: 'Anton' }) * 1.02;
+    nx = M + c12;
+    qs = H * 0.2; qx = nx + c12 + 70 * U; qy = CY + capH(qs) * 0.15; lx = qx; ly = qy + 70 * U; al = 'left';
   }
   const cell = textWidth('0', big, { fam: 'Anton' }) * 1.02;
   x.save();
@@ -699,7 +699,7 @@ function motionBlurAt(t) {
   const W_ = (a, b) => t >= a && t < b;
   const win = [
     [0.95, 1.62, 16, 0.8], [2.0, 2.42, 12, 1], [3.95, 4.38, 16, 1], [5.5, 6.15, 24, 1], [7.55, 8.05, 24, 1],
-    [8.05, 8.55, 8, 0.8], [8.95, 9.32, 16, 1], [13.55, 14.05, 16, 1], [15.1, 15.75, 8, 0.8], [15.85, 16.25, 12, 1],
+    [8.05, 8.55, 8, 0.8], [8.95, 9.32, 40, 1], [13.55, 14.05, 16, 1], [15.1, 15.75, 8, 0.8], [15.85, 16.25, 12, 1],
     [17.75, 18.47, 12, 1], [19.85, 20.25, 16, 1], [20.85, 21.08, 16, 1], [21.48, 21.88, 8, 0.9], [22.4, 22.82, 12, 1],
     [25.0, 25.55, 12, 1], [25.55, 25.95, 6, 0.8],
   ];
