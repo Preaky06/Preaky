@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CinéMood — film</title>
+<style>
+@font-face { font-family: 'Anton'; font-weight: 400; src: url(fonts/anton.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 400; src: url(fonts/archivo-400.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(fonts/archivo-500.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 600; src: url(fonts/archivo-600.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 700; src: url(fonts/archivo-700.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 800; src: url(fonts/archivo-800.woff2) format('woff2'); }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="engine.js"></script>
+<script src="assets.js"></script>
+<script src="ui.js"></script>
+<script src="scenes.js"></script>
+<script>
+async function setup(w, h) {
+  const faces = ['400 40px Anton', '400 40px Archivo', '500 40px Archivo', '600 40px Archivo', '700 40px Archivo', '800 40px Archivo'];
+  await Promise.all(faces.map(f => document.fonts.load(f, 'CINÉMOOD àéè’ 0123')));
+  setupEngine(w, h);
+  NB = mkCanvas(w, h); NX = NB.getContext('2d');
+  setupAssets();
+  setupUI();
+  return true;
+}
+
+function renderFrame(f) {
+  const t = f / FPS;
+  resetCtx(SX);
+  SX.fillStyle = '#000';
+  SX.fillRect(0, 0, W, H);
+  for (const sc of TIMELINE) {
+    if (t >= sc.a && t < sc.b) {
+      SX.save();
+      sc.fn(SX, t - sc.a, t);
+      SX.restore();
+      resetCtx(SX);
+    }
+  }
+  post(t, f);
+  return true;
+}
+
+function post(t, f) {
+  const fx = fxAt(t);
+  resetCtx(MX);
+  const sc = 1 + (Math.abs(fx.shake.x) + Math.abs(fx.shake.y) > 0 ? 0.02 : 0);
+  if (fx.chroma > 0.4) chromaCopy(MX, SB, fx.chroma, fx.shake.x, fx.shake.y, sc);
+  else { MX.fillStyle = '#000'; MX.fillRect(0, 0, W, H); drawScaled(MX, SB, fx.shake.x, fx.shake.y, sc); }
+  applyBloom(MX, MAIN, fx.bloom);
+  if (fx.flash > 0) {
+    resetCtx(MX);
+    MX.globalCompositeOperation = 'screen';
+    MX.fillStyle = rgba(fx.flashCol, fx.flash);
+    MX.fillRect(0, 0, W, H);
+  }
+  applyVignette(MX, fx.vignette);
+  applyGrain(MX, f, fx.grain);
+  resetCtx(MX);
+  if (fx.letterbox > 0) {
+    const bar = ((H - W / 2.39) / 2) * fx.letterbox;
+    MX.fillStyle = '#000';
+    MX.fillRect(0, 0, W, bar);
+    MX.fillRect(0, H - bar, W, bar);
+  }
+  if (fx.fade > 0) {
+    MX.fillStyle = `rgba(0,0,0,${clamp(fx.fade)})`;
+    MX.fillRect(0, 0, W, H);
+  }
+}
+window.setup = setup;
+window.renderFrame = renderFrame;
+</script>
+</body>
+</html>
