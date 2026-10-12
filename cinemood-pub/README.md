@@ -11,8 +11,10 @@ polices du site (Anton et Archivo, licence SIL OFL).
 | --- | --- | --- |
 | `out/cinemood-pub-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | YouTube, site, LinkedIn, écran |
 | `out/cinemood-pub-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/couverture-16x9.png`, `out/couverture-9x16.png` | image fixe du plan final | miniature / couverture de publication |
 
-Son normalisé à −14 LUFS (niveau de référence des plateformes sociales).
+Son normalisé à −14 LUFS (niveau de référence des plateformes sociales), crête vraie −3,2 dBTP.
+Vidéo encodée en CRF 15 (≈ 10,5 Mb/s) : un master riche qui encaisse mieux la recompression des plateformes.
 
 ## Découpage (120 BPM : 1 temps = 0,5 s)
 

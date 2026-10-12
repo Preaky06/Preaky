@@ -19,7 +19,7 @@ encode() { # $1 dossier d'images, $2 fichier de sortie
   ffmpeg -hide_banner -loglevel warning -stats -y \
     -framerate 60 -i "$1/f%05d.png" -i audio/music.wav \
     -vf "scale=out_color_matrix=bt709:out_range=tv:flags=lanczos,format=yuv420p" \
-    -c:v libx264 -preset slow -crf 18 -profile:v high -level 4.2 \
+    -c:v libx264 -preset slow -crf 15 -profile:v high -level 4.2 \
     -x264-params "aq-mode=3:deblock=-1,-1" \
     -color_primaries bt709 -color_trc bt709 -colorspace bt709 \
     -c:a aac -b:a 256k -ar 48000 -shortest -movflags +faststart "$2"
