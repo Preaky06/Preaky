@@ -44,6 +44,24 @@ feutre de l'ellipse et des ratures, frappe des touches de l'adresse.
 Reconstruire : `./build-motion.sh` (ou `./build-motion.sh 169` / `916`).
 Aperçu : `PAGE=motion.html node render.mjs stills 1920 1080 /tmp/apercu 1.9 14.9 27.9`.
 
+## Carrousel (Instagram, LinkedIn)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/carousel/cinemood-carrousel-01.png` … `-09.png` | 9 images 1080×1350 (4:5) | carrousel Instagram, Facebook |
+| `out/carousel/cinemood-carrousel.pdf` | PDF de 9 pages 1080×1350, texte vectoriel | post « document » LinkedIn |
+| `out/carousel/apercu-panorama.png` | les 9 slides bout à bout | aperçu du fil rouge |
+
+Un fil rouge continu traverse les 9 slides : il souligne « 30:00 », barre « ABANDONNER. »,
+souligne « TON MOMENT ? », relie les questions, choisit « M'ÉVADER », passe par le film n°1,
+devient la séparation du mode duo, raye le formulaire d'inscription et finit en soulignement du logo.
+Chaque bord de slide reprend le fil exactement là où la précédente l'a laissé.
+
+Textes repris du site (questions, humeurs et sous-titres, étapes du parcours). Les titres de films
+et le « Pourquoi lui » de la slide 6 sont des exemples fictifs, signalés par la pastille EXEMPLE.
+
+Reconstruire : `node carousel/export.mjs` (source : `carousel/slides.html`).
+
 ## Version cinématographique
 
 ### Fichiers livrés
