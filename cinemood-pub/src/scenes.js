@@ -780,6 +780,27 @@ function sceneResults(x, lt, t) {
     cy = lerp(cy, CY + H * 0.17, aside);
   }
   placePanel(x, img, { cx, cy, s, ry });
+  // onde de choc de la chute : les 5 points rouges du chargement éclatent en résultats
+  if (lt < 0.5) {
+    const p = lt / 0.5;
+    const R = Math.max(W, H) * 0.9 * E.outCubic(p);
+    const oy = PORT ? CY - 120 * U : CY - 70 * U;
+    x.save();
+    x.globalCompositeOperation = 'lighter';
+    const core = x.createRadialGradient(CX, oy, 0, CX, oy, Math.max(W, H) * 0.45);
+    core.addColorStop(0, `rgba(255,90,120,${0.85 * (1 - p) * (1 - p)})`);
+    core.addColorStop(1, 'rgba(255,45,79,0)');
+    x.fillStyle = core;
+    x.fillRect(0, 0, W, H);
+    for (const [k, a] of [[1, 0.9], [0.82, 0.45]]) {
+      x.strokeStyle = `rgba(255,70,100,${a * (1 - p)})`;
+      x.lineWidth = (26 * (1 - p) + 2) * U;
+      x.shadowColor = 'rgba(255,45,79,0.9)';
+      x.shadowBlur = 40 * U;
+      x.beginPath(); x.arc(CX, oy, R * k, 0, Math.PI * 2); x.stroke();
+    }
+    x.restore();
+  }
   // légende éditoriale
   if (aside > 0) {
     const ls = PORT ? 118 * U : 124 * U;
@@ -1067,7 +1088,7 @@ function fxAt(t) {
   for (const c of CUTS) {
     const d = t - c;
     if (c === 2.0 || c === 26.0) continue; // pas de flash sur les plans néon : il délaverait les noirs
-    if (d >= 0 && d < 0.1) fx.flash = Math.max(fx.flash, 0.12 * (1 - d / 0.1));
+    if (d >= 0 && d < 0.07) fx.flash = Math.max(fx.flash, 0.14 * (1 - d / 0.07));
   }
   for (const im of IMPACTS) {
     const d = t - im.t;
@@ -1076,7 +1097,7 @@ function fxAt(t) {
       fx.chroma = Math.max(fx.chroma, 9 * im.a * k * k);
       const s = shake(t, 14 * im.a * k * k, 30, im.t);
       fx.shake.x += s.x; fx.shake.y += s.y;
-      if (d < 0.08) { fx.flash = Math.max(fx.flash, 0.4 * im.a * (1 - d / 0.08)); fx.flashCol = im.t === 18.0 ? [255, 120, 140] : [255, 255, 255]; }
+      if (d < 0.06) { fx.flash = Math.max(fx.flash, 0.4 * im.a * (1 - d / 0.06)); fx.flashCol = [255, 120, 140]; }
     }
   }
   // glitch de sortie du scroll

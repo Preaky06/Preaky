@@ -56,9 +56,17 @@ function post(t, f) {
   else { MX.fillStyle = '#000'; MX.fillRect(0, 0, W, H); drawScaled(MX, SB, fx.shake.x, fx.shake.y, sc); }
   applyBloom(MX, MAIN, fx.bloom);
   if (fx.flash > 0) {
+    // flash d'exposition : on surexpose les lumières de l'image plutôt que de voiler les noirs
+    resetCtx(TX);
+    TX.clearRect(0, 0, W, H);
+    TX.drawImage(MAIN, 0, 0);
     resetCtx(MX);
+    MX.globalCompositeOperation = 'lighter';
+    MX.globalAlpha = clamp(fx.flash * 1.6);
+    MX.drawImage(TMP, 0, 0);
+    MX.globalAlpha = 1;
     MX.globalCompositeOperation = 'screen';
-    MX.fillStyle = rgba(fx.flashCol, fx.flash);
+    MX.fillStyle = rgba(fx.flashCol, fx.flash * 0.12);
     MX.fillRect(0, 0, W, H);
   }
   applyVignette(MX, fx.vignette);
