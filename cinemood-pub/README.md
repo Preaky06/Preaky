@@ -4,7 +4,8 @@ Films promotionnels pour [cinem00d.com](https://cinem00d.com), entièrement gén
 images calculées une à une dans Chromium (canvas 2D, flou de mouvement par sous-images),
 bande-son composée en Python à partir d'instruments échantillonnés libres de droits,
 encodage avec ffmpeg. Deux versions : **motion design typographique** (la plus récente)
-et **film cinématographique** (néon, pellicule, interface).
+et **film cinématographique** (néon, pellicule, interface), plus un carrousel, une vidéo UGC et un
+**motion design explicatif du site** (44 s, interface réelle).
 
 ## Version motion design (typographie seule)
 
@@ -92,6 +93,41 @@ node ugc/compose.mjs /tmp/ugc-raw /tmp/ugc-final
 python3 audio/score_ugc.py /tmp/ugc-raw/meta.json audio/music_ugc.wav
 ```
 
+## Motion design du site (explainer, 44 s)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/explainer/cinemood-explainer-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | page d'accueil, YouTube, LinkedIn, présentation |
+| `out/explainer/cinemood-explainer-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/explainer/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Vidéo explicative construite sur **l'interface réelle de la version actuelle du site** (8 questions) :
+captures haute définition (téléphone ×3, bureau ×1,5) animées dans le moteur de motion design. Le fil
+conducteur est le temps : un chrono ouvre le film et revient à chaque étape.
+
+| Temps | Plan |
+| --- | --- |
+| 0–5 s | « TU PASSES 30:00 À CHERCHER QUOI REGARDER. » sur un mur d'affiches qui défile ; le compteur se verrouille puis rembobine à 01:00 |
+| 5–8 s | « ET SI ÇA PRENAIT UNE MINUTE ? » puis le titre du site, « TON HUMEUR CHOISIT TON CINÉMA », en néon |
+| 8–11,3 s | raccord sur le même titre dans la vraie page d'accueil (navigateur ou téléphone), clic sur « Commencer », plongée dans le rouge |
+| 11,3–18 s | **01 · TU DIS COMMENT TU TE SENS.** Les neuf tickets d'humeur ; « Rêveur » se détache, se déchire à la perforation ; puis les 7 questions qui suivent défilent dans le téléphone, compteur de questions et chrono à côté |
+| 18–24 s | **02 · CHAQUE FILM EST VÉRIFIÉ DEUX FOIS.** Un tapis de 12 candidats passe deux portes (genres, puis mots-clés) ; un film très populaire est écarté ; « 8 FILMS PASSENT TES FILTRES. » |
+| 24–30,4 s | **03 · TON MEILLEUR CHOIX, ET 4 AUTRES.** La vraie carte n°1 : score, jauges qui se remplissent, « Pourquoi lui » mis en évidence, puis les quatre alternatives |
+| 30,4–36 s | « TA SOIRÉE, AVANT ET APRÈS. » : deux frises de 21:00 à 21:40, 30 min de recherche contre 1 min ; « 29 MINUTES DE FILM EN PLUS. » |
+| 36–40 s | MODE DUO (« DEUX HUMEURS. UN SEUL FILM. »), GRATUIT., SANS INSCRIPTION. |
+| 40–44 s | logo, titre en néon, adresse tapée dans sa pastille, « 8 QUESTIONS · UNE MINUTE · GRATUIT, SANS INSCRIPTION » |
+
+Les films et affiches sont fictifs (catalogue de `ugc/catalog.mjs`), ce que dit la mention finale. Le
+« Pourquoi lui » du site produit « mêlé à la aventure » pour ce couple de genres : la capture le corrige
+en « mêlée d’aventure » (`explainer/capture.mjs`) ; la faute reste à corriger dans `moodflix-tmdb.js`.
+
+Bande-son : électro à 120 BPM, chaque mouvement bruité à partir des temps de l'animation (crans du
+compteur, rembobinage, grésillement du néon, clic, déchirure du ticket, passages aux portes, remplissage
+des jauges, frappe de l'adresse). −14 LUFS, crête vraie −1,5 dBTP.
+
+Reconstruire : `./build-explainer.sh cinem00d.zip` (ou `… 169` / `… 916`).
+Aperçu : `PAGE=explainer.html TEX_DIR=… IMG_DIR=… node render.mjs stills 1920 1080 /tmp/apercu 3 13.6 25.8 33`.
+
 ## Version cinématographique
 
 ### Fichiers livrés
@@ -154,6 +190,10 @@ Aperçu d'images fixes : `node render.mjs stills 1920 1080 /tmp/apercu 9.2 19.6 
 - `src/motion.html`, `src/motion.js` — version motion design : scènes typographiques, transitions, montage
 - `audio/score_motion.py` — bande-son et bruitages de la version motion design
 - `build-motion.sh` — construction de la version motion design
+- `src/explainer.html`, `src/explainer.js` — motion design du site (explainer) : scènes, captures animées, montage
+- `explainer/capture.mjs` — captures haute définition de l'interface réelle (site hors ligne)
+- `audio/score_explainer.py` — bande-son et bruitages de l'explainer
+- `build-explainer.sh` — construction de l'explainer
 - `src/engine.js` — moteur : typographie cinétique, néon, bloom, grain, aberration chromatique, caméra, panneau 3D
 - `src/assets.js` — textures procédurales (mur de briques, vignettes, affiches fictives)
 - `src/ui.js` — reproduction de l'interface de cinem00d.com

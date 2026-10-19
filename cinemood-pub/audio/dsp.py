@@ -210,9 +210,13 @@ def reverb_tail(x, ir, extra=3.0):
 
 
 # ---------------------------------------------------------------- dynamique
-def limiter(x, ceil, look=0.004):
+def limiter(x, ceil, look=0.004, tp=False):
+    """tp : crêtes mesurées sur le signal suréchantillonné ×4 (crêtes inter-échantillons)"""
     from scipy.ndimage import minimum_filter1d
     pk = np.max(np.abs(x), axis=0)
+    if tp:
+        up = np.max(np.abs(signal.resample_poly(x, 4, 1, axis=1)), axis=0)[:4 * x.shape[1]]
+        pk = np.maximum(pk, up.reshape(-1, 4).max(axis=1))
     g = np.minimum(1.0, ceil / np.maximum(pk, 1e-9))
     w = int(look * SR)
     g = minimum_filter1d(g, size=2 * w + 1)

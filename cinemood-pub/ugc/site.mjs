@@ -64,9 +64,12 @@ export const DRIVER = `(() => {
   addEventListener('DOMContentLoaded', () => { document.documentElement.style.scrollBehavior = 'auto'; });
 })();`;
 
-export async function newPhone(browser, height) {
-  const ctx = await browser.newContext({
-    viewport: { width: PHONE.width, height }, deviceScaleFactor: PHONE.scale, isMobile: true, hasTouch: true,
+/* o.width / o.scale / o.desktop : autre taille d'écran (captures en haute définition, bureau) */
+export async function newPhone(browser, height, o = {}) {
+  const ctx = await browser.newContext(o.desktop ? {
+    viewport: { width: o.width || 1440, height }, deviceScaleFactor: o.scale || 1.5, locale: 'fr-FR', timezoneId: 'Europe/Paris', colorScheme: 'dark',
+  } : {
+    viewport: { width: o.width || PHONE.width, height }, deviceScaleFactor: o.scale || PHONE.scale, isMobile: true, hasTouch: true,
     locale: 'fr-FR', timezoneId: 'Europe/Paris', colorScheme: 'dark',
     userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36',
   });

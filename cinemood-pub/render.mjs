@@ -11,7 +11,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, 'src');
 const HOST = 'http://film.local/';
 const PAGE = process.env.PAGE || 'index.html'; // motion.html pour la version motion design
-const TYPES = { '.html': 'text/html', '.js': 'application/javascript', '.woff2': 'font/woff2' };
+const TYPES = { '.html': 'text/html', '.js': 'application/javascript', '.woff2': 'font/woff2', '.png': 'image/png', '.json': 'application/json' };
 
 const [mode, ws, hs, outDir, ...rest] = process.argv.slice(2);
 const W = parseInt(ws, 10), H = parseInt(hs, 10);
@@ -23,8 +23,10 @@ async function openPage(browser) {
     const u = route.request().url();
     if (!u.startsWith(HOST)) return route.abort();
     const rel = decodeURIComponent(u.slice(HOST.length).split('?')[0]) || PAGE;
-    const file = path.join(SRC, rel);
-    if (!file.startsWith(SRC) || !fs.existsSync(file)) return route.fulfill({ status: 404, body: '' });
+    // textures de l'interface (TEX_DIR) et affiches fictives (IMG_DIR) pour le motion design du site
+    const [base, dir] = rel.startsWith('tex/') ? [process.env.TEX_DIR, rel.slice(4)] : rel.startsWith('img/') ? [process.env.IMG_DIR, rel.slice(4)] : [SRC, rel];
+    const file = path.join(base || SRC, dir);
+    if (!file.startsWith(base || SRC) || !fs.existsSync(file)) return route.fulfill({ status: 404, body: '' });
     return route.fulfill({ status: 200, contentType: TYPES[path.extname(file)] || 'application/octet-stream', body: fs.readFileSync(file) });
   });
   page.on('pageerror', (e) => console.error('pageerror:', e.message));
