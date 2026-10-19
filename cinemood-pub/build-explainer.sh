@@ -31,7 +31,7 @@ for fmt in $FORMATS; do
     -c:v libx264 -preset slow -crf 15 -profile:v high -level 4.2 \
     -x264-params "aq-mode=3:deblock=-1,-1" \
     -color_primaries bt709 -color_trc bt709 -colorspace bt709 \
-    -c:a aac -b:a 256k -ar 48000 -shortest -movflags +faststart "out/explainer/$name.mp4"
+    -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart "out/explainer/$name.mp4"
   cp "$WORK/$fmt/f02556.png" "out/explainer/couverture-${name#cinemood-explainer-}.png"
 done
 echo "terminé :"; ls -lh out/explainer

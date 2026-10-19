@@ -91,6 +91,10 @@ node ugc/posters.mjs /tmp/ugc-img
 SITE_DIR=/tmp/site/site-simple IMG_DIR=/tmp/ugc-img node ugc/capture.mjs /tmp/ugc-raw
 node ugc/compose.mjs /tmp/ugc-raw /tmp/ugc-final
 python3 audio/score_ugc.py /tmp/ugc-raw/meta.json audio/music_ugc.wav
+ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
+  -vf "scale=out_color_matrix=bt709:out_range=tv:flags=lanczos,format=yuv420p" \
+  -c:v libx264 -preset slow -crf 17 -color_primaries bt709 -color_trc bt709 -colorspace bt709 \
+  -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
 ## Motion design du site (explainer, 44 s)
@@ -123,7 +127,11 @@ en « mêlée d’aventure » (`explainer/capture.mjs`) ; la faute reste à corr
 
 Bande-son : électro à 120 BPM, chaque mouvement bruité à partir des temps de l'animation (crans du
 compteur, rembobinage, grésillement du néon, clic, déchirure du ticket, passages aux portes, remplissage
-des jauges, frappe de l'adresse). −14 LUFS, crête vraie −1,5 dBTP.
+des jauges, frappe de l'adresse). −14 LUFS, crête vraie −1,3 dBTP après encodage.
+
+Encodage AAC : `-aac_pns 0 -aac_is 0` dans tous les scripts. Avec les réglages par défaut, l'encodeur AAC
+de ffmpeg remplaçait certains transitoires bruités (déchirure, impacts) par des pics parasites jusqu'à
++1,8 dBFS, audibles comme des clics ; la piste son des vidéos précédentes a été réencodée de la même façon.
 
 Reconstruire : `./build-explainer.sh cinem00d.zip` (ou `… 169` / `… 916`).
 Aperçu : `PAGE=explainer.html TEX_DIR=… IMG_DIR=… node render.mjs stills 1920 1080 /tmp/apercu 3 13.6 25.8 33`.
