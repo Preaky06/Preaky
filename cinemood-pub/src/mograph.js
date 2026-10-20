@@ -923,7 +923,8 @@ function sG(x, t) {
     if (s <= 0) continue;
     const cx = lerp(L.c[j][0], LH.start[j][0], mo), cy = lerp(L.c[j][1], LH.start[j][1], mo), R = lerp(L.R, LH.r, mo) * s;
     const pies = j ? [[0, Math.min(m2, 1), C.red], [1, m2, C.pink]] : [[0, m1, C.red]];
-    drawClock(x, cx, cy, R, 16 * Math.min(1, s), { m: j ? m2 : m1, ticks: prog(t, 28.85, 29.2) * hk, hands: hk * EZ.out(prog(t, 28.9, 29.2)), pieK: hk, pies, face: rgba(mixc([23, 11, 16], INK, fm), 1), ring: C.cream });
+    drawClock(x, cx, cy, R, 16 * Math.min(1, s), { m: j ? m2 : m1, ticks: prog(t, 28.85, 29.2) * hk, hands: hk * EZ.out(prog(t, 28.9, 29.2)), pieK: hk, pies, face: C.face, ring: C.cream });
+    if (fm > 0) disc(x, cx, cy, (R + 8 * Math.min(1, s)) * EZ.out(fm), C.cream); // le cadran s'emplit de crème depuis le centre
     if (j === 1 && m2 > 6 && hk > 0) playTri(x, cx + Math.cos(ang((1 + m2) / 2)) * R * 0.5, cy + Math.sin(ang((1 + m2) / 2)) * R * 0.5, R * 0.16 * hk * prog(m2, 6, 12), C.ink);
     if (j === 1) { const d = t - 29.36; if (d > 0 && d < 0.6) { x.save(); x.globalAlpha = 1 - d / 0.6; x.strokeStyle = C.cream; x.lineWidth = 4; x.beginPath(); x.arc(cx, cy, R + 14 + d * 160, 0, TAU); x.stroke(); x.restore(); } }
     face(x, cx, cy, R, j ? 'fatigue' : 'heureux', { line: C.ink, feat });
