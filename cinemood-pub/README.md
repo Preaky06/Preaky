@@ -124,6 +124,31 @@ l'impact du retournement tombant à 2,0 s et les coupes sur des temps.
 
 Reconstruire : `./build-launch.sh cinem00d.zip` (ou `… 169` / `… 916`).
 
+## Nouvelle version — lisible (20,5 s)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/nouvelle-version-claire/cinemood-nouvelle-version-claire-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | annonce : site, YouTube, LinkedIn |
+| `out/nouvelle-version-claire/cinemood-nouvelle-version-claire-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/nouvelle-version-claire/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Même message que la version 3D, mais l'interface reste à plat et de face : l'écran occupe la hauteur
+de l'image, la caméra zoome sur la zone dont parle le texte et un projecteur (fond assombri, contour rouge)
+la désigne. Le texte est posé sur un fondu sombre, jamais sur l'interface.
+
+| Temps | Plan |
+| --- | --- |
+| 0–3 s | AVANT : l'ancienne interface (liste, compteur sur 12), « 12 QUESTIONS. » barré ; l'écran se retourne : MAINTENANT « 8 QUESTIONS. Une nouvelle interface, plus claire. » |
+| 3–8,4 s | zoom sur chaque nouveauté : LE COMPTEUR « TU SAIS OÙ TU EN ES. » (02 / 8), TES RÉPONSES « ELLES RESTENT AFFICHÉES. », LES TICKETS « UNE RÉPONSE, UN APPUI. » (appui sur un ticket) |
+| 8,4–12,8 s | LE PARCOURS : « 8 QUESTIONS. MOINS D'UNE MINUTE. », les huit vrais écrans défilent, la liste numérotée des questions s'affiche à côté |
+| 12,8–16,6 s | résultat : « TON MEILLEUR CHOIX, 96 % » (jauges), zoom sur « Pourquoi lui », puis les 4 autres films avec leur pourcentage |
+| 16,6–20,5 s | page d'accueil, CINÉMOOD, « TON HUMEUR CHOISIT TON FILM. », adresse tapée, appui sur « Commencer » |
+
+Bande-son (`audio/score_clair.py`) : même construction que la version 3D (son étouffé avant le retournement),
+un signal court à chaque zone désignée, une note par question. −14 LUFS.
+
+Reconstruire : `./build-clair.sh cinem00d.zip` (ou `… 169` / `… 916`).
+
 ## Version 15 s, textes du site du 20 octobre
 
 | Fichier | Format | Usage |

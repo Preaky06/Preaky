@@ -22,13 +22,13 @@ const SW = 412, SH = 880, BZ = 14, BW = SW + 2 * BZ, BH = SH + 2 * BZ, BR = 62, 
 const TXR = {};
 let INF = {};
 const TEXN = ['m_q1', 'm_q2', 'm_q3', 'm_q4', 'm_q5', 'm_q6', 'm_q7', 'm_q8', 'm_home', 'm_loading', 'm_results', 'm_card_1', 'm_card_1_bars0',
-  'm_card_2', 'm_card_3', 'm_card_4', 'm_card_5', 'm_q1_opt', 'old_q'].concat([...Array(9).keys()].map((i) => `ticket_${i + 1}`));
+  'm_card_2', 'm_card_3', 'm_card_4', 'm_card_5', 'm_q1_opt', 'm_q2_opt', 'old_q'].concat([...Array(9).keys()].map((i) => `ticket_${i + 1}`));
 async function loadLaunch() {
   INF = await (await fetch('tex/info.json')).json();
   await Promise.all(TEXN.map(async (n) => {
     const b = await (await fetch(`tex/${n}.png`)).blob();
     let bm = await createImageBitmap(b);
-    if (/^(m_(q\d|home|loading|results|card_\d|card_1_bars0|q1_opt)|ticket_\d)$/.test(n)) {
+    if (/^(m_(q\d|home|loading|results|card_\d|card_1_bars0|q\d_opt)|ticket_\d)$/.test(n)) {
       const c = mkCanvas(bm.width, bm.height), g = c.getContext('2d');
       g.filter = 'brightness(1.22) contrast(1.06) saturate(1.08)'; g.drawImage(bm, 0, 0); bm = await createImageBitmap(c);
     }
