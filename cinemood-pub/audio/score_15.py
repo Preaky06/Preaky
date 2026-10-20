@@ -92,7 +92,7 @@ def build(out_path):
 
     # ---------------------------------------------------------- 0–3 s : Heureux ? Triste ? Amoureux ? Crevé ? Ton humeur choisit ton film.
     for k, (name, note) in enumerate((('Am', 81), ('F', 77), ('C', 79), ('G', 74))):
-        t = k * 0.5
+        t = k * 0.5 if k else 0.03  # pas d'impact sur l'échantillon 0 : l'AAC déborde sur la toute première trame
         hit(t, 0.75 if k else 0.85)
         add(MU, stab(name, 0.4, 0.42), t)
         add(BS, analog_bass(CHS[name][1] + 12, 0.42, 0.8, cutoff=700, env_amt=1800, sub=0.3), t)
