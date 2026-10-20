@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>CinéMood — nouvelle version, lisible</title>
+<title>CinéMood — 7 questions, nouvelle interface</title>
 <style>
 @font-face { font-family: 'Anton'; font-weight: 400; src: url(fonts/anton.woff2) format('woff2'); }
 @font-face { font-family: 'Archivo'; font-weight: 400; src: url(fonts/archivo-400.woff2) format('woff2'); }
@@ -19,7 +19,7 @@ canvas { display: block; }
 <script src="engine.js"></script>
 <script src="mograph.js"></script>
 <script src="launch.js"></script>
-<script src="clair.js"></script>
+<script src="sept.js"></script>
 <script>
 async function setup(w, h) {
   const faces = ['400 40px Anton', '400 40px Archivo', '500 40px Archivo', '600 40px Archivo', '700 40px Archivo', '800 40px Archivo'];
@@ -27,7 +27,7 @@ async function setup(w, h) {
   setupEngine(w, h);
   ACC = mkCanvas(w, h); AX = ACC.getContext('2d');
   measureO();
-  await loadLaunch();
+  await loadSept();
   return true;
 }
 
@@ -38,7 +38,7 @@ function renderScene(tk, tc) {
   SX.fillStyle = '#000';
   SX.fillRect(0, 0, W, H);
   SX.save();
-  sClair(SX, Math.min(Math.max(tk, 0), CDUR - 1e-4));
+  sSept(SX, Math.min(Math.max(tk, 0), SDUR - 1e-4));
   SX.restore();
   resetCtx(SX);
 }
@@ -48,7 +48,7 @@ function renderScene(tk, tc) {
 let ACCF = null, ACCI = null;
 function renderFrame(f) {
   const t = f / FPS;
-  const mb = clairBlurAt(t);
+  const mb = septBlurAt(t);
   let src = SB;
   const sub = (k) => t + (((k + 0.5) / mb.n) - 0.5) * mb.shutter / FPS;
   if (mb.n <= 1) renderScene(t, t);
@@ -80,7 +80,7 @@ function renderFrame(f) {
 }
 
 function post(t, f, src) {
-  const fx = clairFx(t);
+  const fx = septFx(t);
   resetCtx(MX);
   MX.fillStyle = '#000';
   MX.fillRect(0, 0, W, H);

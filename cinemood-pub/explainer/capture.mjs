@@ -38,6 +38,32 @@ async function question(page, name, hover) {
     info[name + '_opt'] = await o.boundingBox();
   }
 }
+/* l'écran défilé par pas de 700 px : des vues qui se recouvrent, recollées au montage */
+async function tall(page, name) {
+  const ys = [];
+  for (let k = 0; k < 5; k++) {
+    const y = await page.evaluate((y) => {
+      const c = [...document.querySelectorAll('div')].filter((d) => { const s = getComputedStyle(d); return s.position === 'fixed' && /(auto|scroll)/.test(s.overflowY) && d.scrollHeight > d.clientHeight + 4; });
+      const s = c[c.length - 1];
+      if (!s) return -1;
+      s.style.scrollBehavior = 'auto'; s.scrollTop = y; return s.scrollTop;
+    }, k * 700);
+    if (y < 0 || (ys.length && y === ys[ys.length - 1])) break;
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: file(`${name}_s${ys.length}`) });
+    ys.push(y);
+  }
+  info[name + '_ys'] = ys;
+  info[name + '_skip'] = await page.evaluate(() => {
+    const b = [...document.querySelectorAll('button')].find((e) => /Je sais pas/.test(e.textContent));
+    const c = [...document.querySelectorAll('div')].filter((d) => { const s = getComputedStyle(d); return s.position === 'fixed' && /(auto|scroll)/.test(s.overflowY) && d.scrollHeight > d.clientHeight + 4; }).pop();
+    if (!b) return null;
+    const r = b.getBoundingClientRect();
+    return { x: r.left, y: r.top + (c ? c.scrollTop : 0), width: r.width, height: r.height };
+  });
+  await toTop(page);
+}
 async function pick(page, label) {
   const o = opt(page, label);
   await o.scrollIntoViewIfNeeded();
@@ -46,6 +72,9 @@ async function pick(page, label) {
 }
 const PATH = [['m_q1', 'Rêveur', 'Rêveur'], ['m_q2', 'Dans l’espace', 'Dans l’espace'], ['m_q3', 'L’espace', null], ['m_q4', 'Un peu', null],
   ['m_q5', 'À deux', 'À deux'], ['m_q6', '1h45 – 2h10', '1h45 – 2h10'], ['m_q7', 'Peu importe', null], ['m_q8', 'Peu importe', null]];
+/* version du 20 octobre (build f) : 7 questions, la question « Plus précisément » est retirée */
+const PATH7 = [['m_q1', 'Rêveur', 'Rêveur'], ['m_q2', 'Dans l’espace', 'Dans l’espace'], ['m_q3', 'Un peu', 'Un peu'], ['m_q4', 'À deux', 'À deux'],
+  ['m_q5', 'Une soirée classique', 'Une soirée classique'], ['m_q6', 'Récent', 'Récent'], ['m_q7', 'Une découverte', 'Une découverte']];
 
 async function run(o, prefix) {
   const { page } = await newPhone(browser, o.h, o);
@@ -69,10 +98,24 @@ async function run(o, prefix) {
     for (let i = 0; i < n; i++) await tickets.nth(i).screenshot({ path: file(`ticket_${i + 1}`) });
     await page.mouse.move(2, 2);
   }
-  for (let i = 0; i < PATH.length; i++) {
-    const [name, label, hover] = PATH[i];
-    if (!o.desktop) await question(page, name, hover);
-    if (i === PATH.length - 1) gate.closed = true;
+  const total = await page.evaluate(() => (document.body.innerText.match(/01\s*\/\s*(\d+)/) || [])[1]);
+  const P = total === '7' ? PATH7 : PATH;
+  info.total = total;
+  for (let i = 0; i < P.length; i++) {
+    const [name, label, hover] = P[i];
+    if (!o.desktop) {
+      await question(page, name, hover);
+      if (P === PATH7) {
+        if (i < 3) await tall(page, name); // la liste des humeurs entière, le bouton « Je sais pas » sous les tickets
+        info[name + '_head'] = await page.evaluate((labels) => { // le compteur et le rappel des réponses, en haut de l'écran
+          const box = (els) => { if (!els.length) return null; const r = els.map((e) => e.getBoundingClientRect()); const x0 = Math.min(...r.map((b) => b.left)), y0 = Math.min(...r.map((b) => b.top)); return { x: x0, y: y0, width: Math.max(...r.map((b) => b.right)) - x0, height: Math.max(...r.map((b) => b.bottom)) - y0 }; };
+          const leaf = [...document.querySelectorAll('body *')].filter((e) => !e.children.length && e.getBoundingClientRect().top < 260 && e.getBoundingClientRect().width > 0);
+          const norm = (s) => s.replace(/\s+/g, ' ').trim().toLowerCase();
+          return { counter: box(leaf.filter((e) => /^\d\d \/ \d+$/.test(e.textContent.trim()))), chips: box(leaf.filter((e) => labels.map(norm).includes(norm(e.textContent)))) };
+        }, P.slice(0, i).map((q) => q[1]));
+      }
+    }
+    if (i === P.length - 1) gate.closed = true;
     await pick(page, label);
   }
   await page.waitForTimeout(900);
@@ -95,7 +138,8 @@ async function run(o, prefix) {
   info[prefix + 'pageH'] = await page.evaluate(() => document.documentElement.scrollHeight);
   if (!o.desktop) {
     await page.getByText('Pourquoi lui', { exact: true }).first().locator('xpath=..').screenshot({ path: file('why_1') });
-    await page.getByText('Aucun ne me tente', { exact: true }).first().screenshot({ path: file('btn_none') }).catch(() => {});
+    await page.getByText('Aucun ne me tente', { exact: true }).first().screenshot({ path: file('btn_none'), timeout: 3000 }).catch(() => {});
+    await page.getByText('Rafraîchir la liste', { exact: false }).first().screenshot({ path: file('btn_refresh'), timeout: 3000 }).catch(() => {});
   }
   {
     // la carte n°1 au montage : jauges à zéro
