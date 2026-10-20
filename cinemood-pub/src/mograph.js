@@ -275,9 +275,20 @@ function measureO() {
 }
 
 /* ---------- affiches ---------- */
+/* affiches en image (version courte, short.html) : PIMG = catalogue, FIMG = les cinq résultats.
+   Chaque entrée : { full, small } ; null → affiches dessinées. */
+let PIMG = null, FIMG = null;
+function posterImg(x, im, X, Y, w, h) {
+  x.save();
+  rrp(x, X, Y, w, h, w * 0.045); x.clip();
+  x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+  x.drawImage(w <= 170 && im.small ? im.small : im.full, X, Y, w, h);
+  x.restore();
+}
 const SCH = [['#1d2a5c', '#ffcf6b'], ['#0f5e63', '#9fe3d0'], ['#5b3a8c', '#ffb3c7'], ['#f26a3d', '#2b0b14'], ['#14213d', '#ff5c77'],
   ['#2f7d4f', '#f6eef0'], ['#7a2850', '#ffd6a5'], ['#e9c46a', '#1a0b10'], ['#264653', '#e9c46a'], ['#9b2226', '#fcd5ce']];
 function poster(x, X, Y, w, h, id) {
+  if (PIMG) return posterImg(x, PIMG[Math.floor(rnd(id * 1.37 + 0.5) * PIMG.length)], X, Y, w, h);
   const s = SCH[Math.floor(rnd(id * 1.37 + 0.5) * SCH.length)], m = Math.floor(rnd(id * 3.71 + 1.3) * 6);
   x.save();
   rrp(x, X, Y, w, h, w * 0.06); x.fillStyle = s[0]; x.fill(); x.clip();
@@ -303,6 +314,7 @@ const FILMS = [
   { t: ['LA', 'SEPTIÈME', 'LUNE'], bg: ['#170b2c', '#3d1f66'], m: 91, by: 'KENJI ARIMA' },
 ];
 function film(x, X, Y, w, h, k) {
+  if (FIMG) return posterImg(x, FIMG[k], X, Y, w, h);
   const F = FILMS[k];
   x.save();
   rrp(x, X, Y, w, h, w * 0.045); x.clip();
@@ -360,7 +372,7 @@ function catalog(x, t) {
   const y0 = CY - ((rows - 1) * rowH) / 2;
   let sc = scrollA(Math.min(t, 3.55));
   if (t > 3.55) sc += (2350 * (1 - Math.exp(-(t - 3.55) * 3))) / 3;
-  x.save(); x.globalAlpha = 0.42 * a;
+  x.save(); x.globalAlpha = (PIMG ? 0.88 : 0.42) * a;
   for (let r = 0; r < rows; r++) {
     const dir = r % 2 ? -1 : 1, yc = y0 + r * rowH;
     const off = rnd(r * 13.1 + 2) * step * 7 + dir * sc * (0.8 + 0.4 * rnd(r * 3.3 + 1));
@@ -384,7 +396,7 @@ function sA(x, t) {
   catalog(x, t);
   // voile sous le texte
   const g = PORT ? x.createLinearGradient(0, 1040, 0, 1210) : x.createLinearGradient(830, 0, 1010, 0);
-  g.addColorStop(0, 'rgba(10,5,7,0)'); g.addColorStop(1, 'rgba(10,5,7,0.9)');
+  g.addColorStop(0, 'rgba(10,5,7,0)'); g.addColorStop(1, `rgba(10,5,7,${PIMG ? 0.84 : 0.9})`);
   x.fillStyle = g;
   if (PORT) x.fillRect(0, 1040, W, H - 1040); else x.fillRect(830, 0, W - 830, H);
   // halo sombre autour de l'horloge (l'heure se lit sur le catalogue)
@@ -975,8 +987,23 @@ function sH(x, t) {
 /* =====================================================================
    I. Fin (36,9–41 s) : CINÉMOOD, la promesse, l'adresse.
    ===================================================================== */
+/* mur d'affiches qui glisse derrière le logo (version avec images) */
+function backdrop(x, t) {
+  const a = EZ.out(prog(t, 36.9, 37.6));
+  const pw = PORT ? 200 : 170, ph = pw * 1.5, step = pw + 22, rowH = ph + 22, rows = Math.ceil(H / rowH) + 1;
+  x.save(); x.globalAlpha = 0.5 * a;
+  for (let r = 0; r < rows; r++) {
+    const off = rnd(r * 9.7 + 4) * step * 5 + (r % 2 ? -1 : 1) * (t - 36.9) * 38, q = off / step, fl = Math.floor(q), fr = q - fl;
+    for (let k = -1; k < Math.ceil(W / step) + 2; k++) poster(x, (k - 1 + fr) * step, r * rowH - ph * 0.3, pw, ph, 7000 + r * 100 + ((((k - fl) % 97) + 97) % 97));
+  }
+  x.restore();
+  const g = x.createRadialGradient(CX, CY, 0, CX, CY, Math.hypot(W, H) * 0.55);
+  g.addColorStop(0, 'rgba(10,5,7,0.93)'); g.addColorStop(0.5, 'rgba(10,5,7,0.8)'); g.addColorStop(1, 'rgba(10,5,7,0.3)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+}
 function sI(x, t) {
   bgFill(x, 'blk');
+  if (PIMG) backdrop(x, t);
   const L = PORT ? { size: 190, base: 915, tg: 1028, tgs: 54, pill: 1150 } : { size: 230, base: 588, tg: 690, tgs: 58, pill: 805 };
   L.ky = L.base - textAscent('É', L.size, { fam: 'Anton' }) - 40;
   const g = x.createRadialGradient(CX, L.base - L.size * 0.35, 0, CX, L.base - L.size * 0.35, L.size * 2.6);

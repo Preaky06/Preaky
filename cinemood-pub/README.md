@@ -97,6 +97,26 @@ ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
   -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
+## Version courte (19 s), avec affiches
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/motion-design-court/cinemood-court-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | pré-roll, LinkedIn, site |
+| `out/motion-design-court/cinemood-court-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories, publicité |
+| `out/motion-design-court/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Les scènes du motion design vectoriel (ci-dessous), rejouées 1,6 à 2,8 fois plus vite selon les passages
+(`src/short.js`) : les textes clés gardent environ une seconde de lecture, les transitions vont le plus vite.
+Chaque scène dure un nombre entier de quarts de seconde, les coupes tombent sur la musique
+(2,5 / 5 / 7 / 9,5 / 11,5 / 13,75 / 16,25 s). Le Duo est coupé ; « gratuit, sans inscription » reste dans
+le plan final. Les affiches sont des images (les 46 affiches fictives de `ugc/posters.mjs`) : catalogue
+qui défile, films qui passent les portes, résultat, mur d'affiches derrière le logo.
+
+Bande-son (`audio/score_short.py`) : grille fixe à 120 BPM ; chaque bruitage de `score_mograph.py` est
+reporté par la même table de temps que l'image. −14 LUFS.
+
+Reconstruire : `./build-short.sh` (ou `169` / `916`).
+
 ## Motion design vectoriel (41 s) — la version de référence
 
 | Fichier | Format | Usage |
@@ -231,6 +251,8 @@ Aperçu d'images fixes : `node render.mjs stills 1920 1080 /tmp/apercu 9.2 19.6 
 - `audio/score_motion.py` — bande-son et bruitages de la version motion design
 - `build-motion.sh` — construction de la version motion design
 - `src/mograph.html`, `src/mograph.js` — motion design vectoriel : formes, scènes, transitions, montage
+- `src/short.html`, `src/short.js` — version courte : table de morceaux accélérés, affiches en image
+- `audio/score_short.py`, `build-short.sh` — bande-son et construction de la version courte
 - `audio/score_mograph.py` — bande-son et bruitages du motion design vectoriel
 - `build-mograph.sh` — construction du motion design vectoriel
 - `src/explainer.html`, `src/explainer.js` — motion design du site (explainer) : scènes, captures animées, montage
