@@ -6,6 +6,18 @@
 'use strict';
 
 const LDUR = 23.5;
+/* version livrée : 18 s. Les scènes sont écrites sur 23,5 s ; LWARP les rejoue plus vite par morceaux
+   [début, fin (temps des scènes), durée à l'écran]. L'impact du retournement tombe à 2,0 s, les coupes sur des temps. */
+const LSDUR = 18;
+const LWARP = [[0, 2.3, 2.0], [2.3, 3.6, 1.0], [3.6, 8.6, 4.0], [8.6, 13.6, 3.0], [13.6, 18.3, 3.5], [18.3, 23.5, 4.5]];
+function warpL(t) {
+  let a = 0;
+  for (const [A, B, d] of LWARP) {
+    if (t < a + d || B === LDUR) return A + (clamp(t - a, 0, d) / d) * (B - A);
+    a += d;
+  }
+  return LDUR;
+}
 const SW = 412, SH = 880, BZ = 14, BW = SW + 2 * BZ, BH = SH + 2 * BZ, BR = 62, SRAD = 50, THICK = 26, GAP = 540;
 const TXR = {};
 let INF = {};
@@ -444,7 +456,7 @@ function launchBlurAt(t) {
   const fast = (t > 1.55 && t < 2.4) || (t > 3.6 && t < 4.7) || (t > 7.7 && t < 9.5) || (t > 12.5 && t < 13.7) || (t > 14.4 && t < 15.4) || (t > 17.3 && t < 18.7);
   return { n: fast ? 10 : 6, shutter: 0.55 };
 }
-function launchFx(t) {
+function launchFx(t, ts) {
   const sh = { x: 0, y: 0 };
   let env = 0;
   for (const [t0, amp] of [[2.3, 12], [4.62, 3], [14.3, 3], [18.85, 5]]) {
@@ -453,5 +465,5 @@ function launchFx(t) {
     const k = (1 - u / 0.4) ** 2, s = shake(t, amp * k, 26, t0 * 7);
     sh.x += s.x; sh.y += s.y; env += amp * k;
   }
-  return { shake: sh, env, vignette: 0.3, grain: 0.045, bloom: 0.26 + 0.5 * tri(t - 2.28, 0.5), fade: Math.max(1 - t / 0.25, prog(t, LDUR - 0.4, LDUR)) };
+  return { shake: sh, env, vignette: 0.3, grain: 0.045, bloom: 0.26 + 0.5 * tri(t - 2.28, 0.5), fade: Math.max(1 - ts / 0.2, prog(ts, LSDUR - 0.4, LSDUR)) };
 }

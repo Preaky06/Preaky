@@ -37,7 +37,7 @@ function renderScene(tk, tc) {
   SX.fillStyle = '#000';
   SX.fillRect(0, 0, W, H);
   SX.save();
-  sLaunch(SX, Math.min(Math.max(tk, 0), LDUR - 1e-4));
+  sLaunch(SX, Math.min(warpL(Math.max(tk, 0)), LDUR - 1e-4));
   SX.restore();
   resetCtx(SX);
 }
@@ -47,7 +47,7 @@ function renderScene(tk, tc) {
 let ACCF = null, ACCI = null;
 function renderFrame(f) {
   const t = f / FPS;
-  const mb = launchBlurAt(t);
+  const mb = launchBlurAt(warpL(t));
   let src = SB;
   const sub = (k) => t + (((k + 0.5) / mb.n) - 0.5) * mb.shutter / FPS;
   if (mb.n <= 1) renderScene(t, t);
@@ -79,7 +79,7 @@ function renderFrame(f) {
 }
 
 function post(t, f, src) {
-  const fx = launchFx(t);
+  const fx = launchFx(warpL(t), t);
   resetCtx(MX);
   MX.fillStyle = '#000';
   MX.fillRect(0, 0, W, H);

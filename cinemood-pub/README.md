@@ -97,7 +97,7 @@ ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
   -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
-## Nouvelle version : 8 questions au lieu de 12 (23,5 s)
+## Nouvelle version : 8 questions au lieu de 12 (18 s)
 
 | Fichier | Format | Usage |
 | --- | --- | --- |
@@ -110,15 +110,17 @@ Mise en scène produit de l'interface réelle (captures de la version du 20 octo
 
 | Temps | Plan |
 | --- | --- |
-| 0–2,3 s | AVANT : l'ancienne interface en gris (liste, compteur sur 12), « 12 QUESTIONS. » ; un trait rouge barre le 12 ; le téléphone se retourne |
-| 2,3–3,6 s | MAINTENANT : la nouvelle interface (tickets), « 8 QUESTIONS. au lieu de 12 · nouvelle interface » |
-| 3,6–8,6 s | « PLUS CLAIRE. PLUS RAPIDE. » : vue éclatée de l'écran (en-tête, compteur 01 / 8, question, tickets) avec légendes ; la liste soulevée défile jusqu'à Rêveur, qu'on choisit |
-| 8,6–13,6 s | « 01 / 8 … 08 / 8 — 8 QUESTIONS. MOINS D'UNE MINUTE. » : les huit vrais écrans en ruban, la caméra les passe en revue |
-| 13,6–18,3 s | chargement, puis « TON MEILLEUR CHOIX + 4 AUTRES. » : la carte n°1 se détache (jauges qui se remplissent, 96 %), les quatre autres en éventail |
-| 18,3–23,5 s | la nouvelle page d'accueil (boutons empilés), CINÉMOOD, « TON HUMEUR CHOISIT TON FILM. », adresse tapée, appui sur « Commencer » |
+| 0–2 s | AVANT : l'ancienne interface en gris (liste, compteur sur 12), « 12 QUESTIONS. » ; un trait rouge barre le 12 ; le téléphone se retourne |
+| 2–3 s | MAINTENANT : la nouvelle interface (tickets), « 8 QUESTIONS. au lieu de 12 · nouvelle interface » |
+| 3–7 s | « PLUS CLAIRE. PLUS RAPIDE. » : vue éclatée de l'écran (en-tête, compteur 01 / 8, question, tickets) avec légendes ; la liste soulevée défile jusqu'à Rêveur, qu'on choisit |
+| 7–10 s | « 01 / 8 … 08 / 8 — 8 QUESTIONS. MOINS D'UNE MINUTE. » : les huit vrais écrans en ruban, la caméra les passe en revue |
+| 10–13,5 s | chargement, puis « TON MEILLEUR CHOIX + 4 AUTRES. » : la carte n°1 se détache (jauges qui se remplissent, 96 %), les quatre autres en éventail |
+| 13,5–18 s | la nouvelle page d'accueil (boutons empilés), CINÉMOOD, « TON HUMEUR CHOISIT TON FILM. », adresse tapée, appui sur « Commencer » |
 
 Bande-son (`audio/score_launch.py`) : avant le retournement, un rythme filtré, comme derrière une porte ;
 au retournement tout s'ouvre. Une note par écran du ruban, aux mêmes instants que le compteur. −14 LUFS.
+Les scènes sont écrites sur 23,5 s ; `LWARP` (launch.js) et `W()` (score_launch.py) les rejouent sur 18 s par morceaux,
+l'impact du retournement tombant à 2,0 s et les coupes sur des temps.
 
 Reconstruire : `./build-launch.sh cinem00d.zip` (ou `… 169` / `… 916`).
 
