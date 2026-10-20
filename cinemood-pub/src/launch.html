@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CinéMood — nouvelle version</title>
+<style>
+@font-face { font-family: 'Anton'; font-weight: 400; src: url(fonts/anton.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 400; src: url(fonts/archivo-400.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 500; src: url(fonts/archivo-500.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 600; src: url(fonts/archivo-600.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 700; src: url(fonts/archivo-700.woff2) format('woff2'); }
+@font-face { font-family: 'Archivo'; font-weight: 800; src: url(fonts/archivo-800.woff2) format('woff2'); }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="engine.js"></script>
+<script src="mograph.js"></script>
+<script src="launch.js"></script>
+<script>
+async function setup(w, h) {
+  const faces = ['400 40px Anton', '400 40px Archivo', '500 40px Archivo', '600 40px Archivo', '700 40px Archivo', '800 40px Archivo'];
+  await Promise.all(faces.map(f => document.fonts.load(f, 'CINÉMOOD àéè’ 0123')));
+  setupEngine(w, h);
+  ACC = mkCanvas(w, h); AX = ACC.getContext('2d');
+  measureO();
+  await loadLaunch();
+  return true;
+}
+
+/* une image de scène au temps tk ; les scènes sont choisies au temps central tc
+   pour qu'une coupe franche ne se mélange jamais avec le plan suivant */
+function renderScene(tk, tc) {
+  resetCtx(SX);
+  SX.fillStyle = '#000';
+  SX.fillRect(0, 0, W, H);
+  SX.save();
+  sLaunch(SX, Math.min(Math.max(tk, 0), LDUR - 1e-4));
+  SX.restore();
+  resetCtx(SX);
+}
+
+/* flou de mouvement : moyenne de n sous-images réparties sur l'obturateur.
+   Au-delà de 4 sous-images, l'accumulation se fait en flottant (pas de perte sur 8 bits). */
+let ACCF = null, ACCI = null;
+function renderFrame(f) {
+  const t = f / FPS;
+  const mb = launchBlurAt(t);
+  let src = SB;
+  const sub = (k) => t + (((k + 0.5) / mb.n) - 0.5) * mb.shutter / FPS;
+  if (mb.n <= 1) renderScene(t, t);
+  else if (mb.n <= 4) {
+    resetCtx(AX);
+    for (let k = 0; k < mb.n; k++) {
+      renderScene(sub(k), t);
+      AX.globalAlpha = 1 / (k + 1);
+      AX.drawImage(SB, 0, 0);
+    }
+    src = ACC;
+  } else {
+    const N = W * H * 4;
+    if (!ACCF) { ACCF = new Float32Array(N); ACCI = AX.createImageData(W, H); }
+    ACCF.fill(0);
+    for (let k = 0; k < mb.n; k++) {
+      renderScene(sub(k), t);
+      const d = SX.getImageData(0, 0, W, H).data;
+      for (let i = 0; i < N; i++) ACCF[i] += d[i];
+    }
+    const od = ACCI.data, inv = 1 / mb.n;
+    for (let i = 0; i < N; i++) od[i] = ACCF[i] * inv + 0.5;
+    resetCtx(AX);
+    AX.putImageData(ACCI, 0, 0);
+    src = ACC;
+  }
+  post(t, f, src);
+  return true;
+}
+
+function post(t, f, src) {
+  const fx = launchFx(t);
+  resetCtx(MX);
+  MX.fillStyle = '#000';
+  MX.fillRect(0, 0, W, H);
+  // secousse : léger agrandissement proportionnel à son amplitude, pour ne jamais découvrir les bords
+  drawScaled(MX, src, fx.shake.x, fx.shake.y, 1 + (2 * fx.env) / Math.min(W, H));
+  if (fx.bloom) applyBloom(MX, MAIN, fx.bloom);
+  applyVignette(MX, fx.vignette);
+  applyGrain(MX, f, fx.grain);
+  resetCtx(MX);
+  if (fx.fade > 0) {
+    MX.fillStyle = `rgba(0,0,0,${clamp(fx.fade)})`;
+    MX.fillRect(0, 0, W, H);
+  }
+}
+window.setup = setup;
+window.renderFrame = renderFrame;
+</script>
+</body>
+</html>

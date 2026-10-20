@@ -97,6 +97,31 @@ ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
   -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
+## Nouvelle version : 8 questions au lieu de 12 (23,5 s)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/nouvelle-version/cinemood-nouvelle-version-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | annonce : site, YouTube, LinkedIn |
+| `out/nouvelle-version/cinemood-nouvelle-version-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/nouvelle-version/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Mise en scène produit de l'interface réelle (captures de la version du 20 octobre) : téléphone en 3D
+(projection orthographique, chaque surface est une transformation affine exacte), vue éclatée, ruban.
+
+| Temps | Plan |
+| --- | --- |
+| 0–2,3 s | AVANT : l'ancienne interface en gris (liste, compteur sur 12), « 12 QUESTIONS. » ; un trait rouge barre le 12 ; le téléphone se retourne |
+| 2,3–3,6 s | MAINTENANT : la nouvelle interface (tickets), « 8 QUESTIONS. au lieu de 12 · nouvelle interface » |
+| 3,6–8,6 s | « PLUS CLAIRE. PLUS RAPIDE. » : vue éclatée de l'écran (en-tête, compteur 01 / 8, question, tickets) avec légendes ; la liste soulevée défile jusqu'à Rêveur, qu'on choisit |
+| 8,6–13,6 s | « 01 / 8 … 08 / 8 — 8 QUESTIONS. MOINS D'UNE MINUTE. » : les huit vrais écrans en ruban, la caméra les passe en revue |
+| 13,6–18,3 s | chargement, puis « TON MEILLEUR CHOIX + 4 AUTRES. » : la carte n°1 se détache (jauges qui se remplissent, 96 %), les quatre autres en éventail |
+| 18,3–23,5 s | la nouvelle page d'accueil (boutons empilés), CINÉMOOD, « TON HUMEUR CHOISIT TON FILM. », adresse tapée, appui sur « Commencer » |
+
+Bande-son (`audio/score_launch.py`) : avant le retournement, un rythme filtré, comme derrière une porte ;
+au retournement tout s'ouvre. Une note par écran du ruban, aux mêmes instants que le compteur. −14 LUFS.
+
+Reconstruire : `./build-launch.sh cinem00d.zip` (ou `… 169` / `… 916`).
+
 ## Version 15 s, textes du site du 20 octobre
 
 | Fichier | Format | Usage |
@@ -278,6 +303,7 @@ Aperçu d'images fixes : `node render.mjs stills 1920 1080 /tmp/apercu 9.2 19.6 
 - `src/mograph.html`, `src/mograph.js` — motion design vectoriel : formes, scènes, transitions, montage
 - `src/short.html`, `src/short.js` — version courte : table de morceaux accélérés, affiches en image
 - `src/s15.html`, `src/s15.js`, `audio/score_15.py`, `build-15.sh` — version 15 s sur les textes du site du 20 octobre
+- `src/launch.html`, `src/launch.js`, `audio/score_launch.py`, `build-launch.sh`, `assets/launch/` — film « nouvelle version » (8 questions au lieu de 12)
 - `audio/score_short.py`, `build-short.sh` — bande-son et construction de la version courte
 - `audio/score_mograph.py` — bande-son et bruitages du motion design vectoriel
 - `build-mograph.sh` — construction du motion design vectoriel
