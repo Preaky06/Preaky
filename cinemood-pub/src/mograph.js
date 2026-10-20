@@ -348,7 +348,7 @@ function film(x, X, Y, w, h, k) {
    A. Le problème (0–5 s) : un catalogue qui défile, l'horloge tourne, 30 min plus tard, rien.
    ===================================================================== */
 function layA() {
-  return PORT ? { cx: CX, cy: 600, R: 270, rw: 18, tx: CX, al: 'center', y1: 1190, y2: 1215, s1: 116, s2: 210 }
+  return PORT ? { cx: CX, cy: 690, R: 270, rw: 18, tx: CX, al: 'center', y1: 1290, y2: 1315, s1: 116, s2: 210 }
     : { cx: 560, cy: 520, R: 280, rw: 18, tx: 980, al: 'left', y1: 500, y2: 420, s1: 124, s2: 220 };
 }
 function scrollA(t) { return 240 * t + 2600 * Math.pow(prog(t, 0.4, 3.6), 2.6); }
@@ -383,10 +383,14 @@ function sA(x, t) {
   const L = layA();
   catalog(x, t);
   // voile sous le texte
-  const g = PORT ? x.createLinearGradient(0, 940, 0, 1120) : x.createLinearGradient(830, 0, 1010, 0);
+  const g = PORT ? x.createLinearGradient(0, 1040, 0, 1210) : x.createLinearGradient(830, 0, 1010, 0);
   g.addColorStop(0, 'rgba(10,5,7,0)'); g.addColorStop(1, 'rgba(10,5,7,0.9)');
   x.fillStyle = g;
-  if (PORT) x.fillRect(0, 940, W, H - 940); else x.fillRect(830, 0, W - 830, H);
+  if (PORT) x.fillRect(0, 1040, W, H - 1040); else x.fillRect(830, 0, W - 830, H);
+  // halo sombre autour de l'horloge (l'heure se lit sur le catalogue)
+  const hg = x.createRadialGradient(L.cx, L.cy + 40, L.R * 0.6, L.cx, L.cy + 40, L.R * 1.75);
+  hg.addColorStop(0, 'rgba(10,5,7,0.85)'); hg.addColorStop(1, 'rgba(10,5,7,0)');
+  x.fillStyle = hg; x.fillRect(L.cx - L.R * 2, L.cy - L.R * 2, L.R * 4, L.R * 4.2);
   // horloge
   const s = spr(t - 0.08, 13, 7), m = minA(t);
   drawClock(x, L.cx, L.cy, L.R * s, L.rw * Math.min(1, s), { m, ticks: prog(t, 0.4, 0.9), hands: EZ.out(prog(t, 0.55, 1.0)), pies: [[0, m, C.red]], face: C.face, ring: C.cream });
@@ -458,18 +462,10 @@ function sB(x, t) {
     const st = 6.72 + Math.abs(i - 5) * 0.035;
     revealLine(x, c.ch, WM.x0 + c.x, WM.base, WM.size, i === 5 ? 1 : (t - st) / 0.5, { fam: 'Anton', color: i < 4 ? C.cream : C.red, ease: EZ.out, asc: 1.2, desc: 0.08 });
   });
-  kick(x, 'CINEM00D.COM', CX, WM.base - WM.size * 0.9 - (PORT ? 36 : 44), t, 7.5, null, { align: 'center', color: cream(0.55), size: PORT ? 22 : 24 });
+  kick(x, 'CINEM00D.COM', CX, WM.base - textAscent('É', WM.size, { fam: 'Anton' }) - (PORT ? 34 : 40), t, 7.5, null, { align: 'center', color: cream(0.55), size: PORT ? 22 : 24 });
   tl(x, [['TON HUMEUR CHOISIT TON ', C.cream], ['CINÉMA.', C.red]], CX, WM.base + (PORT ? 112 : 126), PORT ? 54 : 62, t, 7.3, null, { align: 'center' });
-  // le second O devient un visage, cligne, puis s'ouvre
-  const ea = spr(t - 7.42, 14, 8) * (1 - prog(t, 8.02, 8.12));
-  if (ea > 0) {
-    const bl = tri(t - 7.92, 0.16), er = o2.iw * 0.11;
-    x.fillStyle = C.cream;
-    for (const s of [-1, 1]) { x.beginPath(); x.ellipse(o2.icx + s * o2.iw * 0.21, o2.icy - o2.ih * 0.1, er * ea, er * ea * Math.max(0.12, 1 - bl * 1.4), 0, 0, TAU); x.fill(); }
-    x.strokeStyle = C.cream; x.lineWidth = o2.iw * 0.08; x.lineCap = 'round';
-    x.beginPath(); x.arc(o2.icx, o2.icy + o2.ih * 0.01, o2.iw * 0.25 * ea, 0.22 * Math.PI, 0.78 * Math.PI); x.stroke();
-  }
-  const fu = EZ.out(prog(t, 8.02, 8.2));
+  // le creux du second O s'allume, puis on plonge dedans
+  const fu = EZ.out(prog(t, 7.9, 8.15));
   if (fu > 0) {
     x.save();
     x.beginPath(); rrc(x, o2.icx, o2.icy, o2.iw, o2.ih); x.clip();
@@ -564,8 +560,8 @@ const QS = [
 ];
 QS.forEach((q, i) => { q.b = i + 1 < QS.length ? QS[i + 1].a : 18.12; });
 function layD() {
-  return PORT ? { tx: CX, al: 'center', ky: 300, ty: 412, ts: 94, sy: 482, cx: 540, cy: 1070, cw: 880, ch: 780, dy: 188, sw: [CX - 190, 1630], swl: CX - 110, qs: 58, ph: 78, ps: 30, pad: 58 }
-    : { tx: 150, al: 'left', ky: 380, ty: 505, ts: 116, sy: 700, cx: 1300, cy: 600, cw: 720, ch: 640, dy: 200, sw: [212, 862], swl: 296, qs: 50, ph: 68, ps: 27, pad: 52 };
+  return PORT ? { tx: CX, al: 'center', ky: 300, ty: 412, ts: 94, sy: 482, cx: 540, cy: 1040, cw: 880, ch: 690, dy: 188, sw: [CX - 190, 1630], swl: CX - 110, qs: 58, ph: 78, ps: 30, pad: 58 }
+    : { tx: 150, al: 'left', ky: 380, ty: 505, ts: 116, sy: 700, cx: 1300, cy: 600, cw: 780, ch: 600, dy: 196, sw: [212, 862], swl: 296, qs: 54, ph: 72, ps: 29, pad: 56 };
 }
 /* géométrie des réponses d'une carte (repère de la carte, centre = 0,0) */
 function cardGeom(L, q) {
@@ -637,16 +633,17 @@ function sD(x, t) {
   QS.forEach((q) => {
     if (t < q.a || t > q.b + 0.34) return;
     const u = EZ.out(prog(t, q.a, q.a + 0.42)), v = EZ.in(prog(t, q.b, q.b + 0.32));
-    const ex = PORT ? 1150 : 1000;
-    const cx = L.cx + (1 - u) * ex - v * (PORT ? 1200 : 760), cy = L.cy - v * 140 + (1 - u) * 40;
-    qcard(x, L, q, cx, cy, (1 - u) * 0.12 - v * 0.2, 1 - prog(v, 0.5, 1), t);
+    const cy = L.cy + (1 - u) * (PORT ? 1150 : 800) - v * (PORT ? 150 : 1050);
+    if (PORT && v > 0) { x.save(); x.translate(L.cx, L.cy); x.scale(1 - 0.16 * v, 1 - 0.16 * v); x.translate(-L.cx, -L.cy); }
+    qcard(x, L, q, L.cx + (1 - u) * 60 - v * 40, cy, (1 - u) * 0.07 - v * (PORT ? 0.03 : 0.09), 1 - prog(v, PORT ? 0.2 : 0.65, 1), t);
+    if (PORT && v > 0) x.restore();
   });
   // doigt : d'une réponse à la suivante
   const fa = prog(t, 13.55, 13.75) * (1 - prog(t, 17.98, 18.2));
   if (fa > 0) {
     let fx, fy;
     const k = QS.findIndex((q) => t < q.tp + 0.08);
-    if (k === 0) { const [tx, ty] = tapPoint(L, QS[0]); const u = EZ.inOut(prog(t, 13.55, 13.86)); fx = lerp(W + 40, tx, u); fy = lerp(H + 60, ty, u); }
+    if (k === 0) { const [tx, ty] = tapPoint(L, QS[0]); const u = EZ.inOut(prog(t, 13.55, 13.86)); fx = lerp(PORT ? W * 0.8 : W + 40, tx, u); fy = lerp(H + 60, ty, u); }
     else if (k > 0) {
       const [ax, ay] = tapPoint(L, QS[k - 1]), [bx, by] = tapPoint(L, QS[k]);
       const u = EZ.inOut(prog(t, QS[k - 1].tp + 0.08, QS[k].tp - 0.04));
@@ -680,7 +677,7 @@ function sD(x, t) {
    E. Étape 3 (19,2–23,8 s) : chaque film passe deux portes, genres puis mots-clés.
    ===================================================================== */
 function layE() {
-  return PORT ? { tx: CX, al: 'center', ky: 255, ty: 372, ts: 90, sy: 545, sw: 880, ax0: 150, ax1: 930, g1: 900, g2: 1160, tray: 1480, pw: 104, ph: 156, tw: 130, th: 195, sp: 164 }
+  return PORT ? { tx: CX, al: 'center', ky: 255, ty: 372, ts: 90, sy: 545, sw: 880, ax0: 150, ax1: 930, g1: 960, g2: 1215, tray: 1530, top: 655, pw: 104, ph: 156, tw: 130, th: 195, sp: 164 }
     : { tx: 150, al: 'left', ky: 330, ty: 450, ts: 100, sy: 745, sw: 560, ax0: 1010, ax1: 1730, g1: 360, g2: 590, tray: 850, pw: 92, ph: 138, tw: 110, th: 165, sp: 136 };
 }
 let FALL = null, FALLW = 0;
@@ -783,6 +780,7 @@ function sE(x, t) {
   const mv = (k) => EZ.inOut(prog(t, 23.18 + k * 0.025, 23.7 + k * 0.025));
   const iu = EZ.in(prog(t, 23.22, 23.78));
   if (iu > 0) { x.beginPath(); x.arc(tg[0].cx, tg[0].cy, iu * Math.hypot(W, H) * 1.05, 0, TAU); fillRegion(x, 'cream'); }
+  if (PORT) { x.save(); x.beginPath(); x.rect(0, L.top, W, H - L.top); x.clip(); }
   for (const p of P) {
     if (t < p.t0) continue;
     const s = fallState(L, p, t);
@@ -804,6 +802,7 @@ function sE(x, t) {
     if (s.grey > 0) { rrp(x, -w / 2, -h / 2, w, h, w * 0.06); x.fillStyle = `rgba(20,16,18,${0.62 * s.grey})`; x.fill(); cross(x, 0, 0, w * 0.42, s.grey, C.red); }
     x.restore();
   }
+  if (PORT) x.restore();
 }
 
 /* =====================================================================
@@ -836,8 +835,9 @@ function sF(x, t) {
     drawText(x, '★  LE MEILLEUR CHOIX', 16, 7, 18, { fam: 'Archivo', wt: 700, track: 0.2, color: C.cream });
     x.restore();
   }
-  if (PORT) { tl(x, 'L’ÉCHO DES', L.dx, 762, L.tis, t, 24.2, null, o); tl(x, 'ÉTOILES', L.dx, 762 + L.tis * 1.04, L.tis, t, 24.26, null, o); }
-  else tl(x, 'L’ÉCHO DES ÉTOILES', L.dx, 392, L.tis, t, 24.2, null, o);
+  const od = { color: C.ink };
+  if (PORT) { tl(x, 'L’ÉCHO DES', L.dx, 762, L.tis, t, 24.2, null, od); tl(x, 'ÉTOILES', L.dx, 762 + L.tis * 1.04, L.tis, t, 24.26, null, od); }
+  else tl(x, 'L’ÉCHO DES ÉTOILES', L.dx, 392, L.tis, t, 24.2, null, od);
   para(x, '2019 · 2h04 · Science-fiction, Aventure', L.dx, L.my, 24, L.mw, t, 24.35, null, { color: ink(0.55) });
   // score
   const rs = spr(t - 24.45, 13, 7);
@@ -893,8 +893,8 @@ function layG() {
     : { ky: 135, c: [[CX - 390, 450], [CX + 390, 450]], R: 205, hy: [962], hs: 92 };
 }
 function layH() {
-  return PORT ? { r: 170, start: [[CX - 230, 1150], [CX + 230, 1150]], end: [[CX - 118, 1150], [CX + 118, 1150]], ky: 372, ty: [482, 594], ts: 110, gy: 1040, gs: 250, sy: 1190, ss: 84 }
-    : { r: 160, start: [[CX - 300, 655], [CX + 300, 655]], end: [[CX - 112, 655], [CX + 112, 655]], ky: 255, ty: [378], ts: 100, gy: 600, gs: 330, sy: 790, ss: 92 };
+  return PORT ? { r: 170, start: [[CX - 230, 1010], [CX + 230, 1010]], end: [[CX - 118, 1010], [CX + 118, 1010]], ky: 372, ty: [482, 594], ts: 110, gy: 930, gs: 250, sy: 1150, ss: 84 }
+    : { r: 160, start: [[CX - 300, 655], [CX + 300, 655]], end: [[CX - 112, 655], [CX + 112, 655]], ky: 255, ty: [378], ts: 100, gy: 515, gs: 300, sy: 762, ss: 92 };
 }
 function sG(x, t) {
   bgFill(x, 'blk');
@@ -917,7 +917,7 @@ function sG(x, t) {
     x.beginPath(); x.moveTo(0, top + 140); x.lineTo(W, top - 140); x.lineTo(W, H); x.lineTo(0, H); x.closePath(); fillRegion(x, 'red');
   }
   // horloges → visages
-  const mo = EZ.inOut(prog(t, 32.95, 33.5)), hk = 1 - EZ.in(prog(t, 32.8, 33.0)), fm = prog(t, 32.95, 33.2), feat = prog(t, 33.2, 33.45);
+  const mo = EZ.inOut(prog(t, 32.95, 33.5)), hk = 1 - EZ.in(prog(t, 32.8, 33.0)), fm = prog(t, 32.95, 33.15), feat = prog(t, 33.05, 33.3);
   for (let j = 0; j < 2; j++) {
     const s = spr(t - (28.75 + j * 0.1), 13, 7);
     if (s <= 0) continue;
@@ -936,7 +936,7 @@ function sG(x, t) {
 function sH(x, t) {
   bgFill(x, 'red');
   const L = layH();
-  const ap = spr(t - 33.62, 10, 5.5), du = EZ.in(prog(t, 35.0, 35.38));
+  const ap = spr(t - 33.62, 10, 5.5), du = EZ.in(prog(t, 34.85, 35.2));
   const P = [0, 1].map((j) => [lerp(L.start[j][0], L.end[j][0], ap), lerp(L.start[j][1], L.end[j][1], ap) + du * H * 0.9]);
   if (du < 1) {
     for (let j = 0; j < 2; j++) {
@@ -953,9 +953,9 @@ function sH(x, t) {
     }
     playTri(x, (P[0][0] + P[1][0]) / 2 + 4, P[0][1], 34 * spr(t - 34.3, 14, 7) * (1 - du), C.cream);
   }
-  kick(x, 'MODE DUO', CX, L.ky, t, 33.7, 34.95, { align: 'center', color: cream(0.9) });
-  if (PORT) { tl(x, 'DEUX HUMEURS.', CX, L.ty[0], L.ts, t, 33.75, 34.95, { align: 'center' }); tl(x, [['UN SEUL FILM.', C.ink]], CX, L.ty[1], L.ts, t, 33.85, 35.0, { align: 'center' }); }
-  else tl(x, [['DEUX HUMEURS. ', C.cream], ['UN SEUL FILM.', C.ink]], CX, L.ty[0], L.ts, t, 33.75, 34.95, { align: 'center' });
+  kick(x, 'MODE DUO', CX, L.ky, t, 33.7, 34.8, { align: 'center', color: cream(0.9) });
+  if (PORT) { tl(x, 'DEUX HUMEURS.', CX, L.ty[0], L.ts, t, 33.75, 34.8, { align: 'center' }); tl(x, [['UN SEUL FILM.', C.ink]], CX, L.ty[1], L.ts, t, 33.85, 34.85, { align: 'center' }); }
+  else tl(x, [['DEUX HUMEURS. ', C.cream], ['UN SEUL FILM.', C.ink]], CX, L.ty[0], L.ts, t, 33.75, 34.8, { align: 'center' });
   const gu = prog(t, 35.12, 35.38);
   if (gu > 0) {
     x.save(); x.translate(CX, L.gy); const sc = lerp(1.7, 1, EZ.out(gu)); x.scale(sc, sc); x.rotate(lerp(-0.07, 0, EZ.out(gu)));
@@ -976,7 +976,8 @@ function sH(x, t) {
    ===================================================================== */
 function sI(x, t) {
   bgFill(x, 'blk');
-  const L = PORT ? { ky: 700, size: 190, base: 915, tg: 1028, tgs: 54, pill: 1150 } : { ky: 352, size: 230, base: 588, tg: 690, tgs: 58, pill: 805 };
+  const L = PORT ? { size: 190, base: 915, tg: 1028, tgs: 54, pill: 1150 } : { size: 230, base: 588, tg: 690, tgs: 58, pill: 805 };
+  L.ky = L.base - textAscent('É', L.size, { fam: 'Anton' }) - 40;
   const g = x.createRadialGradient(CX, L.base - L.size * 0.35, 0, CX, L.base - L.size * 0.35, L.size * 2.6);
   g.addColorStop(0, redA(0.13 * prog(t, 37.0, 37.8))); g.addColorStop(1, 'rgba(255,45,79,0)');
   x.fillStyle = g; x.fillRect(0, 0, W, H);
@@ -1017,9 +1018,10 @@ const TIMELINE = [
 ];
 
 /* flou de mouvement : 8 sous-images sur les passages rapides, 4 ailleurs */
-const MBW = [[2.3, 5.0], [6.3, 7.0], [8.1, 8.8], [10.7, 11.45], [12.35, 13.25], [13.25, 18.4], [18.45, 19.25], [19.6, 22.65], [23.15, 23.85], [27.9, 28.6], [32.8, 33.9], [34.95, 35.45], [36.4, 37.0]];
+const MBW = [[2.3, 5.0, 8], [6.3, 7.0, 8], [8.1, 8.8, 16], [10.7, 11.45, 8], [12.35, 13.25, 12], [13.25, 18.4, 8], [18.45, 19.25, 12], [19.6, 22.65, 8],
+  [23.15, 23.85, 12], [27.9, 28.6, 12], [32.8, 33.9, 16], [34.8, 35.45, 8], [36.35, 37.0, 16]];
 function motionBlurAt(t) {
-  for (const [a, b] of MBW) if (t >= a && t < b) return { n: 8, shutter: 0.6 };
+  for (const [a, b, n] of MBW) if (t >= a && t < b) return { n, shutter: 0.6 };
   return { n: 4, shutter: 0.5 };
 }
 function fxAt(t) {

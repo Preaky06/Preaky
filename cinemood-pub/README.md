@@ -97,6 +97,38 @@ ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
   -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
+## Motion design vectoriel (41 s) — la version de référence
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/motion-design/cinemood-motion-design-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | page d'accueil, YouTube, LinkedIn, présentation |
+| `out/motion-design/cinemood-motion-design-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/motion-design/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Tout est dessiné en formes vectorielles, sans capture d'écran : horloge, visages des neuf humeurs,
+cartes de questions, portes du tri, affiches, carte de résultat. Les textes (humeurs, questions,
+réponses, « Pourquoi lui ») sont ceux du site. Chaque plan se transforme en le suivant.
+
+| Temps | Plan | Passage au plan suivant |
+| --- | --- | --- |
+| 0–5 s | « ON REGARDE QUOI CE SOIR ? » : le catalogue défile de plus en plus vite, l'aiguille fait une demi-heure, « 30 MIN PLUS TARD… TOUJOURS RIEN. », les affiches tombent | l'aiguille rembobine jusqu'à 21:01 |
+| 5–8,75 s | « ET SI ÇA PRENAIT 1 MINUTE ? » | l'horloge devient le premier O de CINÉMOOD ; on plonge dans le second O |
+| 8,75–12,9 s | **Étape 1** « COMMENT TU TE SENS CE SOIR ? » : les neuf visages, on choisit Rêveur | le rouge du choix envahit l'écran et devient le premier point de progression |
+| 12,9–19,2 s | **Étape 2** « 7 QUESTIONS RAPIDES. » : les vraies questions en cartes, une réponse par temps, chrono « moins d'une minute » ; « 8 RÉPONSES. C'EST TOUT. » | les huit points se rejoignent et ouvrent le noir |
+| 19,2–23,8 s | **Étape 3** « CHAQUE FILM EST VÉRIFIÉ DEUX FOIS. » : 22 affiches passent les portes genres puis mots-clés (un « TOP 10 » est écarté), 5 restent | les cinq affiches glissent à leur place dans le résultat |
+| 23,8–28,55 s | **Étape 4** « TON FILM, ET POURQUOI LUI. » : carte n°1, 96 %, « Pourquoi lui », quatre alternatives | lecture : l'affiche devient l'écran |
+| 28,55–33,6 s | « LE TEMPS GAGNÉ » : deux horloges, 30 min à chercher contre 1 min, puis le film ; « 29 MINUTES DE FILM EN PLUS. » | les horloges deviennent deux visages |
+| 33,6–36,9 s | « MODE DUO · DEUX HUMEURS. UN SEUL FILM. », puis « GRATUIT. SANS INSCRIPTION. » | volet noir |
+| 36,9–41 s | CINÉMOOD, « TON HUMEUR CHOISIT TON CINÉMA. », adresse tapée | fondu |
+
+Bande-son (`audio/score_mograph.py`) : la mineur → do majeur à 120 BPM ; tic-tac et défilement qui
+s'emballent, retour en arrière, piano de la promesse, groove sous les quatre étapes (chaque humeur et
+chaque réponse sonne une note, chaque porte valide ou refuse), respiration sur le temps gagné,
+accord final. −14 LUFS.
+
+Reconstruire : `./build-mograph.sh` (ou `./build-mograph.sh 169` / `916`).
+Aperçu : `PAGE=mograph.html node render.mjs stills 1920 1080 /tmp/apercu 3.3 9.6 16.6 21.4 26.9 31.5`.
+
 ## Motion design du site (explainer, 44 s)
 
 | Fichier | Format | Usage |
@@ -198,6 +230,9 @@ Aperçu d'images fixes : `node render.mjs stills 1920 1080 /tmp/apercu 9.2 19.6 
 - `src/motion.html`, `src/motion.js` — version motion design : scènes typographiques, transitions, montage
 - `audio/score_motion.py` — bande-son et bruitages de la version motion design
 - `build-motion.sh` — construction de la version motion design
+- `src/mograph.html`, `src/mograph.js` — motion design vectoriel : formes, scènes, transitions, montage
+- `audio/score_mograph.py` — bande-son et bruitages du motion design vectoriel
+- `build-mograph.sh` — construction du motion design vectoriel
 - `src/explainer.html`, `src/explainer.js` — motion design du site (explainer) : scènes, captures animées, montage
 - `explainer/capture.mjs` — captures haute définition de l'interface réelle (site hors ligne)
 - `audio/score_explainer.py` — bande-son et bruitages de l'explainer
