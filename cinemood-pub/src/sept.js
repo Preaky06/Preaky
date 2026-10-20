@@ -273,8 +273,8 @@ function capsS7(x, t) {
   // 2. les questions, et entre la 2e et la 3e, deux nouveautés de l'interface
   for (let k = 0; k < 7; k++) qCapS7(x, t, k);
   const beats = [
-    [4.5, 5.75, 'EN HAUT DE L’ÉCRAN', 'TES RÉPONSES', [['RESTENT AFFICHÉES.', C.red]], null],
-    [5.85, 7.15, 'NOUVEAU', 'PAS SÛR ?', [['TU PASSES.', C.red]], '« Je sais pas · Passer » : la question ne pose aucune contrainte.'],
+    [4.5, 5.7, 'EN HAUT DE L’ÉCRAN', 'TES RÉPONSES', [['RESTENT AFFICHÉES.', C.red]], null],
+    [6.0, 7.15, 'NOUVEAU', 'PAS SÛR ?', [['TU PASSES.', C.red]], '« Je sais pas · Passer » : la question ne pose aucune contrainte.'],
   ];
   for (const [a, b, kk, l1, l2, sub] of beats) {
     kick(x, kk, L.x, L.k, t, a, b, o);
@@ -285,10 +285,10 @@ function capsS7(x, t) {
   // 3. le résultat
   const R = PORT ? { k: 170, y1: 300, y2: 395, ts: 88 } : { k: 300, y1: 420, y2: 515, ts: 88 };
   kick(x, 'TON RÉSULTAT', L.x, R.k, t, 15.0, 17.1, o);
-  tl(x, 'TON MEILLEUR CHOIX', L.x, R.y1, R.ts, t, 15.05, 16.2, o);
-  tl(x, [['90 % POUR TON MOMENT.', C.red]], L.x, R.y2, R.ts * 0.72, t, 15.5, 16.2, o);
-  tl(x, 'PUIS 4 AUTRES,', L.x, R.y1, R.ts, t, 16.3, 17.1, o);
-  tl(x, [['CLASSÉS POUR TOI.', C.red]], L.x, R.y2, R.ts, t, 16.37, 17.12, o);
+  tl(x, 'TON MEILLEUR CHOIX', L.x, R.y1, R.ts, t, 15.05, 16.05, o);
+  tl(x, [['90 % POUR TON MOMENT.', C.red]], L.x, R.y2, R.ts * 0.72, t, 15.5, 16.05, o);
+  tl(x, 'PUIS 4 AUTRES,', L.x, R.y1, R.ts, t, 16.4, 17.1, o);
+  tl(x, [['CLASSÉS POUR TOI.', C.red]], L.x, R.y2, R.ts, t, 16.47, 17.12, o);
   // 4. fin
   const E5 = PORT ? { k: 150, w: 330, ws: 160, tg: 418, tgs: 50 } : { k: 330, w: 545, ws: 196, tg: 640, tgs: 56 }, e = S7END;
   kick(x, '7 QUESTIONS  ·  UNE MINUTE', L.x, E5.k, t, e + 0.2, null, o);
