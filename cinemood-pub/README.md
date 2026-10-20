@@ -97,6 +97,31 @@ ffmpeg -framerate 30 -i /tmp/ugc-final/u%05d.png -i audio/music_ugc.wav \
   -c:a aac -b:a 256k -aac_pns 0 -aac_is 0 -ar 48000 -shortest -movflags +faststart out/ugc/cinemood-ugc-9x16.mp4
 ```
 
+## Version 15 s, textes du site du 20 octobre
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/motion-design-15s/cinemood-15s-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories, publicité |
+| `out/motion-design-15s/cinemood-15s-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | pré-roll, LinkedIn, site |
+| `out/motion-design-15s/couverture-9x16.png`, `couverture-16x9.png` | plan final | miniature / couverture |
+
+Écrite sur les nouveaux textes du site (build 2026-10-20-b) : le titre « Ton humeur choisit ton film » et
+la description « Heureux, triste, amoureux, crevé ? Dis comment tu te sens : CinéMood te trouve le film qui
+va avec. Ton meilleur choix + 4 autres, en une minute. Gratuit, sans inscription. »
+
+| Temps | Plan |
+| --- | --- |
+| 0–3 s | HEUREUX ? TRISTE ? AMOUREUX ? CREVÉ ? — un visage et une couleur par temps, puis « TON HUMEUR CHOISIT TON FILM. » |
+| 3–5 s | « DIS COMMENT TU TE SENS. » : les neuf humeurs, on choisit Rêveur |
+| 5–7 s | « ON TE TROUVE LE FILM QUI VA AVEC. » : les affiches passent les deux portes, 5 restent |
+| 7–9,5 s | « TON MEILLEUR CHOIX + 4 AUTRES. » : la carte n°1, puis lecture |
+| 9,5–10,75 s | « EN UNE MINUTE. » : le chrono fait le tour |
+| 10,75–11,75 s | « GRATUIT. SANS INSCRIPTION. » |
+| 11,75–15 s | CINÉMOOD, « TON HUMEUR CHOISIT TON FILM. », adresse tapée, mur d'affiches |
+
+Code : `src/s15.js` (accroche, minute, table de montage, textes remplacés via `TXT` de `mograph.js`),
+`audio/score_15.py`. Reconstruire : `./build-15.sh` (ou `169` / `916`).
+
 ## Version courte (19 s), avec affiches
 
 | Fichier | Format | Usage |
@@ -252,6 +277,7 @@ Aperçu d'images fixes : `node render.mjs stills 1920 1080 /tmp/apercu 9.2 19.6 
 - `build-motion.sh` — construction de la version motion design
 - `src/mograph.html`, `src/mograph.js` — motion design vectoriel : formes, scènes, transitions, montage
 - `src/short.html`, `src/short.js` — version courte : table de morceaux accélérés, affiches en image
+- `src/s15.html`, `src/s15.js`, `audio/score_15.py`, `build-15.sh` — version 15 s sur les textes du site du 20 octobre
 - `audio/score_short.py`, `build-short.sh` — bande-son et construction de la version courte
 - `audio/score_mograph.py` — bande-son et bruitages du motion design vectoriel
 - `build-mograph.sh` — construction du motion design vectoriel

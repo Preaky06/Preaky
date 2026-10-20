@@ -40,6 +40,15 @@ const C = {
 const ink = (a) => `rgba(26,11,16,${a})`;
 const cream = (a) => `rgba(246,238,240,${a})`;
 const redA = (a) => `rgba(255,45,79,${a})`;
+/* textes des scènes (les versions courtes en remplacent certains) */
+const TXT = {
+  C: { kick: 'ÉTAPE 1 · TON HUMEUR', lines: ['COMMENT TU TE', 'SENS CE SOIR ?'], sub: 'Neuf humeurs, une seule à choisir.' },
+  E: { kick: 'ÉTAPE 3 · LE TRI', port: ['CHAQUE FILM EST', [['VÉRIFIÉ ', C.cream], ['DEUX FOIS.', C.red]]], land: ['CHAQUE FILM', 'EST VÉRIFIÉ', [['DEUX FOIS.', C.red]]],
+    sub: 'Par ses genres, puis par ses mots-clés. Ce qui ne colle pas à ton envie est écarté, même s’il est populaire.' },
+  F: { kick: 'ÉTAPE 4 · TON FILM', lines: ['TON FILM,', [['ET POURQUOI LUI.', C.red]]], tsLand: 0, sub: 'Le film qui colle le mieux à ton moment, avec la raison de sa place.',
+    alt: ['+ 4 alternatives,', 'chacune avec sa raison.'] },
+  I: { kick: '8 QUESTIONS  ·  1 MINUTE', tag: [['TON HUMEUR CHOISIT TON ', C.cream], ['CINÉMA.', C.red]] },
+};
 const BGS = { blk: ['#1c0f14', '#070405'], cream: ['#fbf6f7', '#eadde1'], red: ['#ff4464', '#e2133a'] };
 function bgFill(x, k) {
   const g = x.createRadialGradient(CX, CY * 0.92, 0, CX, CY, Math.hypot(W, H) * 0.62);
@@ -500,10 +509,10 @@ function sC(x, t) {
   bgFill(x, 'cream');
   const L = layC();
   const o = { align: L.al, color: C.ink };
-  kick(x, 'ÉTAPE 1 · TON HUMEUR', L.tx, L.ky, t, 8.85, 12.15, { align: L.al });
-  tl(x, 'COMMENT TU TE', L.tx, L.t1, L.ts, t, 8.9, 12.2, o);
-  tl(x, 'SENS CE SOIR ?', L.tx, L.t1 + L.ts * 1.06, L.ts, t, 8.98, 12.25, o);
-  para(x, 'Neuf humeurs, une seule à choisir.', L.tx, L.sy, 34, 760, t, 9.15, 12.25, { align: L.al, wt: 600, color: ink(0.6) });
+  kick(x, TXT.C.kick, L.tx, L.ky, t, 8.85, 12.15, { align: L.al });
+  tl(x, TXT.C.lines[0], L.tx, L.t1, L.ts, t, 8.9, 12.2, o);
+  tl(x, TXT.C.lines[1], L.tx, L.t1 + L.ts * 1.06, L.ts, t, 8.98, 12.25, o);
+  para(x, TXT.C.sub, L.tx, L.sy, 34, 760, t, 9.15, 12.25, { align: L.al, wt: 600, color: ink(0.6) });
   const [sx0, sy0] = moodPos(L, 8);
   const tapX = sx0 + L.r * 0.18, tapY = sy0 + L.r * 0.22;
   const hero = EZ.inOut(prog(t, 10.75, 11.4));
@@ -739,16 +748,9 @@ function sE(x, t) {
   bgFill(x, 'blk');
   const L = layE(), F = layF(), axc = (L.ax0 + L.ax1) / 2;
   const o = { align: L.al };
-  kick(x, 'ÉTAPE 3 · LE TRI', L.tx, L.ky, t, 19.3, 23.05, { align: L.al });
-  if (PORT) {
-    tl(x, 'CHAQUE FILM EST', L.tx, L.ty, L.ts, t, 19.35, 23.05, o);
-    tl(x, [['VÉRIFIÉ ', C.cream], ['DEUX FOIS.', C.red]], L.tx, L.ty + L.ts * 1.04, L.ts, t, 19.43, 23.1, o);
-  } else {
-    tl(x, 'CHAQUE FILM', L.tx, L.ty, L.ts, t, 19.35, 23.05, o);
-    tl(x, 'EST VÉRIFIÉ', L.tx, L.ty + L.ts * 1.04, L.ts, t, 19.43, 23.08, o);
-    tl(x, [['DEUX FOIS.', C.red]], L.tx, L.ty + L.ts * 2.08, L.ts, t, 19.51, 23.1, o);
-  }
-  para(x, 'Par ses genres, puis par ses mots-clés. Ce qui ne colle pas à ton envie est écarté, même s’il est populaire.', L.tx, L.sy, PORT ? 30 : 30, L.sw, t, 19.7, 23.05, { align: L.al });
+  kick(x, TXT.E.kick, L.tx, L.ky, t, 19.3, 23.05, { align: L.al });
+  (PORT ? TXT.E.port : TXT.E.land).forEach((ln, i) => tl(x, ln, L.tx, L.ty + L.ts * 1.04 * i, L.ts, t, 19.35 + i * 0.08, 23.05 + i * 0.025, o));
+  para(x, TXT.E.sub, L.tx, L.sy, PORT ? 30 : 30, L.sw, t, 19.7, 23.05, { align: L.al });
   // portes
   const ga = 1 - prog(t, 23.0, 23.3);
   [[L.g1, '1 · GENRES', 19.45], [L.g2, '2 · MOTS-CLÉS', 19.6]].forEach(([gy, lab, t0]) => {
@@ -830,10 +832,11 @@ function sF(x, t) {
   bgFill(x, 'cream');
   const L = layF(), tg = fTargets(L);
   const o = { align: L.al, color: C.ink };
-  kick(x, 'ÉTAPE 4 · TON FILM', L.tx, L.ky, t, 23.95, null, { align: L.al });
-  tl(x, 'TON FILM,', L.tx, L.t1, L.ts, t, 24.0, null, o);
-  tl(x, [['ET POURQUOI LUI.', C.red]], L.tx, L.t1 + L.ts * 1.06, L.ts, t, 24.08, null, o);
-  if (!PORT) para(x, 'Le film qui colle le mieux à ton moment, avec la raison de sa place.', L.tx, L.sub, 30, 560, t, 24.3, null, { color: ink(0.6) });
+  const fts = (!PORT && TXT.F.tsLand) || L.ts;
+  kick(x, TXT.F.kick, L.tx, L.ky, t, 23.95, null, { align: L.al });
+  tl(x, TXT.F.lines[0], L.tx, L.t1, fts, t, 24.0, null, o);
+  tl(x, TXT.F.lines[1], L.tx, L.t1 + fts * 1.06, fts, t, 24.08, null, o);
+  if (!PORT) para(x, TXT.F.sub, L.tx, L.sub, 30, 560, t, 24.3, null, { color: ink(0.6) });
   // carte n°1 : elle s'ouvre à partir de l'affiche
   const cu = EZ.out(prog(t, 23.84, 24.32));
   const [cX, cY, cW, cH] = L.card, [pX, pY, pW, pH] = L.pos;
@@ -877,8 +880,8 @@ function sF(x, t) {
     film(x, T.cx - T.w / 2, T.cy - T.h / 2, T.w, T.h, k);
     if (k > 0) tl(x, [[`${FILMS[k].m}%`, C.red]], T.cx, T.cy + T.h / 2 + 46, PORT ? 40 : 34, t, 26.3 + k * 0.07, null, { align: 'center' });
   }
-  if (PORT) para(x, '+ 4 alternatives, chacune avec sa raison.', L.altText[0], L.altText[1], 30, 900, t, 26.6, null, { align: 'center', wt: 600, color: ink(0.65) });
-  else { para(x, '+ 4 alternatives,', L.altText[0], L.altText[1], 28, 400, t, 26.6, null, { wt: 600, color: ink(0.65) }); para(x, 'chacune avec sa raison.', L.altText[0], L.altText[1] + 40, 28, 400, t, 26.66, null, { wt: 600, color: ink(0.65) }); }
+  if (PORT) para(x, TXT.F.alt.join(' '), L.altText[0], L.altText[1], 30, 900, t, 26.6, null, { align: 'center', wt: 600, color: ink(0.65) });
+  else { para(x, TXT.F.alt[0], L.altText[0], L.altText[1], 28, 400, t, 26.6, null, { wt: 600, color: ink(0.65) }); para(x, TXT.F.alt[1], L.altText[0], L.altText[1] + 40, 28, 400, t, 26.66, null, { wt: 600, color: ink(0.65) }); }
   // lecture : l'affiche n°1 devient l'écran
   const T = tg[0], pb = spr(t - 27.35, 13, 7) * (1 - xp);
   const cover = Math.max(W, H / 1.5) * 1.08;
@@ -1009,10 +1012,10 @@ function sI(x, t) {
   const g = x.createRadialGradient(CX, L.base - L.size * 0.35, 0, CX, L.base - L.size * 0.35, L.size * 2.6);
   g.addColorStop(0, redA(0.13 * prog(t, 37.0, 37.8))); g.addColorStop(1, 'rgba(255,45,79,0)');
   x.fillStyle = g; x.fillRect(0, 0, W, H);
-  kick(x, '8 QUESTIONS  ·  1 MINUTE', CX, L.ky, t, 37.35, null, { align: 'center' });
+  kick(x, TXT.I.kick, CX, L.ky, t, 37.35, null, { align: 'center' });
   const LW = layoutChars('CINÉMOOD', L.size, { fam: 'Anton' }), x0 = CX - LW.w / 2;
   LW.chars.forEach((c, i) => revealLine(x, c.ch, x0 + c.x, L.base, L.size, (t - 37.0 - i * 0.045) / 0.6, { fam: 'Anton', color: i < 4 ? C.cream : C.red, ease: EZ.out, asc: 1.2, desc: 0.08 }));
-  tl(x, [['TON HUMEUR CHOISIT TON ', C.cream], ['CINÉMA.', C.red]], CX, L.tg, L.tgs, t, 37.5, null, { align: 'center' });
+  tl(x, TXT.I.tag, CX, L.tg, L.tgs, t, 37.5, null, { align: 'center' });
   // adresse tapée dans sa pastille
   const url = 'cinem00d.com', us = PORT ? 40 : 40, uo = { fam: 'Archivo', wt: 700 };
   const tw = textWidth(url, us, uo), pw = tw + 130, ph = 86, pu = EZ.out(prog(t, 37.95, 38.32));
