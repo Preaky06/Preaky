@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vomalia Motion</title>
+<style>
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:500 800;src:url("{{FONT_BRICO}}") format('woff2')}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;src:url("{{FONT_FIG}}") format('woff2')}
+:root{--bg:#0B0C12;--ink:#F2F0EA;--card:#14161F;--coral:#FF8A6B}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#06070B;color:var(--ink);font-family:Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg);transform-origin:0 0;isolation:isolate}
+.abs{position:absolute}
+.d{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.03em}
+.ln{display:block;overflow:hidden;padding:.08em .1em .16em;margin:-.08em -.1em -.16em;white-space:nowrap}
+.ln>span{display:inline-block}
+.center{left:0;right:0;text-align:center}
+.glow{position:absolute;border-radius:50%;pointer-events:none}
+
+/* phone (native app units, scaled as a whole) */
+#phone{left:0;top:0;width:414px;height:868px;border-radius:64px;padding:12px;transform-origin:50% 50%;
+  background:linear-gradient(150deg,#3b3e4d 0%,#1a1b24 38%,#0c0d13 100%)}
+#phone .side{position:absolute;width:4px;border-radius:2px;background:#2a2c38}
+#screen{position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:var(--bg);isolation:isolate;color:var(--ink)}
+#homeScroll{position:relative;padding:52px 20px 150px}
+.chip{min-height:40px;padding:0 15px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:#14161F;color:#F2F0EA;font-size:13.5px;font-weight:600;white-space:nowrap;display:flex;align-items:center}
+.mcard{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:168px;padding:16px;border-radius:24px;border:1px solid rgba(255,255,255,.07);background:#14161F}
+.mcard .g{position:absolute;right:-34px;top:-34px;width:120px;height:120px;border-radius:50%}
+.mcard .o{position:relative;width:34px;height:34px;border-radius:50%}
+.ib{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:#14161F;display:grid;place-items:center}
+.tm{min-width:52px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);font-weight:700;font-size:13px;display:grid;place-items:center;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:16px;height:84px;padding:0 34px 0 28px;border-radius:999px;background:#14161F;border:2px solid rgba(255,255,255,.1);font-size:36px;font-weight:600;white-space:nowrap}
+.pill i{width:18px;height:18px;border-radius:50%;flex:none}
+
+/* live player chrome */
+#ui{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:8px 14px 8px 8px;border-radius:999px;background:#14161F;border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 40px -16px rgba(0,0,0,.8);font-size:13px;font-weight:600;z-index:10;width:min(560px,calc(100vw - 32px))}
+#ui button{flex:none;min-height:40px;min-width:40px;border-radius:999px;border:0;background:#F2F0EA;color:#0B0C12;font:inherit;font-weight:700;cursor:pointer;display:grid;place-items:center;padding:0 12px}
+#ui button.ghost{background:transparent;color:#F2F0EA;border:1px solid rgba(255,255,255,.14)}
+#ui button:focus-visible,#bar:focus-visible{outline:2px solid #FF8A6B;outline-offset:3px}
+#bar{flex:1;height:40px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+#bar>div{position:relative;width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.12)}
+#fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:#FF8A6B}
+#time{flex:none;font-variant-numeric:tabular-nums;color:rgba(242,240,234,.7);min-width:38px;text-align:right}
+body.render #ui{display:none}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="g1" class="glow" style="width:1500px;height:1500px"></div>
+  <div id="g2" class="glow" style="width:1400px;height:1400px"></div>
+
+  <!-- BRAND (intro + outro) -->
+  <div id="brand" class="abs" style="inset:0;transform-origin:540px 820px">
+    <svg class="abs" width="1080" height="1920" viewBox="0 0 1080 1920" style="left:0;top:0;overflow:visible">
+      <circle id="ringP" cx="540" cy="820" r="372" fill="none" stroke="#C78BFF" stroke-width="8" opacity=".3" stroke-linecap="round" transform="rotate(-90 540 820)"/>
+      <circle id="ringB" cx="540" cy="820" r="300" fill="none" stroke="#5EC8FF" stroke-width="14" opacity=".48" stroke-linecap="round" transform="rotate(-90 540 820)"/>
+      <path id="wave" fill="none" stroke="#FF8A6B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <img id="logo" class="abs" src="{{LOGO}}" alt="" width="330" height="330" style="left:375px;top:655px">
+    <div class="abs center" style="top:1250px"><div class="ln d" style="font-size:150px;line-height:1"><span id="word">vomalia</span></div></div>
+    <div id="tag" class="abs center" style="top:1428px;font-size:44px;font-weight:500;color:rgba(242,240,234,.68)">Des fréquences pour chaque état.</div>
+    <div id="cta" class="abs center" style="top:1580px">
+      <span style="display:inline-flex;align-items:center;gap:22px;height:116px;padding:0 50px 0 24px;border-radius:999px;background:#F2F0EA;color:#0B0C12;font-size:42px;font-weight:700">
+        <span style="width:76px;height:76px;border-radius:50%;background:#FF8A6B;display:grid;place-items:center"><svg viewBox="0 0 24 24" width="30" height="30" fill="#0B0C12" style="margin-left:4px"><polygon points="6 3 20 12 6 21 6 3"/></svg></span>
+        Lance ta séance
+      </span>
+    </div>
+    <div id="disc" class="abs center" style="top:1820px;font-size:25px;font-weight:500;color:rgba(242,240,234,.42)">Bien-être sonore. Ne remplace pas un avis médical.</div>
+  </div>
+
+  <!-- HOOK -->
+  <div id="pills" class="abs" style="inset:0"></div>
+  <div id="hook" class="abs" style="inset:0">
+    <div id="hookOver" class="abs center" style="top:700px;font-size:46px;font-weight:600;color:rgba(242,240,234,.64)">Tu te sens…</div>
+    <div id="words"></div>
+    <div class="abs center" style="top:700px">
+      <div class="ln d" style="font-size:84px;line-height:1.02"><span id="f1">Il y a une</span></div>
+    </div>
+    <div class="abs center" style="top:800px">
+      <div class="ln d" style="font-size:168px;line-height:1.02;color:#FF8A6B"><span id="f2" style="position:relative">fréquence<svg id="uls" viewBox="0 0 800 60" preserveAspectRatio="none" style="position:absolute;left:2%;width:96%;bottom:-6px;height:44px;overflow:visible"><path id="ul" d="" fill="none" stroke="#FF8A6B" stroke-width="7" stroke-linecap="round"/></svg></span></div>
+    </div>
+    <div class="abs center" style="top:1020px">
+      <div class="ln d" style="font-size:84px;line-height:1.02;color:rgba(242,240,234,.6)"><span id="f3">pour ça.</span></div>
+    </div>
+  </div>
+
+  <!-- CAPTIONS -->
+  <div id="caps" class="abs center" style="top:150px"></div>
+
+  <!-- MODE SHOWCASE -->
+  <div id="modeTitle" class="abs" style="inset:0">
+    <div id="mOver" class="abs center" style="top:92px;font-size:26px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,240,234,.6)">10 séances · 9 fréquences · 6 stimulations</div>
+    <div id="orb" class="abs" style="left:430px;top:190px;width:220px;height:220px;border-radius:50%"></div>
+    <div id="mNames"></div>
+  </div>
+
+  <!-- PHONE -->
+  <div id="pglow" class="abs" style="left:0;top:0;width:820px;height:1300px;transform-origin:50% 50%"></div>
+  <div id="phone" class="abs">
+    <div class="side" style="left:-3px;top:150px;height:34px"></div>
+    <div class="side" style="left:-3px;top:210px;height:62px"></div>
+    <div class="side" style="left:-3px;top:286px;height:62px"></div>
+    <div class="side" style="right:-3px;top:230px;height:96px"></div>
+    <div id="screen">
+      <div id="sg1" class="glow" style="width:520px;height:520px;left:-180px;top:-200px"></div>
+      <div id="sg2" class="glow" style="width:460px;height:460px;right:-200px;top:260px"></div>
+
+      <div id="home" class="abs" style="inset:0">
+        <div id="homeScroll">
+          <div id="hHead" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <img src="{{LOGO}}" alt="" width="34" height="34" style="display:block;width:34px;height:34px;object-fit:contain">
+              <span class="d" style="font-size:20px;letter-spacing:-.02em">vomalia</span>
+            </div>
+            <div style="min-height:44px;padding:0 14px 0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:#14161F;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" style="stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg>
+              <span id="hOut">Casque</span>
+            </div>
+          </div>
+          <h1 id="hH1" class="d" style="margin:28px 0 0;font-size:34.4px;line-height:1.05">Bonsoir,<br><span style="color:rgba(242,240,234,.55)">que veux-tu ressentir ?</span></h1>
+          <div id="hFeel" style="margin-top:22px;font-size:13px;font-weight:600;color:rgba(242,240,234,.64)">Je me sens…</div>
+          <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px"></div>
+          <div id="recWrap" style="overflow:hidden">
+            <div id="rec" style="margin-top:16px;display:flex;align-items:center;gap:14px;padding:14px 14px 14px 18px;border-radius:24px;border:1px solid rgba(94,224,180,.35);background:rgba(94,224,180,.1)">
+              <span style="flex:1;min-width:0"><span style="display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5EE0B4">Conseillé pour toi</span><span class="d" style="display:block;margin-top:4px;font-size:19.2px;letter-spacing:-.02em">Calme · 15 min</span><span style="display:block;margin-top:2px;font-size:13px;color:rgba(242,240,234,.68)">396 Hz · Alpha 10 Hz</span></span>
+              <span style="flex:none;width:48px;height:48px;border-radius:50%;background:#5EE0B4;color:#0B0C12;display:grid;place-items:center"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></span>
+            </div>
+          </div>
+          <h2 id="hSea" class="d" style="margin:28px 0 0;font-size:20px;letter-spacing:-.02em">Séances</h2>
+          <div id="grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px"></div>
+        </div>
+      </div>
+
+      <nav id="nav" class="abs" style="left:16px;right:16px;bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px;border-radius:999px;background:#14161F;border:1px solid rgba(255,255,255,.08);box-shadow:0 18px 40px -16px rgba(0,0,0,.8)"></nav>
+
+      <div id="player" class="abs" style="inset:0;background:#0B0C12;display:flex;flex-direction:column;padding:50px 20px 26px">
+        <div class="abs" style="inset:0;background:radial-gradient(90% 55% at 50% 30%, rgba(94,224,180,.28), transparent 70%)"></div>
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span class="ib"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" style="stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5EE0B4">Alpha 10 Hz</span>
+          <span class="ib"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" style="stroke-width:2.5;stroke-linecap:round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>
+        </div>
+        <div style="position:relative;flex:1;min-height:220px;display:grid;place-items:center;margin:8px 0">
+          <canvas id="viz" width="560" height="560" style="width:280px;height:280px;display:block"></canvas>
+          <div class="abs" style="inset:0;display:grid;place-items:center;text-align:center">
+            <div>
+              <div class="d" style="font-weight:800;font-size:41.6px;letter-spacing:-.04em;line-height:1">396<span style="font-size:16px;font-weight:600;color:rgba(242,240,234,.6)"> Hz</span></div>
+              <div id="beatWrap" style="position:relative;margin-top:6px;height:18px;font-size:13px;font-weight:600;color:#5EE0B4;white-space:nowrap">
+                <span id="beatA" style="display:block">Battement binaural 10 Hz</span>
+                <span id="beatB" class="abs" style="left:0;right:0;top:0">Ton isochrone 10 Hz</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="position:relative;text-align:center">
+          <h2 class="d" style="font-size:25.6px">Calme</h2>
+          <p style="margin:6px auto 0;max-width:320px;font-size:13.5px;line-height:1.45;color:rgba(242,240,234,.7)">L’alpha, état de détente éveillée, sur 396 Hz.</p>
+        </div>
+        <div id="pCtrl" style="position:relative;display:flex;align-items:center;justify-content:center;gap:22px;margin-top:18px">
+          <span id="pLeft" style="min-width:64px;text-align:right;font-variant-numeric:tabular-nums;font-size:15px;font-weight:600;color:rgba(242,240,234,.78)">15:00</span>
+          <span style="width:76px;height:76px;border-radius:50%;background:#5EE0B4;color:#0B0C12;display:grid;place-items:center;box-shadow:0 14px 34px -10px rgba(94,224,180,.28)"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1.5"/><rect x="13.5" y="4" width="4.5" height="16" rx="1.5"/></svg></span>
+          <span style="min-width:64px;font-size:12px;font-weight:600;color:rgba(242,240,234,.55)">fondu final</span>
+        </div>
+        <div id="pTimers" style="position:relative;display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:18px">
+          <span class="tm">∞</span><span class="tm">10 min</span><span class="tm" style="background:#5EE0B4;border-color:#5EE0B4;color:#0B0C12">15 min</span><span class="tm">25 min</span><span class="tm">45 min</span>
+        </div>
+        <div style="position:relative;margin-top:18px;padding:14px 16px;border-radius:22px;border:1px solid rgba(255,255,255,.07);background:#14161F;display:flex;flex-direction:column;gap:14px">
+          <div id="pOut" style="position:relative;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:999px;background:#0B0C12">
+            <div id="segKnob" class="abs" style="top:4px;bottom:4px;left:4px;width:calc(50% - 6px);border-radius:999px;background:#F2F0EA"></div>
+            <span id="segA" style="position:relative;min-height:40px;display:grid;place-items:center;font-weight:700;font-size:13px">Casque · binaural</span>
+            <span id="segB" style="position:relative;min-height:40px;display:grid;place-items:center;font-weight:700;font-size:13px">Haut-parleur</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" style="flex:none;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;color:rgba(242,240,234,.6)"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+            <div style="flex:1;height:44px;display:flex;align-items:center"><div style="position:relative;width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.1)"><div class="abs" style="left:0;top:0;bottom:0;width:40%;border-radius:3px;background:#5EE0B4"></div><div class="abs" style="top:50%;left:40%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:#F2F0EA;box-shadow:0 2px 8px rgba(0,0,0,.5)"></div></div></div>
+            <span style="flex:none;width:36px;text-align:right;font-size:13px;font-weight:700">40</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:44px">
+            <span style="flex:1"><span style="display:block;font-weight:700;font-size:14px">Harmoniques</span><span style="display:block;font-size:12px;color:rgba(242,240,234,.6)">Octave et quinte, plus doux à l’oreille</span></span>
+            <span style="flex:none;width:46px;height:28px;border-radius:14px;padding:3px;background:#5EE0B4"><span style="display:block;width:22px;height:22px;border-radius:50%;background:#F2F0EA;transform:translateX(18px)"></span></span>
+          </div>
+        </div>
+        <div id="hl" class="abs" style="left:0;top:0;border:2px solid rgba(242,240,234,.9);border-radius:999px;box-shadow:0 0 0 6px rgba(242,240,234,.12),0 0 30px rgba(94,224,180,.35)"></div>
+      </div>
+
+      <div id="sbk" class="abs" style="left:0;right:0;top:0;height:66px;background:linear-gradient(#0B0C12 60%,rgba(11,12,18,0))"></div>
+      <div id="status" class="abs" style="left:0;right:0;top:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 36px;font-size:16px;font-weight:700">
+        <span>19:42</span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="#F2F0EA"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="#F2F0EA" stroke-width="2" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.3 6.3 0 0 1 8.8 0"/><circle cx="8" cy="10" r="1.2" fill="#F2F0EA" stroke="none"/></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="rgba(242,240,234,.5)"/><rect x="2.5" y="2.5" width="16" height="8" rx="2" fill="#F2F0EA"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="rgba(242,240,234,.5)"/></svg>
+        </span>
+      </div>
+      <div class="abs" style="left:134px;top:11px;width:122px;height:35px;border-radius:20px;background:#000"></div>
+      <div id="touch" class="abs" style="left:0;top:0;width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.85);box-shadow:0 8px 22px rgba(0,0,0,.4)"></div>
+      <div id="ripple" class="abs" style="left:0;top:0;width:54px;height:54px;border-radius:50%;border:2px solid rgba(255,255,255,.9)"></div>
+      <div class="abs" style="left:128px;bottom:8px;width:134px;height:5px;border-radius:3px;background:rgba(242,240,234,.55)"></div>
+    </div>
+  </div>
+
+  <!-- WAVES -->
+  <div id="bands" class="abs" style="inset:0">
+    <div class="abs center" style="top:250px">
+      <div class="ln d" style="font-size:84px;line-height:1.02"><span id="bt1">Des ondes delta</span></div>
+      <div class="ln d" style="font-size:84px;line-height:1.02;color:rgba(242,240,234,.55)"><span id="bt2">aux ondes gamma.</span></div>
+    </div>
+    <div id="bandRows"></div>
+  </div>
+
+  <!-- TOOLS -->
+  <div id="tools" class="abs" style="inset:0">
+    <div class="abs center" style="top:640px">
+      <div class="ln d" style="font-size:84px;line-height:1.02"><span id="tt1">Et des outils courts</span></div>
+      <div class="ln d" style="font-size:84px;line-height:1.02;color:rgba(242,240,234,.55)"><span id="tt2">pour un besoin précis.</span></div>
+    </div>
+    <div id="toolPills" class="abs" style="left:60px;right:60px;top:940px;display:flex;flex-wrap:wrap;justify-content:center;gap:22px"></div>
+  </div>
+
+  <div id="grain" class="abs" style="inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.55"></div>
+  <div id="fade" class="abs" style="inset:0;background:#0B0C12;pointer-events:none"></div>
+</div>
+
+<div id="ui" role="group" aria-label="Lecture">
+  <button id="bPlay" aria-label="Pause"><svg id="iPause" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg id="iPlay" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+  <span id="time">0:00</span>
+  <div id="bar" role="slider" tabindex="0" aria-label="Position" aria-valuemin="0" aria-valuemax="33"><div><div id="fill"></div></div></div>
+  <button id="bSound" class="ghost" aria-pressed="false">Son : off</button>
+</div>
+
+<script>
+/* ---------- data (from the app) ---------- */
+const MODES = [
+  { id:'focus', name:'Concentration', hz:741, band:'Bêta 14 Hz', color:'#5EC8FF', tag:'Travail, études' },
+  { id:'motiv', name:'Motivation', hz:417, band:'Bêta 18 Hz', color:'#FFB547', tag:'Se lancer, passer à l’action' },
+  { id:'calm', name:'Calme', hz:396, band:'Alpha 10 Hz', color:'#5EE0B4', tag:'Stress, anxiété' },
+  { id:'sleep', name:'Sommeil', hz:174, band:'Delta 2,5 Hz', color:'#8E8CFF', tag:'S’endormir' },
+  { id:'medit', name:'Méditation', hz:852, band:'Thêta 6 Hz', color:'#C78BFF', tag:'Intériorité, présence' },
+  { id:'crea', name:'Créativité', hz:639, band:'Thêta-alpha 7,83 Hz', color:'#FF8FB1', tag:'Idées, écriture' },
+  { id:'mood', name:'Bonne humeur', hz:528, band:'Alpha 10 Hz', color:'#FFD66B', tag:'Moral en baisse' },
+  { id:'recov', name:'Récupération', hz:285, band:'Thêta 4 Hz', color:'#6FE3E8', tag:'Fatigue, après l’effort' },
+  { id:'pain', name:'Douleur', hz:174, band:'Thêta 5 Hz', color:'#FF7A7A', tag:'Blessure, dos, tensions' },
+  { id:'rest', name:'Repos', hz:285, band:'Delta 3 Hz', color:'#9FD38A', tag:'Malade, convalescence' },
+];
+const FEELS = ['Anxieux·se', 'Déconcentré·e', 'Démotivé·e', 'Épuisé·e', 'Triste', 'Insomnie', 'Submergé·e', 'À court d’idées', 'Malade', 'Douleur, blessure'];
+const BANDS = [['Delta', '0,5–4 Hz', 'Sommeil profond', '#8E8CFF', 1.5], ['Thêta', '4–8 Hz', 'Méditation, rêverie', '#C78BFF', 3], ['Alpha', '8–13 Hz', 'Détente éveillée', '#5EE0B4', 5], ['Bêta', '13–30 Hz', 'Attention, action', '#5EC8FF', 9], ['Gamma', '30 Hz et +', 'Traitement intense', '#FFB547', 19]];
+const TOOLS = [['Cohérence cardiaque', '#FF8A6B'], ['Stimulation bilatérale', '#5EE0B4'], ['Gamma 40 Hz', '#5EC8FF'], ['Coup de fouet', '#FFB547'], ['Frissons ASMR', '#C78BFF'], ['Ondes lentes', '#8E8CFF'], ['Solfège, de 174 à 963 Hz', '#F2F0EA']];
+const ICONS = [['Séances', 'M2 12h3l3-8 4 16 3-8h7'], ['Fréquences', 'M2 12c2.5-7 5-7 7.5 0s5 7 7.5 0 3-5 5-3'], ['Moi', 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z']];
+
+/* ---------- timeline ---------- */
+const DUR = 33.5;
+const HOOK = [[4.35, 5.3, 'Anxieux·se ?', '#5EE0B4', 0, 396], [5.3, 6.25, 'Déconcentré·e ?', '#5EC8FF', 1, 741], [6.25, 7.15, 'Démotivé·e ?', '#FFB547', 2, 417]];
+const CAPS = [
+  [8.6, 11.35, 'Dis comment', 'tu te sens.'],
+  [11.35, 14.0, 'Vomalia te conseille', 'la bonne séance.'],
+  [14.0, 15.6, 'Battement binaural', 'au casque.'],
+  [15.6, 17.2, 'Sur haut-parleur,', 'le son s’adapte.'],
+  [17.2, 18.85, 'Puis le son', 's’efface en douceur.'],
+];
+const SHOW = ['focus', 'sleep', 'motiv', 'medit', 'crea', 'recov'].map(id => MODES.findIndex(m => m.id === id));
+const M0 = 19.5, MSTEP = 0.75;
+const TAPS = [[10.6, 'chip'], [12.95, 'rec'], [16.0, 'seg']];
+const TOOLS_A = 27.1, OUTRO_A = 29.4;
+
+/* audio cues, read by tools/audio.py so picture and sound share one source */
+const CUES = {
+  dur: DUR,
+  glide: { a: 0.15, b: 1.3, f0: 174, f1: 528 },
+  chimes: [{ t: 2.0, hz: 528, g: 1 }, ...HOOK.map(h => ({ t: h[0], hz: h[5], g: 0.55 })), { t: 7.3, hz: 528, g: 0.8 },
+    { t: 10.85, hz: 396, g: 0.45 }, ...SHOW.map((mi, i) => ({ t: M0 + i * MSTEP, hz: MODES[mi].hz, g: 0.42 })), { t: OUTRO_A + 0.45, hz: 528, g: 1 }],
+  whooshes: [{ t: 3.75, d: 0.7 }, { t: 8.1, d: 1.0 }, { t: 18.55, d: 0.7 }, { t: 24.0, d: 0.7 }, { t: 26.65, d: 0.6 }, { t: OUTRO_A - 0.15, d: 0.9 }],
+  taps: TAPS.map(x => x[0]),
+  pops: [...FEELS.map((_, i) => 4.25 + i * 0.05), ...TOOLS.map((_, i) => TOOLS_A + 0.3 + i * 0.09), OUTRO_A + 1.4],
+  session: { a: 13.15, b: 18.85, hz: 396, beat: 10, speakerAt: 16.02 },
+  pulses: BANDS.map((b, i) => ({ t: 24.55 + i * 0.32, rate: [2, 6, 10, 20, 40][i] })),
+  pulseEnd: 27.1,
+  pads: [{ a: 0.2, b: 4.4, hz: 264 }, { a: 4.2, b: 8.6, hz: 198 }, { a: 8.3, b: 14.6, hz: 198 }, { a: 18.6, b: 24.4, hz: 264 }, { a: 26.9, b: 29.8, hz: 176 }, { a: OUTRO_A, b: DUR, hz: 264 }],
+};
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const bump = (t, a, b) => { const k = seg(t, a, b); return k > 0 && k < 1 ? Math.sin(Math.PI * k) : 0; };
+const E = {
+  outExpo: k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k),
+  outQuint: k => 1 - Math.pow(1 - k, 5),
+  outCubic: k => 1 - Math.pow(1 - k, 3),
+  inCubic: k => k * k * k,
+  inOutCubic: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2,
+  inOutSine: k => -(Math.cos(Math.PI * k) - 1) / 2,
+  outBack: k => { const c = 1.70158; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); },
+};
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const rgba = (h, a) => 'rgba(' + hex(h).join(',') + ',' + a + ')';
+const mixHex = (a, b, k) => { const A = hex(a), B = hex(b); return '#' + A.map((v, i) => Math.round(lerp(v, B[i], k)).toString(16).padStart(2, '0')).join(''); };
+const deep = (h, k) => '#' + hex(h).map(v => Math.round(v * k).toString(16).padStart(2, '0')).join('');
+const fmt = s => { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const show = (el, on) => { el.style.display = on ? '' : 'none'; return on; };
+// masked line reveal: inner span slides up from below its line box, leaves upward
+function rise(el, t, a, b, d = 0.6, dout = 0.32) {
+  const kin = E.outExpo(seg(t, a, a + d)), kout = E.inCubic(seg(t, b - dout, b));
+  el.style.transform = 'translateY(' + ((1 - kin) * 140 - kout * 140).toFixed(2) + '%)';
+  el.parentNode.style.visibility = t < a || t > b ? 'hidden' : 'visible';
+}
+// app's vmUp: fade + 22px rise
+function up(el, t, a, d = 0.6, px = 22) {
+  const k = E.outCubic(seg(t, a, a + d));
+  el.style.opacity = k.toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * px).toFixed(2) + 'px)';
+}
+function fitLine(span, maxW) {
+  const ln = span.parentNode, fs = parseFloat(getComputedStyle(ln).fontSize), w = span.offsetWidth;
+  if (w > maxW) ln.style.fontSize = (fs * maxW / w).toFixed(1) + 'px';
+}
+
+/* ---------- build DOM from data ---------- */
+const PILL_POS = [[250, 380, 1.1], [790, 270, .9], [830, 1440, 1.05], [270, 1560, .8], [900, 620, .7], [160, 600, .75], [560, 1720, .9], [600, 150, .7], [150, 1230, .85], [860, 1190, .78]];
+$('pills').innerHTML = FEELS.map((f, i) => '<div class="abs" style="left:0;top:0"><span class="pill" id="pl' + i + '" style="transform:translate(-50%,-50%)">' + f + '</span></div>').join('');
+$('words').innerHTML = HOOK.map((h, i) => '<div class="abs center" style="top:810px"><div class="ln d" style="font-size:150px;line-height:1.02;color:' + h[3] + '"><span id="w' + i + '">' + h[2] + '</span></div></div>').join('');
+$('caps').innerHTML = CAPS.map((c, i) => '<div class="abs center" style="top:0"><div class="ln d" style="font-size:80px;line-height:1.02"><span id="c' + i + 'a">' + c[2] + '</span></div><div class="ln d" style="font-size:80px;line-height:1.02;color:rgba(242,240,234,.6)"><span id="c' + i + 'b">' + c[3] + '</span></div></div>').join('');
+$('mNames').innerHTML = SHOW.map((mi, i) => { const m = MODES[mi]; return '<div class="abs center" style="top:470px"><div class="ln d" style="font-size:110px;line-height:1.02"><span id="mn' + i + '">' + m.name + '</span></div></div><div class="abs center" style="top:612px"><div class="ln" style="font-size:40px;font-weight:700;line-height:1.1;color:' + m.color + '"><span id="ms' + i + '">' + m.hz + ' Hz · ' + m.band + '</span></div></div>'; }).join('');
+$('chips').innerHTML = FEELS.map((f, i) => '<span class="chip" id="ch' + i + '">' + f + '</span>').join('');
+$('grid').innerHTML = MODES.map((m, i) => '<div class="mcard" id="mc' + i + '"><span class="g" style="background:radial-gradient(circle, ' + rgba(m.color, .3) + ', transparent 70%)"></span><span class="o" style="background:radial-gradient(circle at 35% 30%, #FFFFFF 0%, ' + m.color + ' 45%, ' + deep(m.color, .45) + ' 100%);box-shadow:0 0 18px ' + rgba(m.color, .3) + '"></span><span style="position:relative"><span class="d" style="display:block;font-size:17.6px;letter-spacing:-.02em">' + m.name + '</span><span style="display:block;margin-top:3px;font-size:12px;color:rgba(242,240,234,.62)">' + m.tag + '</span><span style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;font-weight:700;color:' + m.color + '"><span>' + m.hz + ' Hz</span><span style="opacity:.5">·</span><span>' + m.band + '</span></span></span></div>').join('');
+$('nav').innerHTML = ICONS.map(([label, d], i) => '<span style="min-height:50px;border-radius:999px;background:' + (i ? 'transparent' : '#F2F0EA') + ';color:' + (i ? 'rgba(242,240,234,.7)' : '#0B0C12') + ';display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:13.5px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" style="stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round"><path d="' + d + '"/></svg>' + label + '</span>').join('');
+$('bandRows').innerHTML = BANDS.map((b, i) => '<div class="abs" id="br' + i + '" style="left:90px;width:900px;top:' + (600 + i * 232) + 'px"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px"><span class="d" style="font-size:58px;color:' + b[3] + '">' + b[0] + '</span><span style="font-size:30px;font-weight:600;color:rgba(242,240,234,.75)">' + b[1] + ' · ' + b[2] + '</span></div><svg width="900" height="110" viewBox="0 0 900 110" style="display:block;margin-top:6px;overflow:visible"><path id="bw' + i + '" fill="none" stroke="' + b[3] + '" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>').join('');
+$('toolPills').innerHTML = TOOLS.map((x, i) => '<span class="pill" id="tp' + i + '" style="font-size:38px;height:92px"><i style="background:' + x[1] + ';box-shadow:0 0 18px ' + rgba(x[1], .6) + '"></i>' + x[0] + '</span>').join('');
+
+// static grain: dithers the dark gradients so 8-bit H.264 does not band them (fixed seed, same every frame)
+(function grain() {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const x = c.getContext('2d'), im = x.createImageData(256, 256);
+  let s = 1234567;
+  for (let i = 0; i < im.data.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; im.data[i] = im.data[i + 1] = im.data[i + 2] = 96 + (s >> 16) % 65; im.data[i + 3] = 255; }
+  x.putImageData(im, 0, 0); $('grain').style.backgroundImage = 'url(' + c.toDataURL() + ')';
+})();
+
+/* ---------- layout measurement (native phone units) ---------- */
+const screenEl = $('screen');
+let G = {};
+function rel(el) { let x = 0, y = 0, e = el; while (e && e !== screenEl) { x += e.offsetLeft; y += e.offsetTop; e = e.offsetParent; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; }
+function measure() {
+  HOOK.forEach((h, i) => fitLine($('w' + i), 960));
+  CAPS.forEach((c, i) => { fitLine($('c' + i + 'a'), 980); fitLine($('c' + i + 'b'), 980); });
+  SHOW.forEach((_, i) => fitLine($('mn' + i), 980));
+  const rw = $('recWrap'); rw.style.height = 'auto'; G.recH = rw.offsetHeight;
+  G.chip = rel($('ch0')); G.rec = rel($('rec')); G.grid = rel($('grid')); G.sea = rel($('hSea'));
+  G.seg = rel($('segB')); G.beat = rel($('beatWrap')); G.ctrl = rel($('pCtrl')); G.timers = rel($('pTimers'));
+  // label pill hugs the text, not the full column; divide out whatever scale the stage/phone carry
+  const bA = $('beatA'), r = document.createRange(); r.selectNodeContents(bA);
+  G.beatTextW = r.getBoundingClientRect().width / (bA.getBoundingClientRect().width / bA.offsetWidth);
+}
+
+/* ---------- drawing ---------- */
+const vizC = $('viz'), vizX = vizC.getContext('2d');
+function drawViz(t, color, hz, beat, amp) {
+  const x = vizX, W = vizC.width, cx = W / 2, R = W * 0.3, col = hex(color);
+  x.clearRect(0, 0, W, W);
+  for (let i = 0; i < 4; i++) { const k = ((t / 7 + i / 4) % 1), rr = R * (0.9 + k * 0.75);
+    x.strokeStyle = 'rgba(' + col + ',' + (0.35 * (1 - k) * amp).toFixed(3) + ')'; x.lineWidth = W * 0.004; x.beginPath(); x.arc(cx, cx, rr, 0, 6.2832); x.stroke(); }
+  const lobes = 3 + Math.round(hz / 150), beatV = beat ? Math.min(1, beat / 20) : 0.3;
+  for (let L = 2; L >= 0; L--) {
+    x.beginPath();
+    for (let i = 0; i <= 180; i++) { const th = i / 180 * 6.2832, d = Math.sin(lobes * th + t * 0.4 + L * 1.2) * 0.045 + Math.sin((lobes + 2) * th - t * 0.25 + L) * 0.025 * beatV;
+      const rr = R * (1 + L * 0.12) * (1 + d * amp * 1.6), px = cx + Math.cos(th) * rr, py = cx + Math.sin(th) * rr; i ? x.lineTo(px, py) : x.moveTo(px, py); }
+    x.closePath();
+    if (L === 0) { const g = x.createRadialGradient(cx - R * 0.3, cx - R * 0.35, R * 0.1, cx, cx, R * 1.15); g.addColorStop(0, 'rgba(255,255,255,.18)'); g.addColorStop(1, 'rgba(' + col + ',.08)'); x.fillStyle = g; x.fill();
+      x.strokeStyle = 'rgba(' + col + ',' + (0.5 + 0.4 * amp).toFixed(2) + ')'; x.lineWidth = W * 0.006; x.stroke(); }
+    else { x.strokeStyle = 'rgba(' + col + ',' + (0.12 + 0.08 * (2 - L)).toFixed(2) + ')'; x.lineWidth = W * 0.004; x.stroke(); }
+  }
+}
+// a sine line that curls into the lobed ring of the logo mark
+function wavePath(t, p, m, wob) {
+  const N = 240, n = Math.max(1, Math.round(N * p)), cx = 540, cy = 820, R = 232;
+  let d = '';
+  for (let i = 0; i <= n; i++) {
+    const s = i / N, env = Math.pow(Math.sin(Math.PI * s), 0.8);
+    const lx = -60 + s * 1200, ly = cy + 72 * env * Math.sin(2 * Math.PI * 6 * s - t * 3.2);
+    const th = -Math.PI / 2 + 2 * Math.PI * s, r = R * (1 + wob * Math.sin(6 * th + t * 1.3) + 0.012 * Math.sin(9 * th - t * 0.9));
+    d += (i ? 'L' : 'M') + lerp(lx, cx + r * Math.cos(th), m).toFixed(1) + ' ' + lerp(ly, cy + r * Math.sin(th), m).toFixed(1);
+  }
+  return d;
+}
+function sinePath(w, h, cycles, phase, p, amp) {
+  const N = Math.max(60, Math.round(cycles * 24)), n = Math.round(N * p);
+  let d = '';
+  for (let i = 0; i <= n; i++) { const s = i / N; d += (i ? 'L' : 'M') + (s * w).toFixed(1) + ' ' + (h / 2 + amp * Math.sin(2 * Math.PI * cycles * s - phase)).toFixed(1); }
+  return n ? d : '';
+}
+
+/* ---------- scene colours ---------- */
+const KEYS = [[0, '#FF8A6B', '#8E8CFF'], ...HOOK.map(h => [h[0], h[3], h[3]]), [7.15, '#FF8A6B', '#C78BFF'], [8.4, '#FF8A6B', '#8E8CFF'], [10.62, '#5EE0B4', '#5EC8FF'],
+  ...SHOW.map((mi, i) => [M0 + i * MSTEP, MODES[mi].color, MODES[SHOW[(i + 1) % SHOW.length]].color]), [24.2, '#C78BFF', '#5EC8FF'], [TOOLS_A, '#FF8A6B', '#5EE0B4'], [OUTRO_A, '#FF8A6B', '#5EC8FF']];
+function colorsAt(t) {
+  let i = 0; while (i + 1 < KEYS.length && t >= KEYS[i + 1][0]) i++;
+  if (i === 0) return [KEYS[0][1], KEYS[0][2]];
+  const k0 = KEYS[i - 1], k1 = KEYS[i], next = KEYS[i + 1] ? KEYS[i + 1][0] : 1e9, d = Math.min(0.9, next - k1[0]);
+  const k = E.inOutSine(seg(t, k1[0], k1[0] + d));
+  return [mixHex(k0[1], k1[1], k), mixHex(k0[2], k1[2], k)];
+}
+
+/* ---------- render(t) ---------- */
+function render(t) {
+  const [cA, cB] = colorsAt(t), gIn = seg(t, 0, 1.2);
+  const g1 = $('g1'), g2 = $('g2');
+  g1.style.background = 'radial-gradient(circle, ' + rgba(cA, (0.2 * gIn).toFixed(3)) + ', transparent 62%)';
+  g2.style.background = 'radial-gradient(circle, ' + rgba(cB, (0.15 * gIn).toFixed(3)) + ', transparent 62%)';
+  g1.style.transform = 'translate(' + (-570 + 60 * Math.sin(t * 0.21)).toFixed(1) + 'px,' + (-480 + 50 * Math.cos(t * 0.17)).toFixed(1) + 'px) scale(' + (1 + 0.06 * Math.sin(t * 0.55)).toFixed(3) + ')';
+  g2.style.transform = 'translate(' + (240 + 50 * Math.cos(t * 0.19)).toFixed(1) + 'px,' + (820 + 60 * Math.sin(t * 0.23)).toFixed(1) + 'px) scale(' + (1 + 0.06 * Math.sin(t * 0.45 + 1)).toFixed(3) + ')';
+
+  renderBrand(t);
+  renderHook(t);
+  renderCaps(t);
+  renderPhone(t, cA);
+  renderModes(t);
+  renderBands(t);
+  renderTools(t);
+  $('fade').style.opacity = Math.max(1 - seg(t, 0, 0.35), seg(t, DUR - 0.4, DUR)).toFixed(3);
+}
+
+function renderBrand(t) {
+  const intro = t < 4.4, outro = t >= OUTRO_A;
+  if (!show($('brand'), intro || outro)) return;
+  const b = $('brand'), wave = $('wave'), rB = $('ringB'), rP = $('ringP'), logo = $('logo');
+  let p, m, wob, ringB, ringP, logoK, wordA, tagA, exitK = 0;
+  if (intro) {
+    p = E.inOutCubic(seg(t, 0.15, 1.25)); m = E.inOutCubic(seg(t, 1.15, 2.05));
+    wob = 0.07 - 0.045 * E.outCubic(seg(t, 1.8, 3.2));
+    ringB = E.outCubic(seg(t, 1.75, 2.6)); ringP = E.outCubic(seg(t, 1.9, 2.8));
+    logoK = seg(t, 1.95, 2.65); wordA = 2.45; tagA = 2.85;
+    exitK = E.inCubic(seg(t, 3.75, 4.35));
+  } else {
+    const s = t - OUTRO_A;
+    p = E.outCubic(seg(s, 0, 1.0)); m = 1; wob = 0.06 - 0.035 * E.outCubic(seg(s, 0.5, 2));
+    ringB = E.outCubic(seg(s, 0.05, 0.9)); ringP = E.outCubic(seg(s, 0.15, 1.05));
+    logoK = seg(s, 0.3, 1.0); wordA = OUTRO_A + 0.75; tagA = OUTRO_A + 1.1;
+  }
+  wave.setAttribute('d', wavePath(t, p, m, wob)); wave.style.visibility = p > 0.01 ? 'visible' : 'hidden';
+  const cB = 2 * Math.PI * 300, cP = 2 * Math.PI * 372, br = 1 + 0.015 * Math.sin(t * 1.6);
+  rB.setAttribute('stroke-dasharray', cB.toFixed(1)); rB.setAttribute('stroke-dashoffset', ((1 - ringB) * cB).toFixed(1));
+  rP.setAttribute('stroke-dasharray', cP.toFixed(1)); rP.setAttribute('stroke-dashoffset', ((1 - ringP) * cP).toFixed(1));
+  rB.style.visibility = ringB > 0.002 ? 'visible' : 'hidden'; rP.style.visibility = ringP > 0.002 ? 'visible' : 'hidden';
+  rB.setAttribute('r', (300 * br * (1 + exitK * 0.5)).toFixed(1)); rP.setAttribute('r', (372 * (2 - br) * (1 + exitK * 0.8)).toFixed(1));
+  const lk = E.outBack(logoK);
+  logo.style.opacity = clamp(logoK * 2).toFixed(3);
+  logo.style.transform = 'scale(' + (0.6 + 0.4 * lk) * (1 + 0.02 * Math.sin(t * 1.6)) + ')';
+  rise($('word'), t, wordA, intro ? 4.6 : 99, 0.8);
+  up($('tag'), t, tagA, 0.7, 26);
+  const outro2 = outro && t > OUTRO_A + 1.3;
+  show($('cta'), outro2); show($('disc'), outro2);
+  if (outro2) {
+    const k = seg(t, OUTRO_A + 1.4, OUTRO_A + 1.9), press = bump(t, 32.15, 32.45);
+    $('cta').style.opacity = clamp(k * 1.6).toFixed(3);
+    $('cta').style.transform = 'scale(' + ((0.7 + 0.3 * E.outBack(k)) * (1 - 0.05 * press)).toFixed(3) + ')';
+    up($('disc'), t, OUTRO_A + 1.8, 0.8, 12);
+  }
+  b.style.opacity = (1 - exitK).toFixed(3);
+  b.style.transform = 'scale(' + (1 + 0.18 * exitK) + ')';
+}
+
+function renderHook(t) {
+  const on = t > 4.15 && t < 8.6;
+  show($('pills'), t > 4.15 && t < 7.7); show($('hook'), on);
+  if (!on) return;
+  FEELS.forEach((f, i) => {
+    const el = $('pl' + i), [x0, y0, dp] = PILL_POS[i], a = 4.2 + i * 0.05;
+    const k = E.outCubic(seg(t, a, a + 0.6)), out = E.inCubic(seg(t, 7.05, 7.6));
+    const act = HOOK.find(h => h[4] === i), hon = act ? Math.min(seg(t, act[0], act[0] + 0.2), 1 - seg(t, act[1] - 0.15, act[1])) : 0;
+    const x = x0 + 10 * Math.sin(t * 0.6 + i), y = y0 - (t - 4.2) * 34 * dp + (1 - k) * 60;
+    el.parentNode.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + (dp * (0.85 + 0.15 * k) * (1 + 0.12 * hon) * (1 - 0.2 * out)).toFixed(3) + ')';
+    el.style.opacity = (k * (1 - out) * (dp < 0.8 ? 0.45 : 0.75) + hon * 0.25 * (1 - out)).toFixed(3);
+    el.style.filter = dp < 0.8 && !hon ? 'blur(3px)' : 'none';
+    el.style.background = hon ? mixHex('#14161F', '#F2F0EA', hon) : '#14161F';
+    el.style.color = hon > 0.5 ? '#0B0C12' : '#F2F0EA';
+    el.style.borderColor = hon ? rgba('#F2F0EA', hon) : 'rgba(255,255,255,.1)';
+  });
+  up($('hookOver'), t, 4.3, 0.6, 20);
+  $('hookOver').style.opacity = (E.outCubic(seg(t, 4.3, 4.9)) * (1 - seg(t, 6.9, 7.15))).toFixed(3);
+  HOOK.forEach((h, i) => rise($('w' + i), t, h[0], h[1], 0.55, 0.28));
+  rise($('f1'), t, 7.15, 8.5, 0.7, 0.3); rise($('f2'), t, 7.25, 8.55, 0.8, 0.3); rise($('f3'), t, 7.4, 8.6, 0.7, 0.3);
+  const uk = E.inOutCubic(seg(t, 7.6, 8.25));
+  $('ul').setAttribute('d', sinePath(800, 60, 4, t * 4, uk, 14));
+}
+
+function renderCaps(t) {
+  CAPS.forEach((c, i) => {
+    const on = t > c[0] - 0.05 && t < c[1] + 0.05;
+    show($('c' + i + 'a').parentNode.parentNode, on);
+    if (!on) return;
+    rise($('c' + i + 'a'), t, c[0], c[1], 0.65, 0.3);
+    rise($('c' + i + 'b'), t, c[0] + 0.08, c[1], 0.65, 0.3);
+  });
+}
+
+function phoneXf(t) {
+  // [cy, scale, rot] keyframed by hand
+  let cy = 1090, s = 1, r = 0;
+  const kin = E.outQuint(seg(t, 8.2, 9.45));
+  cy = lerp(2950, 1090, kin); r = lerp(-9, 0, kin); s = lerp(0.92, 1, kin);
+  const push = E.inOutSine(seg(t, 13.4, 18.6)); s *= 1 + 0.05 * push; cy += 18 * push;
+  const dn = E.inOutCubic(seg(t, 18.85, 19.75)); cy = lerp(cy, 1460, dn); s = lerp(s, 1, dn);
+  const out = E.inCubic(seg(t, 24.0, 24.6)); cy = lerp(cy, 3000, out); r = lerp(r, 7, out);
+  return { cx: 540, cy, s: s * 1.5, r };
+}
+
+function renderPhone(t, cA) {
+  const on = show($('phone'), t > 8.15 && t < 24.65); show($('pglow'), on);
+  if (!on) return;
+  const P = phoneXf(t), ph = $('phone'), pg = $('pglow'), rs = ' rotate(' + P.r.toFixed(2) + 'deg) scale(' + P.s.toFixed(4) + ')';
+  ph.style.transform = 'translate(' + (P.cx - 207) + 'px,' + (P.cy - 434).toFixed(1) + 'px)' + rs;
+  ph.style.boxShadow = 'inset 0 0 0 1.5px rgba(255,255,255,.14), 0 40px 80px -20px rgba(0,0,0,.85)';
+  // coloured halo as a gradient that fades to zero inside its own box (a large blurred box-shadow gets clipped and leaves a seam)
+  pg.style.transform = 'translate(' + (P.cx - 410) + 'px,' + (P.cy - 650).toFixed(1) + 'px)' + rs;
+  pg.style.background = 'radial-gradient(closest-side, ' + rgba(cA, 0.3) + ', ' + rgba(cA, 0.12) + ' 55%, transparent)';
+
+  // in-app glows (accent follows the recommended / playing mode)
+  const acc = mixHex('#FF8A6B', '#5EE0B4', E.inOutSine(seg(t, 10.62, 11.8)));
+  $('sg1').style.background = 'radial-gradient(circle, ' + rgba(acc, 0.22) + ', transparent 68%)';
+  $('sg2').style.background = 'radial-gradient(circle, ' + rgba(t > 10.62 ? '#5EE0B4' : '#8E8CFF', 0.14) + ', transparent 68%)';
+  $('sg1').style.transform = 'scale(' + (0.98 + 0.08 * Math.sin(t * 0.57)).toFixed(3) + ')';
+  $('sg2').style.transform = 'scale(' + (0.98 + 0.08 * Math.sin(t * 0.45 + 2)).toFixed(3) + ')';
+
+  // home: staggered entrance (vmUp), chip pick, recommendation card
+  up($('hHead'), t, 8.6); up($('hH1'), t, 8.68); up($('hFeel'), t, 8.76);
+  FEELS.forEach((_, i) => up($('ch' + i), t, 8.8 + i * 0.03, 0.5));
+  up($('hSea'), t, 9.05); MODES.forEach((_, i) => up($('mc' + i), t, 9.1 + i * 0.04));
+  up($('nav'), t, 9.0, 0.6, 30);
+  const ck = seg(t, 10.62, 10.9), c0 = $('ch0');
+  c0.style.background = mixHex('#14161F', '#F2F0EA', ck); c0.style.borderColor = ck ? rgba('#F2F0EA', ck) : 'rgba(255,255,255,.1)'; c0.style.color = ck > 0.5 ? '#0B0C12' : '#F2F0EA';
+  c0.style.transform = (c0.style.transform || '') + ' scale(' + (1 - 0.06 * bump(t, 10.5, 10.75)).toFixed(3) + ')';
+  $('recWrap').style.height = (G.recH * E.outCubic(seg(t, 10.75, 11.3))).toFixed(1) + 'px';
+  up($('rec'), t, 10.8, 0.55);
+  $('rec').style.transform += ' scale(' + (1 - 0.03 * bump(t, 12.85, 13.1)).toFixed(3) + ')';
+  $('hOut').textContent = t > 16.02 ? 'Haut-parleur' : 'Casque';
+
+  // home scroll + card spotlight for the mode showcase
+  const sc1 = G.sea.y - 64, sc2 = sc1 + 180;
+  const scroll = lerp(0, sc1, E.inOutCubic(seg(t, 18.9, 19.8))) + (sc2 - sc1) * E.inOutCubic(seg(t, 21.35, 22.15));
+  $('homeScroll').style.transform = 'translateY(' + (-scroll).toFixed(1) + 'px)';
+  $('sbk').style.opacity = seg(scroll, 0, 40).toFixed(3);
+  MODES.forEach((m, i) => {
+    const si = SHOW.indexOf(i), el = $('mc' + i);
+    if (si < 0 || t < 19) { el.style.borderColor = 'rgba(255,255,255,.07)'; el.style.boxShadow = 'none'; return; }
+    const a = M0 + si * MSTEP, k = Math.min(E.outCubic(seg(t, a - 0.05, a + 0.25)), 1 - E.inOutSine(seg(t, a + MSTEP - 0.1, a + MSTEP + 0.25)));
+    el.style.borderColor = k ? rgba(m.color, (0.07 + 0.6 * k).toFixed(3)) : 'rgba(255,255,255,.07)';
+    el.style.boxShadow = k ? '0 0 ' + (40 * k).toFixed(1) + 'px ' + rgba(m.color, (0.35 * k).toFixed(3)) : 'none';
+    el.style.transform = 'scale(' + (1 + 0.04 * k).toFixed(3) + ')';
+    el.style.background = mixHex('#14161F', m.color, 0.1 * k);
+  });
+
+  // player sheet
+  const pl = $('player'), open = seg(t, 13.1, 13.6), close = seg(t, 18.6, 19.05);
+  if (show(pl, t > 13.1 && t < 19.05)) {
+    pl.style.opacity = (clamp(open * 2) * (1 - clamp(close * 1.6))).toFixed(3);
+    pl.style.transform = 'translateY(' + ((1 - E.outCubic(open)) * 70 + E.inCubic(close) * 90).toFixed(1) + 'px) scale(' + (0.97 + 0.03 * E.outCubic(open)).toFixed(4) + ')';
+    const amp = 0.25 + 0.75 * (1 - Math.exp(-Math.max(0, t - 13.2) * 2.4));
+    drawViz(t, '#5EE0B4', 396, 10, amp);
+    $('pLeft').textContent = fmt(900 - Math.max(0, t - 13.6));
+    const sk = E.inOutCubic(seg(t, 16.02, 16.32));
+    $('segKnob').style.transform = 'translateX(calc(' + (sk * 100).toFixed(2) + '% + ' + (sk * 4).toFixed(2) + 'px))';
+    $('segA').style.color = sk < 0.5 ? '#0B0C12' : 'rgba(242,240,234,.7)';
+    $('segB').style.color = sk >= 0.5 ? '#0B0C12' : 'rgba(242,240,234,.7)';
+    const bk = seg(t, 16.05, 16.35);
+    $('beatA').style.opacity = (1 - bk).toFixed(3); $('beatA').style.transform = 'translateY(' + (-8 * bk).toFixed(1) + 'px)';
+    $('beatB').style.opacity = bk.toFixed(3); $('beatB').style.transform = 'translateY(' + (8 * (1 - bk)).toFixed(1) + 'px)';
+    // highlight ring: beat label, then timer block
+    const hl = $('hl'), h1 = Math.min(E.outCubic(seg(t, 14.25, 14.6)), 1 - seg(t, 15.4, 15.6)), h2 = Math.min(E.outCubic(seg(t, 17.35, 17.7)), 1 - seg(t, 18.45, 18.65));
+    let rect = null, rad = 999, k = 0;
+    if (h1 > 0) { const w = G.beatTextW + 28; rect = { x: 195 - w / 2, y: G.beat.y - 7, w, h: G.beat.h + 14 }; k = h1; }
+    if (h2 > 0) { rect = { x: 20, y: G.ctrl.y - 12, w: 350, h: G.timers.y + G.timers.h - G.ctrl.y + 24 }; rad = 28; k = h2; }
+    if (show(hl, !!rect)) {
+      const sp = 1 + 0.08 * (1 - k);
+      hl.style.left = rect.x + 'px'; hl.style.top = rect.y + 'px'; hl.style.width = rect.w + 'px'; hl.style.height = rect.h + 'px';
+      hl.style.borderRadius = rad + 'px'; hl.style.opacity = k.toFixed(3); hl.style.transform = 'scale(' + sp.toFixed(3) + ')';
+    }
+  }
+
+  // touch indicator
+  const tap = TAPS.find(([tt]) => t > tt - 0.6 && t < tt + 0.55), tc = $('touch'), rp = $('ripple');
+  show(rp, !!tap);
+  if (show(tc, !!tap)) {
+    const [tt, what] = tap;
+    const tg = what === 'chip' ? G.chip : what === 'rec' ? { x: G.rec.x, y: G.rec.y, w: G.rec.w, h: G.rec.h } : G.seg;
+    const px = tg.x + tg.w * (what === 'rec' ? 0.62 : 0.5), py = tg.y + tg.h * 0.5;
+    const k = E.outCubic(seg(t, tt - 0.6, tt - 0.12)), op = seg(t, tt - 0.6, tt - 0.4) * (1 - seg(t, tt + 0.25, tt + 0.5));
+    const x = px + 80 * (1 - k), y = py + 120 * (1 - k), sc = 1 - 0.2 * bump(t, tt - 0.1, tt + 0.14);
+    tc.style.transform = 'translate(' + (x - 27).toFixed(1) + 'px,' + (y - 27).toFixed(1) + 'px) scale(' + sc.toFixed(3) + ')';
+    tc.style.opacity = op.toFixed(3);
+    const rk = seg(t, tt, tt + 0.5);
+    rp.style.transform = 'translate(' + (px - 27).toFixed(1) + 'px,' + (py - 27).toFixed(1) + 'px) scale(' + (0.6 + 1.7 * E.outCubic(rk)).toFixed(3) + ')';
+    rp.style.opacity = (t >= tt ? 0.8 * (1 - rk) : 0).toFixed(3);
+  }
+}
+
+function renderModes(t) {
+  if (!show($('modeTitle'), t > 19.0 && t < 24.6)) return;
+  const out = E.inCubic(seg(t, 23.95, 24.45));
+  up($('mOver'), t, 19.15, 0.7, 16); $('mOver').style.opacity = (E.outCubic(seg(t, 19.15, 19.85)) * (1 - out)).toFixed(3);
+  let i = 0; while (i + 1 < SHOW.length && t >= M0 + (i + 1) * MSTEP - 0.1) i++;
+  const cur = MODES[SHOW[i]].color, prev = MODES[SHOW[Math.max(0, i - 1)]].color, a = M0 + i * MSTEP;
+  const col = mixHex(prev, cur, E.inOutSine(seg(t, a - 0.1, a + 0.2)));
+  const pop = E.outBack(seg(t, 19.25, 19.85)), pulse = 0.08 * bump(t, a - 0.08, a + 0.4) * (i ? 1 : 0);
+  const orb = $('orb');
+  orb.style.background = 'radial-gradient(circle at 35% 30%, #FFFFFF 0%, ' + col + ' 45%, ' + deep(col, 0.45) + ' 100%)';
+  orb.style.boxShadow = '0 0 120px ' + rgba(col, 0.55) + ', 0 0 40px ' + rgba(col, 0.6);
+  orb.style.transform = 'scale(' + Math.max(0, pop * (1 + pulse + 0.025 * Math.sin(t * 2.2)) * (1 - out)).toFixed(3) + ')';
+  SHOW.forEach((_, j) => {
+    const aj = M0 + j * MSTEP, bj = j === SHOW.length - 1 ? 24.4 : aj + MSTEP;
+    rise($('mn' + j), t, aj, bj, 0.5, 0.26); rise($('ms' + j), t, aj + 0.06, bj, 0.5, 0.26);
+  });
+}
+
+function renderBands(t) {
+  if (!show($('bands'), t > 24.25 && t < 27.25)) return;
+  rise($('bt1'), t, 24.3, 27.0, 0.7, 0.3); rise($('bt2'), t, 24.38, 27.05, 0.7, 0.3);
+  BANDS.forEach((b, i) => {
+    const a = 24.55 + i * 0.32, row = $('br' + i), out = E.inCubic(seg(t, 26.65 + i * 0.04, 27.0 + i * 0.04));
+    const k = E.outCubic(seg(t, a, a + 0.5));
+    row.style.opacity = (k * (1 - out)).toFixed(3);
+    row.style.transform = 'translate(' + (-80 * out).toFixed(1) + 'px,' + ((1 - k) * 30).toFixed(1) + 'px)';
+    const p = E.inOutCubic(seg(t, a, a + 1.0));
+    $('bw' + i).setAttribute('d', sinePath(900, 110, b[4], t * (1.2 + b[4] * 0.55), p, 38));
+  });
+}
+
+function renderTools(t) {
+  if (!show($('tools'), t > TOOLS_A - 0.05 && t < OUTRO_A + 0.3)) return;
+  rise($('tt1'), t, TOOLS_A, OUTRO_A, 0.7, 0.3); rise($('tt2'), t, TOOLS_A + 0.08, OUTRO_A, 0.7, 0.3);
+  TOOLS.forEach((_, i) => {
+    const el = $('tp' + i), a = TOOLS_A + 0.3 + i * 0.09, k = seg(t, a, a + 0.5), out = E.inCubic(seg(t, OUTRO_A - 0.3 + i * 0.02, OUTRO_A + 0.1));
+    el.style.opacity = (clamp(k * 2) * (1 - out)).toFixed(3);
+    el.style.transform = 'translateY(' + (-6 * Math.sin(t * 1.4 + i)).toFixed(1) + 'px) scale(' + ((0.6 + 0.4 * E.outBack(k)) * (1 - 0.15 * out)).toFixed(3) + ')';
+  });
+}
+
+/* ---------- boot: render mode (frame export) or live player ---------- */
+const params = new URLSearchParams(location.search), RENDER = params.has('render');
+let stageScale = 1;
+function fit() {
+  if (RENDER) return;
+  stageScale = Math.min(innerWidth / 1080, (innerHeight - 76) / 1920);
+  const st = $('stage');
+  st.style.transform = 'scale(' + stageScale + ')';
+  st.style.left = ((innerWidth - 1080 * stageScale) / 2) + 'px';
+  st.style.top = Math.max(0, (innerHeight - 76 - 1920 * stageScale) / 2) + 'px';
+}
+if (RENDER) document.body.classList.add('render');
+fit(); addEventListener('resize', fit);
+
+window.CUES = CUES; window.DUR = DUR;
+window.__seek = t => render(t);
+window.__ready = (async () => {
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; })));
+  measure(); render(params.has('t') ? +params.get('t') : 0);
+  return true;
+})();
+
+if (!RENDER) {
+  const audio = new Audio(), src = '{{AUDIO}}', hasAudio = src.indexOf('data:') === 0;
+  if (hasAudio) { audio.src = src; audio.preload = 'auto'; } else $('bSound').style.display = 'none';
+  let playing = !params.has('t'), soundOn = false, base = performance.now(), cur = params.has('t') ? +params.get('t') : 0;
+  const setT = t => { cur = ((t % DUR) + DUR) % DUR; base = performance.now() - cur * 1000; if (soundOn) audio.currentTime = cur; };
+  const syncBtn = () => { $('iPause').style.display = playing ? '' : 'none'; $('iPlay').style.display = playing ? 'none' : ''; $('bPlay').setAttribute('aria-label', playing ? 'Pause' : 'Lecture'); };
+  $('bPlay').onclick = () => { playing = !playing; setT(cur); if (soundOn) playing ? audio.play() : audio.pause(); syncBtn(); };
+  $('bSound').onclick = () => { soundOn = !soundOn; $('bSound').textContent = 'Son : ' + (soundOn ? 'on' : 'off'); $('bSound').setAttribute('aria-pressed', soundOn);
+    if (soundOn) { audio.currentTime = cur; if (playing) audio.play(); } else audio.pause(); };
+  const seekAt = e => { const r = $('bar').getBoundingClientRect(); setT(clamp((e.clientX - r.left) / r.width) * DUR); };
+  let drag = false;
+  $('bar').onpointerdown = e => { drag = true; $('bar').setPointerCapture(e.pointerId); seekAt(e); };
+  $('bar').onpointermove = e => { if (drag) seekAt(e); };
+  $('bar').onpointerup = () => { drag = false; };
+  $('bar').onkeydown = e => { if (e.key === 'ArrowRight') setT(cur + 1); if (e.key === 'ArrowLeft') setT(cur - 1); };
+  addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('bPlay').click(); } });
+  syncBtn();
+  window.__ready.then(() => {
+    const loop = now => {
+      if (playing) {
+        cur = soundOn && !audio.paused ? audio.currentTime : (now - base) / 1000;
+        if (cur >= DUR) { setT(0); if (soundOn) audio.play(); }
+      }
+      render(cur);
+      $('fill').style.width = (cur / DUR * 100).toFixed(2) + '%'; $('time').textContent = fmt(cur);
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  });
+}
+</script>
+</body>
+</html>
