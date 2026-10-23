@@ -387,6 +387,7 @@ a.project-media:hover .stage > img { transform: scale(1.015); }
   gap: 32px clamp(16px, 3vw, 48px);
 }
 .about-side { grid-column: 1 / span 4; display: grid; gap: 28px; align-content: start; }
+.about-side .section-title { font-size: clamp(2.25rem, 4.4vw, 4.25rem); }
 .portrait { width: 100%; max-width: 340px; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); background: var(--sheet); }
 .about-text { grid-column: 5 / span 5; display: grid; gap: 18px; font-size: 1.0625rem; max-width: 62ch; min-width: 0; }
 .about-text .first { font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.4; letter-spacing: -0.01em; }
@@ -592,4 +593,42 @@ td:first-child { white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* ---------- impression et PDF ---------- */
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    --paper: #FFFFFF;
+    --sheet: #F3F4F7;
+    --ink: #0D0E19;
+    --ink-2: #4D5066;
+    --rule: #D5D7E0;
+    --accent: #2B35F0;
+    --on-accent: #FFFFFF;
+    --night: #0B0C12;
+    color-scheme: light;
+  }
+  @page { size: A4; }
+  html { scroll-behavior: auto; }
+  body {
+    padding-left: 64px;
+    padding-right: 64px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body::before, .skip, .nav, .hero-actions, [data-copy], .zoom-dialog, .next, .site-footer a { display: none !important; }
+  .site-header { position: static; border-bottom: 0; }
+  .section { padding-block: 48px; }
+  .case-section { padding-block: 36px; }
+  .project, .piece, .skills li, .steps li, tr, figure, .identity-row, .spec, .weights,
+  .about-side, .facts, .case-facts, .quote, .table-wrap, .contact, .case-section { break-inside: avoid; }
+  /* pas sur les titres de grille : leur break-after remonte à toute la section */
+  .case-body h3, .sub-head, .section-head { break-after: avoid; }
+  #projets, .print-case, .print-break { break-before: page; }
+  .table-wrap { overflow: visible; }
+  table { min-width: 0; }
+  .identity-row { width: 72%; }
+  /* tuiles blanches sur page blanche : un filet pour garder le cadre */
+  .piece-media.white, .sheet .thumb.white { border: 1px solid var(--rule); }
 }
