@@ -536,7 +536,7 @@ def build(out_path):
     meter = pyln.Meter(SR)
     for _ in range(2):
         mix *= 10 ** ((-14.0 - meter.integrated_loudness(mix.T)) / 20)
-        mix = limiter(mix, 10 ** (-2.0 / 20))
+        mix = limiter(mix, 10 ** ((-3.0 if V7 else -2.0) / 20), tp=V7)  # version 7 : marge pour l'AAC (l'origine reste identique)
     print(f'intensité : {meter.integrated_loudness(mix.T):.1f} LUFS, crête {20 * np.log10(np.max(np.abs(mix))):.1f} dBFS')
     wavfile.write(out_path, SR, (np.clip(mix.T, -1, 1) * 32767).astype(np.int16))
     print(f'écrit {out_path}')
