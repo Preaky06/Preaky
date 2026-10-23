@@ -1,436 +1,266 @@
-
-   import CustomCursor from "@/components/CustomCursor";
-import KineticText from "@/components/KineticText";
-import Lightbox from "@/components/Lightbox";
-import ProjectCard from "@/components/ProjectCard";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDown, Instagram, Mail, Menu, X } from "lucide-react";
-import { useState } from "react";
-
-export default function Home() {
-  const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const projects = [
-    {
-      title: "Grotte & Grill",
-      category: "Logo Design",
-      image: "/images/grotte-grill.png",
-    },
-    {
-      title: "Magic Planes",
-      category: "Branding",
-      image: "/images/magic-planes.png",
-    },
-    {
-      title: "V Logo",
-      category: "Identity",
-      image: "/images/v-logo.jpg",
-    },
-    {
-      title: "Elevator Club",
-      category: "Typography",
-      image: "/images/elevator-club.jpg",
-    },
-    {
-      title: "Cloud 3D",
-      category: "3D Illustration",
-      image: "/images/cloud-3d.webp",
-    },
-    {
-      title: "Sprite Redesign",
-      category: "Rebranding",
-      image: "/images/sprite-redesign.jpg",
-    },
-    {
-      title: "Totti Legend",
-      category: "Poster Art",
-      image: "/images/totti-poster.jpg",
-    },
-    {
-      title: "Neymar Jr",
-      category: "Sports Graphics",
-      image: "/images/neymar-poster.jpg",
-    },
-  ];
-
-  return (
-    <div className="min-h-screen bg-white text-neutral-900 selection:bg-neutral-200 selection:text-black overflow-x-hidden">
-      {/* CustomCursor removed for cleaner fluffy feel */}
-
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full p-4 md:p-8 flex justify-between items-center z-40 bg-white/80 backdrop-blur-sm">
-        <img src="/images/preaky-logo.png" alt="Preaky Logo" className="h-12 md:h-16 w-auto object-contain" />
-        
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8 font-mono text-sm text-neutral-900 font-medium">
-          <a href="#about" className="hover-trigger hover:text-neutral-500 transition-colors">À PROPOS</a>
-          <a href="#work" className="hover-trigger hover:text-neutral-500 transition-colors">CRÉATIONS</a>
-          <a href="#contact" className="hover-trigger hover:text-neutral-500 transition-colors">CONTACT</a>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-neutral-900 p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-30 bg-white flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            <a 
-              href="#about" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              À PROPOS
-            </a>
-            <a 
-              href="#work" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              CRÉATIONS
-            </a>
-            <a 
-              href="#contact" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              CONTACT
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hero Section */}
-      <section className="min-h-screen flex flex-col justify-center items-center relative px-4 pt-20 md:pt-0">
-        <div className="z-10 text-center w-full max-w-[95vw] overflow-hidden">
-          <h1 className="block text-[12vw] md:text-[10vw] leading-[0.85] font-display font-normal tracking-wide break-words text-neutral-900 drop-shadow-sm">
-            PREAKY'S
-          </h1>
-          <h1 className="block text-[12vw] md:text-[10vw] leading-[0.85] font-display font-normal tracking-wide break-words text-neutral-900 drop-shadow-sm">
-            PORTFOLIO
-          </h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="mt-6 md:mt-8 font-mono text-neutral-500 text-xs md:text-base max-w-xs md:max-w-md mx-auto px-4 font-medium"
-          >
-            Design graphique • Identité visuelle • Art numérique
-          </motion.p>
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
-        >
-          <ArrowDown className="w-6 h-6 text-neutral-400" />
-        </motion.div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 md:py-32 container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-          <div className="relative aspect-[3/4] overflow-hidden group rounded-2xl shadow-xl">
-            <img 
-              src="/images/mael-profile.jpg" 
-              alt="Maël Gillet" 
-              className="w-full h-full object-cover transition-all duration-700 hover:scale-105"
-            />
-          </div>
-          <div className="text-center md:text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-normal mb-8 tracking-wide text-neutral-900">
-              MAËL <br/>
-              <span className="text-neutral-900 hover:text-neutral-600 transition-colors duration-300">GILLET</span>
-            </h2>
-            <p className="font-mono text-neutral-600 text-base md:text-lg leading-relaxed mb-6 font-medium">
-              J'ai 20 ans et je suis passionné de graphisme et de communication digitale. Actuellement en formation Community Manager et Communication Digitale, je transforme les idées en expériences visuelles percutantes.
-            </p>
-            <p className="font-mono text-neutral-600 text-base md:text-lg leading-relaxed font-medium">
-              Mon approche allie créativité brute et stratégie numérique pour donner vie à des projets uniques. Bienvenue dans mon univers où chaque pixel a son importance.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Work Section */}
-      <section id="work" className="py-20 md:py-32 bg-neutral-50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 gap-4">
-            <h2 className="text-5xl md:text-7xl font-display font-normal tracking-wide text-neutral-900">
-              MES <br/> CRÉATIONS
-            </h2>
-            <span className="font-mono text-neutral-400 text-lg md:text-xl font-medium">(0{projects.length})</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-            {projects.map((project, index) => (
-              <ProjectCard 
-                key={index}
-                index={index}
-                {...project}
-                onClick={() => setSelectedProject(project)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox */}
-      {selectedProject && (
-        <Lightbox
-          isOpen={!!selectedProject}
-          image={selectedProject.image}
-          title={selectedProject.title}
-          category={selectedProject.category}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 md:py-32 container mx-auto px-4 text-center overflow-hidden">
-        <h2 className="text-[15vw] md:text-[12vw] font-display font-normal tracking-wide leading-none mb-12 hover-trigger break-words text-neutral-900">
-          LET'S TALK
-        </h2>
-        
-        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-12">
-          <a 
-            href="https://instagram.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex flex-col items-center gap-4 hover-trigger"
-          >
-            <div className="w-20 h-20 rounded-full border border-neutral-200 flex items-center justify-center group-hover:bg-neutral-900 group-hover:border-neutral-900 transition-all duration-300">
-              <Instagram className="w-8 h-8 text-neutral-900 group-hover:text-white transition-colors" />
-            </div>
-            <span className="font-mono text-sm tracking-widest uppercase group-hover:text-neutral-900 transition-colors font-medium">Instagram</span>
-          </a>
-
-          <a 
-            href="mailto:contact@preaky.com" 
-            className="group flex flex-col items-center gap-4 hover-trigger"
-          >
-            <div className="w-20 h-20 rounded-full border border-neutral-200 flex items-center justify-center group-hover:bg-neutral-900 group-hover:border-neutral-900 transition-all duration-300">
-              <Mail className="w-8 h-8 text-neutral-900 group-hover:text-white transition-colors" />
-            </div>
-            <span className="font-mono text-sm tracking-widest uppercase group-hover:text-neutral-900 transition-colors font-medium">Email</span>
-          </a>
-        </div>
-
-        <footer className="mt-32 pt-8 border-t border-neutral-200 flex justify-between font-mono text-xs text-neutral-400">
-          <span>© 2026 PREAKY'S PORTFOLIO</span>
-          <span>DESIGNED BY MANUS</span>
-        </footer>
-      </section>
-    </div>
-  );
-}
-@import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  /* ... (variables de couleurs standard omises pour la clarté) ... */
-  --font-display: "Titan One", cursive;
-  --font-mono: "Fredoka", sans-serif;
-}
-
-@layer base {
-  body {
-    @apply bg-white text-neutral-900;
-    font-family: 'Fredoka', sans-serif;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Titan One', cursive;
-  }
-  
-  .font-display {
-    font-family: 'Titan One', cursive;
-  }
-  
-  .font-mono {
-    font-family: 'Fredoka', sans-serif;
-  }
-
-  .stroke-text {
-    /* Removed stroke effect for filled text request */
-    -webkit-text-stroke: 0;
-    color: currentColor;
-  }
-  .hover-trigger:hover {
-    @apply opacity-70 transition-opacity duration-300;
-  }
-  /* ... (styles de boutons standard omis) ... */
-}
-
-@layer components {
-  /* ... (styles de conteneur standard omis) ... */
-}
-import { motion } from "framer-motion";
-import { useState } from "react";
-
-interface ProjectCardProps {
-  title: string;
-  category: string;
-  image: string;
-  index: number;
-  onClick: () => void;
-}
-
-export default function ProjectCard({ title, category, image, index, onClick }: ProjectCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      className="relative group w-full aspect-square overflow-hidden bg-white cursor-pointer rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500"
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-    >
-      {/* Image Background */}
-      <motion.img
-        src={image}
-        alt={title}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
-
-      {/* Overlay Content */}
-      <div className="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-100 transition-opacity duration-500">
-        <h3 className="text-2xl font-display font-normal tracking-wide text-white mb-1 translate-y-0 transition-transform duration-500 drop-shadow-md">
-          {title}
-        </h3>
-        <p className="font-mono text-white/90 text-sm translate-y-0 transition-transform duration-500 font-medium">
-          {category}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { useEffect } from "react";
-
-interface LightboxProps {
-  isOpen: boolean;
-  image: string;
-  title: string;
-  category: string;
-  onClose: () => void;
-}
-
-export default function Lightbox({ isOpen, image, title, category, onClose }: LightboxProps) {
-  // Empêcher le scroll quand la lightbox est ouverte
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-8"
-          onClick={onClose}
-        >
-          <motion.button
-            className="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors z-50 p-2"
-            onClick={onClose}
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <X size={32} />
-          </motion.button>
-
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-lg border border-white/10 shadow-2xl bg-neutral-900">
-              <img
-                src={image}
-                alt={title}
-                className="max-w-full max-h-[80vh] object-contain"
-              />
-            </div>
-            
-            <div className="mt-6 text-center">
-              <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-2"
-              >
-                {category}
-              </motion.p>
-              <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-3xl md:text-4xl font-display font-bold text-white uppercase tracking-tight"
-              >
-                {title}
-              </motion.h3>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 <!doctype html>
-<html lang="en">
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio Preaky</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Portfolio de Maël Gillet (Preaky), 20 ans : identités visuelles, affiches, illustration 3D et produits numériques, dont le site CinéMood et l’app mobile Vomalia.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Portfolio Preaky · Maël Gillet">
+<meta property="og:description" content="Identités visuelles, affiches, illustration 3D et produits numériques.">
+<meta name="theme-color" content="#ECEDF1">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#projets">Aller aux projets</a>
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Preaky's Portfolio</title>    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  </head>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Preaky, retour en haut">
+      <span class="brand-name">Preaky<b>.</b></span>
+      <span class="brand-sub label">Maël Gillet</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="#projets">Projets</a>
+      <a href="#a-propos">À propos</a>
+      <a href="#contact">Contact</a>
+      <a class="btn" href="#contact">Me contacter</a>
+    </nav>
+  </div>
+</header>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
-  </body>
+<main id="top">
 
+  <!-- ====== Ouverture ====== -->
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <p class="label">Portfolio 2026 · Maël Gillet, 20 ans</p>
+    <h1 class="wordmark" id="hero-title">Preaky<span>.</span></h1>
+    <div class="hero-grid">
+      <p class="hero-lede">Je conçois des identités visuelles, des affiches et des produits numériques, de la première esquisse jusqu’à l’écran qu’on tient en main.</p>
+      <div class="hero-side">
+        <dl class="facts">
+          <div><dt>Formation</dt><dd>Community Manager &amp; Communication Digitale, en cours</dd></div>
+          <div><dt>Disciplines</dt><dd>Identité · Affiche · 3D · Web et mobile</dd></div>
+        </dl>
+        <div class="hero-actions">
+          <a class="btn" href="#projets">Voir les projets</a>
+          <a class="btn btn-ghost" href="#contact">M’écrire</a>
+        </div>
+      </div>
+    </div>
+
+    <ul class="sheet" aria-label="Aperçu des projets">
+      <li><a href="#cinemood"><figure>
+        <div class="thumb night"><img src="assets/img/cinemood-logo.webp" alt="Logo CinéMood, CINÉ en blanc et MOOD en rouge sur fond noir" width="1080" height="1080"></div>
+        <figcaption><strong>CinéMood</strong><span class="label">Web app</span></figcaption>
+      </figure></a></li>
+      <li><a href="#vomalia"><figure>
+        <div class="thumb night top"><img src="assets/img/vomalia-lecteur.webp" alt="Écran lecteur de Vomalia : 174 Hz, séance Sommeil" width="780" height="1688"></div>
+        <figcaption><strong>Vomalia</strong><span class="label">App mobile</span></figcaption>
+      </figure></a></li>
+      <li><a href="#golden-coast"><figure>
+        <div class="thumb"><img src="assets/img/golden-coast-affiche.webp" alt="Affiche du festival Golden Coast" width="1080" height="1350"></div>
+        <figcaption><strong>Golden Coast</strong><span class="label">Affiche</span></figcaption>
+      </figure></a></li>
+      <li><a href="#monogramme"><figure>
+        <div class="thumb"><img src="assets/img/monogramme-tropical.webp" alt="Monogramme blanc sur orange : note de musique et palmiers" width="1080" height="1080"></div>
+        <figcaption><strong>Monogramme tropical</strong><span class="label">Logo</span></figcaption>
+      </figure></a></li>
+      <li><a href="#nuage"><figure>
+        <div class="thumb white contain"><img src="assets/img/nuage-3d.webp" alt="Personnage nuage en 3D, contour noir et langue rouge" width="650" height="520"></div>
+        <figcaption><strong>Nuage</strong><span class="label">Personnage 3D</span></figcaption>
+      </figure></a></li>
+    </ul>
+  </section>
+
+  <!-- ====== Projets ====== -->
+  <section class="section" id="projets" aria-labelledby="projets-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title" id="projets-title">Projets</h2>
+        <p class="label">2 produits numériques · 3 pièces graphiques</p>
+      </div>
+
+      <article class="project" id="cinemood" aria-labelledby="cinemood-title">
+        <a class="project-media" href="cinemood.html" aria-label="Étude de cas CinéMood">
+          <div class="stage">
+            <img src="assets/img/cinemood-accueil.webp" alt="Page d’accueil de CinéMood : « Ton humeur choisit ton cinéma » en néon rouge" width="1600" height="1000">
+          </div>
+        </a>
+        <div class="project-body">
+          <p class="label">Web app · Identité et produit · 2026</p>
+          <h3 class="project-title" id="cinemood-title">CinéMood</h3>
+          <p class="project-text">Un site qui choisit votre film à partir de votre humeur. Sept questions, une minute, puis un meilleur choix et quatre alternatives, chacune justifiée. J’ai tout conçu&nbsp;: le concept, l’identité néon, le parcours, les textes et la mise en ligne.</p>
+          <dl class="spec">
+            <div><dt>Rôle</dt><dd>Concept, identité, UX, rédaction, intégration</dd></div>
+            <div><dt>Typographies</dt><dd>Anton, Archivo</dd></div>
+            <div><dt>Palette</dt><dd><ul class="swatches">
+              <li><i style="--c:#070506"></i>#070506</li>
+              <li><i style="--c:#FF2D4F"></i>#FF2D4F</li>
+              <li><i style="--c:#F6EEF0"></i>#F6EEF0</li>
+            </ul></dd></div>
+          </dl>
+          <div class="project-links">
+            <a class="btn" href="cinemood.html">Lire l’étude de cas</a>
+            <a class="link-arrow" href="https://cinem00d.com" target="_blank" rel="noopener">cinem00d.com ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project" id="vomalia" aria-labelledby="vomalia-title">
+        <a class="project-media" href="vomalia.html" aria-label="Étude de cas Vomalia">
+          <div class="stage stage-phones">
+            <img src="assets/img/vomalia-accueil.webp" alt="Accueil de Vomalia : « Que veux-tu ressentir ? » et dix états au choix" width="780" height="1688">
+            <img src="assets/img/vomalia-lecteur.webp" alt="Lecteur de la séance Sommeil, 174 Hz, battement binaural 2,5 Hz" width="780" height="1688">
+            <img src="assets/img/vomalia-frequences.webp" alt="Onglet Fréquences : stimulations courtes" width="780" height="1688">
+          </div>
+        </a>
+        <div class="project-body">
+          <p class="label">App mobile · Identité et produit · 2026</p>
+          <h3 class="project-title" id="vomalia-title">Vomalia</h3>
+          <p class="project-text">Une app d’écoute qui part de ce que vous ressentez pour proposer une fréquence&nbsp;: concentration, calme, sommeil. Dix séances et six stimulations, toutes générées en direct par le téléphone, sans aucun fichier audio.</p>
+          <dl class="spec">
+            <div><dt>Rôle</dt><dd>Concept, identité, UX/UI, contenu, prototype</dd></div>
+            <div><dt>Typographie</dt><dd>Bricolage Grotesque</dd></div>
+            <div><dt>Palette</dt><dd><ul class="swatches">
+              <li><i style="--c:#0B0C12"></i>#0B0C12</li>
+              <li><i style="--c:#5EC8FF"></i>#5EC8FF</li>
+              <li><i style="--c:#5EE0B4"></i>#5EE0B4</li>
+              <li><i style="--c:#8E8CFF"></i>#8E8CFF</li>
+              <li><i style="--c:#FFB547"></i>#FFB547</li>
+            </ul></dd></div>
+          </dl>
+          <div class="project-links">
+            <a class="btn" href="vomalia.html">Lire l’étude de cas</a>
+            <a class="link-arrow" href="prototypes/vomalia.html" target="_blank" rel="noopener" data-repo-only>Essayer le prototype ↗</a>
+          </div>
+        </div>
+      </article>
+
+      <h3 class="sub-title">Pièces graphiques</h3>
+      <div class="pieces">
+        <article class="piece" id="golden-coast">
+          <a class="piece-media" href="assets/img/golden-coast-affiche.webp" data-zoom>
+            <img src="assets/img/golden-coast-affiche.webp" alt="Affiche Golden Coast : lettrage script blanc, ciel de coucher de soleil, scène au bord de l’eau, entrée à 5 dollars le 28 septembre 2025" width="1080" height="1350" loading="lazy">
+          </a>
+          <p class="label">Affiche de festival · 2025</p>
+          <h3>Golden Coast</h3>
+          <p>Affiche d’un festival de plage fictif à Waikiki, Honolulu&nbsp;: rock, R&amp;B, pop et électro au coucher du soleil. Le lettrage script occupe le haut, le prix pend sur deux panneaux de bois, et la photo prise au ras de l’eau donne l’impression d’arriver par la mer.</p>
+          <ul class="swatches" aria-label="Palette">
+            <li><i style="--c:#28587D"></i>#28587D</li>
+            <li><i style="--c:#628CA9"></i>#628CA9</li>
+            <li><i style="--c:#F5E5C7"></i>#F5E5C7</li>
+            <li><i style="--c:#CB8D62"></i>#CB8D62</li>
+            <li><i style="--c:#E94B7E"></i>#E94B7E</li>
+          </ul>
+        </article>
+
+        <article class="piece" id="monogramme">
+          <a class="piece-media orange" href="assets/img/monogramme-tropical.webp" data-zoom>
+            <img src="assets/img/monogramme-tropical.webp" alt="Monogramme blanc sur fond orange : une lettre construite autour d’une note de musique, deux palmiers au sommet" width="1080" height="1080" loading="lazy">
+          </a>
+          <p class="label">Logo · Monogramme</p>
+          <h3>Monogramme tropical</h3>
+          <p>Une lettre construite autour d’une note de musique, avec deux palmiers qui poussent sur le sommet. Un seul signe pour dire musique et tropiques, en blanc sur un orange franc qui tient aussi bien en avatar qu’en grand format.</p>
+          <ul class="swatches" aria-label="Palette">
+            <li><i style="--c:#FA5003"></i>#FA5003</li>
+            <li><i style="--c:#FFFFFF"></i>#FFFFFF</li>
+          </ul>
+        </article>
+
+        <article class="piece" id="nuage">
+          <a class="piece-media white" href="assets/img/nuage-3d.webp" data-zoom>
+            <img src="assets/img/nuage-3d.webp" alt="Nuage en 3D au contour noir épais, deux yeux qui regardent ailleurs et une langue rouge" width="650" height="520" loading="lazy">
+          </a>
+          <p class="label">Personnage 3D</p>
+          <h3>Nuage</h3>
+          <p>Une mascotte modelée en relief, comme un badge en plastique souple&nbsp;: contour noir épais, yeux qui partent chacun de leur côté, langue rouge. Un personnage simple à décliner en stickers, en avatar ou en animation.</p>
+          <ul class="swatches" aria-label="Palette">
+            <li><i style="--c:#FFFFFF"></i>#FFFFFF</li>
+            <li><i style="--c:#1A1A1A"></i>#1A1A1A</li>
+            <li><i style="--c:#B73136"></i>#B73136</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Disciplines ====== -->
+  <section class="section" aria-labelledby="skills-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title" id="skills-title">Ce que je fais</h2>
+      </div>
+      <ul class="skills">
+        <li>
+          <h3>Identité visuelle</h3>
+          <p>Logos, monogrammes et systèmes de marque&nbsp;: couleurs, typographies et règles d’usage.</p>
+          <p class="label seen">Vu dans <a href="#cinemood">CinéMood</a>, <a href="#vomalia">Vomalia</a>, <a href="#monogramme">Monogramme</a></p>
+        </li>
+        <li>
+          <h3>Affiche et événementiel</h3>
+          <p>Des compositions qui se lisent de loin&nbsp;: hiérarchie, date, lieu, programmation.</p>
+          <p class="label seen">Vu dans <a href="#golden-coast">Golden Coast</a></p>
+        </li>
+        <li>
+          <h3>Illustration 3D</h3>
+          <p>Personnages et objets en relief pour des mascottes, des stickers ou des contenus sociaux.</p>
+          <p class="label seen">Vu dans <a href="#nuage">Nuage</a></p>
+        </li>
+        <li>
+          <h3>Produit numérique</h3>
+          <p>Parcours, interfaces et prototypes web et mobile, jusqu’à la mise en ligne.</p>
+          <p class="label seen">Vu dans <a href="#cinemood">CinéMood</a>, <a href="#vomalia">Vomalia</a></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ====== À propos ====== -->
+  <section class="section" id="a-propos" aria-labelledby="about-title">
+    <div class="wrap about">
+      <h2 class="section-title" id="about-title">À propos</h2>
+      <div class="about-text">
+        <p class="first">Je m’appelle Maël Gillet, j’ai 20 ans et je signe mes créations sous le nom de Preaky.</p>
+        <p>Je suis en formation Community Manager et Communication Digitale. À côté, je dessine&nbsp;: logos, affiches, personnages en 3D, interfaces. Ce qui m’intéresse, c’est le moment où une idée devient un objet que les gens utilisent vraiment.</p>
+        <p>CinéMood est parti d’une question simple&nbsp;: pourquoi met-on trente minutes à choisir un film&nbsp;? C’est devenu un site complet, avec son identité, son moteur de recommandation et sa version anglaise. Vomalia applique la même méthode au son&nbsp;: une app qui part de ce que l’on ressent pour proposer une séance d’écoute.</p>
+        <p>Ma façon de travailler&nbsp;: partir de l’usage réel, poser une identité forte, puis soigner chaque détail, jusqu’au texte des boutons.</p>
+      </div>
+      <dl class="facts">
+        <div><dt>Nom</dt><dd>Maël Gillet</dd></div>
+        <div><dt>Signature</dt><dd>Preaky</dd></div>
+        <div><dt>Âge</dt><dd>20 ans</dd></div>
+        <div><dt>Formation</dt><dd>Community Manager &amp; Communication Digitale</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ====== Contact ====== -->
+  <section class="section" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact">
+      <p class="label">Contact</p>
+      <h2 class="section-title" id="contact-title">Un projet en tête&nbsp;?</h2>
+      <p>Identité, affiche, site ou application&nbsp;: écrivez-moi.</p>
+      <div class="contact-line">
+        <a class="email" id="email" href="mailto:maelgillet18@gmail.com">maelgillet18@gmail.com</a>
+        <button class="btn btn-ghost" type="button" data-copy="maelgillet18@gmail.com" aria-controls="email"><span class="copy-state">Copier l’adresse</span></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="label">© 2026 Maël Gillet · Preaky</span>
+    <a class="label" href="#top">Retour en haut ↑</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
 </html>
-
-    

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CinéMood · Preaky</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Étude de cas CinéMood par Maël Gillet (Preaky) : un site qui choisit votre film selon votre humeur, en sept questions.">
+<meta name="theme-color" content="#ECEDF1">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-name">Preaky<b>.</b></span>
+      <span class="brand-sub label">Maël Gillet</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="index.html#projets">← Projets</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu">
+  <div class="wrap">
+
+    <section class="case-hero" aria-labelledby="case-title">
+      <p class="label">Étude de cas · Web app · 2026</p>
+      <h1 class="case-title" id="case-title">CinéMood</h1>
+      <p class="case-lede">Un site qui choisit votre film à partir de votre humeur. Sept questions, une minute, cinq films expliqués.</p>
+      <dl class="case-facts">
+        <div><dt>Rôle</dt><dd>Concept, identité, UX, rédaction, intégration</dd></div>
+        <div><dt>Support</dt><dd>Site responsive, ordinateur et mobile, français et anglais</dd></div>
+        <div><dt>Année</dt><dd>2026</dd></div>
+        <div><dt>En ligne</dt><dd><a class="link-arrow" href="https://cinem00d.com" target="_blank" rel="noopener">cinem00d.com ↗</a></dd></div>
+      </dl>
+    </section>
+
+    <figure class="case-cover">
+      <a class="stage" href="assets/img/cinemood-accueil.webp" data-zoom style="display:block">
+        <img src="assets/img/cinemood-accueil.webp" alt="Page d’accueil de CinéMood : « Ton humeur choisit ton cinéma », le mot CINÉMA en néon rouge, boutons Commencer, Mode Duo et Comment ça marche" width="1600" height="1000">
+      </a>
+    </figure>
+
+    <section class="case-section" aria-labelledby="s-depart">
+      <h2 id="s-depart">Le point de départ</h2>
+      <div class="case-body">
+        <p class="quote">« Tu passes trente minutes à chercher quoi regarder. On part de ton moment et on répond en une minute. »</p>
+        <p>Les plateformes rangent les films par genre. Le soir, la vraie question est ailleurs&nbsp;: de quoi ai-je envie maintenant, avec les personnes qui sont là, et avec le temps que j’ai&nbsp;?</p>
+        <p>CinéMood part de cette question. Au lieu de faire défiler des rangées d’affiches, on dit comment on se sent et le site répond par une sélection courte et argumentée. Le positionnement tient en une phrase, reprise sur la page d’accueil&nbsp;: un conseiller cinéma, pas un catalogue de plus.</p>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-parcours">
+      <h2 id="s-parcours">Le parcours en sept questions</h2>
+      <div class="case-body">
+        <p>Les questions s’enchaînent dans cet ordre. La deuxième dépend de la première, les cinq suivantes affinent le contexte.</p>
+        <ol class="steps">
+          <li><strong>Ton humeur</strong><span>Neuf états&nbsp;: heureux, amoureux, triste, fatigué, énervé, téméraire, blasé, curieux, rêveur.</span></li>
+          <li><strong>Ton envie</strong><span>Trois ou quatre propositions propres à l’humeur choisie. « Heureux » propose un vrai fou rire, une comédie qui réchauffe, un film qui fait du bien ou une aventure.</span></li>
+          <li><strong>Ton seuil</strong><span>Être secoué pas du tout, un peu, beaucoup ou à fond.</span></li>
+          <li><strong>Ton public</strong><span>Seul, à deux, entre amis, en famille, avec des enfants, ou avec quelqu’un qui regarde peu de films.</span></li>
+          <li><strong>Ton temps</strong><span>Moins de 1&nbsp;h&nbsp;45, une soirée classique, toute la soirée, ou peu importe.</span></li>
+          <li><strong>Ton époque</strong><span>2010 et après, années 80 à 2000, avant 1980, ou peu importe.</span></li>
+          <li><strong>Connu ou découverte</strong><span>Un film sûr, une pépite moins vue mais bien notée, ou la surprise.</span></li>
+        </ol>
+        <p>On répond au doigt ou au clavier (touches 1 à 9, flèche gauche pour revenir). Un compteur «&nbsp;02&nbsp;/&nbsp;7&nbsp;» et une barre de progression indiquent où l’on en est, et les réponses précédentes restent visibles sous forme d’étiquettes.</p>
+        <div class="gallery" style="--cols:2">
+          <figure class="wide">
+            <a href="assets/img/cinemood-question-humeur.webp" data-zoom><img src="assets/img/cinemood-question-humeur.webp" alt="Question 1 sur ordinateur : « Comment tu te sens ce soir ? », neuf tickets de cinéma numérotés" width="1600" height="1000" loading="lazy"></a>
+            <figcaption>Question 1 sur ordinateur&nbsp;: chaque réponse est un ticket de cinéma numéroté.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-moteur">
+      <h2 id="s-moteur">Le moteur</h2>
+      <div class="case-body">
+        <p>Les films viennent du catalogue de The Movie Database (TMDB), plus de 900&nbsp;000 titres interrogés en direct. Aucune liste n’est choisie à la main.</p>
+        <p>Chaque réponse devient un paramètre de recherche explicite&nbsp;: genres demandés, genres exclus (pas d’horreur en famille, rien de dur avec des enfants), durée, années, nombre de votes minimum. Chaque candidat est ensuite vérifié deux fois, par ses genres puis par ses mots-clés&nbsp;: ce qui ne colle pas à l’envie est écarté, même s’il est populaire.</p>
+        <h3>Un score sur sept critères</h3>
+        <p>Les films restants sont classés par un score. Voici le poids de départ de chaque critère&nbsp;; il augmente pour les critères sur lesquels l’utilisateur a répondu explicitement, puis l’ensemble est ramené à 100&nbsp;%.</p>
+        <ul class="weights" aria-label="Poids de départ des critères">
+          <li><span>Genre</span><span class="bar"><i style="--w:100%"></i></span><span class="pct">26&nbsp;%</span></li>
+          <li><span>Intensité</span><span class="bar"><i style="--w:57.7%"></i></span><span class="pct">15&nbsp;%</span></li>
+          <li><span>Qualité</span><span class="bar"><i style="--w:53.8%"></i></span><span class="pct">14&nbsp;%</span></li>
+          <li><span>Contexte</span><span class="bar"><i style="--w:46.2%"></i></span><span class="pct">12&nbsp;%</span></li>
+          <li><span>Notoriété</span><span class="bar"><i style="--w:42.3%"></i></span><span class="pct">11&nbsp;%</span></li>
+          <li><span>Époque</span><span class="bar"><i style="--w:34.6%"></i></span><span class="pct">9&nbsp;%</span></li>
+          <li><span>Ton</span><span class="bar"><i style="--w:30.8%"></i></span><span class="pct">8&nbsp;%</span></li>
+        </ul>
+        <p>Le calcul est déterministe&nbsp;: les mêmes réponses donnent toujours le même résultat. Le site affiche un meilleur choix et quatre alternatives, chacune avec son score et une phrase «&nbsp;Pourquoi lui&nbsp;». Si rien ne tente, une relance propose de nouveaux films sans répéter les précédents, et un bouton «&nbsp;Pas lui&nbsp;» retire un film de la sélection.</p>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-duo">
+      <h2 id="s-duo">Le mode Duo</h2>
+      <div class="case-body">
+        <p>Choisir un film à deux est souvent plus long que seul. En mode Duo, la première personne répond, puis l’écran affiche «&nbsp;Passe l’écran à l’autre personne&nbsp;». La seconde répond sans voir les réponses de la première.</p>
+        <p>Le moteur ne garde que les films qui conviennent aux deux profils, et chaque film est noté sur le plus faible de ses deux scores. Un film parfait pour l’un et médiocre pour l’autre ne passe donc jamais devant un film correct pour les deux.</p>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-identite">
+      <h2 id="s-identite">L’identité</h2>
+      <div class="case-body">
+        <div class="identity-row">
+          <a class="tile" href="assets/img/cinemood-logo.webp" data-zoom><img src="assets/img/cinemood-logo.webp" alt="Logo CinéMood : CINÉ en blanc, MOOD en rouge, lettres étroites et très grasses sur fond noir" width="1080" height="1080" loading="lazy"></a>
+          <a class="tile" href="assets/img/cinemood-accueil-mobile.webp" data-zoom><img src="assets/img/cinemood-accueil-mobile.webp" alt="Accueil de CinéMood sur mobile" width="780" height="1688" loading="lazy" style="object-position:top"></a>
+        </div>
+        <p>Le logo reprend les lettres d’une façade de cinéma&nbsp;: CINÉ en blanc, MOOD en rouge, dans une linéale étroite et très grasse. Il fonctionne en une seule ligne, du favicon à l’image de partage.</p>
+        <ul>
+          <li><strong>L’enseigne néon.</strong> Sur l’accueil, le mot CINÉMA grésille et tombe en panne par moments, et le É est à moitié grillé. Les cycles de clignotement ont des durées premières entre elles, donc le motif ne se répète jamais à l’identique.</li>
+          <li><strong>Les tickets.</strong> Les réponses du questionnaire sont des tickets numérotés, avec la ligne de découpe en pointillés.</li>
+          <li><strong>Le mur d’affiches.</strong> Derrière le titre, des colonnes d’affiches défilent en sens alternés. L’animation s’arrête si l’appareil demande moins de mouvement.</li>
+          <li><strong>La voix.</strong> Le site tutoie et parle comme un ami cinéphile&nbsp;: «&nbsp;Heureux, triste, amoureux, crevé&nbsp;? Dis-nous comment tu te sens.&nbsp;»</li>
+        </ul>
+        <dl class="spec">
+          <div><dt>Titres</dt><dd>Anton</dd></div>
+          <div><dt>Texte</dt><dd>Archivo</dd></div>
+          <div><dt>Palette</dt><dd><ul class="swatches">
+            <li><i style="--c:#070506"></i>Noir salle #070506</li>
+            <li><i style="--c:#FF2D4F"></i>Rouge néon #FF2D4F</li>
+            <li><i style="--c:#F6EEF0"></i>Blanc écran #F6EEF0</li>
+          </ul></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-ecrans">
+      <h2 id="s-ecrans">Sur mobile</h2>
+      <div class="case-body">
+        <p>Le parcours a été pensé pour le téléphone autant que pour l’ordinateur&nbsp;: les tickets passent en une colonne, les boutons restent à portée de pouce et chaque réponse fait avancer d’un écran.</p>
+        <div class="gallery phones" style="--cols:2">
+          <figure>
+            <a href="assets/img/cinemood-accueil-mobile.webp" data-zoom><img src="assets/img/cinemood-accueil-mobile.webp" alt="Accueil mobile de CinéMood" width="780" height="1688" loading="lazy"></a>
+            <figcaption>Accueil</figcaption>
+          </figure>
+          <figure>
+            <a href="assets/img/cinemood-question-envie-mobile.webp" data-zoom><img src="assets/img/cinemood-question-envie-mobile.webp" alt="Question 2 sur mobile : « Tu veux prolonger ça comment ? » après avoir choisi Heureux" width="780" height="1688" loading="lazy"></a>
+            <figcaption>Question 2 après «&nbsp;Heureux&nbsp;»</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-technique">
+      <h2 id="s-technique">Sous le capot</h2>
+      <div class="case-body">
+        <ul>
+          <li>HTML, CSS et JavaScript, avec un moteur de rendu basé sur React&nbsp;18.</li>
+          <li>La clé de l’API TMDB reste côté serveur&nbsp;: les requêtes passent par une fonction Cloudflare Pages qui sert de relais et limite les abus.</li>
+          <li>Version anglaise&nbsp;: tout le texte se traduit à la volée et le catalogue passe en anglais (titres, résumés, bandes-annonces). La langue suit celle du navigateur.</li>
+          <li>Fiche film&nbsp;: synopsis, distribution, bande-annonce, lien «&nbsp;Où le voir&nbsp;».</li>
+          <li>Catalogue par catégories, où chaque rangée affiche le critère exact qui la compose.</li>
+          <li>Référencement&nbsp;: balises Open Graph, données structurées schema.org, sitemap. Installable sur l’écran d’accueil d’un téléphone.</li>
+          <li>Accessibilité&nbsp;: navigation complète au clavier, respect du réglage «&nbsp;réduire les animations&nbsp;».</li>
+          <li>Mentions légales et politique de confidentialité rédigées et intégrées au site.</li>
+        </ul>
+        <p class="label">Outils&nbsp;: éditeur de code, Claude (IA) pour le prototypage et le développement, Cloudflare Pages, API TMDB.</p>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-modele">
+      <h2 id="s-modele">Le modèle économique</h2>
+      <div class="case-body">
+        <p>J’ai conçu une offre complète&nbsp;: trois parcours gratuits par mois, puis un abonnement unique à 5,99&nbsp;€ par mois, sans engagement, qui débloque le mode Duo, une liste personnelle et l’historique.</p>
+        <p>Ce parcours d’abonnement existe en version de démonstration (aucun paiement réel) et il est désactivé. La version en ligne est entièrement gratuite, sans compte et sans collecte de données.</p>
+      </div>
+    </section>
+
+    <a class="next" href="vomalia.html">
+      <span class="label">Projet suivant</span>
+      <span class="case-title">Vomalia →</span>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="label">© 2026 Maël Gillet · Preaky</span>
+    <a class="label" href="index.html">Tous les projets</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
