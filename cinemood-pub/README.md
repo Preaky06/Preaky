@@ -45,6 +45,30 @@ feutre de l'ellipse et des ratures, frappe des touches de l'adresse.
 Reconstruire : `./build-motion.sh` (ou `./build-motion.sh 169` / `916`).
 Aperçu : `PAGE=motion.html node render.mjs stills 1920 1080 /tmp/apercu 1.9 14.9 27.9`.
 
+### Version « 7 questions » (30 s, site du 20 octobre, build f)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/motion-7-questions/cinemood-motion-7-questions-16x9.mp4` | 1920×1080, 60 i/s, H.264 + AAC | YouTube, site, LinkedIn, écran |
+| `out/motion-7-questions/cinemood-motion-7-questions-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | Reels, TikTok, Shorts, Stories |
+| `out/motion-7-questions/couverture-16x9.png`, `couverture-9x16.png` | plan final | miniature / couverture |
+
+Mêmes plans, même musique ; ce qui change (`src/motion7.js`, qui s'appuie sur `motion.js`) :
+
+| Temps | Avant (motion.js) | Version 7 questions |
+| --- | --- | --- |
+| 8–9 s | « 12 QUESTIONS. » (compteur 1 → 12) | compte à rebours 12 → 7 : « 7 QUESTIONS. AU LIEU DE 12. » |
+| 9–11,5 s | « TON HUMEUR, / CONTEXTE, / TEMPS. » | « LES 7 QUESTIONS » : ton humeur, ton envie, ton seuil, ton public, ton temps, ton époque, connu ou découverte ? (une ligne par croche ; deux colonnes en 16:9) |
+| 11,5–13,75 s | 8 humeurs (des verbes : rire, m'évader…) | les 9 humeurs du site, de HEUREUX à RÊVEUR, sous « COMMENT TU TE SENS CE SOIR ? » |
+| 13,75–15 s | « M'ÉVADER » entouré | « RÊVEUR » entouré, « 09 — LA TÊTE AILLEURS » |
+| 15–17,2 s | cinq titres inventés | les cinq films du parcours capturé (Les Cartographes 90 %, Cap sur l'Aurore 89 %…) |
+
+La liste prend une seconde de plus : à partir des résultats, tout passe une seconde plus tard
+(deux temps : la grille reste sur le tempo) et la signature finale est tenue une seconde de moins.
+Bande-son : `python3 audio/score_motion.py sortie.wav --v7` (sans l'option : la version d'origine, inchangée).
+
+Reconstruire : `./build-motion7.sh` (ou `… 169` / `… 916`).
+
 ## Carrousel (Instagram, LinkedIn)
 
 | Fichier | Format | Usage |
