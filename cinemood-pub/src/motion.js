@@ -290,8 +290,9 @@ function mMoods(x, t) {
 }
 
 /* ---------- 8. le choix (12,5–14) ---------- */
+const CHOICE = { w: 'M’ÉVADER', label: '06 — PARTIR LOIN D’ICI' }; // la version « 7 questions » les remplace
 function m8Geom() {
-  const w = 'M’ÉVADER';
+  const w = CHOICE.w;
   const size = moodSize(w);
   const ww = textWidth(w, size, { fam: 'Anton' }), ch = capH(size);
   return { w, size, ww, ch, rx: ww / 2 + (PORT ? 60 : 90) * U, ry: ch / 2 + (PORT ? 70 : 80) * U, cy: CY };
@@ -312,7 +313,7 @@ function mChoice(x, t) {
     x.beginPath(); x.ellipse(0, 0, G.rx, G.ry, 0, -Math.PI * 0.62, -Math.PI * 0.62 + Math.PI * 2.08 * d); x.stroke();
     x.restore();
   }
-  label(x, '06 — PARTIR LOIN D’ICI', CX, CY + G.ry + (PORT ? 90 : 70) * U, t - 12.8, { align: 'center', size: 26, color: P.red });
+  label(x, CHOICE.label, CX, CY + G.ry + (PORT ? 90 : 70) * U, t - 12.8, { align: 'center', size: 26, color: P.red });
   // le cercle se remplit et s'ouvre en grand : on passe au rouge
   const fl = EZ.inOut(prog(t, 13.55, 13.68));
   const gr = EZ.in(prog(t, 13.62, 14.0));

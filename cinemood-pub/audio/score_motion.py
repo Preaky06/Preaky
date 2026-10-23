@@ -3,7 +3,9 @@
 Musique électronique sèche (808, basse analogique, synthés pincés, piano, cordes)
 et bruitages graphiques calés à l'image près sur les animations du texte.
 
-usage : python3 score_motion.py sortie.wav [--stems]
+usage : python3 score_motion.py sortie.wav [--stems] [--v7]
+  --v7 : version « 7 questions » (src/motion7.js) : compte à rebours 12 → 7, liste des 7 questions,
+         9 humeurs ; tout ce qui suit les résultats passe une seconde plus tard.
 """
 import sys
 
@@ -11,11 +13,18 @@ import numpy as np
 from scipy import signal
 from scipy.io import wavfile
 
+import dsp
 import samples as S
 from dsp import *  # noqa: F401,F403
 
 STEMS = '--stems' in sys.argv
+V7 = '--v7' in sys.argv
 BEAT = 0.5
+
+
+def W7(t):
+    """temps de motion.js → temps de motion7.js (une seconde de plus avant les résultats)"""
+    return t + 1.0 if V7 and t >= 14.0 - 1e-9 else t
 
 
 # ---------------------------------------------------------------- courbes d'animation (identiques à motion.js)
@@ -56,11 +65,13 @@ CH = {  # voicing des accords (synthés, cordes) et fondamentale de basse
 PROG = [(2.0, 'Am'), (3.0, 'F'), (4.0, 'Fmaj7'), (5.0, 'G'), (6.0, 'Am'), (7.0, 'F'), (8.0, 'C'), (9.0, 'G'),
         (10.0, 'Am'), (11.5, 'F'), (12.25, 'G'), (12.5, 'E'), (14.0, 'Am'), (15.0, 'F'), (16.0, 'C'), (17.0, 'G'),
         (18.0, 'Am'), (19.0, 'F'), (20.0, 'C'), (21.0, 'G'), (22.0, 'F'), (23.0, 'G'), (24.0, 'Am'), (25.5, 'Am9')]
+# version 7 questions, de 8 à 14 s : la liste (sol, fa, sol), les 9 humeurs (la, fa, sol), le choix (mi)
+PROG7 = [(8.0, 'C'), (9.0, 'G'), (10.0, 'F'), (11.0, 'G'), (11.5, 'Am'), (12.5, 'F'), (13.25, 'G'), (13.75, 'E')]
 
 
 def chord_at(t):
     c = None
-    for t0, name in PROG:
+    for t0, name in (PROG7 if V7 and 8.0 <= t < 14.0 else PROG):
         if t >= t0 - 1e-9:
             c = name
     return c
@@ -201,6 +212,11 @@ def build(out_path):
 
     DR, BS, MU, PN, FX, IMP, RV = (bus() for _ in range(7))
     KICKS = []
+    raw = dsp.add  # au temps exact : parties propres à la version 7 questions
+
+    def add(b, x, t0, gain=1.0, pan=0.0):
+        raw(b, x, W7(t0), gain, pan)
+
     hall = make_hall((2.6, 2.0, 1.1), 0.02, seed=5)
     plate = make_hall((1.6, 1.3, 0.8), 0.01, seed=11, width=0.9)
     room = make_hall((0.6, 0.45, 0.3), 0.005, seed=17)
@@ -208,7 +224,7 @@ def build(out_path):
     def kick(t, g=1.0):
         add(DR, BD * 0.8, t, g)
         add(DR, kick_synth(), t, g * 0.9)
-        KICKS.append(t)
+        KICKS.append(W7(t))
 
     def clap(t, g=1.0):
         add(DR, CP * 0.9, t, g)
@@ -220,7 +236,7 @@ def build(out_path):
     def rev_cym(t_end, d=0.6, g=1.0):
         c = reverb_tail(CY * 0.8, room, 1.0)
         r = reverse(cut(c, d + 0.3))[:, -int(d * SR):]
-        add(RV, r * np.linspace(0, 1, r.shape[1]) ** 2, t_end - d, g)
+        raw(RV, r * np.linspace(0, 1, r.shape[1]) ** 2, W7(t_end) - d, g)
 
     def impact(t, g=1.0):
         kick(t, 1.0 * g)
@@ -293,37 +309,51 @@ def build(out_path):
 
     # ---------------------------------------------------------- 8–10,5 s : 12 questions, ton humeur…
     impact(8.0, 0.6)
-    v12 = lambda tt: 1 + 11 * EZ_OUT(prog(tt, 8.05, 8.55))
-    for j, tt in enumerate(steps(v12, 8.05, 8.6, 1)):
-        add(FX, tick(2400 + j * 160, 0.24, 0.014), tt)
+    if V7:  # compte à rebours 12 → 7 : les crans descendent
+        v7 = lambda tt: 12 - 5 * EZ_OUT(prog(tt, 8.05, 8.55))
+        for j, tt in enumerate(steps(v7, 8.05, 8.6, 1)):
+            add(FX, tick(3200 - j * 160, 0.24, 0.014), tt)
+        add(FX, swish(0.24, 0.12, 1500, 6000, -0.2, 0.2), 8.5)  # le 1 s'efface, le 7 se recale
+    else:
+        v12 = lambda tt: 1 + 11 * EZ_OUT(prog(tt, 8.05, 8.55))
+        for j, tt in enumerate(steps(v12, 8.05, 8.6, 1)):
+            add(FX, tick(2400 + j * 160, 0.24, 0.014), tt)
     add(FX, thump(0.45), 8.1)
     add(FX, whoosh(0.38, 0.42, up=True, f0=300, f1=6000, pan0=0, pan1=0, tone=False), 8.93)  # poussée vers le haut
     add(FX, thump(0.4), 9.05)
-    for j, s0 in enumerate((9.15, 9.62, 10.12)):
-        add(FX, swish(0.22, 0.3, 2200, 9500), s0 - 0.02)
-        add(FX, UI['mechanical/select'] * 0.2, s0 + 0.17)
+    if V7:  # les 7 questions : une ligne par croche, un arpège qui monte
+        for tt, m in zip((9.15, 9.4, 9.65, 9.9, 10.15, 10.4, 10.65), (67, 71, 74, 79, 77, 81, 84)):
+            add(FX, swish(0.2, 0.22, 2200, 9500), tt - 0.02)
+            add(FX, UI['mechanical/select'] * 0.16, tt + 0.12)
+            add(PN, pluck(m, 0.28, 0.24), tt)
+    else:
+        for j, s0 in enumerate((9.15, 9.62, 10.12)):
+            add(FX, swish(0.22, 0.3, 2200, 9500), s0 - 0.02)
+            add(FX, UI['mechanical/select'] * 0.2, s0 + 0.17)
 
-    # ---------------------------------------------------------- 10,5–12,5 s : les humeurs
-    ARP = [76, 72, 69, 72, 77, 72, 69, 79]
-    for k in range(8):
-        tt = 10.5 + k * 0.25
+    # ---------------------------------------------------------- 10,5–12,5 s : les humeurs (version 7 : 9 humeurs, 11,5–13,75 s)
+    ARP = [76, 72, 69, 72, 77, 72, 69, 79, 83] if V7 else [76, 72, 69, 72, 77, 72, 69, 79]
+    for k in range(len(ARP)):
+        tt = (11.5 if V7 else 10.5) + k * 0.25
         add(FX, UI['minimal/press'] * 0.35, tt, pan=0.25 if k % 2 else -0.25)
         add(PN, pluck(ARP[k], 0.3, 0.34), tt)
         add(FX, thump(0.18, 160, 70), tt)
 
-    # ---------------------------------------------------------- 12,5–14 s : le choix
+    # ---------------------------------------------------------- 12,5–14 s : le choix (version 7 : 13,75–15 s, joué 1,2 fois plus vite)
+    c = (lambda t: 13.75 + (t - 12.5) / 1.2) if V7 else (lambda t: t)
+    sp = 1.2 if V7 else 1.0
     for m in CH['E'][0]:
-        add(MU, strings.note(m, 1.45, 0.3, attack=0.25, gain=1.8), 12.5)
-    add(MU, choir.note(76, 1.4, 0.3, attack=0.4, gain=1.3), 12.55)
-    add(FX, marker(0.48, lambda tt: EZ_IO(prog(tt, 12.52, 12.98)), 12.5, 0.55, -0.5, 0.5), 12.5)
-    tt = 13.0
-    while tt < 13.95:  # roulement de caisse claire qui s'accélère
-        u = (tt - 13.0) / 0.95
-        add(DR, SD * (0.12 + 0.45 * u), tt, pan=0.1)
+        raw(MU, strings.note(m, 1.2 if V7 else 1.45, 0.3, attack=0.25 / sp, gain=1.8), c(12.5))
+    raw(MU, choir.note(76, 1.15 if V7 else 1.4, 0.3, attack=0.4 / sp, gain=1.3), c(12.55))
+    raw(FX, marker(0.4 if V7 else 0.48, lambda tt: EZ_IO(prog(tt, c(12.52), c(12.98))), c(12.5), 0.55, -0.5, 0.5), c(12.5))
+    tt = c(13.0)
+    while tt < c(13.95):  # roulement de caisse claire qui s'accélère
+        u = (tt - c(13.0)) / (c(13.95) - c(13.0))
+        raw(DR, SD * (0.12 + 0.45 * u), tt, pan=0.1)
         tt += 0.125 if u < 0.5 else (0.0625 if u < 0.8 else 0.03125)
-    add(FX, riser(1.0, 0.4, 300, 10000), 13.0)
-    add(FX, bloop(0.13, 200, 700, 0.3), 13.55)  # l'ellipse se remplit
-    add(FX, whoosh(0.42, 0.5, up=True, f0=200, f1=9000, pan0=0, pan1=0), 13.6)
+    raw(FX, riser(0.8 if V7 else 1.0, 0.4, 300, 10000), c(13.0))
+    raw(FX, bloop(0.11 if V7 else 0.13, 200, 700, 0.3), c(13.55))  # l'ellipse se remplit
+    raw(FX, whoosh(0.35 if V7 else 0.42, 0.5, up=True, f0=200, f1=9000, pan0=0, pan1=0), c(13.6))
     rev_cym(14.0, 0.7, 0.9)
 
     # ---------------------------------------------------------- 14–18 s : les résultats, en une minute
@@ -334,7 +364,7 @@ def build(out_path):
         t0 = 15.12 + i * 0.07
         add(FX, swish(0.3, 0.16, 1200, 7000, 0.8, 0.15), t0)
         add(FX, UI['mechanical/select'] * 0.12, t0 + 0.24, pan=0.2)
-    sc = lambda tt: 94 * EZ_OUT(prog(tt, 15.2, 15.9))
+    sc = lambda tt: (90 if V7 else 94) * EZ_OUT(prog(tt, 15.2, 15.9))
     for tt in steps(sc, 15.2, 15.95, 4):
         add(FX, tick(4200, 0.07, 0.008), tt, pan=0.4)
     add(FX, whoosh(0.4, 0.4, up=False, f0=200, f1=5000, pan0=0.3, pan1=0), 15.84)  # la ligne n°1 devient l'écran
@@ -405,7 +435,7 @@ def build(out_path):
     section_drums(2.0, 3.75, opens=False)
     section_drums(6.5, 7.5, claps=False, kicks=False)  # charleston seul sous le logo
     kick(7.0, 0.8)
-    section_drums(8.0, 12.5, opens=True)
+    section_drums(8.0, 13.5 if V7 else 12.5, opens=True)
     section_drums(14.0, 17.75, opens=True)
     for j, tom in enumerate([0, 0, 1, 2]):  # roulement de toms vers le duo
         add(DR, TOMS[tom] * 0.6, 17.75 + j * 0.0625, pan=0.4 - 0.25 * j)
@@ -417,7 +447,7 @@ def build(out_path):
         add(DR, SD * 0.3, tt + 0.875)
 
     # basse : croches sur la fondamentale, octave en fin de temps
-    for a, b, g in ((2.0, 3.75, 0.7), (8.0, 12.5, 0.75), (14.0, 17.75, 0.85), (18.0, 25.0, 0.85)):
+    for a, b, g in ((2.0, 3.75, 0.7), (8.0, 13.5 if V7 else 12.5, 0.75), (14.0, 17.75, 0.85), (18.0, 25.0, 0.85)):
         for i in range(int(round((b - a) / 0.25))):
             tt = a + i * 0.25
             name = chord_at(tt)
@@ -430,7 +460,7 @@ def build(out_path):
         dd = 0.6 if t0 == 7.0 else 0.95
         add(BS, cut(S.repitch(SUB808, CH[name][1] - 31), dd, 0.08) * 0.42, t0)
     # synthés : accords pincés sur les contretemps
-    for a, b, g in ((8.0, 10.5, 0.2), (14.0, 17.75, 0.28), (18.0, 22.5, 0.24), (22.5, 25.0, 0.28)):
+    for a, b, g in ((8.0, 11.5 if V7 else 10.5, 0.2), (14.0, 17.75, 0.28), (18.0, 22.5, 0.24), (22.5, 25.0, 0.28)):
         for i in range(int(round((b - a) / BEAT))):
             tt = a + i * BEAT + 0.25
             if 15.12 <= tt < 15.9:  # on laisse passer les lignes qui arrivent
@@ -472,7 +502,7 @@ def build(out_path):
         B[:, idx(3.98):idx(4.0)] = 0
     # coupe sèche avant la signature
     for B in (DR, BS, MU, PN):
-        i0, i1 = idx(25.0), idx(25.5)
+        i0, i1 = idx(W7(25.0)), idx(W7(25.5))
         r = int(0.006 * SR)
         B[:, i0 - r:i0] *= np.linspace(1, 0, r)
         B[:, i0:i1] = 0
