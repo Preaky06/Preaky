@@ -1,436 +1,453 @@
-
-   import CustomCursor from "@/components/CustomCursor";
-import KineticText from "@/components/KineticText";
-import Lightbox from "@/components/Lightbox";
-import ProjectCard from "@/components/ProjectCard";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDown, Instagram, Mail, Menu, X } from "lucide-react";
-import { useState } from "react";
-
-export default function Home() {
-  const [selectedProject, setSelectedProject] = useState<null | typeof projects[0]>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const projects = [
-    {
-      title: "Grotte & Grill",
-      category: "Logo Design",
-      image: "/images/grotte-grill.png",
-    },
-    {
-      title: "Magic Planes",
-      category: "Branding",
-      image: "/images/magic-planes.png",
-    },
-    {
-      title: "V Logo",
-      category: "Identity",
-      image: "/images/v-logo.jpg",
-    },
-    {
-      title: "Elevator Club",
-      category: "Typography",
-      image: "/images/elevator-club.jpg",
-    },
-    {
-      title: "Cloud 3D",
-      category: "3D Illustration",
-      image: "/images/cloud-3d.webp",
-    },
-    {
-      title: "Sprite Redesign",
-      category: "Rebranding",
-      image: "/images/sprite-redesign.jpg",
-    },
-    {
-      title: "Totti Legend",
-      category: "Poster Art",
-      image: "/images/totti-poster.jpg",
-    },
-    {
-      title: "Neymar Jr",
-      category: "Sports Graphics",
-      image: "/images/neymar-poster.jpg",
-    },
-  ];
-
-  return (
-    <div className="min-h-screen bg-white text-neutral-900 selection:bg-neutral-200 selection:text-black overflow-x-hidden">
-      {/* CustomCursor removed for cleaner fluffy feel */}
-
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full p-4 md:p-8 flex justify-between items-center z-40 bg-white/80 backdrop-blur-sm">
-        <img src="/images/preaky-logo.png" alt="Preaky Logo" className="h-12 md:h-16 w-auto object-contain" />
-        
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8 font-mono text-sm text-neutral-900 font-medium">
-          <a href="#about" className="hover-trigger hover:text-neutral-500 transition-colors">À PROPOS</a>
-          <a href="#work" className="hover-trigger hover:text-neutral-500 transition-colors">CRÉATIONS</a>
-          <a href="#contact" className="hover-trigger hover:text-neutral-500 transition-colors">CONTACT</a>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-neutral-900 p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-30 bg-white flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            <a 
-              href="#about" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              À PROPOS
-            </a>
-            <a 
-              href="#work" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              CRÉATIONS
-            </a>
-            <a 
-              href="#contact" 
-              className="font-display text-4xl text-neutral-900 hover:text-neutral-500 transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              CONTACT
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hero Section */}
-      <section className="min-h-screen flex flex-col justify-center items-center relative px-4 pt-20 md:pt-0">
-        <div className="z-10 text-center w-full max-w-[95vw] overflow-hidden">
-          <h1 className="block text-[12vw] md:text-[10vw] leading-[0.85] font-display font-normal tracking-wide break-words text-neutral-900 drop-shadow-sm">
-            PREAKY'S
-          </h1>
-          <h1 className="block text-[12vw] md:text-[10vw] leading-[0.85] font-display font-normal tracking-wide break-words text-neutral-900 drop-shadow-sm">
-            PORTFOLIO
-          </h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="mt-6 md:mt-8 font-mono text-neutral-500 text-xs md:text-base max-w-xs md:max-w-md mx-auto px-4 font-medium"
-          >
-            Design graphique • Identité visuelle • Art numérique
-          </motion.p>
-        </div>
-
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce"
-        >
-          <ArrowDown className="w-6 h-6 text-neutral-400" />
-        </motion.div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 md:py-32 container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-          <div className="relative aspect-[3/4] overflow-hidden group rounded-2xl shadow-xl">
-            <img 
-              src="/images/mael-profile.jpg" 
-              alt="Maël Gillet" 
-              className="w-full h-full object-cover transition-all duration-700 hover:scale-105"
-            />
-          </div>
-          <div className="text-center md:text-left">
-            <h2 className="text-5xl md:text-7xl font-display font-normal mb-8 tracking-wide text-neutral-900">
-              MAËL <br/>
-              <span className="text-neutral-900 hover:text-neutral-600 transition-colors duration-300">GILLET</span>
-            </h2>
-            <p className="font-mono text-neutral-600 text-base md:text-lg leading-relaxed mb-6 font-medium">
-              J'ai 20 ans et je suis passionné de graphisme et de communication digitale. Actuellement en formation Community Manager et Communication Digitale, je transforme les idées en expériences visuelles percutantes.
-            </p>
-            <p className="font-mono text-neutral-600 text-base md:text-lg leading-relaxed font-medium">
-              Mon approche allie créativité brute et stratégie numérique pour donner vie à des projets uniques. Bienvenue dans mon univers où chaque pixel a son importance.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Work Section */}
-      <section id="work" className="py-20 md:py-32 bg-neutral-50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 gap-4">
-            <h2 className="text-5xl md:text-7xl font-display font-normal tracking-wide text-neutral-900">
-              MES <br/> CRÉATIONS
-            </h2>
-            <span className="font-mono text-neutral-400 text-lg md:text-xl font-medium">(0{projects.length})</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-            {projects.map((project, index) => (
-              <ProjectCard 
-                key={index}
-                index={index}
-                {...project}
-                onClick={() => setSelectedProject(project)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Lightbox */}
-      {selectedProject && (
-        <Lightbox
-          isOpen={!!selectedProject}
-          image={selectedProject.image}
-          title={selectedProject.title}
-          category={selectedProject.category}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 md:py-32 container mx-auto px-4 text-center overflow-hidden">
-        <h2 className="text-[15vw] md:text-[12vw] font-display font-normal tracking-wide leading-none mb-12 hover-trigger break-words text-neutral-900">
-          LET'S TALK
-        </h2>
-        
-        <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-12">
-          <a 
-            href="https://instagram.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex flex-col items-center gap-4 hover-trigger"
-          >
-            <div className="w-20 h-20 rounded-full border border-neutral-200 flex items-center justify-center group-hover:bg-neutral-900 group-hover:border-neutral-900 transition-all duration-300">
-              <Instagram className="w-8 h-8 text-neutral-900 group-hover:text-white transition-colors" />
-            </div>
-            <span className="font-mono text-sm tracking-widest uppercase group-hover:text-neutral-900 transition-colors font-medium">Instagram</span>
-          </a>
-
-          <a 
-            href="mailto:contact@preaky.com" 
-            className="group flex flex-col items-center gap-4 hover-trigger"
-          >
-            <div className="w-20 h-20 rounded-full border border-neutral-200 flex items-center justify-center group-hover:bg-neutral-900 group-hover:border-neutral-900 transition-all duration-300">
-              <Mail className="w-8 h-8 text-neutral-900 group-hover:text-white transition-colors" />
-            </div>
-            <span className="font-mono text-sm tracking-widest uppercase group-hover:text-neutral-900 transition-colors font-medium">Email</span>
-          </a>
-        </div>
-
-        <footer className="mt-32 pt-8 border-t border-neutral-200 flex justify-between font-mono text-xs text-neutral-400">
-          <span>© 2026 PREAKY'S PORTFOLIO</span>
-          <span>DESIGNED BY MANUS</span>
-        </footer>
-      </section>
-    </div>
-  );
-}
-@import "tailwindcss";
-@import "tw-animate-css";
-
-@custom-variant dark (&:is(.dark *));
-
-@theme inline {
-  /* ... (variables de couleurs standard omises pour la clarté) ... */
-  --font-display: "Titan One", cursive;
-  --font-mono: "Fredoka", sans-serif;
-}
-
-@layer base {
-  body {
-    @apply bg-white text-neutral-900;
-    font-family: 'Fredoka', sans-serif;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Titan One', cursive;
-  }
-  
-  .font-display {
-    font-family: 'Titan One', cursive;
-  }
-  
-  .font-mono {
-    font-family: 'Fredoka', sans-serif;
-  }
-
-  .stroke-text {
-    /* Removed stroke effect for filled text request */
-    -webkit-text-stroke: 0;
-    color: currentColor;
-  }
-  .hover-trigger:hover {
-    @apply opacity-70 transition-opacity duration-300;
-  }
-  /* ... (styles de boutons standard omis) ... */
-}
-
-@layer components {
-  /* ... (styles de conteneur standard omis) ... */
-}
-import { motion } from "framer-motion";
-import { useState } from "react";
-
-interface ProjectCardProps {
-  title: string;
-  category: string;
-  image: string;
-  index: number;
-  onClick: () => void;
-}
-
-export default function ProjectCard({ title, category, image, index, onClick }: ProjectCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      className="relative group w-full aspect-square overflow-hidden bg-white cursor-pointer rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500"
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={onClick}
-    >
-      {/* Image Background */}
-      <motion.img
-        src={image}
-        alt={title}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-      />
-
-      {/* Overlay Content */}
-      <div className="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-100 transition-opacity duration-500">
-        <h3 className="text-2xl font-display font-normal tracking-wide text-white mb-1 translate-y-0 transition-transform duration-500 drop-shadow-md">
-          {title}
-        </h3>
-        <p className="font-mono text-white/90 text-sm translate-y-0 transition-transform duration-500 font-medium">
-          {category}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { useEffect } from "react";
-
-interface LightboxProps {
-  isOpen: boolean;
-  image: string;
-  title: string;
-  category: string;
-  onClose: () => void;
-}
-
-export default function Lightbox({ isOpen, image, title, category, onClose }: LightboxProps) {
-  // Empêcher le scroll quand la lightbox est ouverte
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 md:p-8"
-          onClick={onClose}
-        >
-          <motion.button
-            className="absolute top-4 right-4 md:top-8 md:right-8 text-white/50 hover:text-white transition-colors z-50 p-2"
-            onClick={onClose}
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <X size={32} />
-          </motion.button>
-
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-lg border border-white/10 shadow-2xl bg-neutral-900">
-              <img
-                src={image}
-                alt={title}
-                className="max-w-full max-h-[80vh] object-contain"
-              />
-            </div>
-            
-            <div className="mt-6 text-center">
-              <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-cyan-400 font-mono text-sm tracking-widest uppercase mb-2"
-              >
-                {category}
-              </motion.p>
-              <motion.h3 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-3xl md:text-4xl font-display font-bold text-white uppercase tracking-tight"
-              >
-                {title}
-              </motion.h3>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 <!doctype html>
-<html lang="en">
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Promptoir · Les prompts IA écrits pour ton métier</title>
+  <meta name="description" content="48 prompts IA classés par métier : community manager, graphiste, commercial, RH, immobilier, juriste, comptable, e-commerce. Tu remplis tes infos, le prompt s'adapte. Gratuit, sans compte." />
+  <meta name="theme-color" content="#1a47ff" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Promptoir · L'IA parle enfin ton métier" />
+  <meta property="og:description" content="Des prompts écrits avec la méthode de ton métier. Tu remplis 3 champs, tu copies, tu obtiens un livrable." />
+  <meta property="og:image" content="og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" href="fonts/chewy-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="modulepreload" href="js/home.js" />
+  <link rel="modulepreload" href="js/data/prompts/index.js" />
+  <link rel="modulepreload" href="js/data/metiers.js" />
+  <link rel="modulepreload" href="js/data/variables.js" />
+  <link rel="modulepreload" href="js/lib/prompt.js" />
+  <link rel="modulepreload" href="js/lib/ui.js" />
+  <link rel="modulepreload" href="js/lib/icons.js" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Preaky's Portfolio</title>    
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  </head>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="gLime" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ffc2"/><stop offset=".45" stop-color="#d7ff3f"/><stop offset="1" stop-color="#9fcb00"/></linearGradient>
+      <linearGradient id="gOrange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc98a"/><stop offset=".5" stop-color="#ff8a1f"/><stop offset="1" stop-color="#e45f00"/></linearGradient>
+      <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8aa6ff"/><stop offset=".5" stop-color="#1a47ff"/><stop offset="1" stop-color="#0a2bc9"/></linearGradient>
+      <symbol id="logo" viewBox="0 0 48 48"><path d="M14 4h20a10 10 0 0 1 10 10v13a10 10 0 0 1-10 10H19l-9.5 7.5V36.2A10 10 0 0 1 4 27V14A10 10 0 0 1 14 4z" fill="#1a47ff"/><path d="M14.5 15.5l7.5 5.5-7.5 5.5" fill="none" stroke="#d7ff3f" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.5 27.5h9" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></symbol>
+      <symbol id="s-bolt" viewBox="0 0 64 64"><path d="M38 3L9 37h19l-6 24 33-38H35z" fill="url(#gLime)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M33 9L16 31" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="s-spark" viewBox="0 0 64 64"><path d="M32 3c3 16 13 26 29 29-16 3-26 13-29 29-3-16-13-26-29-29C19 29 29 19 32 3z" fill="url(#gOrange)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 18c-1 5-3 8-7 10" stroke="#fff" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="s-cursor" viewBox="0 0 64 64"><path d="M12 6l44 21-19 6-8 20z" fill="url(#gBlue)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M19 15l20 10" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="s-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="url(#gLime)" stroke="#0a1440" stroke-width="2.5"/><path d="M20 33l8 8 17-18" fill="none" stroke="#0a1440" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 22a18 18 0 0 1 10-8" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/></symbol>
+    </defs>
+  </svg>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
-  </body>
+  <header class="header">
+    <a class="brand" href="#top" aria-label="Promptoir, retour en haut">
+      <svg class="brand__mark" aria-hidden="true"><use href="#logo"/></svg>
+      <span>Promptoir<span class="brand__dot">.</span></span>
+    </a>
+    <div class="header__right">
+      <nav class="nav" id="nav" aria-label="Navigation principale">
+        <a href="#exemple">Exemple</a>
+        <a href="#methode">Méthode</a>
+        <a href="#metiers">Métiers</a>
+        <a href="#profil">Confidentialité</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn--cta header__cta" href="bibliotheque.html"><span class="header__cta-long">Ouvrir la bibliothèque</span><span class="header__cta-short">Bibliothèque</span></a>
+      <button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
 
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <span class="hero__ring hero__ring--1"></span>
+      <span class="hero__ring hero__ring--2"></span>
+      <span class="hero__ring hero__ring--3"></span>
+      <span class="hero__ring hero__ring--4"></span>
+
+      <h1 class="hero__title" id="hero-title" data-split>
+        <span class="ln hero__l1"><span>L'IA parle enfin</span></span>
+        <span class="ln hero__l2"><span>ton métier<span class="dot">.</span></span></span>
+      </h1>
+
+      <div class="hero__stage" data-reveal style="--d: 0.25s">
+        <p class="sr-only">Démonstration&nbsp;: on remplit les champs d'un prompt métier, le texte du prompt se met à jour, puis on le copie.</p>
+        <div class="demo" aria-hidden="true">
+          <div class="demo__top">
+            <span class="tag" data-demo="metier">Agent immobilier</span>
+            <span class="tag tag--orange" data-demo="categorie">Rédaction</span>
+            <svg class="ic demo__star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/></svg>
+          </div>
+          <p class="demo__title" data-demo="titre">Annonce immobilière qui donne envie de visiter</p>
+          <div class="demo__fields">
+            <div class="demo__field" data-demo="f0"><span class="demo__label">Caractéristiques du bien</span><span class="demo__value"></span></div>
+            <div class="demo__field" data-demo="f1"><span class="demo__label">Quartier et environnement</span><span class="demo__value"></span></div>
+          </div>
+          <div class="demo__preview" data-demo="preview"></div>
+          <div class="demo__actions">
+            <span class="btn btn--cta btn--sm" data-demo="copy">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copier le prompt
+            </span>
+            <span class="btn btn--ghost btn--sm">Ouvrir dans Claude</span>
+          </div>
+          <span class="demo__copied" data-demo="copied">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Prompt copié
+          </span>
+        </div>
+        <svg class="sticker" style="width:84px;top:-34px;right:-46px;--r:12deg" aria-hidden="true"><use href="#s-bolt"/></svg>
+        <svg class="sticker" style="width:60px;top:38%;left:-52px;--r:-10deg;--fd:-2s" aria-hidden="true"><use href="#s-spark"/></svg>
+        <svg class="sticker" style="width:62px;bottom:64px;right:-40px;--r:-8deg;--fd:-4s" aria-hidden="true"><use href="#s-cursor"/></svg>
+      </div>
+
+      <div class="hero__side hero__side--left" data-reveal style="--d: 0.45s">
+        <span class="hero__pill">Prompts écrits métier par métier</span>
+        <p class="hero__text">Chaque prompt contient la méthode de ton métier, tes infos en champs à remplir et des garde-fous contre les inventions. Tu copies, l'IA livre.</p>
+      </div>
+
+      <div class="hero__side hero__side--right" data-reveal style="--d: 0.55s">
+        <a class="btn btn--cta btn--lg" href="bibliotheque.html">
+          Trouver mon prompt
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        </a>
+        <p class="hero__note">Gratuit · sans compte · <span data-count="prompts">48</span> prompts</p>
+      </div>
+    </section>
+
+    <!-- Problème -->
+    <section class="sec sec--night on-dark" aria-labelledby="pb-title">
+      <div class="wrap">
+        <h2 class="title" id="pb-title" data-split>
+          <span class="ln"><span>Tu demandes<span class="dot">.</span> <span class="hl">L'IA répond</span></span></span>
+          <span class="ln"><span><span class="hl">à côté</span><span class="dot">.</span></span></span>
+        </h2>
+        <p class="lead" data-reveal>Le problème vient rarement de l'IA. Il vient de ce qu'elle ne sait pas&nbsp;: <strong>ton métier, tes règles, tes clients.</strong></p>
+
+        <div class="problem__cards">
+          <article class="pcase" data-reveal>
+            <div class="pcase__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Écris une annonce pour mon T3.</span>
+              <span class="bubble bubble--ai">Découvrez ce magnifique T3 lumineux, idéalement situé… Coup de cœur assuré&nbsp;!</span>
+            </div>
+            <span class="pcase__num pcase__num--1">01</span>
+            <div class="pcase__body">
+              <span class="tag tag--orange">Demande</span>
+              <h3 class="pcase__title">Ta demande tient en une ligne.</h3>
+              <p class="pcase__text">L'IA comble les trous avec des clichés et des suppositions. <strong>Le texte pourrait venir de n'importe qui.</strong></p>
+            </div>
+          </article>
+
+          <article class="pcase" data-reveal style="--d: 0.1s">
+            <div class="pcase__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Rédige mon offre d'emploi.</span>
+              <span class="bubble bubble--ai">Nous recherchons un profil <s>jeune et dynamique</s>, 5 ans d'expérience minimum…</span>
+              <span class="flag"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Critère discriminatoire</span>
+            </div>
+            <span class="pcase__num pcase__num--2">02</span>
+            <div class="pcase__body">
+              <span class="tag">Contexte</span>
+              <h3 class="pcase__title">L'IA ne connaît pas ton métier.</h3>
+              <p class="pcase__text">Ni tes obligations, ni ton vocabulaire, ni tes méthodes. Elle produit du plausible, pas du conforme. <strong>À toi de tout reprendre.</strong></p>
+            </div>
+          </article>
+
+          <article class="pcase" data-reveal style="--d: 0.2s">
+            <div class="pcase__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Sur quel texte m'appuyer&nbsp;?</span>
+              <span class="bubble bubble--ai">Selon l'<s>article L.1234-56 du Code civil</s>, vous pouvez…</span>
+              <span class="flag"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Référence inventée</span>
+            </div>
+            <span class="pcase__num pcase__num--3">03</span>
+            <div class="pcase__body">
+              <span class="tag tag--lime">Fiabilité</span>
+              <h3 class="pcase__title">Tu ne sais pas quoi vérifier.</h3>
+              <p class="pcase__text">Chiffres, articles de loi, délais&nbsp;: l'IA les invente avec aplomb. <strong>Sans garde-fou, l'erreur part chez ton client.</strong></p>
+            </div>
+          </article>
+        </div>
+
+        <div class="notif" data-reveal>
+          <svg class="notif__icon" aria-hidden="true"><use href="#logo"/></svg>
+          <div>
+            <p class="notif__meta"><b>Promptoir</b>maintenant</p>
+            <p class="notif__text">Bonne nouvelle&nbsp;: ça se corrige. <strong>Et c'est déjà écrit pour ton métier.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avant / après -->
+    <section class="sec sec--blue on-dark" id="exemple" aria-labelledby="ex-title">
+      <div class="wrap">
+        <div class="sec__head">
+          <h2 class="title" id="ex-title" data-split>
+            <span class="ln"><span>Même demande<span class="dot">.</span></span></span>
+            <span class="ln"><span><span class="hl">Autre niveau</span><span class="dot">.</span></span></span>
+          </h2>
+          <p class="lead" data-reveal>À gauche, ce que tout le monde tape. À droite, un prompt de la bibliothèque, rempli en une minute.</p>
+        </div>
+
+        <div class="compare">
+          <article class="ccard ccard--before" data-reveal>
+            <p class="ccard__label">Le prompt de tout le monde</p>
+            <p class="ccard__prompt ccard__prompt--big">«&nbsp;Écris une annonce pour un T3 à Nantes.&nbsp;»</p>
+            <p class="outcome__title">Ce que tu obtiens</p>
+            <ul class="outcome outcome--bad">
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des clichés&nbsp;: «&nbsp;lumineux&nbsp;», «&nbsp;coup de cœur&nbsp;»</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des détails inventés pour combler les trous</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Aucune mention obligatoire</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Rien ne signale ce qu'il faut vérifier</li>
+            </ul>
+          </article>
+
+          <article class="ccard ccard--after" data-reveal style="--d: 0.12s">
+            <p class="ccard__label">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>
+              Le prompt Promptoir
+            </p>
+            <div class="bricks">
+              <p class="brick" style="--c: var(--blue)"><b>Rôle</b><span>Tu es agent immobilier expérimenté et rédacteur d'annonces.</span></p>
+              <p class="brick" style="--c: var(--lime-deep)"><b>Contexte</b><span>Bien&nbsp;: <mark>T3 de 68 m², 3e étage, balcon sud</mark> · Quartier&nbsp;: <mark>tram à 3 min</mark> · DPE&nbsp;: <mark>C / B</mark></span></p>
+              <p class="brick" style="--c: var(--orange)"><b>Méthode</b><span>3 titres, accroche, visite pièce par pièce, environnement, infos pratiques.</span></p>
+              <p class="brick" style="--c: var(--blue-light)"><b>Format</b><span>Bloc des mentions obligatoires et version courte de 500 caractères.</span></p>
+              <p class="brick" style="--c: var(--night)"><b>Garde-fous</b><span>Aucun superlatif sans fait. Aucune surface inventée&nbsp;: [À COMPLÉTER].</span></p>
+            </div>
+            <p class="outcome__title">Ce que tu obtiens</p>
+            <ul class="outcome outcome--good">
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>3 titres et une visite écrite pièce par pièce</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Le bloc des mentions obligatoires, prêt à compléter</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>[À COMPLÉTER] là où l'IA aurait inventé</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>La liste de ce que tu dois vérifier avant publication</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="stats">
+          <p class="stat" data-reveal><span class="stat__n" data-count="prompts">48</span><span class="stat__l">prompts métier, prêts à remplir</span></p>
+          <p class="stat" data-reveal style="--d: 0.08s"><span class="stat__n" data-count="metiers">8</span><span class="stat__l">métiers couverts en profondeur</span></p>
+          <p class="stat" data-reveal style="--d: 0.16s"><span class="stat__n" data-count="parcours">8</span><span class="stat__l">parcours pour une mission complète</span></p>
+          <p class="stat" data-reveal style="--d: 0.24s"><span class="stat__n">0</span><span class="stat__l">compte à créer, rien à installer</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Méthode -->
+    <section class="sec sec--mist" id="methode" aria-labelledby="me-title">
+      <div class="wrap">
+        <div class="sec__head" style="text-align:center">
+          <h2 class="title" id="me-title" data-split>
+            <span class="ln"><span>Un bon prompt,</span></span>
+            <span class="ln"><span><span class="hl">cinq briques</span><span class="dot">.</span></span></span>
+          </h2>
+          <p class="lead" style="margin-inline:auto" data-reveal>Chaque prompt de la bibliothèque suit la même structure. C'est elle qui sépare une réponse générique d'un livrable utilisable.</p>
+        </div>
+
+        <div class="method">
+          <div class="mstep" data-reveal style="--c: var(--blue)">
+            <span class="mstep__n">01</span>
+            <div><h3 class="mstep__title">Le rôle</h3><p class="mstep__text">L'IA prend la posture d'un professionnel du métier, pas celle d'un assistant qui veut plaire.</p></div>
+          </div>
+          <div class="mstep" data-reveal style="--c: var(--lime-deep); --fg: var(--night)">
+            <span class="mstep__n">02</span>
+            <div><h3 class="mstep__title">Le contexte</h3><p class="mstep__text">Tes infos en champs à remplir&nbsp;: ton activité, ta cible, ton pays. Le prompt s'adapte à toi.</p></div>
+          </div>
+          <div class="mstep" data-reveal style="--c: var(--orange); --fg: var(--night)">
+            <span class="mstep__n">03</span>
+            <div><h3 class="mstep__title">La méthode</h3><p class="mstep__text">La façon de faire du métier, écrite noir sur blanc&nbsp;: SPIN, STAR, fiche d'arrêt, comparables…</p></div>
+          </div>
+          <div class="mstep" data-reveal style="--c: var(--blue-light)">
+            <span class="mstep__n">04</span>
+            <div><h3 class="mstep__title">Le format</h3><p class="mstep__text">Une réponse prête à l'emploi&nbsp;: tableau, mail, script, plan. Pas un pavé à retravailler.</p></div>
+          </div>
+          <div class="mstep" data-reveal style="--c: var(--night)">
+            <span class="mstep__n">05</span>
+            <div><h3 class="mstep__title">Les garde-fous</h3><p class="mstep__text">Ce que l'IA doit signaler au lieu d'inventer, et ce que tu dois vérifier avant d'envoyer.</p></div>
+          </div>
+
+          <div class="stack" data-reveal aria-hidden="true">
+            <span class="stack__shadow"></span>
+            <span class="stack__brick" style="--i:0;--r:-2deg;--c:var(--night)">Garde-fous <small>05</small></span>
+            <span class="stack__brick" style="--i:1;--r:2.5deg;--c:var(--blue-light)">Format <small>04</small></span>
+            <span class="stack__brick" style="--i:2;--r:-1.5deg;--c:var(--orange);--fg:var(--night)">Méthode <small>03</small></span>
+            <span class="stack__brick" style="--i:3;--r:3deg;--c:var(--lime);--fg:var(--night)">Contexte <small>02</small></span>
+            <span class="stack__brick" style="--i:4;--r:-2.5deg;--c:var(--blue)">Rôle <small>01</small></span>
+          </div>
+        </div>
+
+        <div class="method__cta" data-reveal>
+          <a class="btn btn--cta btn--lg" href="bibliotheque.html#immo-annonce">
+            Voir un prompt complet
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Métiers -->
+    <section class="sec sec--white" id="metiers" aria-labelledby="mt-title">
+      <div class="wrap">
+        <div class="sec__head sec__head--split">
+          <div>
+            <h2 class="title" id="mt-title" data-split>
+              <span class="ln"><span>Choisis</span></span>
+              <span class="ln"><span><span class="hl">ton métier</span><span class="dot">.</span></span></span>
+            </h2>
+            <p class="lead" data-reveal>Des prompts écrits pour les tâches qui reviennent chaque semaine. Pas une liste générique&nbsp;: la méthode de chaque métier.</p>
+          </div>
+          <a class="btn btn--ghost" href="bibliotheque.html" data-reveal>Tous les prompts</a>
+        </div>
+
+        <div class="metiers" data-metiers></div>
+
+        <div class="parcours-card" data-reveal>
+          <span class="parcours-card__tag">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            De bout en bout
+          </span>
+          <div>
+            <p class="parcours-card__kicker">Les parcours</p>
+            <h3 class="parcours-card__title">Une mission, <span>4 prompts</span> enchaînés.</h3>
+            <p class="parcours-card__text">Un prompt isolé règle une tâche. Un parcours mène une mission jusqu'au bout, dans le bon ordre&nbsp;: la sortie d'une étape nourrit la suivante.</p>
+            <a class="btn btn--cta" href="bibliotheque.html">Explorer les parcours</a>
+          </div>
+          <ul class="plist" data-parcours></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profil et confidentialité -->
+    <section class="sec sec--night on-dark" id="profil" aria-labelledby="pr-title">
+      <div class="wrap privacy">
+        <div class="profile-mock" data-reveal aria-hidden="true">
+          <p class="profile-mock__head">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Mon profil
+          </p>
+          <div class="profile-mock__fields">
+            <p class="profile-mock__field"><span>Ton activité</span><b>Agence web de 12 personnes, Lyon</b></p>
+            <p class="profile-mock__field"><span>Tes clients</span><b>PME industrielles de la région</b></p>
+            <p class="profile-mock__field"><span>Ton de communication</span><b>Direct, sobre, vouvoiement</b></p>
+            <p class="profile-mock__field"><span>Pays</span><b>France</b></p>
+          </div>
+          <p class="profile-mock__badge">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span><small>Stocké</small>dans ton navigateur</span>
+          </p>
+        </div>
+
+        <div>
+          <h2 class="title" id="pr-title" data-split>
+            <span class="ln"><span>Remplis une fois<span class="dot">.</span></span></span>
+            <span class="ln"><span><span class="hl">Ça suit partout</span><span class="dot">.</span></span></span>
+          </h2>
+          <p class="lead" data-reveal>Ton activité, ta cible, ton ton, ton pays&nbsp;: tu les renseignes une fois et chaque prompt se pré-remplit. <strong>Tout reste dans ton navigateur.</strong></p>
+          <ul class="checks" data-reveal>
+            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Aucun compte à créer</li>
+            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Aucune saisie envoyée à un serveur</li>
+            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Tout s'efface en un clic</li>
+          </ul>
+          <p class="warn" data-reveal>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <span>Quand tu colles un prompt dans une IA, ce sont les règles de cet outil qui s'appliquent. Retire les noms, les données personnelles et les chiffres confidentiels.</span>
+          </p>
+          <a class="btn btn--cta" href="bibliotheque.html#profil" data-reveal>Remplir mon profil</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="sec sec--white" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq">
+        <div class="faq__head">
+          <h2 class="title" id="faq-title" data-split>
+            <span class="ln"><span>Encore</span></span>
+            <span class="ln"><span><span class="hl">un doute&nbsp;?</span></span></span>
+          </h2>
+        </div>
+        <div>
+          <p class="faq__from"><svg aria-hidden="true"><use href="#logo"/></svg>Promptoir répond à tes questions</p>
+          <div class="faq__list">
+            <details class="qa" open>
+              <summary><span class="qa__q">«&nbsp;Ça marche avec quelle IA&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Avec toutes celles qui comprennent le français&nbsp;: Claude, ChatGPT, Gemini, Mistral, Copilot… Les prompts sont du texte simple, sans syntaxe propre à un outil. Deux boutons ouvrent directement Claude ou ChatGPT avec le prompt.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;Pourquoi ne pas demander directement à l'IA&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Tu peux. Mais l'IA répond au niveau de la question. Le prompt apporte ce que tu n'as pas le temps d'écrire à chaque fois&nbsp;: la méthode du métier, le format de sortie et les règles qui l'empêchent d'inventer.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;Je peux faire confiance aux réponses&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Pas aveuglément. Chaque prompt demande à l'IA de signaler ce qu'elle ignore au lieu de l'inventer, et chaque fiche liste ce que tu dois vérifier. En droit, en finance et en RH, la décision reste la tienne, et celle d'un professionnel quand l'enjeu le demande.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;Mes infos partent où&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Nulle part chez nous&nbsp;: ton profil, tes champs et tes favoris restent dans ton navigateur. Quand tu colles un prompt dans une IA, ce sont les conditions de cet outil qui s'appliquent&nbsp;: anonymise ce qui est sensible.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;C'est gratuit&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Oui. Pas de compte, pas d'abonnement, pas de limite d'utilisation.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;Mon métier n'est pas dans la liste.&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Commence par le métier le plus proche&nbsp;: les prompts de rédaction et d'analyse s'adaptent dès que tu changes le contexte. De nouveaux métiers arrivent au fil des mises à jour.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appel final -->
+    <section class="sec cta on-dark" id="go" aria-labelledby="cta-title">
+      <span class="cloud" style="width:520px;height:260px;left:-140px;bottom:-60px"></span>
+      <span class="cloud" style="width:460px;height:240px;right:-120px;bottom:-40px"></span>
+      <span class="cloud" style="width:300px;height:160px;left:30%;bottom:-90px"></span>
+      <svg class="sticker" style="width:96px;left:12%;top:22%;--r:-14deg" aria-hidden="true"><use href="#s-spark"/></svg>
+      <svg class="sticker" style="width:84px;right:13%;top:18%;--r:10deg;--fd:-3s" aria-hidden="true"><use href="#s-bolt"/></svg>
+      <svg class="sticker" style="width:70px;right:22%;bottom:16%;--r:-6deg;--fd:-1.5s" aria-hidden="true"><use href="#s-check"/></svg>
+      <div class="wrap">
+        <div class="cta__card" data-reveal>
+          <h2 class="cta__title" id="cta-title">Ton prochain prompt <span>est déjà écrit.</span></h2>
+          <p class="cta__text">Choisis ton métier, remplis quelques champs, copie. <strong>Sans compte. Sans blabla.</strong></p>
+          <a class="btn btn--cta btn--lg" href="bibliotheque.html">
+            Ouvrir la bibliothèque
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer on-dark">
+    <div class="wrap">
+      <div class="footer__top">
+        <a class="footer__up" href="#top" aria-label="Revenir en haut">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+        </a>
+        <svg class="footer__mark" aria-hidden="true"><use href="#logo"/></svg>
+        <span class="footer__spacer"></span>
+      </div>
+      <p class="footer__title">Trouve ton prompt.</p>
+      <nav class="footer__nav" aria-label="Pied de page">
+        <a href="bibliotheque.html">Bibliothèque</a>
+        <a href="#exemple">Exemple</a>
+        <a href="#methode">Méthode</a>
+        <a href="#metiers">Métiers</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+    <div class="paper">
+      <svg class="paper__edge" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40V22l38-10 31 12 44-17 29 9 52-14 26 15 41-7 35 10 47-18 24 12 39-6 33 13 50-16 28 8 45-11 30 14 37-9 42 12 33-15 47 9 26-6 40 13 36-12 49 8 27-10 44 14 32-7 39 10 45-17 30 11 41-6 34 12 38-9 40 9 36-12 42 8 40-10 50 6V40z" fill="#f2f4f9"/></svg>
+      <span class="paper__word">Promptoir</span>
+      <div class="paper__row">
+        <span>© 2026 Promptoir</span>
+        <a href="#profil">Confidentialité&nbsp;: tout reste dans ton navigateur</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="vendor/lenis.min.js" defer></script>
+  <script type="module" src="js/home.js"></script>
+</body>
 </html>
-
-    
