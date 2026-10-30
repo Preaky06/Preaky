@@ -84,12 +84,14 @@ export function assemble(type, idea, answers, opts = DEFAULT_OPTS) {
   if (opts.explique) fin.push("Termine par 3 lignes maximum qui expliquent tes principaux choix.");
   fin.push(
     opts.questions
-      ? "Si une information essentielle te manque, pose-moi d'abord jusqu'à 3 questions courtes et attends mes réponses."
+      ? "Si une information essentielle te manque, pose-moi d'abord jusqu'à 3 questions courtes et attends mes réponses. Sinon, réponds directement."
       : "Ne me pose pas de questions : fais des hypothèses raisonnables, signale-les en une ligne, puis réponds.",
   );
-  fin.push("Réponds en français.");
+  fin.push("Va droit au résultat : pas d'introduction ni de conclusion générique.");
+  fin.push("Avant d'envoyer ta réponse, relis-la et vérifie qu'elle respecte chacune des consignes de ce message ; corrige ce qui ne va pas.");
+  fin.push("Réponds en français, dans un style clair et naturel.");
 
-  const all = [sec("Mon idée, en quelques mots", `« ${c.idea} »`), ...sections, sec("Avant de commencer", fin)].filter((s) => s && s.lignes.length);
+  const all = [sec("Mon idée, en quelques mots", `« ${c.idea} »`), ...sections, sec("Pour finir", fin)].filter((s) => s && s.lignes.length);
   const marked = [role, ...all.map((s) => `## ${s.titre}\n${s.lignes.join("\n")}`)].join("\n\n");
 
   return { text: clean(marked), html: toHtml(marked), relances };

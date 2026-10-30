@@ -1,7 +1,7 @@
 // Bibliothèque : recherche, filtres par univers, domaine et catégorie, fiche d'un prompt
 // avec ses champs à compléter et l'aperçu en direct.
 import { CATALOGUE, CATEGORIES, DOMAINES, DOMAINE_BY_ID, ENTRY_BY_ID, UNIVERS, UNIVERS_BY_ID } from "./data/catalogue/index.js";
-import { buildPrompt, champ, fieldsOf, placeholder, DEFAULT_OPTS } from "./lib/compose.js";
+import { buildPrompt, champ, fieldsOf, placeholder, famille, profilUtile, DEFAULT_OPTS } from "./lib/compose.js";
 import { CHAMPS } from "./data/catalogue/champs.js";
 import { loadFavorites, saveFavorites, loadProfile, saveProfile } from "./lib/store.js";
 import { TARGETS, targetUrl, copyText } from "./lib/share.js";
@@ -322,7 +322,6 @@ function renderDialog(e) {
   const v = valuesOf(e);
   const keys = fieldsOf(e);
   const fav = favorites.has(e.id);
-  const hasProfile = keys.some((k) => PROFILE_KEYS.includes(k));
   dlg.dataset.color = u.couleur;
   pForm.innerHTML = `
     <button class="pdlg__crumb" type="button" data-goto-domaine="${e.d.id}"><span class="pdlg__crumb-icon">${icon(u.icon)}</span>${fr(e.d.nom)}</button>
@@ -337,7 +336,7 @@ function renderDialog(e) {
       <h3 class="block-title" id="pf-title">${icon("edit")}${keys.length > 1 ? `Complète ces ${keys.length} champs` : "Complète ce champ"}</h3>
       <p class="pdlg__help">Un champ vide&nbsp;? L'IA te posera la question.</p>
       <div class="pfields">${keys.map((k) => fieldHtml(e, k, v[k])).join("")}</div>
-      ${hasProfile ? `<p class="pf__hint">Ton activité et ton public sont retenus sur cet appareil. <button class="link-btn" type="button" data-open-profile>Modifier mon profil</button></p>` : ""}
+      <p class="pf__hint" data-profile-hint hidden></p>
     </section>
 
     <div class="pdlg__actions">
@@ -367,12 +366,29 @@ function renderDialog(e) {
 
 function updatePreview() {
   if (!current) return;
-  const out = buildPrompt(current, valuesOf(current), opts);
+  const out = buildPrompt(current, valuesOf(current), opts, profile);
   pPreview.innerHTML = out.html;
+  renderProfileHint();
   const relance = pForm.querySelector("[data-p-relance]");
   if (relance) relance.textContent = out.relance;
   pMeta.innerHTML = `${out.missing.length ? `${plural(out.missing.length, "champ", "champs")} à compléter · ` : ""}${nf.format(out.text.length)}&nbsp;caractères`;
   return out;
+}
+
+// Ce que le profil apporte à ce prompt, ou une invitation à le remplir pour les métiers
+function renderProfileHint() {
+  const hint = pForm.querySelector("[data-profile-hint]");
+  if (!hint || !current) return;
+  const used = profilUtile(current, profile).map((p) => p.label.toLowerCase());
+  const asField = fieldsOf(current).some((k) => PROFILE_KEYS.includes(k));
+  const pro = ["pro", "sante"].includes(famille(current.d));
+  const link = (label) => `<button class="link-btn" type="button" data-open-profile>${label}</button>`;
+  let html = "";
+  if (used.length) html = `Ajouté depuis ton profil&nbsp;: ${esc(used.join(", "))}. ${link("Modifier mon profil")}`;
+  else if (asField) html = `Ton activité et ton public sont retenus sur cet appareil. ${link("Modifier mon profil")}`;
+  else if (pro && !profile.activite) html = `Indique ton activité et ton public une fois pour toutes&nbsp;: ils compléteront tous tes prompts. ${link("Remplir mon profil")}`;
+  hint.innerHTML = html;
+  hint.hidden = !html;
 }
 
 function autoGrow(el) {
@@ -420,7 +436,7 @@ window.addEventListener("popstate", () => {
 
 async function act(name, btn) {
   if (!current) return;
-  const out = buildPrompt(current, valuesOf(current), opts);
+  const out = buildPrompt(current, valuesOf(current), opts, profile);
   if (name === "jump") {
     dlg.querySelector(".pdlg__live").scrollIntoView({ behavior: "smooth", block: "start" });
     return;
@@ -537,8 +553,9 @@ function applyProfile(key, value) {
   if (field) {
     field.value = value;
     autoGrow(field);
-    updatePreview();
   }
+  // Le profil complète aussi les prompts qui ne le demandent pas comme champ
+  updatePreview();
 }
 
 profileDlg.addEventListener("click", (e) => {

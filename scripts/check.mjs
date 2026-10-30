@@ -3,7 +3,7 @@ import { TYPES, visibleQuestions } from "../js/data/types/index.js";
 import { assemble, AUTO } from "../js/lib/kit.js";
 import { detect } from "../js/lib/detect.js";
 import { CATALOGUE, CATEGORIES, DOMAINES, MODELES, UNIVERS, UNIVERS_BY_ID } from "../js/data/catalogue/index.js";
-import { buildPrompt, champ, fieldsOf, placeholder, DEFAULT_OPTS } from "../js/lib/compose.js";
+import { buildPrompt, champ, fieldsOf, placeholder, libellePrompt, DEFAULT_OPTS } from "../js/lib/compose.js";
 import { readFileSync } from "node:fs";
 import { FILE as STATS_FILE, statsSource } from "./stats.mjs";
 
@@ -161,13 +161,16 @@ for (const e of CATALOGUE) {
   const filled = Object.fromEntries(keys.map((k) => [k, champ(k)?.long ? "Première ligne\nDeuxième ligne" : "Une valeur de test"]));
   for (const key of keys) {
     if (!champ(key)) fail(`prompt ${e.id} : champ non déclaré « ${key} »`);
+    // Dans le prompt, c'est l'utilisateur qui parle : pas de « tu », « ton », « ta », « tes » ni de question
+    if (/(?<![\p{L}'])(tu|te|ton|ta|tes|toi)(?!\p{L})|-tu\b|\bt'|\?/iu.test(libellePrompt(key))) fail(`champ « ${key} » : libellé de prompt à la 2e personne « ${libellePrompt(key)} »`);
     const p = placeholder(key, e.d);
     if (/undefined|\bnull\b|NaN|…/.test(p)) fail(`prompt ${e.id} : exemple invalide pour « ${key} » : ${p}`);
   }
-  for (const [values, opts] of [[{}, DEFAULT_OPTS], [filled, { questions: false, variantes: true }]]) {
+  const PROFIL = { activite: "Une activité de test", cible: "Un public de test", ton: "Un ton de test", pays: "Belgique" };
+  for (const [values, opts, profil] of [[{}, DEFAULT_OPTS, {}], [filled, { questions: false, variantes: true }, PROFIL]]) {
     let out;
     try {
-      out = buildPrompt(e, values, opts);
+      out = buildPrompt(e, values, opts, profil);
     } catch (err) {
       fail(`prompt ${e.id} : erreur à l'assemblage : ${err.message}`);
       continue;

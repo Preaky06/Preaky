@@ -1,6 +1,6 @@
 # Promptoir
 
-Une bibliothèque de 6 709 prompts prêts à l'emploi, classés en 196 domaines (métiers, matières, passions, moments de vie) et 29 univers. On choisit un prompt, on complète deux ou trois champs, on le copie ou on l'ouvre directement dans Claude ou ChatGPT. Chaque prompt suit la même structure : rôle, contexte, mission, méthode, format, règles et dernière consigne.
+Une bibliothèque de 6 709 prompts prêts à l'emploi, classés en 196 domaines (métiers, matières, passions, moments de vie) et 29 univers. On choisit un prompt, on complète deux ou trois champs, on le copie ou on l'ouvre directement dans Claude ou ChatGPT. Chaque prompt suit la même structure, écrite à la première personne (c'est l'utilisateur qui parle à l'IA) : rôle et posture, contexte (domaine, profil, pays, repères utiles, champs complétés, les textes longs entre triple guillemets), mission, critères d'une bonne réponse, méthode, format, règles du métier et garde-fous, puis une consigne finale (questions si une information manque, relecture selon les critères, rubrique « À vérifier » pour les analyses et les stratégies).
 
 Pour un besoin absent de la bibliothèque, le créateur sur mesure (`creer.html`) part d'une idée décrite en quelques mots et pose 6 à 10 questions adaptées.
 
@@ -49,7 +49,7 @@ Un prompt de la bibliothèque croise deux choses écrites à la main :
 - une **fiche de domaine** (`domaines-1.js` à `domaines-6.js`), créée avec `dom(id, nom, univers, types, profil, prompts)`. Le profil donne le rôle de l'IA et ce que l'on sait du domaine. Selon le type : pour un métier (`b2c`, `b2b`, `employe`, `sante`, combinables avec `+`), le cadre, les clients, les enjeux, les indicateurs, les outils, les livrables, les tâches et les règles ; pour une pratique (`perso`) ou une relation (`relation`), le sujet ; pour la carrière (`carriere`), la situation ; pour les études (`etude`), la matière, les notions, les examens et les exercices ; pour la création (`creatif`), la pratique, le public, les lieux de diffusion et les techniques. Chaque fiche contient 4 prompts écrits pour ce seul domaine ;
 - des **modèles** (`modeles-pro.js`, `modeles-vie.js`, `modeles-savoir.js`) : une méthode de travail réutilisable (email délicat, plan de révision, préparation d'entretien), avec ses champs, sa méthode, son format et ses garde-fous.
 
-`index.js` donne à chaque domaine les modèles des familles qui correspondent à son type (`FAMILLES`), sauf ceux listés dans `sans`. Les champs à compléter sont déclarés une seule fois dans `champs.js`.
+`index.js` donne à chaque domaine les modèles des familles qui correspondent à son type (`FAMILLES`), sauf ceux listés dans `sans`. Les champs à compléter sont déclarés une seule fois dans `champs.js`, avec leur libellé de formulaire (« Ton activité ») ; le libellé du prompt (« Mon activité ») en est déduit, ou fixé dans `LIBELLES_PROMPT`. L'assemblage est dans `js/lib/compose.js`.
 
 Pour ajouter un domaine : ajoute une fiche dans un des fichiers `domaines-*.js`, puis lance `node scripts/stats.mjs` et `node scripts/check.mjs`. La vérification assemble chacun des prompts, vides et complétés, et refuse : un champ non déclaré, un modèle exclu inconnu, une fiche incomplète, un titre en double dans un domaine, un mot répété, un « … », moins de 5 000 prompts, ou un `stats.js` pas à jour.
 
