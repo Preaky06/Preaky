@@ -59,7 +59,7 @@ export function recette(ctx, r) {
 
   const corps = `
 <article class="recette" data-recette>
-  <div class="bandeau-demo" role="note">${icone("info")}<p><strong>Recette de démonstration.</strong> Elle n'a pas encore été relue ni sourcée par la rédaction. <a href="${L("/charte-editoriale")}">Comment nous vérifions les recettes</a></p></div>
+  ${r.demo ? `<div class="bandeau-demo" role="note">${icone("info")}<p><strong>Recette de démonstration.</strong> Elle n'a pas encore été relue ni sourcée par la rédaction. <a href="${L("/charte-editoriale")}">Comment nous vérifions les recettes</a></p></div>` : ""}
   <header class="recette-tete">
     <div class="recette-intro">
       ${filAriane(ariane, L)}

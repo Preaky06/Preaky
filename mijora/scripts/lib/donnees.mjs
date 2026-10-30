@@ -110,11 +110,18 @@ function enrichir(r, parIso, ingredients) {
     total,
     lignes,
     substitutions,
-    statut: "a_verifier",
-    demo: true,
-    verification: null,
-    source: null,
+    // Statut éditorial : « a_verifier » par défaut. Une recette « publie » doit fournir source, date de vérification
+    // et photographie autorisée : { source: { auteur, url }, verification: "AAAA-MM-JJ", photo: { url, licence, credit } }
+    statut: r.statut ?? "a_verifier",
+    demo: (r.statut ?? "a_verifier") !== "publie",
+    verification: r.verification ?? null,
+    source: r.source ?? null,
+    image_publiee: r.photo?.url ?? null,
+    image_licence: r.photo?.licence ?? null,
   };
+  if (out.statut === "publie" && !(out.verification && out.source && out.image_publiee && out.image_licence)) {
+    fail(`${r.slug} : une recette publiée exige verification, source et photo (url, licence)`);
+  }
   out.allergenes = allergenes(lignes);
   out.familles = [...new Set(lignes.filter((l) => !l.facultatif && !NEUTRES.has(l.ing.s)).map((l) => l.ing.f))];
   out.regimes = Object.fromEntries(REGIMES.map((d) => [d.slug, compatibilite(d, lignes, substitutions)]));

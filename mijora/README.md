@@ -51,6 +51,19 @@ supabase/migrations/  schéma, index, fonctions, politiques RLS ; supabase/seed.
 
 Les pages sont générées en HTML statique : contenu lisible sans JavaScript, indexable, rapide. Le JavaScript ajoute la recherche, les filtres, le recalcul des portions, les favoris et les listes. La recherche s'appuie sur un index JSON généré à partir des données ; la base Supabase expose la même recherche (`rechercher_recettes`) pour la suite.
 
+### Publier une recette vérifiée
+
+Dans `data/recettes.mjs`, ajouter à la recette :
+
+```js
+statut: "publie",
+verification: "2026-11-15",
+source: { auteur: "Nom de l'auteur ou de l'ouvrage", url: "https://…" },
+photo: { url: "/img/photos/soupe-miso.webp", licence: "CC BY 4.0", credit: "Nom du photographe" },
+```
+
+Le générateur refuse une recette publiée à laquelle il manque l'un de ces éléments. Une fois publiée, la page perd le bandeau « démonstration », devient indexable, entre dans le sitemap et reçoit ses données structurées `Recipe`. La base applique la même règle (contrainte `recette_publiable`).
+
 ### Régimes et allergènes
 
 Rien n'est saisi à la main : chaque ingrédient porte son origine et ses allergènes, et `scripts/lib/donnees.mjs` en déduit pour chaque recette et chaque régime un statut :

@@ -80,10 +80,11 @@ inserer("diet_type_points", ["diet_type_id", "kind", "text", "position"], d.regi
 
 // Recettes
 const idRec = new Map(d.recettes.map((r, i) => [r.slug, i + 1]));
-inserer("recipes", ["id", "title_fr", "original_title", "original_language", "slug", "introduction", "origin_history", "country_id", "region_id", "category", "preparation_time", "cooking_time", "rest_time", "difficulty", "estimated_budget", "servings", "storage", "reheating", "precautions", "main_image", "status", "is_demo", "editorial_notes"],
+inserer("recipes", ["id", "title_fr", "original_title", "original_language", "slug", "introduction", "origin_history", "country_id", "region_id", "category", "preparation_time", "cooking_time", "rest_time", "difficulty", "estimated_budget", "servings", "storage", "reheating", "precautions", "main_image", "image_license", "image_credit", "source_author", "source_url", "verification_date", "status", "is_demo", "editorial_notes"],
   d.recettes.map((r) => [idRec.get(r.slug), r.titre, r.original, r.langue, r.slug, r.introduction, r.origine ?? null, idPays.get(r.pays), r.region ? idRegion.get(`${r.pays}/${r.region}`) : null, r.categorie,
-    r.preparation, r.cuisson, r.repos, r.difficulte, r.budget, r.portions, r.conservation ?? null, r.rechauffage ?? null, r.precautions ?? null, r.image,
-    "a_verifier", true, "Recette de démonstration : à relire, sourcer et illustrer par une photographie autorisée avant publication."]));
+    r.preparation, r.cuisson, r.repos, r.difficulte, r.budget, r.portions, r.conservation ?? null, r.rechauffage ?? null, r.precautions ?? null, r.image_publiee ?? r.image,
+    r.image_licence, r.photo?.credit ?? null, r.source?.auteur ?? null, r.source?.url ?? null, r.verification,
+    r.statut, r.demo, r.demo ? "Recette de démonstration : à relire, sourcer et illustrer par une photographie autorisée avant publication." : null]));
 inserer("recipe_steps", ["recipe_id", "position", "instruction", "duration_minutes"], d.recettes.flatMap((r) => r.etapes.map(([t, m], i) => [idRec.get(r.slug), i + 1, t, m])));
 inserer("recipe_ingredients", ["recipe_id", "ingredient_id", "quantity", "unit", "is_optional", "preparation_note", "position"],
   d.recettes.flatMap((r) => r.lignes.map((l, i) => [idRec.get(r.slug), idIng.get(l.ing.s), l.quantite, l.unite, l.facultatif, l.note, i])));
