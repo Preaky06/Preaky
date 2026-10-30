@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lézarde, mon suivi</title>
+  <meta name="description" content="Suivez vos fissures, la procédure de catastrophe naturelle de votre commune et préparez votre dossier pour l'assureur." />
+  <meta name="theme-color" content="#0f2a1d" />
+  <link rel="icon" href="img/logo.svg" type="image/svg+xml" />
+  <link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-tight-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body class="app-body">
+  <a class="skip" href="#app-main">Aller au suivi</a>
+
+  <header class="app-top">
+    <a class="logo" href="index.html" aria-label="Lézarde, accueil"><img src="img/logo.svg" alt="" width="30" height="30" /><span>Lézarde<b>.</b></span></a>
+    <div class="app-top__actions">
+      <button class="btn btn--leaf btn--sm" type="button" data-open-report aria-label="Préparer le dossier pour l'assureur"><span class="btn__label">Dossier pour l'assureur</span><span class="btn__arrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span></button>
+      <button class="round-btn round-btn--ghost" type="button" data-open="menu-dialog" aria-label="Sauvegarde et réglages"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+    </div>
+  </header>
+
+  <div class="demo-bar" role="region" aria-label="Mode exemple" data-demo-bar hidden>
+    <p><b>Vous regardez un exemple.</b> Les données sont fictives.</p>
+    <button class="btn btn--light btn--sm btn--plain" type="button" data-start-own>Commencer mon propre suivi</button>
+  </div>
+
+  <main class="app" id="app-main">
+    <div class="app-alerts" data-alerts aria-live="polite"></div>
+
+    <section class="app-main" aria-labelledby="cracks-title">
+      <div class="app-head">
+        <h1 class="display app-title" id="cracks-title">Mes fissures</h1>
+        <button class="btn btn--dark btn--sm" type="button" data-add-crack>Ajouter une fissure<span class="btn__arrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span></button>
+      </div>
+      <div data-cracks></div>
+      <div data-detail></div>
+    </section>
+
+    <aside class="app-side" aria-label="Maison, commune et prochain relevé">
+      <section class="side-card" data-house></section>
+      <section class="side-card side-card--forest on-dark" data-commune></section>
+      <section class="side-card side-card--leaf" data-next></section>
+    </aside>
+  </main>
+
+  <!-- Fissure -->
+  <dialog class="sheet" id="crack-dialog" aria-labelledby="crack-dialog-title">
+    <form method="dialog" class="sheet__inner" data-form="crack">
+      <button class="sheet__close" type="button" data-close aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      <h2 class="display sheet__title" id="crack-dialog-title">Une fissure</h2>
+      <label class="field"><span>Nom</span><input name="nom" required maxlength="60" placeholder="Ex. : Mur du salon" /></label>
+      <label class="field"><span>Emplacement précis</span><input name="lieu" maxlength="120" placeholder="Ex. : au-dessus de la fenêtre" /></label>
+      <fieldset class="field">
+        <legend>Où se trouve-t-elle&nbsp;?</legend>
+        <div class="choice">
+          <label><input type="radio" name="type" value="interieur" checked /><span>À l'intérieur</span></label>
+          <label><input type="radio" name="type" value="exterieur" /><span>À l'extérieur</span></label>
+        </div>
+      </fieldset>
+      <div class="sheet__foot">
+        <button class="btn btn--ghost btn--plain" type="button" data-close>Annuler</button>
+        <button class="btn btn--leaf btn--plain" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Relevé -->
+  <dialog class="sheet" id="measure-dialog" aria-labelledby="measure-dialog-title">
+    <form method="dialog" class="sheet__inner" data-form="measure">
+      <button class="sheet__close" type="button" data-close aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      <h2 class="display sheet__title" id="measure-dialog-title">Un relevé</h2>
+      <p class="sheet__crack" data-measure-crack></p>
+      <div class="field-row">
+        <label class="field"><span>Date</span><input type="date" name="date" required /></label>
+        <label class="field"><span>Largeur (mm)</span><input type="number" name="largeur" required min="0" max="50" step="0.05" inputmode="decimal" placeholder="0,5" /></label>
+        <label class="field"><span>Longueur (cm)</span><input type="number" name="longueur" min="0" max="2000" step="1" inputmode="numeric" placeholder="Facultatif" /></label>
+      </div>
+      <div class="field">
+        <span class="field__label">Photo</span>
+        <div class="photo-pick" data-photo-pick>
+          <div class="photo-pick__ref" data-photo-ref hidden></div>
+          <label class="photo-pick__btn">
+            <input type="file" name="photo" accept="image/*" capture="environment" class="sr-only" />
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span data-photo-label>Prendre ou choisir une photo</span>
+          </label>
+          <img class="photo-pick__preview" data-photo-preview alt="Aperçu de la photo choisie" hidden />
+        </div>
+      </div>
+      <fieldset class="field">
+        <legend>Protocole</legend>
+        <div class="checks">
+          <label><input type="checkbox" name="repere" /><span>Repère gradué visible sur la photo</span></label>
+          <label><input type="checkbox" name="cadrage" /><span>Même cadrage et même distance que la dernière fois</span></label>
+          <label><input type="checkbox" name="jauge" /><span>Largeur mesurée avec une jauge ou un fissuromètre</span></label>
+        </div>
+      </fieldset>
+      <label class="field"><span>Note</span><textarea name="note" rows="2" maxlength="400" placeholder="Ex. : porte du salon qui frotte depuis une semaine"></textarea></label>
+      <div class="sheet__foot">
+        <button class="btn btn--ghost btn--plain" type="button" data-close>Annuler</button>
+        <button class="btn btn--leaf btn--plain" type="submit">Enregistrer le relevé</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Maison -->
+  <dialog class="sheet" id="house-dialog" aria-labelledby="house-dialog-title">
+    <form method="dialog" class="sheet__inner" data-form="house">
+      <button class="sheet__close" type="button" data-close aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      <h2 class="display sheet__title" id="house-dialog-title">Ma maison</h2>
+      <label class="field"><span>Nom du logement</span><input name="nom" maxlength="60" placeholder="Ex. : Maison familiale" /></label>
+      <label class="field"><span>Commune</span><input name="commune" maxlength="80" placeholder="Ex. : Châteauroux" /></label>
+      <label class="field"><span>Adresse</span><input name="adresse" maxlength="160" placeholder="Facultatif, utile pour le dossier" /></label>
+      <label class="field"><span>Premières fissures constatées le</span><input type="date" name="debut" /></label>
+      <div class="field-row">
+        <label class="field"><span>Assureur</span><input name="assureur" maxlength="80" placeholder="Facultatif" /></label>
+        <label class="field"><span>N° de contrat</span><input name="contrat" maxlength="60" placeholder="Facultatif" /></label>
+      </div>
+      <div class="sheet__foot">
+        <button class="btn btn--ghost btn--plain" type="button" data-close>Annuler</button>
+        <button class="btn btn--leaf btn--plain" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Commune -->
+  <dialog class="sheet" id="commune-dialog" aria-labelledby="commune-dialog-title">
+    <form method="dialog" class="sheet__inner" data-form="commune">
+      <button class="sheet__close" type="button" data-close aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      <h2 class="display sheet__title" id="commune-dialog-title">La procédure</h2>
+      <p class="sheet__help">Renseignez les dates au fur et à mesure. Les délais sont calculés à partir d'elles.</p>
+      <div class="field-row">
+        <label class="field"><span>Signalement en mairie</span><input type="date" name="signalement" /></label>
+        <label class="field"><span>Demande communale déposée</span><input type="date" name="demande" /></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>Arrêté publié au Journal officiel</span><input type="date" name="arrete" /></label>
+        <label class="field"><span>Référence de l'arrêté</span><input name="arreteRef" maxlength="80" placeholder="Ex. : arrêté du 3 juin" /></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>Déclaration à l'assureur</span><input type="date" name="declaration" /></label>
+        <label class="field"><span>Passage de l'expert</span><input type="date" name="expertise" /></label>
+      </div>
+      <label class="field"><span>Décision de l'assureur</span><input type="date" name="decision" /></label>
+      <div class="sheet__foot">
+        <button class="btn btn--ghost btn--plain" type="button" data-close>Annuler</button>
+        <button class="btn btn--leaf btn--plain" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Réglages -->
+  <dialog class="sheet" id="menu-dialog" aria-labelledby="menu-dialog-title">
+    <div class="sheet__inner">
+      <button class="sheet__close" type="button" data-close aria-label="Fermer"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      <h2 class="display sheet__title" id="menu-dialog-title">Sauvegarde</h2>
+      <p class="sheet__help">Vos données restent sur cet appareil. Exportez une sauvegarde régulièrement&nbsp;: elle contient vos relevés et vos photos.</p>
+      <div class="menu-list">
+        <button class="menu-item" type="button" data-export><span><b>Exporter une sauvegarde</b><small>Un fichier à garder en lieu sûr</small></span></button>
+        <label class="menu-item"><input type="file" accept="application/json,.json" class="sr-only" data-import /><span><b>Restaurer une sauvegarde</b><small>Remplace les données de cet appareil</small></span></label>
+        <button class="menu-item" type="button" data-load-example><span><b>Charger l'exemple</b><small>Une maison fictive, pour découvrir</small></span></button>
+        <button class="menu-item menu-item--danger" type="button" data-reset-all><span><b>Tout effacer</b><small>Supprime fissures, relevés et photos de cet appareil</small></span></button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Confirmation -->
+  <dialog class="sheet sheet--small" id="confirm-dialog" aria-labelledby="confirm-title">
+    <form method="dialog" class="sheet__inner">
+      <h2 class="h3" id="confirm-title" data-confirm-title></h2>
+      <p class="sheet__help" data-confirm-text></p>
+      <div class="sheet__foot">
+        <button class="btn btn--ghost btn--plain" value="cancel" data-confirm-cancel>Annuler</button>
+        <button class="btn btn--dark btn--plain" value="ok" data-confirm-ok>Confirmer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dossier pour l'assureur -->
+  <dialog class="report-dialog" id="report-dialog" aria-labelledby="report-title">
+    <div class="report-bar">
+      <p><b>Dossier pour l'assureur</b><span>Imprimez-le ou enregistrez-le en PDF depuis la fenêtre d'impression.</span></p>
+      <div class="report-bar__actions">
+        <button class="btn btn--leaf btn--sm btn--plain" type="button" data-print>Imprimer ou PDF</button>
+        <button class="round-btn round-btn--ghost" type="button" data-close aria-label="Fermer le dossier"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+    <article class="report" data-report></article>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
