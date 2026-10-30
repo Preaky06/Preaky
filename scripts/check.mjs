@@ -2,6 +2,8 @@
 import { TYPES, visibleQuestions } from "../js/data/types/index.js";
 import { assemble, AUTO } from "../js/lib/kit.js";
 import { detect } from "../js/lib/detect.js";
+import { CATALOGUE, CATEGORIES, DOMAINES, MODELES, UNIVERS, UNIVERS_BY_ID } from "../js/data/catalogue/index.js";
+import { buildPrompt, champ, fieldsOf, placeholder, DEFAULT_OPTS } from "../js/lib/compose.js";
 
 const errors = [];
 const fail = (msg) => errors.push(msg);
@@ -105,6 +107,80 @@ for (const [idea, expected] of CASES) {
   if (got !== expected) fail(`détection « ${idea} » : ${got} (classement ${detect(idea).ranking.join(" > ")}), attendu ${expected}`);
 }
 
+// ---------- Catalogue de prompts prêts à l'emploi ----------
+const KINDS = {
+  b2c: ["role", "cadre", "clients", "enjeux", "kpi", "outils", "livrables", "taches"],
+  b2b: ["role", "cadre", "clients", "enjeux", "kpi", "outils", "livrables", "taches"],
+  employe: ["role", "cadre", "clients", "enjeux", "kpi", "outils", "livrables", "taches"],
+  sante: ["role", "cadre", "clients", "enjeux", "kpi", "outils", "livrables", "taches", "sujets_patients"],
+  perso: ["role", "sujet", "objectifs", "pros", "projets"],
+  relation: ["role", "sujet"],
+  carriere: ["role", "situation"],
+  etude: ["role", "matiere", "notions", "examens", "devoirs", "confusion"],
+  creatif: ["role", "pratique", "public", "diffusion", "techniques"],
+};
+const catIds = new Set(CATEGORIES.map((c) => c.id));
+const modeleIds = new Set(MODELES.map((m) => m.id));
+const domIds = new Set();
+for (const m of MODELES) {
+  if (!catIds.has(m.cat)) fail(`modèle ${m.id} : catégorie inconnue ${m.cat}`);
+  for (const key of m.f) if (!champ(key)) fail(`modèle ${m.id} : champ non déclaré « ${key} »`);
+}
+for (const d of DOMAINES) {
+  if (domIds.has(d.id)) fail(`domaine ${d.id} : identifiant en double`);
+  domIds.add(d.id);
+  if (!UNIVERS_BY_ID[d.univers]) fail(`domaine ${d.id} : univers inconnu ${d.univers}`);
+  for (const k of d.kinds) {
+    if (!KINDS[k]) fail(`domaine ${d.id} : type inconnu ${k}`);
+    for (const key of KINDS[k] || []) {
+      const v = d[key];
+      if (!v || (Array.isArray(v) && v.length === 0)) fail(`domaine ${d.id} : « ${key} » manquant`);
+    }
+  }
+  for (const id of d.sans || []) if (!modeleIds.has(id)) fail(`domaine ${d.id} : modèle exclu inconnu ${id}`);
+  if (d.sp.length !== 4) fail(`domaine ${d.id} : ${d.sp.length} prompts spécifiques au lieu de 4`);
+  for (const s of d.sp) {
+    if (!catIds.has(s.cat)) fail(`domaine ${d.id} : catégorie inconnue « ${s.cat} » pour « ${s.t} »`);
+    if (!/[.?]$/.test(s.m)) fail(`domaine ${d.id} : mission sans ponctuation finale « ${s.t} »`);
+  }
+  const titres = CATALOGUE.filter((e) => e.d === d).map((e) => e.t);
+  const doublons = titres.filter((t, i) => titres.indexOf(t) !== i);
+  if (doublons.length) fail(`domaine ${d.id} : titres en double ${doublons.join(", ")}`);
+}
+
+const entryIds = new Set();
+let shortest = Infinity;
+let longest = 0;
+for (const e of CATALOGUE) {
+  if (entryIds.has(e.id)) fail(`prompt ${e.id} : identifiant en double`);
+  entryIds.add(e.id);
+  if (!e.t || !e.r || !catIds.has(e.cat)) fail(`prompt ${e.id} : titre, résumé ou catégorie manquant`);
+  const keys = fieldsOf(e);
+  const filled = Object.fromEntries(keys.map((k) => [k, champ(k)?.long ? "Première ligne\nDeuxième ligne" : "Une valeur de test"]));
+  for (const key of keys) {
+    if (!champ(key)) fail(`prompt ${e.id} : champ non déclaré « ${key} »`);
+    const p = placeholder(key, e.d);
+    if (/undefined|\bnull\b|NaN|…/.test(p)) fail(`prompt ${e.id} : exemple invalide pour « ${key} » : ${p}`);
+  }
+  for (const [values, opts] of [[{}, DEFAULT_OPTS], [filled, { questions: false, variantes: true }]]) {
+    let out;
+    try {
+      out = buildPrompt(e, values, opts);
+    } catch (err) {
+      fail(`prompt ${e.id} : erreur à l'assemblage : ${err.message}`);
+      continue;
+    }
+    for (const re of [/…/, /undefined/, /\bnull\b/, /NaN/, /\[object/, /\u0001|\u0002/, / {2,}\S/, / [,.](\s|$)/m, /\n{3,}/, /(?<!\p{L})(\p{L}+) \1(?!\p{L})/iu]) {
+      const m = out.text.match(re);
+      if (m) fail(`prompt ${e.id} : motif interdit ${re} → « ${out.text.slice(Math.max(0, m.index - 40), m.index + 40).replace(/\n/g, "⏎")} »`);
+    }
+    if (values === filled && out.missing.length) fail(`prompt ${e.id} : champs signalés manquants alors qu'ils sont remplis`);
+    shortest = Math.min(shortest, out.text.length);
+    longest = Math.max(longest, out.text.length);
+  }
+}
+if (CATALOGUE.length < 5000) fail(`catalogue : ${CATALOGUE.length} prompts, moins de 5 000`);
+
 if (errors.length) {
   console.error(errors.join("\n"));
   console.error(`\n${errors.length} problème(s).`);
@@ -117,3 +193,7 @@ const max = Math.max(...ranges.map((r) => r[1]));
 const sizes = TYPES.map((t) => assemble(t, "Mon idée", sampleAnswers(t, "first")).text.length);
 console.log(`OK : ${TYPES.length} types, ${total} questions (de ${min} à ${max} par parcours), ${CASES.length} cas de détection.`);
 console.log(`Prompt complet : de ${Math.min(...sizes)} à ${Math.max(...sizes)} caractères.`);
+const specifiques = CATALOGUE.filter((e) => e.s).length;
+console.log(
+  `Catalogue : ${CATALOGUE.length} prompts (${DOMAINES.length} domaines, ${UNIVERS.length} univers, ${MODELES.length} modèles, ${specifiques} prompts propres à un domaine), de ${shortest} à ${longest} caractères.`,
+);
