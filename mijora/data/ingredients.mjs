@@ -1,0 +1,165 @@
+// Ingrédients de référence.
+// s : slug · n : nom (singulier) · p : pluriel (par défaut n + « s ») · m : forme après un poids ou un volume
+//   (« 600 g de pommes de terre » : m = "p" ; « 200 g de feta » : défaut, le singulier)
+// f : famille (voir FAMILLES) · o : origine (vegetal, viande, volaille, poisson, crustace, mollusque, lait, oeuf, miel)
+// a : allergènes (slugs UE) ; un « ? » final signifie « selon le produit » (à vérifier sur l'étiquette)
+// pr : fromage dont la présure peut être animale (point de vigilance pour un régime végétarien strict)
+// c : couleur dominante, pour les illustrations
+// Les régimes sont déduits de l'origine et des allergènes : aucune compatibilité n'est saisie à la main.
+
+export const INGREDIENTS = [
+  // Légumes
+  { s: "ail", n: "ail", p: "ail", f: "legumes", c: "#efe6d2" },
+  { s: "aubergine", n: "aubergine", m: "p", f: "legumes", c: "#4b2a4a" },
+  { s: "courgette", n: "courgette", m: "p", f: "legumes", c: "#5f8a3a" },
+  { s: "poivron-rouge", n: "poivron rouge", p: "poivrons rouges", f: "legumes", c: "#c63d2b" },
+  { s: "poivron-jaune", n: "poivron jaune", p: "poivrons jaunes", f: "legumes", c: "#e9b73a" },
+  { s: "poivron-vert", n: "poivron vert", p: "poivrons verts", f: "legumes", c: "#4f8a3a" },
+  { s: "oignon", n: "oignon", m: "p", f: "legumes", c: "#e8d3a8" },
+  { s: "oignon-rouge", n: "oignon rouge", p: "oignons rouges", f: "legumes", c: "#8e3a5c" },
+  { s: "oignon-blanc", n: "oignon blanc", p: "oignons blancs", f: "legumes", c: "#f1eadb" },
+  { s: "oignon-vert", n: "oignon vert", p: "oignons verts", f: "legumes", c: "#6aa84f" },
+  { s: "tomate", n: "tomate", m: "p", f: "legumes", c: "#d2452f" },
+  { s: "tomate-cerise", n: "tomate cerise", p: "tomates cerises", m: "p", f: "legumes", c: "#e0503a" },
+  { s: "tomate-concassee", n: "tomates concassées en conserve", p: "tomates concassées en conserve", f: "legumes", c: "#c23b26" },
+  { s: "concombre", n: "concombre", f: "legumes", c: "#7fae5a" },
+  { s: "pomme-de-terre", n: "pomme de terre", p: "pommes de terre", m: "p", f: "feculents", c: "#e3c98a" },
+  { s: "pomme-de-terre-criolla", n: "pomme de terre criolla", p: "pommes de terre criolla", m: "p", f: "feculents", c: "#e8b84a" },
+  { s: "patate-douce", n: "patate douce", p: "patates douces", m: "p", f: "feculents", c: "#d9813f" },
+  { s: "chou-galega", n: "chou galega (couve galega)", p: "chou galega (couve galega)", f: "legumes", c: "#3f6e3a" },
+  { s: "chou-kale", n: "chou kale", p: "chou kale", f: "legumes", c: "#35603a" },
+  { s: "chou-cavalier", n: "chou cavalier (sukuma)", p: "chou cavalier (sukuma)", f: "legumes", c: "#3d6b37" },
+  { s: "epinards", n: "épinards", p: "épinards", f: "legumes", c: "#2f6b34" },
+  { s: "pousses-soja", n: "pousses de haricot mungo", p: "pousses de haricot mungo", f: "legumes", c: "#efe8c8" },
+  { s: "carotte", n: "carotte", m: "p", f: "legumes", c: "#e07b2e" },
+  { s: "laitue", n: "laitue", f: "legumes", c: "#8cc062" },
+  { s: "papaye-verte", n: "papaye verte", p: "papayes vertes", f: "fruits", c: "#b8d27a" },
+  { s: "haricot-kilometre", n: "haricot kilomètre", p: "haricots kilomètre", m: "p", f: "legumes", c: "#4f8a3a" },
+  { s: "champignons-shiitake", n: "shiitake frais", p: "shiitake frais", f: "legumes", c: "#7a5a3c" },
+  { s: "shiitake-seche", n: "shiitake séché", p: "shiitake séchés", m: "p", f: "legumes", c: "#5e4330" },
+  { s: "avocat", n: "avocat", m: "p", f: "fruits", c: "#8bb04a" },
+  { s: "mais-epi", n: "épi de maïs", p: "épis de maïs", f: "feculents", c: "#f0c94a" },
+  { s: "piment-vert", n: "piment vert", p: "piments verts", f: "legumes", c: "#3f8a2f" },
+  { s: "piment-oiseau", n: "piment oiseau", p: "piments oiseau", f: "legumes", c: "#d23a22" },
+  { s: "piment-serrano", n: "piment serrano", p: "piments serrano", f: "legumes", c: "#3f8a2f" },
+  { s: "piment-limo", n: "piment ají limo", p: "piments ají limo", f: "legumes", c: "#e0602a" },
+  { s: "piment-scotch-bonnet", n: "piment scotch bonnet", p: "piments scotch bonnet", f: "legumes", c: "#e8a12a" },
+  { s: "piment-fort", n: "piment fort", p: "piments forts", f: "legumes", c: "#c93a22" },
+
+  // Fruits
+  { s: "citron", n: "citron", m: "p", f: "fruits", c: "#f3d64a" },
+  { s: "citron-vert", n: "citron vert", p: "citrons verts", f: "fruits", c: "#9cc23f" },
+  { s: "jus-citron", n: "jus de citron", p: "jus de citron", f: "fruits", c: "#f3e08a" },
+  { s: "jus-citron-vert", n: "jus de citron vert", p: "jus de citron vert", f: "fruits", c: "#d6e58a" },
+  { s: "olive-kalamata", n: "olive de Kalamata", p: "olives de Kalamata", f: "fruits", c: "#4a2a3a" },
+  { s: "olives-vertes", n: "olive verte", p: "olives vertes", f: "fruits", c: "#8a9a3a" },
+  { s: "capres", n: "câpres", p: "câpres", f: "condiments", c: "#5f7a3a" },
+
+  // Herbes et épices
+  { s: "persil-plat", n: "persil plat", p: "persil plat", f: "epices", c: "#3f8a3a" },
+  { s: "basilic", n: "basilic", p: "basilic", f: "epices", c: "#3c8a3f" },
+  { s: "basilic-thai", n: "basilic thaï", p: "basilic thaï", f: "epices", c: "#2f6e3a" },
+  { s: "menthe", n: "menthe", p: "menthe", f: "epices", c: "#4f9a5a" },
+  { s: "coriandre-fraiche", n: "coriandre fraîche", p: "coriandre fraîche", f: "epices", c: "#4a9a3f" },
+  { s: "thym", n: "thym", p: "thym", f: "epices", c: "#6a7a4a" },
+  { s: "laurier", n: "laurier", p: "laurier", f: "epices", c: "#5a7a3a" },
+  { s: "origan-seche", n: "origan séché", p: "origan séché", f: "epices", c: "#6a6a3a" },
+  { s: "guascas", n: "guascas séchées", p: "guascas séchées", f: "epices", c: "#5a6a3a" },
+  { s: "sel", n: "sel", p: "sel", f: "epices", c: "#ffffff" },
+  { s: "poivre-noir", n: "poivre noir", p: "poivre noir", f: "epices", c: "#2b2b2b" },
+  { s: "piment-rouge-seche", n: "piment rouge séché", p: "piments rouges séchés", f: "epices", c: "#a8301f" },
+  { s: "piment-poudre", n: "piment en poudre", p: "piment en poudre", f: "epices", c: "#b0381f" },
+  { s: "piment-flocons", n: "flocons de piment", p: "flocons de piment", f: "epices", c: "#b23a22" },
+  { s: "piment-alep", n: "piment d'Alep (pul biber)", p: "piment d'Alep (pul biber)", f: "epices", c: "#b0441f" },
+  { s: "paprika-doux", n: "paprika doux", p: "paprika doux", f: "epices", c: "#c2441f" },
+  { s: "carvi", n: "graines de carvi", p: "graines de carvi", f: "epices", c: "#6a4a2a" },
+  { s: "curcuma", n: "curcuma en poudre", p: "curcuma en poudre", f: "epices", c: "#e0a21a" },
+  { s: "cumin-graines", n: "graines de cumin", p: "graines de cumin", f: "epices", c: "#7a5a2a" },
+  { s: "cumin-moulu", n: "cumin moulu", p: "cumin moulu", f: "epices", c: "#8a5a2a" },
+  { s: "gingembre", n: "gingembre frais", p: "gingembre frais", f: "epices", c: "#d9b46a" },
+  // L'asafoetida du commerce est souvent coupée de farine de blé
+  { s: "asafoetida", n: "asafoetida", p: "asafoetida", f: "epices", a: ["gluten?"], c: "#d8c08a" },
+  { s: "berbere", n: "berbéré (mélange d'épices éthiopien)", p: "berbéré (mélange d'épices éthiopien)", f: "epices", c: "#a8381f" },
+  { s: "curry-poudre", n: "curry en poudre", p: "curry en poudre", f: "epices", a: ["moutarde?", "celeri?"], c: "#d0a02a" },
+  { s: "piment-jamaique", n: "baie de piment de la Jamaïque", p: "baies de piment de la Jamaïque", f: "epices", c: "#5a3a2a" },
+
+  // Féculents
+  { s: "spaghetti", n: "spaghetti", p: "spaghetti", f: "feculents", a: ["gluten"], c: "#efd38a" },
+  { s: "macaroni", n: "macaroni", p: "macaroni", f: "feculents", a: ["gluten"], c: "#efd38a" },
+  { s: "vermicelles-ble", n: "vermicelles de blé", p: "vermicelles de blé", f: "feculents", a: ["gluten"], c: "#e8c87a" },
+  { s: "vermicelles-riz", n: "vermicelles de riz", p: "vermicelles de riz", f: "feculents", c: "#f6f1e3" },
+  { s: "galette-riz", n: "galette de riz", p: "galettes de riz", f: "feculents", c: "#f3ede0" },
+  { s: "riz-rond", n: "riz rond", p: "riz rond", f: "feculents", c: "#f7f3e8" },
+  { s: "riz-long", n: "riz long", p: "riz long", f: "feculents", c: "#f7f3e8" },
+  { s: "boulgour-fin", n: "boulgour fin", p: "boulgour fin", f: "feculents", a: ["gluten"], c: "#d9b77a" },
+  { s: "pain-rassis", n: "pain rassis", p: "pain rassis", f: "feculents", a: ["gluten"], c: "#d8b07a" },
+  { s: "farine-ble", n: "farine de blé", p: "farine de blé", f: "feculents", a: ["gluten"], c: "#f6efe0" },
+  { s: "farine-mais-precuite", n: "farine de maïs précuite", p: "farine de maïs précuite", f: "feculents", c: "#f3e2a8" },
+  { s: "amidon-manioc", n: "amidon de manioc (polvilho)", p: "amidon de manioc (polvilho)", f: "feculents", c: "#f8f5ee" },
+
+  // Légumineuses et soja
+  { s: "lentilles-corail", n: "lentilles corail", p: "lentilles corail", f: "legumineuses", c: "#e0763a" },
+  { s: "lentilles-brunes", n: "lentilles brunes", p: "lentilles brunes", f: "legumineuses", c: "#7a5a3a" },
+  { s: "pois-chiches", n: "pois chiches cuits", p: "pois chiches cuits", f: "legumineuses", c: "#d9b77a" },
+  { s: "haricots-noirs", n: "haricots noirs secs", p: "haricots noirs secs", f: "legumineuses", c: "#2a2228" },
+  { s: "haricots-rouges", n: "haricots rouges secs", p: "haricots rouges secs", f: "legumineuses", c: "#7a2a2a" },
+  { s: "haricots-blancs-sauce-tomate", n: "haricots blancs à la sauce tomate", p: "haricots blancs à la sauce tomate", f: "legumineuses", c: "#c8602f" },
+  { s: "tofu-soyeux", n: "tofu soyeux", p: "tofu soyeux", f: "legumineuses", a: ["soja"], c: "#f7f2e6" },
+  { s: "tofu-ferme", n: "tofu ferme", p: "tofu ferme", f: "legumineuses", a: ["soja"], c: "#efe6cf" },
+  { s: "arachides", n: "cacahuètes grillées", p: "cacahuètes grillées", f: "legumineuses", a: ["arachides"], c: "#c8904a" },
+  { s: "beurre-cacahuete", n: "beurre de cacahuète", p: "beurre de cacahuète", f: "condiments", a: ["arachides"], c: "#b8803a" },
+
+  // Viandes, volailles, poissons
+  { s: "boeuf-paleron", n: "paleron de bœuf", p: "paleron de bœuf", f: "viandes", o: "viande", c: "#8a3a2a" },
+  { s: "boeuf-emince", n: "bœuf finement émincé", p: "bœuf finement émincé", f: "viandes", o: "viande", c: "#8a3a2a" },
+  { s: "poitrine-porc", n: "poitrine de porc cuite", p: "poitrine de porc cuite", f: "viandes", o: "viande", c: "#e0a08a" },
+  { s: "chourico", n: "chouriço (saucisse fumée portugaise)", p: "chouriço (saucisse fumée portugaise)", f: "viandes", o: "viande", a: ["sulfites?"], c: "#a8301f" },
+  { s: "saindoux", n: "saindoux", p: "saindoux", f: "condiments", o: "viande", c: "#f3ede0" },
+  { s: "poulet", n: "poulet en morceaux", p: "poulet en morceaux", f: "viandes", o: "volaille", c: "#d9a06a" },
+  { s: "poisson-blanc", n: "poisson blanc à chair ferme", p: "poisson blanc à chair ferme", f: "poissons", o: "poisson", a: ["poissons"], c: "#f3eee6" },
+  { s: "crevettes", n: "crevette cuite", p: "crevettes cuites", f: "poissons", o: "crustace", a: ["crustaces"], c: "#ef8a6a" },
+  { s: "crevettes-sechees", n: "crevettes séchées", p: "crevettes séchées", f: "poissons", o: "crustace", a: ["crustaces"], c: "#d8704a" },
+  { s: "katsuobushi", n: "katsuobushi (bonite séchée)", p: "katsuobushi (bonite séchée)", f: "poissons", o: "poisson", a: ["poissons"], c: "#c89a7a" },
+  { s: "sauce-poisson", n: "sauce de poisson", p: "sauce de poisson", f: "condiments", o: "poisson", a: ["poissons"], c: "#a8602a" },
+
+  // Produits laitiers et œufs
+  { s: "oeuf", n: "œuf", m: "p", f: "produits-laitiers", o: "oeuf", a: ["oeufs"], c: "#f6c23a" },
+  { s: "lait", n: "lait", p: "lait", f: "produits-laitiers", o: "lait", a: ["lait"], c: "#fbf8f1" },
+  { s: "beurre", n: "beurre", p: "beurre", f: "produits-laitiers", o: "lait", a: ["lait"], c: "#f5e2a0" },
+  { s: "ghee", n: "ghee (beurre clarifié)", p: "ghee (beurre clarifié)", f: "produits-laitiers", o: "lait", a: ["lait"], c: "#f0d27a" },
+  { s: "niter-kibbeh", n: "niter kibbeh (beurre clarifié épicé)", p: "niter kibbeh (beurre clarifié épicé)", f: "produits-laitiers", o: "lait", a: ["lait"], c: "#e8c060" },
+  { s: "creme", n: "crème fraîche", p: "crème fraîche", f: "produits-laitiers", o: "lait", a: ["lait"], c: "#fbf6ea" },
+  { s: "feta", n: "feta", p: "feta", f: "produits-laitiers", o: "lait", a: ["lait"], pr: true, c: "#fbf9f2" },
+  { s: "parmesan", n: "fromage affiné râpé", p: "fromage affiné râpé", f: "produits-laitiers", o: "lait", a: ["lait"], pr: true, c: "#f3dfa0" },
+
+  // Condiments, sauces, matières grasses
+  { s: "huile-olive", n: "huile d'olive", p: "huile d'olive", f: "condiments", c: "#b8b03a" },
+  { s: "huile-neutre", n: "huile neutre", p: "huile neutre", f: "condiments", c: "#f0e08a" },
+  { s: "huile-sesame", n: "huile de sésame grillé", p: "huile de sésame grillé", f: "condiments", a: ["sesame"], c: "#a8702a" },
+  { s: "graines-sesame", n: "graines de sésame", p: "graines de sésame", f: "condiments", a: ["sesame"], c: "#efe2c0" },
+  { s: "vinaigre-xeres", n: "vinaigre de xérès", p: "vinaigre de xérès", f: "condiments", a: ["sulfites"], c: "#8a4a2a" },
+  { s: "vinaigre-vin-rouge", n: "vinaigre de vin rouge", p: "vinaigre de vin rouge", f: "condiments", a: ["sulfites"], c: "#7a2a2a" },
+  { s: "vinaigre-blanc", n: "vinaigre blanc", p: "vinaigre blanc", f: "condiments", c: "#f6f3ea" },
+  { s: "concentre-tomate", n: "concentré de tomate", p: "concentré de tomate", f: "condiments", c: "#b02a1a" },
+  { s: "moutarde", n: "moutarde", p: "moutarde", f: "condiments", a: ["moutarde"], c: "#d8a82a" },
+  // Sauces fermentées : la composition varie selon les marques (blé, orge)
+  { s: "sauce-soja", n: "sauce soja", p: "sauce soja", f: "condiments", a: ["soja", "gluten"], c: "#3a2214" },
+  { s: "tamari", n: "tamari sans gluten", p: "tamari sans gluten", f: "condiments", a: ["soja"], c: "#3a2214" },
+  { s: "miso-blanc", n: "miso blanc (shiro miso)", p: "miso blanc (shiro miso)", f: "condiments", a: ["soja", "gluten?"], c: "#d9b06a" },
+  { s: "gochujang", n: "gochujang (pâte de piment fermentée)", p: "gochujang (pâte de piment fermentée)", f: "condiments", a: ["soja", "gluten?"], c: "#b0261a" },
+  { s: "sauce-hoisin", n: "sauce hoisin", p: "sauce hoisin", f: "condiments", a: ["soja", "gluten?", "sesame?"], c: "#4a2218" },
+  { s: "kombu", n: "kombu (algue séchée)", p: "kombu (algue séchée)", f: "condiments", c: "#2a3a2a" },
+  { s: "wakame-sechee", n: "wakame séchée", p: "wakame séchée", f: "condiments", c: "#2f4a2a" },
+  { s: "lait-coco", n: "lait de coco", p: "lait de coco", f: "condiments", c: "#fbf8f0" },
+
+  // Sucres et pâtisserie
+  { s: "sucre", n: "sucre", p: "sucre", f: "sucres", c: "#ffffff" },
+  { s: "sucre-palme", n: "sucre de palme", p: "sucre de palme", f: "sucres", c: "#b8803a" },
+  { s: "sirop-erable", n: "sirop d'érable", p: "sirop d'érable", f: "sucres", c: "#a8601f" },
+  { s: "golden-syrup", n: "golden syrup (sirop de sucre inverti)", p: "golden syrup (sirop de sucre inverti)", f: "sucres", c: "#d8a02a" },
+  { s: "levure-chimique", n: "levure chimique", p: "levure chimique", f: "sucres", a: ["gluten?"], c: "#ffffff" },
+  { s: "bicarbonate", n: "bicarbonate de soude", p: "bicarbonate de soude", f: "sucres", c: "#ffffff" },
+
+  // Autres
+  { s: "eau", n: "eau", p: "eau", f: "autres", c: "#dfeaf0" },
+];

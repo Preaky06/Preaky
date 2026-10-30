@@ -1,0 +1,22 @@
+{
+  "name": "mijora",
+  "private": true,
+  "type": "module",
+  "description": "MIJORA, encyclopédie gastronomique internationale",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/build.mjs --preview",
+    "check:db": "node scripts/verify-db.mjs",
+    "import": "node scripts/import-csv.mjs"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.13",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/playfair-display": "^5.3.0",
+    "country-flag-emoji-polyfill": "^0.1.10",
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2",
+    "world-countries": "^5.1.0"
+  }
+}
