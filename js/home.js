@@ -27,29 +27,85 @@ function renderExamples() {
   );
 }
 
+// Univers : un carrousel de cartes épurées, 3 domaines en exemple par univers
+const DOMAINES_VISIBLES = 3;
+
 function renderUnivers() {
   const root = document.querySelector("[data-univers]");
   if (!root) return;
   root.innerHTML = STATS.parUnivers
-    .map(
-      (u, i) => `
-    <article class="tcard ucard" data-color="${u.couleur}" data-reveal style="--d:${(i % 3) * 0.06}s">
-      <div class="ucard__head">
-        <span class="tcard__icon">${icon(u.icon)}</span>
-        <p class="ucard__count">${nf.format(u.prompts)}&nbsp;prompts<br />${u.domaines.length}&nbsp;domaines</p>
-      </div>
-      <h3 class="tcard__name">${esc(u.nom)}</h3>
-      <p class="tcard__text">${esc(u.description)}</p>
-      <div class="ucard__doms">${u.domaines.map((d) => `<a href="bibliotheque.html?domaine=${d.id}">${esc(d.nom)}</a>`).join("")}</div>
-      <a class="tcard__go" href="bibliotheque.html?univers=${u.id}">Explorer cet univers ${icon("arrow")}</a>
-    </article>`,
-    )
-    .join("") +
-    `<article class="tcard ucard ucard--all" data-reveal>
-      <h3 class="tcard__name">Toute la bibliothèque</h3>
-      <p class="tcard__text">${nf.format(STATS.prompts)}&nbsp;prompts, ${STATS.domaines}&nbsp;domaines. Cherche par métier, par tâche ou par matière.</p>
-      <a class="tcard__go" href="bibliotheque.html">Ouvrir la bibliothèque ${icon("arrow")}</a>
-    </article>`;
+    .map((u) => {
+      const reste = u.domaines.length - DOMAINES_VISIBLES;
+      return `
+    <li>
+      <article class="tcard ucard" data-color="${u.couleur}">
+        <div class="ucard__head">
+          <span class="tcard__icon">${icon(u.icon)}</span>
+          <p class="ucard__count">${nf.format(u.prompts)}&nbsp;prompts<br />${u.domaines.length}&nbsp;domaines</p>
+        </div>
+        <h3 class="tcard__name">${esc(u.nom)}</h3>
+        <p class="tcard__text">${esc(u.description)}</p>
+        <div class="ucard__doms">
+          ${u.domaines
+            .slice(0, DOMAINES_VISIBLES)
+            .map((d) => `<a href="bibliotheque.html?domaine=${d.id}">${esc(d.nom)}</a>`)
+            .join("")}
+          ${reste > 0 ? `<span class="ucard__more">et ${reste}&nbsp;autre${reste > 1 ? "s" : ""}</span>` : ""}
+        </div>
+        <a class="tcard__go" href="bibliotheque.html?univers=${u.id}">Explorer cet univers ${icon("arrow")}</a>
+      </article>
+    </li>`;
+    })
+    .join("");
+}
+
+function initCarousel() {
+  const root = document.querySelector("[data-carousel]");
+  if (!root) return;
+  const track = root.querySelector("[data-univers]");
+  const prev = root.querySelector("[data-carousel-prev]");
+  const next = root.querySelector("[data-carousel-next]");
+  const status = root.querySelector("[data-carousel-status]");
+  const progress = root.querySelector("[data-carousel-progress]");
+  const total = track.children.length;
+
+  // Largeur d'une carte, espace compris
+  const step = () => {
+    const first = track.children[0].getBoundingClientRect().width;
+    return first + (parseFloat(getComputedStyle(track).columnGap) || 0);
+  };
+  const perView = () => Math.max(1, Math.round(Number(getComputedStyle(root).getPropertyValue("--cols")) || 1));
+
+  const update = () => {
+    const first = Math.min(total - 1, Math.round(track.scrollLeft / step()));
+    const last = Math.min(total, first + perView());
+    status.textContent = last - first > 1 ? `${first + 1} à ${last} sur ${total} univers` : `${first + 1} sur ${total} univers`;
+    prev.disabled = track.scrollLeft <= 2;
+    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+    progress.style.width = `${(last / total) * 100}%`;
+  };
+
+  const go = (dir) => track.scrollBy({ left: dir * step() * perView(), behavior: reducedMotion ? "auto" : "smooth" });
+  prev.addEventListener("click", () => go(-1));
+  next.addEventListener("click", () => go(1));
+  let frame;
+  track.addEventListener("scroll", () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(update);
+  }, { passive: true });
+  window.addEventListener("resize", update, { passive: true });
+  update();
+}
+
+// Recherche vide : la bibliothèque complète, sans paramètre vide dans l'adresse
+function initSearchForms() {
+  document.querySelectorAll(".search-form").forEach((form) => {
+    form.addEventListener("submit", (e) => {
+      if (form.querySelector("input").value.trim()) return;
+      e.preventDefault();
+      location.href = "bibliotheque.html";
+    });
+  });
 }
 
 function renderCounts() {
@@ -216,6 +272,8 @@ function initIdeaForms() {
 renderExamples();
 initIdeaForms();
 renderUnivers();
+initCarousel();
+initSearchForms();
 renderCounts();
 initHeader();
 initReveal();

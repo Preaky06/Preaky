@@ -322,6 +322,7 @@ function renderDialog(e) {
     <h2 class="pdlg__title" id="pdlg-title">${fr(e.t)}</h2>
     <p class="pdlg__lead">${fr(e.r)}</p>
     <p class="pdlg__tags"><span class="tag">${esc(CAT_BY_ID[e.cat].nom)}</span>${e.s ? `<span class="tag tag--spec">${icon("sparkle")}Propre à ce domaine</span>` : ""}</p>
+    <button class="btn btn--ghost btn--sm pdlg__jump" type="button" data-act="jump">${icon("eye")}Voir le prompt complet</button>
 
     <section class="pdlg__block" aria-labelledby="pf-title">
       <h3 class="block-title" id="pf-title">${icon("edit")}${keys.length > 1 ? `Complète ces ${keys.length} champs` : "Complète ce champ"}</h3>
@@ -411,6 +412,10 @@ window.addEventListener("popstate", () => {
 async function act(name, btn) {
   if (!current) return;
   const out = buildPrompt(current, valuesOf(current), opts);
+  if (name === "jump") {
+    dlg.querySelector(".pdlg__live").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   if (name === "copy") {
     const ok = await copyText(out.text);
     toast(ok ? (out.missing.length ? "Prompt copié. Les champs vides restent marqués [À COMPLÉTER]." : "Prompt copié. Colle-le dans ton IA.") : "La copie a échoué&nbsp;: sélectionne le texte du prompt à la main.", { tone: ok ? "ok" : "warn" });

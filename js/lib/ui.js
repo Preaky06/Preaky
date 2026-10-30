@@ -3,7 +3,25 @@ import { icon } from "./icons.js";
 
 export const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// Une nouvelle page s'ouvre en haut, y compris dans un aperçu intégré qui garderait
+// la position de la page précédente. Retour arrière, rechargement et liens « #… » non concernés.
+function arriveAtTop() {
+  const nav = performance.getEntriesByType?.("navigation")?.[0];
+  if (location.hash || (nav && nav.type !== "navigate")) return;
+  window.scrollTo(0, 0);
+  document.documentElement.scrollIntoView({ block: "start", behavior: "instant" });
+}
+
+// Pendant qu'une fenêtre (dialog) est ouverte, la page derrière ne défile plus
+function lockScrollWithDialogs() {
+  const sync = () => document.documentElement.classList.toggle("is-locked", Boolean(document.querySelector("dialog[open]")));
+  const mo = new MutationObserver(sync);
+  document.querySelectorAll("dialog").forEach((d) => mo.observe(d, { attributes: true, attributeFilter: ["open"] }));
+}
+
 export function initHeader() {
+  arriveAtTop();
+  lockScrollWithDialogs();
   const header = document.querySelector(".header");
   if (!header) return;
   const burger = header.querySelector(".burger");

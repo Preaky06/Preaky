@@ -263,7 +263,7 @@
       </div>
     </section>
 
-    <!-- Possibilités -->
+    <!-- Univers -->
     <section class="sec sec--lavender" id="univers" aria-labelledby="pos-title">
       <div class="wrap">
         <div class="sec__head sec__head--split">
@@ -276,7 +276,21 @@
           </div>
           <a class="btn btn--ink" href="bibliotheque.html" data-reveal>Voir toute la bibliothèque</a>
         </div>
-        <div class="types types--univers" data-univers></div>
+        <div class="carousel" data-carousel data-reveal>
+          <div class="carousel__bar">
+            <p class="carousel__status" data-carousel-status></p>
+            <div class="carousel__nav">
+              <button class="carousel__btn carousel__btn--prev" type="button" data-carousel-prev aria-label="Univers précédents">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </button>
+              <button class="carousel__btn" type="button" data-carousel-next aria-label="Univers suivants">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+          <ul class="carousel__track" data-univers tabindex="0" aria-label="Les univers, à faire défiler horizontalement" data-lenis-prevent-horizontal></ul>
+          <div class="carousel__progress" aria-hidden="true"><span data-carousel-progress></span></div>
+        </div>
       </div>
     </section>
 
