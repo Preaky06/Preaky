@@ -199,11 +199,11 @@ export function pageArticle(ctx, a) {
     ${a.corps.map(([t, x]) => (t === "h" ? `<h2>${esc(x)}</h2>` : `<p>${esc(x)}</p>`)).join("\n    ")}
     <p class="note note-verif">${icone("info")}Article de démonstration, en attente de relecture et de sources.</p>
   </div>
-  <aside class="article-liens">
-    <h2 class="petit-titre">Pour aller plus loin</h2>
+  <section class="article-liens" aria-labelledby="t-plus-loin">
+    <h2 id="t-plus-loin" class="petit-titre">Pour aller plus loin</h2>
     <ul class="liste-liens">${a.paysObj.map((p) => `<li><a href="${L(p.url)}">${drapeau(p)} La cuisine : ${esc(p.name_fr)}</a></li>`).join("")}</ul>
     <div class="grille-recettes grille-2">${a.recettesObj.map((r) => carteRecette(r, ctx)).join("")}</div>
-  </aside>
+  </section>
 </article>`;
   return page(ctx, {
     route: a.url, titre: a.titre, description: courte(a.chapo),

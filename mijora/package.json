@@ -6,8 +6,9 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "preview": "node scripts/build.mjs --preview",
+    "seed": "node scripts/seed-sql.mjs",
     "check:db": "node scripts/verify-db.mjs",
-    "import": "node scripts/import-csv.mjs"
+    "pays": "node scripts/generate-countries.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.13",

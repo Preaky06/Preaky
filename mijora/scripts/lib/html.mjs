@@ -159,7 +159,8 @@ const NAV = [
 
 export function page(ctx, { route, titre, description, corps, section, indexable = false, jsonld = [], scripts = [], classe = "", ogType = "website" }) {
   const L = ctx.L;
-  const titreComplet = route === "/" ? `${SITE.nom} · Encyclopédie gastronomique du monde` : `${titre} · ${SITE.nom}`;
+  // Accueil de l'aperçu : le titre sert aussi de nom à la page publiée, il reste court
+  const titreComplet = route === "/" ? (ctx.mode === "prod" ? `${SITE.nom} · Encyclopédie gastronomique du monde` : SITE.nom) : `${titre} · ${SITE.nom}`;
   const canon = SITE.url + (route === "/" ? "/" : route);
   const nav = NAV.map(([n, r]) => `<li><a href="${L(r)}"${section === r ? ' aria-current="page"' : ""}>${n}</a></li>`).join("");
   const ld = jsonld.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, "\\u003c")}</script>`).join("\n");

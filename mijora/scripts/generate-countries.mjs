@@ -2,6 +2,7 @@
 // plus le Saint-Siège et la Palestine, États observateurs).
 // Source : world-countries (mledoze/countries), licence ODbL 1.0, à créditer sur le site.
 import { writeFileSync } from "node:fs";
+import { slugify } from "./lib/slug.mjs";
 import { createRequire } from "node:module";
 const countries = createRequire(import.meta.url)("world-countries");
 
@@ -37,8 +38,7 @@ function continent(c) {
   return { Europe: "europe", Asia: "asie", Africa: "afrique", Oceania: "oceanie" }[c.region];
 }
 
-export const slugify = (s) =>
-  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/['’]/g, "-").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+export { slugify };
 
 // Drapeau : symboles indicateurs régionaux Unicode, sans image à licencier
 const flag = (iso2) => [...iso2.toUpperCase()].map((ch) => String.fromCodePoint(0x1f1e6 + ch.charCodeAt(0) - 65)).join("");

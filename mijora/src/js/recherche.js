@@ -86,17 +86,23 @@ function texteRecette(r) {
   return r._t ??= { titre: normaliser(r.t), original: normaliser(r.o), ing: normaliser(r.i.join(" ")), pays: normaliser(r.pn + " " + (r.r || "")) };
 }
 
+// Un terme correspond à un champ s'il commence l'un de ses mots (« lent » → « lentilles »),
+// ou s'il prolonge légèrement l'un d'eux (« québécois » → « Québec », « tomates » → « tomate »)
+function correspond(champ, m) {
+  if (new RegExp(`\\b${m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(champ)) return true;
+  return champ.split(" ").some((w) => w.length >= 4 && m.startsWith(w) && m.length - w.length <= 4);
+}
+
 export function score(r, termes) {
   if (!termes.length) return 1;
   const x = texteRecette(r);
   let s = 0;
   for (const m of termes) {
-    const re = new RegExp(`\\b${m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`);
     let v = 0;
-    if (re.test(x.titre)) v = 5;
-    else if (re.test(x.original)) v = 4;
-    else if (re.test(x.pays)) v = 3;
-    else if (re.test(x.ing)) v = 2;
+    if (correspond(x.titre, m)) v = 5;
+    else if (correspond(x.original, m)) v = 4;
+    else if (correspond(x.pays, m)) v = 3;
+    else if (correspond(x.ing, m)) v = 2;
     if (!v) return 0;
     s += v;
   }
