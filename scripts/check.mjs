@@ -4,6 +4,8 @@ import { assemble, AUTO } from "../js/lib/kit.js";
 import { detect } from "../js/lib/detect.js";
 import { CATALOGUE, CATEGORIES, DOMAINES, MODELES, UNIVERS, UNIVERS_BY_ID } from "../js/data/catalogue/index.js";
 import { buildPrompt, champ, fieldsOf, placeholder, DEFAULT_OPTS } from "../js/lib/compose.js";
+import { readFileSync } from "node:fs";
+import { FILE as STATS_FILE, statsSource } from "./stats.mjs";
 
 const errors = [];
 const fail = (msg) => errors.push(msg);
@@ -180,6 +182,7 @@ for (const e of CATALOGUE) {
   }
 }
 if (CATALOGUE.length < 5000) fail(`catalogue : ${CATALOGUE.length} prompts, moins de 5 000`);
+if (readFileSync(STATS_FILE, "utf8") !== statsSource()) fail("js/data/stats.js n'est plus à jour : lance node scripts/stats.mjs");
 
 if (errors.length) {
   console.error(errors.join("\n"));

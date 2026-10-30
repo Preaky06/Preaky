@@ -354,7 +354,7 @@ export default [
     ["Expliquer un produit d'épargne simplement", "Explique un produit d'épargne en langage simple : fonctionnement, risques, frais, disponibilité, à qui il convient et à qui il ne convient pas.", "communication"],
     ["Analyser un dossier de crédit professionnel", "Aide-moi à analyser un dossier de crédit professionnel : capacité de remboursement, solidité du projet, garanties, points à éclaircir.", "analyse"],
   ]),
-  dom("conseiller-patrimoine", "Conseiller en gestion de patrimoine", "finance", "b2c", {
+  dom("conseiller-patrimoine", "Gestion de patrimoine", "finance", "b2c", {
     role: "un conseiller en gestion de patrimoine indépendant et expérimenté",
     cadre: "un cabinet de gestion de patrimoine",
     clients: "les particuliers et chefs d'entreprise clients",
@@ -389,7 +389,7 @@ export default [
     ["Bilan des assurances d'une famille", "Crée la trame d'un bilan des assurances d'une famille : risques couverts, doublons, trous de garantie, priorités.", "analyse"],
     ["Fidéliser avant l'échéance", "Propose un plan de contact avant l'échéance des contrats pour fidéliser et éviter les résiliations.", "strategie"],
   ]),
-  dom("daf", "Directeur administratif et financier", "finance", "employe", {
+  dom("daf", "Directeur financier (DAF)", "finance", "employe", {
     role: "un directeur administratif et financier expérimenté de PME",
     cadre: "la direction financière d'une PME",
     clients: "la direction générale, les banques et les équipes",
@@ -458,7 +458,7 @@ export default [
     ["Guide interne sur un sujet juridique", "Crée un guide interne simple sur un sujet (signature des contrats, conservation des documents, cadeaux d'affaires) avec règles et exemples.", "redaction"],
     ["Préparer une négociation contractuelle", "Prépare une négociation de contrat : nos points non négociables, nos marges, positions probables de l'autre partie, concessions possibles.", "strategie"],
   ]),
-  dom("dpo", "Délégué à la protection des données", "droit", "employe", {
+  dom("dpo", "Protection des données (DPO)", "droit", "employe", {
     role: "un délégué à la protection des données expérimenté",
     cadre: "une organisation soumise au RGPD",
     clients: "les équipes internes et les personnes dont les données sont traitées",
@@ -509,7 +509,7 @@ export default [
     ["Message d'approche directe", "Rédige un message d'approche directe pour un profil passif, personnalisé et court, qui donne envie d'en savoir plus.", "redaction"],
     ["Cadrer le besoin avec un manager", "Prépare la réunion de cadrage d'un recrutement avec un manager : missions, compétences indispensables et souhaitables, salaire, processus.", "strategie"],
   ]),
-  dom("drh", "Directeur des ressources humaines", "rh", "employe", {
+  dom("drh", "Directeur des RH", "rh", "employe", {
     role: "un directeur des ressources humaines expérimenté",
     cadre: "une direction des ressources humaines",
     clients: "les salariés, managers et la direction",

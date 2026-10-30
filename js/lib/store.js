@@ -4,6 +4,8 @@
 
 const KEY_DRAFT = "promptoir:brouillon";
 const KEY_HISTORY = "promptoir:historique";
+const KEY_FAVORITES = "promptoir:favoris";
+const KEY_PROFILE = "promptoir:profil";
 const MAX_HISTORY = 30;
 
 function read(key, fallback) {
@@ -52,3 +54,9 @@ export function clearAll() {
   remove(KEY_DRAFT);
   remove(KEY_HISTORY);
 }
+
+// Bibliothèque : prompts favoris et profil (activité, public, ton, pays) réutilisé d'un prompt à l'autre
+export const loadFavorites = () => read(KEY_FAVORITES, []);
+export const saveFavorites = (ids) => write(KEY_FAVORITES, ids);
+export const loadProfile = () => read(KEY_PROFILE, {});
+export const saveProfile = (profile) => write(KEY_PROFILE, profile);

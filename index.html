@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Promptoir · Ton idée en quelques mots, un prompt complet</title>
-  <meta name="description" content="Décris ton idée en quelques mots, réponds à quelques questions choisies pour elle, et obtiens un prompt complet pour ChatGPT, Claude ou Gemini. Histoire, poème, business, travail, code, image et bien plus. Gratuit, sans compte." />
+  <title>Promptoir · Plus de 6 700 prompts prêts à l'emploi</title>
+  <meta name="description" content="Plus de 6 700 prompts complets pour ChatGPT, Claude ou Gemini, classés par métier, études et vie quotidienne : 196 domaines dans 29 univers. Choisis, complète deux ou trois champs, copie. Gratuit, sans compte." />
   <meta name="theme-color" content="#6c3bff" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Promptoir · Dis ton idée, on écrit le prompt" />
-  <meta property="og:description" content="Quelques mots, quelques questions, un prompt complet. Pour apprendre, créer, entreprendre ou gagner du temps au travail." />
+  <meta property="og:title" content="Promptoir · Le bon prompt, déjà écrit" />
+  <meta property="og:description" content="Plus de 6 700 prompts prêts à l'emploi pour ton métier, tes études et ta vie de tous les jours." />
   <meta property="og:image" content="og.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" href="fonts/chewy-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="modulepreload" href="js/home.js" />
-  <link rel="modulepreload" href="js/data/types/index.js" />
+  <link rel="modulepreload" href="js/data/stats.js" />
   <link rel="modulepreload" href="js/lib/ui.js" />
   <link rel="modulepreload" href="js/lib/icons.js" />
   <link rel="stylesheet" href="css/style.css" />
@@ -45,12 +45,13 @@
     </a>
     <div class="header__right">
       <nav class="nav" id="nav" aria-label="Navigation principale">
+        <a href="bibliotheque.html">Bibliothèque</a>
         <a href="#comment">Comment ça marche</a>
-        <a href="#exemple">Exemple</a>
-        <a href="#possibilites">Possibilités</a>
+        <a href="#univers">Univers</a>
+        <a href="#sur-mesure">Sur mesure</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn btn--sun" href="creer.html"><span class="header__cta-long">Créer mon prompt</span><span class="header__cta-short">Créer</span></a>
+      <a class="btn btn--sun" href="bibliotheque.html"><span class="header__cta-long">Explorer les prompts</span><span class="header__cta-short">Explorer</span></a>
       <button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><span></span><span></span></button>
     </div>
   </header>
@@ -64,18 +65,18 @@
         <div>
           <p class="hero__pill" data-reveal>
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>
-            Apprendre, créer, entreprendre, travailler
+            <span><span data-stat="prompts">6 709</span> prompts prêts à l'emploi</span>
           </p>
           <h1 class="hero__title" id="hero-title" data-split>
-            <span class="ln">Dis ton idée<span class="dot">.</span></span>
-            <span class="ln"><span class="hl">On écrit le prompt</span><span class="dot">.</span></span>
+            <span class="ln">Le bon prompt<span class="dot">,</span></span>
+            <span class="ln"><span class="hl">déjà écrit</span><span class="dot">.</span></span>
           </h1>
-          <p class="hero__text" data-reveal style="--d:.15s">Décris ce que tu veux en quelques mots. Réponds à quelques questions choisies pour ton idée. Tu obtiens un prompt complet, prêt pour ChatGPT, Claude ou Gemini.</p>
-          <form class="idea-form" action="creer.html" method="get" data-reveal style="--d:.25s">
-            <label class="sr-only" for="hero-idea">Ton idée en quelques mots</label>
-            <textarea id="hero-idea" name="idee" rows="1" maxlength="240" placeholder="Ex. : un conte pour endormir ma fille" required></textarea>
+          <p class="hero__text" data-reveal style="--d:.15s">Des prompts complets pour ton métier, tes études et ta vie de tous les jours. Choisis-en un, complète deux ou trois champs, copie-le dans ChatGPT, Claude ou Gemini.</p>
+          <form class="idea-form search-form" action="bibliotheque.html" method="get" role="search" aria-label="Rechercher dans la bibliothèque" data-reveal style="--d:.25s">
+            <label class="sr-only" for="hero-q">Rechercher un prompt</label>
+            <input id="hero-q" name="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Ex.&nbsp;: boulangerie, CV, maths" />
             <button class="btn btn--sun btn--lg" type="submit">
-              Construire mon prompt
+              Trouver mon prompt
               <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
             </button>
           </form>
@@ -85,9 +86,9 @@
         </div>
 
         <div class="hero__stage" data-reveal style="--d:.3s">
-          <p class="sr-only">Démonstration&nbsp;: on écrit une idée, le type d'idée est reconnu, on répond à deux questions et le prompt se construit.</p>
+          <p class="sr-only">Démonstration&nbsp;: on cherche un métier ou une matière, on choisit un prompt, on complète un champ et le prompt est prêt à copier.</p>
           <div class="demo" aria-hidden="true">
-            <span class="demo__label">Ton idée</span>
+            <span class="demo__label">Ta recherche</span>
             <p class="demo__idea" data-demo="idea"></p>
             <div class="demo__detect" data-demo="detect"></div>
             <p class="demo__q" data-demo="q1"></p>
@@ -107,7 +108,7 @@
           </div>
           <svg class="sticker" style="width:80px;top:-46px;right:-24px;--r:12deg" aria-hidden="true"><use href="#s-bulb"/></svg>
           <svg class="sticker" style="width:58px;top:46%;left:-34px;--r:-10deg;--fd:-2s" aria-hidden="true"><use href="#s-spark"/></svg>
-          <svg class="sticker" style="width:60px;bottom:-30px;left:18%;--r:-8deg;--fd:-4s" aria-hidden="true"><use href="#s-cursor"/></svg>
+          <svg class="sticker" style="width:60px;bottom:-52px;left:8%;--r:-8deg;--fd:-4s" aria-hidden="true"><use href="#s-cursor"/></svg>
         </div>
       </div>
     </section>
@@ -169,7 +170,7 @@
           <svg class="notif__icon" aria-hidden="true"><use href="#logo"/></svg>
           <div>
             <p class="notif__meta"><b>Promptoir</b>maintenant</p>
-            <p class="notif__text">Bonne nouvelle&nbsp;: <strong>les bonnes questions, on les a déjà écrites.</strong></p>
+            <p class="notif__text">Bonne nouvelle&nbsp;: <strong>les prompts complets, on les a déjà écrits.</strong></p>
           </div>
         </div>
       </div>
@@ -183,29 +184,29 @@
             <span class="ln">Trois étapes<span class="dot">,</span></span>
             <span class="ln"><span class="hl">zéro prompt à écrire</span><span class="dot">.</span></span>
           </h2>
-          <p class="lead" data-reveal>Tu n'as rien à savoir sur les prompts. Tu dis ce que tu veux, on te pose les questions qu'un expert te poserait.</p>
+          <p class="lead" data-reveal>Tu n'as rien à savoir sur les prompts. Le rôle, la méthode, le format et les règles du métier sont déjà écrits&nbsp;: il ne manque que ta situation.</p>
         </div>
 
         <ol class="how">
           <li class="how__step" data-color="sun" data-reveal>
             <span class="how__n">1</span>
-            <h3 class="how__title">Décris ton idée</h3>
-            <p class="how__text">Quelques mots suffisent. Le type d'idée est reconnu tout seul, et tu peux le changer.</p>
-            <div class="how__mock" aria-hidden="true"><p class="how__mock-input">Lancer un food truck à Lyon</p></div>
+            <h3 class="how__title">Trouve ton prompt</h3>
+            <p class="how__text">Cherche un métier, une tâche ou une matière, ou parcours les <span data-stat="univers">29</span> univers et leurs <span data-stat="domaines">196</span> domaines.</p>
+            <div class="how__mock" aria-hidden="true"><p class="how__mock-input">boulangerie</p></div>
           </li>
           <li class="how__step" data-color="coral" data-reveal style="--d:.1s">
             <span class="how__n">2</span>
-            <h3 class="how__title">Réponds aux questions</h3>
-            <p class="how__text"><span data-count="min">6</span> à <span data-count="max">10</span> questions choisies pour ton idée, la plupart en un clic. Chacune explique pourquoi elle compte.</p>
+            <h3 class="how__title">Complète 2 ou 3 champs</h3>
+            <p class="how__text">Ton activité, ta situation, ton texte. Un champ laissé vide reste signalé et l'IA te posera la question.</p>
             <div class="how__mock" aria-hidden="true">
-              <div class="how__mock-row"><span class="is-on">Vérifier l'idée</span><span>Business plan</span><span>Trouver des clients</span></div>
+              <div class="how__mock-row"><span class="is-on">L'avis reçu</span><span>Ce que tu sais</span></div>
             </div>
           </li>
           <li class="how__step" data-color="mint" data-reveal style="--d:.2s">
             <span class="how__n">3</span>
             <h3 class="how__title">Copie ton prompt</h3>
             <p class="how__text">Un prompt complet et structuré, à coller dans ton IA ou à ouvrir directement dans Claude ou ChatGPT.</p>
-            <div class="how__mock" aria-hidden="true"><p class="how__mock-code">Tu es consultant en création d'entreprise. Aide-moi à vérifier que cette idée peut être rentable avant d'investir.</p></div>
+            <div class="how__mock" aria-hidden="true"><p class="how__mock-code">Tu es un artisan boulanger-pâtissier expérimenté. Rédige la réponse publique à cet avis négatif.</p></div>
           </li>
         </ol>
       </div>
@@ -216,67 +217,66 @@
       <div class="wrap">
         <div class="sec__head">
           <h2 class="title" id="ex-title" data-split>
-            <span class="ln">Même idée<span class="dot">.</span></span>
+            <span class="ln">Même demande<span class="dot">.</span></span>
             <span class="ln"><span class="hl">Autre résultat</span><span class="dot">.</span></span>
           </h2>
-          <p class="lead" data-reveal>À gauche, ce que tout le monde tape. À droite, la même idée après les questions de Promptoir.</p>
+          <p class="lead" data-reveal>À gauche, ce que tout le monde tape. À droite, le prompt de la bibliothèque, complété en deux champs.</p>
         </div>
 
         <div class="compare">
           <article class="ccard ccard--before" data-reveal>
-            <p class="ccard__label">Sans les questions</p>
-            <p class="ccard__quote">«&nbsp;Écris un poème pour l'anniversaire de ma mère.&nbsp;»</p>
+            <p class="ccard__label">Sans Promptoir</p>
+            <p class="ccard__quote">«&nbsp;Réponds à cet avis négatif sur ma boulangerie.&nbsp;»</p>
             <p class="outcome__title">Ce que tu obtiens</p>
             <ul class="outcome outcome--bad">
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des rimes toutes faites&nbsp;: «&nbsp;amour, toujours&nbsp;»</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Rien sur ta mère en particulier</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Une longueur et un ton au hasard</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des excuses toutes faites, valables pour n'importe quel commerce</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Une faute reconnue alors que rien ne la prouve</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Un geste commercial promis sans ton accord</li>
             </ul>
           </article>
 
           <article class="ccard ccard--after" data-reveal style="--d:.12s">
             <p class="ccard__label">
               <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>
-              Avec les questions de Promptoir
+              Avec le prompt de Promptoir
             </p>
             <dl class="answers">
-              <div><dt>Forme</dt><dd>Poème rimé, lu à voix haute</dd></div>
-              <div><dt>Occasion</dt><dd>Ses 60 ans</dd></div>
-              <div><dt>Détails</dt><dd>Sylvie, nos dimanches à Biarritz, elle chante faux mais tout le temps</dd></div>
-              <div><dt>Ton</dt><dd>Tendre et drôle</dd></div>
-              <div><dt>Longueur</dt><dd>12 à 20 vers</dd></div>
+              <div><dt>Prompt</dt><dd>Répondre à un avis client négatif</dd></div>
+              <div><dt>Domaine</dt><dd>Boulangerie-pâtisserie</dd></div>
+              <div><dt>L'avis reçu</dt><dd>«&nbsp;Pain rassis et vendeuse désagréable samedi matin.&nbsp;»</dd></div>
+              <div><dt>Ce que tu sais</dt><dd>Fournée en retard ce jour-là, vendeuse en première semaine</dd></div>
             </dl>
-            <p class="outcome__title">Ce que le prompt demande en plus</p>
+            <p class="outcome__title">Ce que le prompt apporte en plus</p>
             <ul class="outcome outcome--good">
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Une image centrale forte et du concret plutôt que du vague</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Des vers qui se disent d'une seule respiration</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>La liste des rimes et images usées à éviter</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Le rôle d'un artisan boulanger et une méthode en 4 étapes</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Les règles du métier&nbsp;: hygiène, allergènes, appellations</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>3 versions de réponse, sobre, chaleureuse et ferme, sans promesse non prévue</li>
             </ul>
           </article>
         </div>
 
         <div class="stats">
-          <p class="stat" data-reveal><span class="stat__n" data-count="types">13</span><span class="stat__l">types d'idées, d'une histoire à une formule Excel</span></p>
-          <p class="stat" data-reveal style="--d:.08s"><span class="stat__n" data-count="questions">113</span><span class="stat__l">questions écrites, chacune avec sa raison d'être</span></p>
-          <p class="stat" data-reveal style="--d:.16s"><span class="stat__n">0</span><span class="stat__l">compte à créer, rien à installer</span></p>
+          <p class="stat" data-reveal><span class="stat__n" data-count="prompts">6709</span><span class="stat__l">prompts prêts à l'emploi, gratuits et sans compte</span></p>
+          <p class="stat" data-reveal style="--d:.08s"><span class="stat__n" data-count="domaines">196</span><span class="stat__l">domaines&nbsp;: métiers, matières, passions, moments de vie</span></p>
+          <p class="stat" data-reveal style="--d:.16s"><span class="stat__n" data-count="specifiques">784</span><span class="stat__l">prompts écrits pour un seul domaine, en plus des méthodes communes</span></p>
         </div>
       </div>
     </section>
 
     <!-- Possibilités -->
-    <section class="sec sec--lavender" id="possibilites" aria-labelledby="pos-title">
+    <section class="sec sec--lavender" id="univers" aria-labelledby="pos-title">
       <div class="wrap">
         <div class="sec__head sec__head--split">
           <div>
             <h2 class="title" id="pos-title" data-split>
-              <span class="ln">Tout ce que</span>
-              <span class="ln"><span class="hl">tu peux créer</span><span class="dot">.</span></span>
+              <span class="ln"><span data-stat="univers">29</span> univers<span class="dot">,</span></span>
+              <span class="ln"><span class="hl"><span data-stat="domaines">196</span> domaines</span><span class="dot">.</span></span>
             </h2>
-            <p class="lead" data-reveal>Pour chaque type d'idée, des questions différentes. Clique sur un exemple pour l'essayer.</p>
+            <p class="lead" data-reveal>Des métiers, des matières, des passions et des moments de vie. Chaque domaine a ses propres prompts, avec son vocabulaire et ses règles.</p>
           </div>
-          <a class="btn btn--ink" href="creer.html" data-reveal>Commencer avec mon idée</a>
+          <a class="btn btn--ink" href="bibliotheque.html" data-reveal>Voir toute la bibliothèque</a>
         </div>
-        <div class="types" data-types></div>
+        <div class="types types--univers" data-univers></div>
       </div>
     </section>
 
@@ -285,17 +285,17 @@
       <div class="wrap">
         <div class="sec__head sec__head--center">
           <h2 class="title" id="me-title" data-split>
-            <span class="ln">Ce que tes réponses</span>
-            <span class="ln"><span class="hl">ajoutent au prompt</span><span class="dot">.</span></span>
+            <span class="ln">Ce que contient</span>
+            <span class="ln"><span class="hl">chaque prompt</span><span class="dot">.</span></span>
           </h2>
-          <p class="lead" data-reveal>Chaque prompt est construit en six parties. Ce sont elles qui transforment une réponse générique en résultat utilisable.</p>
+          <p class="lead" data-reveal>Six parties, toujours dans le même ordre. Ce sont elles qui transforment une réponse générique en résultat utilisable.</p>
         </div>
 
         <div class="ingredients">
           <div class="ingredients__col">
-            <div class="ingr" data-color="violet" data-reveal><span class="ingr__n">01</span><div><h3 class="ingr__title">Le rôle</h3><p class="ingr__text">L'IA prend la posture d'un spécialiste de ta demande&nbsp;: poète, consultant, pédagogue ou développeur, selon ton idée.</p></div></div>
-            <div class="ingr" data-color="coral" data-reveal><span class="ingr__n">02</span><div><h3 class="ingr__title">Ton contexte</h3><p class="ingr__text">Tes réponses&nbsp;: ton public, ton objectif, tes détails. Tout ce que l'IA ne peut pas deviner.</p></div></div>
-            <div class="ingr" data-color="sun" data-reveal><span class="ingr__n">03</span><div><h3 class="ingr__title">La méthode</h3><p class="ingr__text">Les étapes qu'un professionnel suivrait&nbsp;: structure d'une histoire, test d'une idée ou grille de décision, selon le cas.</p></div></div>
+            <div class="ingr" data-color="violet" data-reveal><span class="ingr__n">01</span><div><h3 class="ingr__title">Le rôle</h3><p class="ingr__text">L'IA prend la posture d'un professionnel du domaine&nbsp;: restaurateur, professeur de philosophie, recruteur ou coach de course à pied.</p></div></div>
+            <div class="ingr" data-color="coral" data-reveal><span class="ingr__n">02</span><div><h3 class="ingr__title">Ton contexte</h3><p class="ingr__text">Les champs que tu complètes, plus ce que l'on sait déjà du domaine&nbsp;: ses enjeux, ses indicateurs, ses outils.</p></div></div>
+            <div class="ingr" data-color="sun" data-reveal><span class="ingr__n">03</span><div><h3 class="ingr__title">La méthode</h3><p class="ingr__text">Les étapes qu'un professionnel suivrait pour cette tâche, écrites une fois et relues.</p></div></div>
           </div>
 
           <div class="stack" data-reveal aria-hidden="true">
@@ -310,9 +310,30 @@
 
           <div class="ingredients__col">
             <div class="ingr" data-color="sky" data-reveal><span class="ingr__n">04</span><div><h3 class="ingr__title">Le format</h3><p class="ingr__text">La forme exacte de la réponse&nbsp;: longueur, plan, tableau, versions à comparer.</p></div></div>
-            <div class="ingr" data-color="mint" data-reveal><span class="ingr__n">05</span><div><h3 class="ingr__title">Les garde-fous</h3><p class="ingr__text">Ce que l'IA doit signaler au lieu d'inventer&nbsp;: chiffres, sources, points à vérifier.</p></div></div>
+            <div class="ingr" data-color="mint" data-reveal><span class="ingr__n">05</span><div><h3 class="ingr__title">Les garde-fous</h3><p class="ingr__text">Les règles du métier à respecter, et ce que l'IA doit signaler au lieu d'inventer&nbsp;: chiffres, sources, points à vérifier.</p></div></div>
             <div class="ingr" data-color="ink" data-reveal><span class="ingr__n">06</span><div><h3 class="ingr__title">La dernière consigne</h3><p class="ingr__text">Si une information manque encore, l'IA te pose ses questions au lieu de deviner.</p></div></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sur mesure -->
+    <section class="sec sec--ink on-dark" id="sur-mesure" aria-labelledby="sm-title">
+      <div class="wrap custom">
+        <div>
+          <h2 class="title" id="sm-title" data-split>
+            <span class="ln">Pas dans</span>
+            <span class="ln"><span class="hl">la bibliothèque&nbsp;?</span></span>
+          </h2>
+          <p class="lead" data-reveal>Une histoire pour ton fils, un poème, un projet qui ne rentre dans aucune case&nbsp;: décris ton idée, le créateur sur mesure te pose 6 à 10 questions choisies pour elle et écrit le prompt avec tes réponses.</p>
+        </div>
+        <div data-reveal>
+          <form class="idea-form" action="creer.html" method="get">
+            <label class="sr-only" for="sm-idea">Ton idée en quelques mots</label>
+            <textarea id="sm-idea" name="idee" rows="1" maxlength="240" placeholder="Ex.&nbsp;: un conte pour endormir ma fille" required></textarea>
+            <button class="btn btn--sun btn--lg" type="submit">Créer sur mesure</button>
+          </form>
+          <div class="examples" data-custom-examples><span class="examples__label">Exemples&nbsp;:</span></div>
         </div>
       </div>
     </section>
@@ -334,20 +355,20 @@
               <p class="qa__a">Avec toutes celles qui comprennent le français&nbsp;: ChatGPT, Claude, Gemini, Mistral, Copilot et les autres. Le prompt est du texte simple. Deux boutons l'ouvrent directement dans Claude ou ChatGPT.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Pourquoi des questions plutôt qu'un modèle tout fait&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Un modèle tout fait ne connaît pas ta situation. Les questions vont chercher exactement ce dont l'IA a besoin pour ton idée à toi&nbsp;: ton public, ton but, tes contraintes, tes détails.</p>
+              <summary><span class="qa__q">«&nbsp;Comment sont écrits plus de 6&nbsp;700 prompts&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Chaque domaine a une fiche écrite à la main&nbsp;: le rôle de l'IA, les enjeux, les indicateurs, les outils et les règles du métier, plus 4 prompts écrits pour lui seul. Cette fiche est croisée avec <span data-stat="modeles">189</span> méthodes de travail relues une à une (email délicat, plan de révision, préparation d'entretien). Chaque prompt est vérifié automatiquement avant publication.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Ça prend combien de temps&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Quelques minutes. La plupart des questions se répondent en un clic, toutes peuvent être passées, et tu peux laisser l'IA décider quand tu n'as pas d'avis.</p>
+              <summary><span class="qa__q">«&nbsp;Pourquoi des champs à compléter&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Parce que l'IA ne connaît pas ta situation&nbsp;: ton activité, ton texte, tes chiffres. Deux ou trois champs suffisent. Si tu en laisses un vide, il reste marqué [À&nbsp;COMPLÉTER] et l'IA te pose la question avant de répondre.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Et si mon idée ne rentre dans aucune case&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Choisis «&nbsp;Autre chose&nbsp;»&nbsp;: des questions universelles (résultat attendu, public, contexte, forme, ton) cadrent n'importe quelle demande.</p>
+              <summary><span class="qa__q">«&nbsp;Et si je ne trouve pas mon métier ou mon besoin&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Utilise le créateur sur mesure&nbsp;: tu décris ton idée en quelques mots, il te pose les questions adaptées et écrit le prompt avec tes réponses.</p>
             </details>
             <details class="qa">
               <summary><span class="qa__q">«&nbsp;Mes réponses partent où&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Nulle part chez nous&nbsp;: tes réponses et tes prompts restent dans ton navigateur. Quand tu colles un prompt dans une IA, ce sont les règles de cet outil qui s'appliquent&nbsp;: évite les données personnelles ou confidentielles.</p>
+              <p class="qa__a">Nulle part chez nous&nbsp;: ce que tu remplis, tes favoris et ton profil restent dans ton navigateur. Quand tu colles un prompt dans une IA, ce sont les règles de cet outil qui s'appliquent&nbsp;: évite les données personnelles ou confidentielles.</p>
             </details>
             <details class="qa">
               <summary><span class="qa__q">«&nbsp;C'est gratuit&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
@@ -367,12 +388,12 @@
       <svg class="sticker" style="width:70px;right:16%;bottom:14%;--r:-6deg;--fd:-1.5s" aria-hidden="true"><use href="#s-check"/></svg>
       <div class="wrap">
         <div class="cta__card" data-reveal>
-          <h2 class="cta__title" id="cta-title">Ton idée, <span>on s'occupe du reste.</span></h2>
-          <p class="cta__text">Écris-la en quelques mots. Les questions arrivent, le prompt se construit.</p>
-          <form class="idea-form" action="creer.html" method="get">
-            <label class="sr-only" for="cta-idea">Ton idée en quelques mots</label>
-            <textarea id="cta-idea" name="idee" rows="1" maxlength="240" placeholder="Ex. : un discours pour le mariage de ma sœur" required></textarea>
-            <button class="btn btn--sun btn--lg" type="submit">C'est parti</button>
+          <h2 class="cta__title" id="cta-title">Ton prompt <span>t'attend déjà.</span></h2>
+          <p class="cta__text">Cherche ton métier, ta matière ou ta tâche. Complète, copie, c'est prêt.</p>
+          <form class="idea-form search-form" action="bibliotheque.html" method="get" role="search" aria-label="Rechercher un prompt, en bas de page">
+            <label class="sr-only" for="cta-q">Rechercher un prompt</label>
+            <input id="cta-q" name="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Ex.&nbsp;: coiffure, budget" />
+            <button class="btn btn--sun btn--lg" type="submit">Chercher</button>
           </form>
         </div>
       </div>
@@ -381,12 +402,12 @@
 
   <footer class="footer on-dark">
     <div class="wrap">
-      <p class="footer__title">Dis ton idée.</p>
+      <p class="footer__title">Le bon prompt, déjà écrit.</p>
       <nav class="footer__nav" aria-label="Pied de page">
-        <a href="creer.html">Créer un prompt</a>
+        <a href="bibliotheque.html">Bibliothèque</a>
+        <a href="creer.html">Sur mesure</a>
         <a href="#comment">Comment ça marche</a>
-        <a href="#exemple">Exemple</a>
-        <a href="#possibilites">Possibilités</a>
+        <a href="#univers">Univers</a>
         <a href="#faq">FAQ</a>
       </nav>
     </div>
@@ -395,7 +416,7 @@
       <span class="paper__word">Promptoir</span>
       <div class="paper__row">
         <span>© 2026 Promptoir</span>
-        <a href="#faq">Tes réponses restent dans ton navigateur</a>
+        <a href="#faq">Ce que tu remplis reste dans ton navigateur</a>
       </div>
     </div>
   </footer>

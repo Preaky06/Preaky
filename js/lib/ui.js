@@ -110,8 +110,9 @@ export function initSmoothScroll() {
 
 // Compte jusqu'à la valeur quand l'élément entre à l'écran.
 export function countUp(el, to) {
+  const fmt = (n) => n.toLocaleString("fr-FR");
   if (reducedMotion) {
-    el.textContent = to;
+    el.textContent = fmt(to);
     return;
   }
   const io = new IntersectionObserver((entries) => {
@@ -120,7 +121,7 @@ export function countUp(el, to) {
     const start = performance.now();
     const step = (now) => {
       const t = Math.min(1, (now - start) / 1200);
-      el.textContent = Math.round(to * (1 - Math.pow(1 - t, 3)));
+      el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - t, 3))));
       if (t < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
