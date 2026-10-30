@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Créer mon prompt · Promptoir</title>
+  <meta name="description" content="Décris ton idée en quelques mots, réponds aux questions choisies pour elle et obtiens un prompt complet, prêt à copier." />
+  <meta name="theme-color" content="#fff8ec" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Créer mon prompt · Promptoir" />
+  <meta property="og:description" content="Quelques mots, quelques questions, un prompt complet." />
+  <meta property="og:image" content="og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preload" href="fonts/chewy-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="modulepreload" href="js/builder.js" />
+  <link rel="modulepreload" href="js/data/types/index.js" />
+  <link rel="modulepreload" href="js/lib/kit.js" />
+  <link rel="modulepreload" href="js/lib/detect.js" />
+  <link rel="modulepreload" href="js/lib/store.js" />
+  <link rel="modulepreload" href="js/lib/share.js" />
+  <link rel="modulepreload" href="js/lib/ui.js" />
+  <link rel="modulepreload" href="js/lib/icons.js" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script>document.documentElement.classList.replace("no-js", "js");</script>
+</head>
+<body>
+  <a class="skip" href="#stage">Aller au créateur de prompt</a>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="logo" viewBox="0 0 48 48"><path d="M14 4h20a10 10 0 0 1 10 10v13a10 10 0 0 1-10 10H19l-9.5 7.5V36.2A10 10 0 0 1 4 27V14A10 10 0 0 1 14 4z" fill="#6c3bff"/><path d="M14.5 15.5l7.5 5.5-7.5 5.5" fill="none" stroke="#ffd23f" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.5 27.5h9" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="header is-scrolled" data-solid>
+    <a class="brand" href="index.html" aria-label="Promptoir, accueil">
+      <svg class="brand__mark" aria-hidden="true"><use href="#logo"/></svg>
+      <span>Promptoir<span class="brand__dot">.</span></span>
+    </a>
+    <div class="header__right">
+      <nav class="nav" id="nav" aria-label="Navigation principale">
+        <a href="index.html#comment">Comment ça marche</a>
+        <a href="index.html#possibilites">Possibilités</a>
+        <a href="index.html#faq">FAQ</a>
+      </nav>
+      <div class="header__actions">
+        <button class="btn btn--ghost btn--sm" type="button" data-open-history aria-label="Mes prompts enregistrés">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+          <span class="header__cta-long">Mes prompts</span>
+          <span class="badge" data-history-count hidden>0</span>
+        </button>
+        <button class="btn btn--sun btn--sm" type="button" data-restart aria-label="Nouvelle idée"><svg class="ic header__cta-short" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span class="header__cta-long">Nouvelle idée</span></button>
+      </div>
+      <button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main class="app" data-app data-step="idee">
+    <h1 class="sr-only">Créer mon prompt</h1>
+    <div class="wrap app__grid">
+      <section class="stage" id="stage" data-stage aria-label="Créateur de prompt">
+        <noscript><p>Active JavaScript pour utiliser le créateur de prompt.</p></noscript>
+      </section>
+
+      <aside class="live on-dark" aria-labelledby="live-title">
+        <div class="live__head">
+          <h2 class="live__title" id="live-title" data-live-title>Ton prompt, en direct</h2>
+          <span class="live__meta" data-live-meta></span>
+          <p class="live__legend"><mark class="v">surligné</mark> = ce qui vient de tes réponses</p>
+        </div>
+        <pre class="live__body" data-live tabindex="0" aria-label="Texte du prompt"></pre>
+      </aside>
+    </div>
+
+    <button class="peek" type="button" data-peek>
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Aperçu du prompt
+    </button>
+  </main>
+
+  <dialog class="sheet-preview" id="apercu" aria-labelledby="apercu-title">
+    <button class="sheet-preview__close" type="button" data-close aria-label="Fermer l'aperçu">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+    <div class="live on-dark">
+      <div class="live__head">
+        <h2 class="live__title" id="apercu-title">Ton prompt, en direct</h2>
+        <span class="live__meta" data-live-meta></span>
+        <p class="live__legend"><mark class="v">surligné</mark> = ce qui vient de tes réponses</p>
+      </div>
+      <pre class="live__body" data-live tabindex="0" aria-label="Texte du prompt"></pre>
+    </div>
+  </dialog>
+
+  <dialog class="drawer" id="historique" aria-labelledby="hist-title">
+    <div class="drawer__inner">
+      <button class="drawer__close" type="button" data-close aria-label="Fermer">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+      </button>
+      <h2 class="drawer__title" id="hist-title">Mes <span>prompts.</span></h2>
+      <p class="drawer__text">Chaque prompt terminé est enregistré ici, sur cet appareil uniquement. Rien n'est envoyé à un serveur.</p>
+      <div class="hist" data-history-list></div>
+      <div class="drawer__foot">
+        <button class="link-btn" type="button" data-clear-all>Tout effacer</button>
+        <button class="btn btn--ink" type="button" data-close>Fermer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/builder.js"></script>
+</body>
+</html>

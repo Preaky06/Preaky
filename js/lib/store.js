@@ -1,10 +1,10 @@
-// Tout ce que la personne saisit reste dans son navigateur (localStorage).
+// Brouillon en cours et historique des prompts, dans le navigateur uniquement.
 // Le stockage peut être indisponible (navigation privée, cookies bloqués) :
 // le site fonctionne alors normalement, sans mémoire d'une visite à l'autre.
-import { VARIABLES } from "../data/variables.js";
 
-const KEY_VALUES = "promptoir:valeurs";
-const KEY_FAVS = "promptoir:favoris";
+const KEY_DRAFT = "promptoir:brouillon";
+const KEY_HISTORY = "promptoir:historique";
+const MAX_HISTORY = 30;
 
 function read(key, fallback) {
   try {
@@ -19,49 +19,36 @@ function write(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    /* stockage indisponible : la valeur reste en mémoire pour cette visite */
+    /* stockage indisponible : rien n'est conservé après la visite */
   }
 }
 
-const values = read(KEY_VALUES, {});
-const favs = new Set(read(KEY_FAVS, []));
-
-export function getValue(key) {
-  if (key in values) return values[key];
-  return VARIABLES[key]?.defaut ?? "";
-}
-
-export function setValue(key, value) {
-  values[key] = value;
-  write(KEY_VALUES, values);
-}
-
-export function filledCount(keys) {
-  return keys.filter((k) => String(getValue(k)).trim()).length;
-}
-
-export function clearAll() {
-  for (const k of Object.keys(values)) delete values[k];
-  favs.clear();
+function remove(key) {
   try {
-    localStorage.removeItem(KEY_VALUES);
-    localStorage.removeItem(KEY_FAVS);
+    localStorage.removeItem(key);
   } catch {
     /* rien à effacer */
   }
 }
 
-export function isFav(id) {
-  return favs.has(id);
+export const loadDraft = () => read(KEY_DRAFT, null);
+export const saveDraft = (draft) => write(KEY_DRAFT, draft);
+export const clearDraft = () => remove(KEY_DRAFT);
+
+export const loadHistory = () => read(KEY_HISTORY, []);
+
+// Ajoute ou met à jour une entrée (même id), la plus récente en premier
+export function saveToHistory(entry) {
+  const list = loadHistory().filter((e) => e.id !== entry.id);
+  list.unshift(entry);
+  write(KEY_HISTORY, list.slice(0, MAX_HISTORY));
 }
 
-export function toggleFav(id) {
-  if (favs.has(id)) favs.delete(id);
-  else favs.add(id);
-  write(KEY_FAVS, [...favs]);
-  return favs.has(id);
+export function removeFromHistory(id) {
+  write(KEY_HISTORY, loadHistory().filter((e) => e.id !== id));
 }
 
-export function favCount() {
-  return favs.size;
+export function clearAll() {
+  remove(KEY_DRAFT);
+  remove(KEY_HISTORY);
 }

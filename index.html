@@ -3,22 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Promptoir · Les prompts IA écrits pour ton métier</title>
-  <meta name="description" content="48 prompts IA classés par métier : community manager, graphiste, commercial, RH, immobilier, juriste, comptable, e-commerce. Tu remplis tes infos, le prompt s'adapte. Gratuit, sans compte." />
-  <meta name="theme-color" content="#1a47ff" />
+  <title>Promptoir · Ton idée en quelques mots, un prompt complet</title>
+  <meta name="description" content="Décris ton idée en quelques mots, réponds à quelques questions choisies pour elle, et obtiens un prompt complet pour ChatGPT, Claude ou Gemini. Histoire, poème, business, travail, code, image et bien plus. Gratuit, sans compte." />
+  <meta name="theme-color" content="#6c3bff" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Promptoir · L'IA parle enfin ton métier" />
-  <meta property="og:description" content="Des prompts écrits avec la méthode de ton métier. Tu remplis 3 champs, tu copies, tu obtiens un livrable." />
+  <meta property="og:title" content="Promptoir · Dis ton idée, on écrit le prompt" />
+  <meta property="og:description" content="Quelques mots, quelques questions, un prompt complet. Pour apprendre, créer, entreprendre ou gagner du temps au travail." />
   <meta property="og:image" content="og.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" href="fonts/chewy-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="modulepreload" href="js/home.js" />
-  <link rel="modulepreload" href="js/data/prompts/index.js" />
-  <link rel="modulepreload" href="js/data/metiers.js" />
-  <link rel="modulepreload" href="js/data/variables.js" />
-  <link rel="modulepreload" href="js/lib/prompt.js" />
+  <link rel="modulepreload" href="js/data/types/index.js" />
   <link rel="modulepreload" href="js/lib/ui.js" />
   <link rel="modulepreload" href="js/lib/icons.js" />
   <link rel="stylesheet" href="css/style.css" />
@@ -29,14 +26,15 @@
 
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <linearGradient id="gLime" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4ffc2"/><stop offset=".45" stop-color="#d7ff3f"/><stop offset="1" stop-color="#9fcb00"/></linearGradient>
-      <linearGradient id="gOrange" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc98a"/><stop offset=".5" stop-color="#ff8a1f"/><stop offset="1" stop-color="#e45f00"/></linearGradient>
-      <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8aa6ff"/><stop offset=".5" stop-color="#1a47ff"/><stop offset="1" stop-color="#0a2bc9"/></linearGradient>
-      <symbol id="logo" viewBox="0 0 48 48"><path d="M14 4h20a10 10 0 0 1 10 10v13a10 10 0 0 1-10 10H19l-9.5 7.5V36.2A10 10 0 0 1 4 27V14A10 10 0 0 1 14 4z" fill="#1a47ff"/><path d="M14.5 15.5l7.5 5.5-7.5 5.5" fill="none" stroke="#d7ff3f" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.5 27.5h9" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></symbol>
-      <symbol id="s-bolt" viewBox="0 0 64 64"><path d="M38 3L9 37h19l-6 24 33-38H35z" fill="url(#gLime)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M33 9L16 31" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/></symbol>
-      <symbol id="s-spark" viewBox="0 0 64 64"><path d="M32 3c3 16 13 26 29 29-16 3-26 13-29 29-3-16-13-26-29-29C19 29 29 19 32 3z" fill="url(#gOrange)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 18c-1 5-3 8-7 10" stroke="#fff" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/></symbol>
-      <symbol id="s-cursor" viewBox="0 0 64 64"><path d="M12 6l44 21-19 6-8 20z" fill="url(#gBlue)" stroke="#0a1440" stroke-width="2.5" stroke-linejoin="round"/><path d="M19 15l20 10" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/></symbol>
-      <symbol id="s-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="url(#gLime)" stroke="#0a1440" stroke-width="2.5"/><path d="M20 33l8 8 17-18" fill="none" stroke="#0a1440" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 22a18 18 0 0 1 10-8" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/></symbol>
+      <linearGradient id="gSun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#f2a900"/></linearGradient>
+      <linearGradient id="gCoral" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb39f"/><stop offset=".5" stop-color="#ff6a45"/><stop offset="1" stop-color="#e2431f"/></linearGradient>
+      <linearGradient id="gViolet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9a3ff"/><stop offset=".5" stop-color="#6c3bff"/><stop offset="1" stop-color="#4b1fd6"/></linearGradient>
+      <linearGradient id="gMint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8f1d9"/><stop offset=".5" stop-color="#2ed3a3"/><stop offset="1" stop-color="#14a87d"/></linearGradient>
+      <symbol id="logo" viewBox="0 0 48 48"><path d="M14 4h20a10 10 0 0 1 10 10v13a10 10 0 0 1-10 10H19l-9.5 7.5V36.2A10 10 0 0 1 4 27V14A10 10 0 0 1 14 4z" fill="#6c3bff"/><path d="M14.5 15.5l7.5 5.5-7.5 5.5" fill="none" stroke="#ffd23f" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.5 27.5h9" stroke="#fff" stroke-width="4.2" stroke-linecap="round"/></symbol>
+      <symbol id="s-bulb" viewBox="0 0 64 64"><path d="M32 4C19.8 4 11 13.2 11 24.6c0 7.6 4 12.6 7.6 16.4 2.4 2.6 3.4 4.6 3.4 7.6h20c0-3 1-5 3.4-7.6C49 37.2 53 32.2 53 24.6 53 13.2 44.2 4 32 4z" fill="url(#gSun)" stroke="#15112e" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 48.6h20v4.4a4 4 0 0 1-4 4h-12a4 4 0 0 1-4-4z" fill="#fff" stroke="#15112e" stroke-width="2.5" stroke-linejoin="round"/><path d="M22 14c3-3 6-4 9-4" stroke="#fff" stroke-opacity=".85" stroke-width="3.5" stroke-linecap="round"/></symbol>
+      <symbol id="s-spark" viewBox="0 0 64 64"><path d="M32 3c3 16 13 26 29 29-16 3-26 13-29 29-3-16-13-26-29-29C19 29 29 19 32 3z" fill="url(#gCoral)" stroke="#15112e" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 18c-1 5-3 8-7 10" stroke="#fff" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="s-cursor" viewBox="0 0 64 64"><path d="M12 6l44 21-19 6-8 20z" fill="url(#gViolet)" stroke="#15112e" stroke-width="2.5" stroke-linejoin="round"/><path d="M19 15l20 10" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/></symbol>
+      <symbol id="s-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="27" fill="url(#gMint)" stroke="#15112e" stroke-width="2.5"/><path d="M20 33l8 8 17-18" fill="none" stroke="#15112e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 22a18 18 0 0 1 10-8" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/></symbol>
     </defs>
   </svg>
 
@@ -47,13 +45,12 @@
     </a>
     <div class="header__right">
       <nav class="nav" id="nav" aria-label="Navigation principale">
+        <a href="#comment">Comment ça marche</a>
         <a href="#exemple">Exemple</a>
-        <a href="#methode">Méthode</a>
-        <a href="#metiers">Métiers</a>
-        <a href="#profil">Confidentialité</a>
+        <a href="#possibilites">Possibilités</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="btn btn--cta header__cta" href="bibliotheque.html"><span class="header__cta-long">Ouvrir la bibliothèque</span><span class="header__cta-short">Bibliothèque</span></a>
+      <a class="btn btn--sun" href="creer.html"><span class="header__cta-long">Créer mon prompt</span><span class="header__cta-short">Créer</span></a>
       <button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><span></span><span></span></button>
     </div>
   </header>
@@ -63,107 +60,107 @@
     <section class="hero" id="top" aria-labelledby="hero-title">
       <span class="hero__ring hero__ring--1"></span>
       <span class="hero__ring hero__ring--2"></span>
-      <span class="hero__ring hero__ring--3"></span>
-      <span class="hero__ring hero__ring--4"></span>
-
-      <h1 class="hero__title" id="hero-title" data-split>
-        <span class="ln hero__l1"><span>L'IA parle enfin</span></span>
-        <span class="ln hero__l2"><span>ton métier<span class="dot">.</span></span></span>
-      </h1>
-
-      <div class="hero__stage" data-reveal style="--d: 0.25s">
-        <p class="sr-only">Démonstration&nbsp;: on remplit les champs d'un prompt métier, le texte du prompt se met à jour, puis on le copie.</p>
-        <div class="demo" aria-hidden="true">
-          <div class="demo__top">
-            <span class="tag" data-demo="metier">Agent immobilier</span>
-            <span class="tag tag--orange" data-demo="categorie">Rédaction</span>
-            <svg class="ic demo__star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/></svg>
+      <div class="wrap hero__grid">
+        <div>
+          <p class="hero__pill" data-reveal>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>
+            Apprendre, créer, entreprendre, travailler
+          </p>
+          <h1 class="hero__title" id="hero-title" data-split>
+            <span class="ln">Dis ton idée<span class="dot">.</span></span>
+            <span class="ln"><span class="hl">On écrit le prompt</span><span class="dot">.</span></span>
+          </h1>
+          <p class="hero__text" data-reveal style="--d:.15s">Décris ce que tu veux en quelques mots. Réponds à quelques questions choisies pour ton idée. Tu obtiens un prompt complet, prêt pour ChatGPT, Claude ou Gemini.</p>
+          <form class="idea-form" action="creer.html" method="get" data-reveal style="--d:.25s">
+            <label class="sr-only" for="hero-idea">Ton idée en quelques mots</label>
+            <textarea id="hero-idea" name="idee" rows="1" maxlength="240" placeholder="Ex. : un conte pour endormir ma fille" required></textarea>
+            <button class="btn btn--sun btn--lg" type="submit">
+              Construire mon prompt
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+          <div class="examples" data-reveal style="--d:.35s" data-hero-examples>
+            <span class="examples__label">Exemples&nbsp;:</span>
           </div>
-          <p class="demo__title" data-demo="titre">Annonce immobilière qui donne envie de visiter</p>
-          <div class="demo__fields">
-            <div class="demo__field" data-demo="f0"><span class="demo__label">Caractéristiques du bien</span><span class="demo__value"></span></div>
-            <div class="demo__field" data-demo="f1"><span class="demo__label">Quartier et environnement</span><span class="demo__value"></span></div>
-          </div>
-          <div class="demo__preview" data-demo="preview"></div>
-          <div class="demo__actions">
-            <span class="btn btn--cta btn--sm" data-demo="copy">
-              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copier le prompt
-            </span>
-            <span class="btn btn--ghost btn--sm">Ouvrir dans Claude</span>
-          </div>
-          <span class="demo__copied" data-demo="copied">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            Prompt copié
-          </span>
         </div>
-        <svg class="sticker" style="width:84px;top:-34px;right:-46px;--r:12deg" aria-hidden="true"><use href="#s-bolt"/></svg>
-        <svg class="sticker" style="width:60px;top:38%;left:-52px;--r:-10deg;--fd:-2s" aria-hidden="true"><use href="#s-spark"/></svg>
-        <svg class="sticker" style="width:62px;bottom:64px;right:-40px;--r:-8deg;--fd:-4s" aria-hidden="true"><use href="#s-cursor"/></svg>
-      </div>
 
-      <div class="hero__side hero__side--left" data-reveal style="--d: 0.45s">
-        <span class="hero__pill">Prompts écrits métier par métier</span>
-        <p class="hero__text">Chaque prompt contient la méthode de ton métier, tes infos en champs à remplir et des garde-fous contre les inventions. Tu copies, l'IA livre.</p>
-      </div>
-
-      <div class="hero__side hero__side--right" data-reveal style="--d: 0.55s">
-        <a class="btn btn--cta btn--lg" href="bibliotheque.html">
-          Trouver mon prompt
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-        </a>
-        <p class="hero__note">Gratuit · sans compte · <span data-count="prompts">48</span> prompts</p>
+        <div class="hero__stage" data-reveal style="--d:.3s">
+          <p class="sr-only">Démonstration&nbsp;: on écrit une idée, le type d'idée est reconnu, on répond à deux questions et le prompt se construit.</p>
+          <div class="demo" aria-hidden="true">
+            <span class="demo__label">Ton idée</span>
+            <p class="demo__idea" data-demo="idea"></p>
+            <div class="demo__detect" data-demo="detect"></div>
+            <p class="demo__q" data-demo="q1"></p>
+            <div class="demo__opts" data-demo="opts"></div>
+            <div class="demo__answer" data-demo="answer">
+              <span class="demo__label" data-demo="q2"></span>
+              <span data-demo="a2"></span>
+            </div>
+            <div class="demo__prompt">
+              <p class="demo__prompt-title"><span>Ton prompt</span><span data-demo="count"></span></p>
+              <div data-demo="lines"></div>
+            </div>
+            <span class="demo__copied" data-demo="copied">
+              <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Prompt copié
+            </span>
+          </div>
+          <svg class="sticker" style="width:80px;top:-46px;right:-24px;--r:12deg" aria-hidden="true"><use href="#s-bulb"/></svg>
+          <svg class="sticker" style="width:58px;top:46%;left:-34px;--r:-10deg;--fd:-2s" aria-hidden="true"><use href="#s-spark"/></svg>
+          <svg class="sticker" style="width:60px;bottom:-30px;left:18%;--r:-8deg;--fd:-4s" aria-hidden="true"><use href="#s-cursor"/></svg>
+        </div>
       </div>
     </section>
 
     <!-- Problème -->
-    <section class="sec sec--night on-dark" aria-labelledby="pb-title">
+    <section class="sec sec--ink on-dark" aria-labelledby="pb-title">
       <div class="wrap">
-        <h2 class="title" id="pb-title" data-split>
-          <span class="ln"><span>Tu demandes<span class="dot">.</span> <span class="hl">L'IA répond</span></span></span>
-          <span class="ln"><span><span class="hl">à côté</span><span class="dot">.</span></span></span>
-        </h2>
-        <p class="lead" data-reveal>Le problème vient rarement de l'IA. Il vient de ce qu'elle ne sait pas&nbsp;: <strong>ton métier, tes règles, tes clients.</strong></p>
+        <div class="sec__head">
+          <h2 class="title" id="pb-title" data-split>
+            <span class="ln">Une phrase vague<span class="dot">,</span></span>
+            <span class="ln"><span class="hl">une réponse moyenne</span><span class="dot">.</span></span>
+          </h2>
+          <p class="lead" data-reveal>Une IA ne devine pas ce que tu ne lui dis pas&nbsp;: ton public, ton but, tes contraintes, le ton voulu. <strong>Alors elle comble les trous avec du générique.</strong></p>
+        </div>
 
-        <div class="problem__cards">
-          <article class="pcase" data-reveal>
-            <div class="pcase__visual" aria-hidden="true">
-              <span class="bubble bubble--me">Écris une annonce pour mon T3.</span>
-              <span class="bubble bubble--ai">Découvrez ce magnifique T3 lumineux, idéalement situé… Coup de cœur assuré&nbsp;!</span>
+        <div class="pcards">
+          <article class="pcard" data-color="coral" data-reveal>
+            <div class="pcard__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Écris un poème pour ma mère.</span>
+              <span class="bubble bubble--ai">Maman, tu es mon étoile, mon soleil, mon trésor, mon cœur pour toujours&nbsp;!</span>
+              <span class="flag">Déjà lu mille fois</span>
             </div>
-            <span class="pcase__num pcase__num--1">01</span>
-            <div class="pcase__body">
-              <span class="tag tag--orange">Demande</span>
-              <h3 class="pcase__title">Ta demande tient en une ligne.</h3>
-              <p class="pcase__text">L'IA comble les trous avec des clichés et des suppositions. <strong>Le texte pourrait venir de n'importe qui.</strong></p>
+            <div class="pcard__body">
+              <span class="pcard__num">01</span>
+              <h3 class="pcard__title">Elle remplit avec des clichés.</h3>
+              <p class="pcard__text">Sans tes souvenirs ni tes détails, elle recycle les formules qu'elle a lues partout.</p>
             </div>
           </article>
 
-          <article class="pcase" data-reveal style="--d: 0.1s">
-            <div class="pcase__visual" aria-hidden="true">
-              <span class="bubble bubble--me">Rédige mon offre d'emploi.</span>
-              <span class="bubble bubble--ai">Nous recherchons un profil <s>jeune et dynamique</s>, 5 ans d'expérience minimum…</span>
-              <span class="flag"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Critère discriminatoire</span>
+          <article class="pcard" data-color="sky" data-reveal style="--d:.1s">
+            <div class="pcard__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Explique-moi la blockchain.</span>
+              <span class="bubble bubble--ai">C'est un registre distribué reposant sur un mécanisme de consensus et des fonctions de hachage cryptographiques.</span>
+              <span class="flag">Trop technique</span>
             </div>
-            <span class="pcase__num pcase__num--2">02</span>
-            <div class="pcase__body">
-              <span class="tag">Contexte</span>
-              <h3 class="pcase__title">L'IA ne connaît pas ton métier.</h3>
-              <p class="pcase__text">Ni tes obligations, ni ton vocabulaire, ni tes méthodes. Elle produit du plausible, pas du conforme. <strong>À toi de tout reprendre.</strong></p>
+            <div class="pcard__body">
+              <span class="pcard__num">02</span>
+              <h3 class="pcard__title">Elle se trompe de niveau.</h3>
+              <p class="pcard__text">Elle ne sait pas si tu pars de zéro ou si tu es ingénieur, ni ce que tu veux en faire.</p>
             </div>
           </article>
 
-          <article class="pcase" data-reveal style="--d: 0.2s">
-            <div class="pcase__visual" aria-hidden="true">
-              <span class="bubble bubble--me">Sur quel texte m'appuyer&nbsp;?</span>
-              <span class="bubble bubble--ai">Selon l'<s>article L.1234-56 du Code civil</s>, vous pouvez…</span>
-              <span class="flag"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Référence inventée</span>
+          <article class="pcard" data-color="sun" data-reveal style="--d:.2s">
+            <div class="pcard__visual" aria-hidden="true">
+              <span class="bubble bubble--me">Non, plus court.</span>
+              <span class="bubble bubble--me">Non, plus drôle.</span>
+              <span class="bubble bubble--me">Non, c'est pour des enfants.</span>
+              <span class="flag">4e essai</span>
             </div>
-            <span class="pcase__num pcase__num--3">03</span>
-            <div class="pcase__body">
-              <span class="tag tag--lime">Fiabilité</span>
-              <h3 class="pcase__title">Tu ne sais pas quoi vérifier.</h3>
-              <p class="pcase__text">Chiffres, articles de loi, délais&nbsp;: l'IA les invente avec aplomb. <strong>Sans garde-fou, l'erreur part chez ton client.</strong></p>
+            <div class="pcard__body">
+              <span class="pcard__num">03</span>
+              <h3 class="pcard__title">Tu passes ton temps à corriger.</h3>
+              <p class="pcard__text">Chaque précision oubliée au départ, c'est un aller-retour de plus à la fin.</p>
             </div>
           </article>
         </div>
@@ -172,198 +169,161 @@
           <svg class="notif__icon" aria-hidden="true"><use href="#logo"/></svg>
           <div>
             <p class="notif__meta"><b>Promptoir</b>maintenant</p>
-            <p class="notif__text">Bonne nouvelle&nbsp;: ça se corrige. <strong>Et c'est déjà écrit pour ton métier.</strong></p>
+            <p class="notif__text">Bonne nouvelle&nbsp;: <strong>les bonnes questions, on les a déjà écrites.</strong></p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Comment ça marche -->
+    <section class="sec sec--white" id="comment" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="sec__head sec__head--center">
+          <h2 class="title" id="how-title" data-split>
+            <span class="ln">Trois étapes<span class="dot">,</span></span>
+            <span class="ln"><span class="hl">zéro prompt à écrire</span><span class="dot">.</span></span>
+          </h2>
+          <p class="lead" data-reveal>Tu n'as rien à savoir sur les prompts. Tu dis ce que tu veux, on te pose les questions qu'un expert te poserait.</p>
+        </div>
+
+        <ol class="how">
+          <li class="how__step" data-color="sun" data-reveal>
+            <span class="how__n">1</span>
+            <h3 class="how__title">Décris ton idée</h3>
+            <p class="how__text">Quelques mots suffisent. Le type d'idée est reconnu tout seul, et tu peux le changer.</p>
+            <div class="how__mock" aria-hidden="true"><p class="how__mock-input">Lancer un food truck à Lyon</p></div>
+          </li>
+          <li class="how__step" data-color="coral" data-reveal style="--d:.1s">
+            <span class="how__n">2</span>
+            <h3 class="how__title">Réponds aux questions</h3>
+            <p class="how__text"><span data-count="min">6</span> à <span data-count="max">10</span> questions choisies pour ton idée, la plupart en un clic. Chacune explique pourquoi elle compte.</p>
+            <div class="how__mock" aria-hidden="true">
+              <div class="how__mock-row"><span class="is-on">Vérifier l'idée</span><span>Business plan</span><span>Trouver des clients</span></div>
+            </div>
+          </li>
+          <li class="how__step" data-color="mint" data-reveal style="--d:.2s">
+            <span class="how__n">3</span>
+            <h3 class="how__title">Copie ton prompt</h3>
+            <p class="how__text">Un prompt complet et structuré, à coller dans ton IA ou à ouvrir directement dans Claude ou ChatGPT.</p>
+            <div class="how__mock" aria-hidden="true"><p class="how__mock-code">Tu es consultant en création d'entreprise. Aide-moi à vérifier que cette idée peut être rentable avant d'investir.</p></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
     <!-- Avant / après -->
-    <section class="sec sec--blue on-dark" id="exemple" aria-labelledby="ex-title">
+    <section class="sec sec--violet on-dark" id="exemple" aria-labelledby="ex-title">
       <div class="wrap">
         <div class="sec__head">
           <h2 class="title" id="ex-title" data-split>
-            <span class="ln"><span>Même demande<span class="dot">.</span></span></span>
-            <span class="ln"><span><span class="hl">Autre niveau</span><span class="dot">.</span></span></span>
+            <span class="ln">Même idée<span class="dot">.</span></span>
+            <span class="ln"><span class="hl">Autre résultat</span><span class="dot">.</span></span>
           </h2>
-          <p class="lead" data-reveal>À gauche, ce que tout le monde tape. À droite, un prompt de la bibliothèque, rempli en une minute.</p>
+          <p class="lead" data-reveal>À gauche, ce que tout le monde tape. À droite, la même idée après les questions de Promptoir.</p>
         </div>
 
         <div class="compare">
           <article class="ccard ccard--before" data-reveal>
-            <p class="ccard__label">Le prompt de tout le monde</p>
-            <p class="ccard__prompt ccard__prompt--big">«&nbsp;Écris une annonce pour un T3 à Nantes.&nbsp;»</p>
+            <p class="ccard__label">Sans les questions</p>
+            <p class="ccard__quote">«&nbsp;Écris un poème pour l'anniversaire de ma mère.&nbsp;»</p>
             <p class="outcome__title">Ce que tu obtiens</p>
             <ul class="outcome outcome--bad">
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des clichés&nbsp;: «&nbsp;lumineux&nbsp;», «&nbsp;coup de cœur&nbsp;»</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des détails inventés pour combler les trous</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Aucune mention obligatoire</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Rien ne signale ce qu'il faut vérifier</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Des rimes toutes faites&nbsp;: «&nbsp;amour, toujours&nbsp;»</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Rien sur ta mère en particulier</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>Une longueur et un ton au hasard</li>
             </ul>
           </article>
 
-          <article class="ccard ccard--after" data-reveal style="--d: 0.12s">
+          <article class="ccard ccard--after" data-reveal style="--d:.12s">
             <p class="ccard__label">
               <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2z"/></svg>
-              Le prompt Promptoir
+              Avec les questions de Promptoir
             </p>
-            <div class="bricks">
-              <p class="brick" style="--c: var(--blue)"><b>Rôle</b><span>Tu es agent immobilier expérimenté et rédacteur d'annonces.</span></p>
-              <p class="brick" style="--c: var(--lime-deep)"><b>Contexte</b><span>Bien&nbsp;: <mark>T3 de 68 m², 3e étage, balcon sud</mark> · Quartier&nbsp;: <mark>tram à 3 min</mark> · DPE&nbsp;: <mark>C / B</mark></span></p>
-              <p class="brick" style="--c: var(--orange)"><b>Méthode</b><span>3 titres, accroche, visite pièce par pièce, environnement, infos pratiques.</span></p>
-              <p class="brick" style="--c: var(--blue-light)"><b>Format</b><span>Bloc des mentions obligatoires et version courte de 500 caractères.</span></p>
-              <p class="brick" style="--c: var(--night)"><b>Garde-fous</b><span>Aucun superlatif sans fait. Aucune surface inventée&nbsp;: [À COMPLÉTER].</span></p>
-            </div>
-            <p class="outcome__title">Ce que tu obtiens</p>
+            <dl class="answers">
+              <div><dt>Forme</dt><dd>Poème rimé, lu à voix haute</dd></div>
+              <div><dt>Occasion</dt><dd>Ses 60 ans</dd></div>
+              <div><dt>Détails</dt><dd>Sylvie, nos dimanches à Biarritz, elle chante faux mais tout le temps</dd></div>
+              <div><dt>Ton</dt><dd>Tendre et drôle</dd></div>
+              <div><dt>Longueur</dt><dd>12 à 20 vers</dd></div>
+            </dl>
+            <p class="outcome__title">Ce que le prompt demande en plus</p>
             <ul class="outcome outcome--good">
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>3 titres et une visite écrite pièce par pièce</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Le bloc des mentions obligatoires, prêt à compléter</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>[À COMPLÉTER] là où l'IA aurait inventé</li>
-              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>La liste de ce que tu dois vérifier avant publication</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Une image centrale forte et du concret plutôt que du vague</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Des vers qui se disent d'une seule respiration</li>
+              <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>La liste des rimes et images usées à éviter</li>
             </ul>
           </article>
         </div>
 
         <div class="stats">
-          <p class="stat" data-reveal><span class="stat__n" data-count="prompts">48</span><span class="stat__l">prompts métier, prêts à remplir</span></p>
-          <p class="stat" data-reveal style="--d: 0.08s"><span class="stat__n" data-count="metiers">8</span><span class="stat__l">métiers couverts en profondeur</span></p>
-          <p class="stat" data-reveal style="--d: 0.16s"><span class="stat__n" data-count="parcours">8</span><span class="stat__l">parcours pour une mission complète</span></p>
-          <p class="stat" data-reveal style="--d: 0.24s"><span class="stat__n">0</span><span class="stat__l">compte à créer, rien à installer</span></p>
+          <p class="stat" data-reveal><span class="stat__n" data-count="types">13</span><span class="stat__l">types d'idées, d'une histoire à une formule Excel</span></p>
+          <p class="stat" data-reveal style="--d:.08s"><span class="stat__n" data-count="questions">113</span><span class="stat__l">questions écrites, chacune avec sa raison d'être</span></p>
+          <p class="stat" data-reveal style="--d:.16s"><span class="stat__n">0</span><span class="stat__l">compte à créer, rien à installer</span></p>
         </div>
       </div>
     </section>
 
-    <!-- Méthode -->
-    <section class="sec sec--mist" id="methode" aria-labelledby="me-title">
+    <!-- Possibilités -->
+    <section class="sec sec--lavender" id="possibilites" aria-labelledby="pos-title">
       <div class="wrap">
-        <div class="sec__head" style="text-align:center">
+        <div class="sec__head sec__head--split">
+          <div>
+            <h2 class="title" id="pos-title" data-split>
+              <span class="ln">Tout ce que</span>
+              <span class="ln"><span class="hl">tu peux créer</span><span class="dot">.</span></span>
+            </h2>
+            <p class="lead" data-reveal>Pour chaque type d'idée, des questions différentes. Clique sur un exemple pour l'essayer.</p>
+          </div>
+          <a class="btn btn--ink" href="creer.html" data-reveal>Commencer avec mon idée</a>
+        </div>
+        <div class="types" data-types></div>
+      </div>
+    </section>
+
+    <!-- Ingrédients -->
+    <section class="sec sec--white" id="methode" aria-labelledby="me-title">
+      <div class="wrap">
+        <div class="sec__head sec__head--center">
           <h2 class="title" id="me-title" data-split>
-            <span class="ln"><span>Un bon prompt,</span></span>
-            <span class="ln"><span><span class="hl">cinq briques</span><span class="dot">.</span></span></span>
+            <span class="ln">Ce que tes réponses</span>
+            <span class="ln"><span class="hl">ajoutent au prompt</span><span class="dot">.</span></span>
           </h2>
-          <p class="lead" style="margin-inline:auto" data-reveal>Chaque prompt de la bibliothèque suit la même structure. C'est elle qui sépare une réponse générique d'un livrable utilisable.</p>
+          <p class="lead" data-reveal>Chaque prompt est construit en six parties. Ce sont elles qui transforment une réponse générique en résultat utilisable.</p>
         </div>
 
-        <div class="method">
-          <div class="mstep" data-reveal style="--c: var(--blue)">
-            <span class="mstep__n">01</span>
-            <div><h3 class="mstep__title">Le rôle</h3><p class="mstep__text">L'IA prend la posture d'un professionnel du métier, pas celle d'un assistant qui veut plaire.</p></div>
-          </div>
-          <div class="mstep" data-reveal style="--c: var(--lime-deep); --fg: var(--night)">
-            <span class="mstep__n">02</span>
-            <div><h3 class="mstep__title">Le contexte</h3><p class="mstep__text">Tes infos en champs à remplir&nbsp;: ton activité, ta cible, ton pays. Le prompt s'adapte à toi.</p></div>
-          </div>
-          <div class="mstep" data-reveal style="--c: var(--orange); --fg: var(--night)">
-            <span class="mstep__n">03</span>
-            <div><h3 class="mstep__title">La méthode</h3><p class="mstep__text">La façon de faire du métier, écrite noir sur blanc&nbsp;: SPIN, STAR, fiche d'arrêt, comparables…</p></div>
-          </div>
-          <div class="mstep" data-reveal style="--c: var(--blue-light)">
-            <span class="mstep__n">04</span>
-            <div><h3 class="mstep__title">Le format</h3><p class="mstep__text">Une réponse prête à l'emploi&nbsp;: tableau, mail, script, plan. Pas un pavé à retravailler.</p></div>
-          </div>
-          <div class="mstep" data-reveal style="--c: var(--night)">
-            <span class="mstep__n">05</span>
-            <div><h3 class="mstep__title">Les garde-fous</h3><p class="mstep__text">Ce que l'IA doit signaler au lieu d'inventer, et ce que tu dois vérifier avant d'envoyer.</p></div>
+        <div class="ingredients">
+          <div class="ingredients__col">
+            <div class="ingr" data-color="violet" data-reveal><span class="ingr__n">01</span><div><h3 class="ingr__title">Le rôle</h3><p class="ingr__text">L'IA prend la posture d'un spécialiste de ta demande&nbsp;: poète, consultant, pédagogue ou développeur, selon ton idée.</p></div></div>
+            <div class="ingr" data-color="coral" data-reveal><span class="ingr__n">02</span><div><h3 class="ingr__title">Ton contexte</h3><p class="ingr__text">Tes réponses&nbsp;: ton public, ton objectif, tes détails. Tout ce que l'IA ne peut pas deviner.</p></div></div>
+            <div class="ingr" data-color="sun" data-reveal><span class="ingr__n">03</span><div><h3 class="ingr__title">La méthode</h3><p class="ingr__text">Les étapes qu'un professionnel suivrait&nbsp;: structure d'une histoire, test d'une idée ou grille de décision, selon le cas.</p></div></div>
           </div>
 
           <div class="stack" data-reveal aria-hidden="true">
             <span class="stack__shadow"></span>
-            <span class="stack__brick" style="--i:0;--r:-2deg;--c:var(--night)">Garde-fous <small>05</small></span>
-            <span class="stack__brick" style="--i:1;--r:2.5deg;--c:var(--blue-light)">Format <small>04</small></span>
-            <span class="stack__brick" style="--i:2;--r:-1.5deg;--c:var(--orange);--fg:var(--night)">Méthode <small>03</small></span>
-            <span class="stack__brick" style="--i:3;--r:3deg;--c:var(--lime);--fg:var(--night)">Contexte <small>02</small></span>
-            <span class="stack__brick" style="--i:4;--r:-2.5deg;--c:var(--blue)">Rôle <small>01</small></span>
+            <span class="stack__brick" data-color="ink" style="--i:0;--r:-2deg">Dernière consigne <small>06</small></span>
+            <span class="stack__brick" data-color="mint" style="--i:1;--r:2.5deg">Garde-fous <small>05</small></span>
+            <span class="stack__brick" data-color="sky" style="--i:2;--r:-1.5deg">Format <small>04</small></span>
+            <span class="stack__brick" data-color="sun" style="--i:3;--r:3deg">Méthode <small>03</small></span>
+            <span class="stack__brick" data-color="coral" style="--i:4;--r:-2.5deg">Contexte <small>02</small></span>
+            <span class="stack__brick" data-color="violet" style="--i:5;--r:1.5deg">Rôle <small>01</small></span>
           </div>
-        </div>
 
-        <div class="method__cta" data-reveal>
-          <a class="btn btn--cta btn--lg" href="bibliotheque.html#immo-annonce">
-            Voir un prompt complet
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Métiers -->
-    <section class="sec sec--white" id="metiers" aria-labelledby="mt-title">
-      <div class="wrap">
-        <div class="sec__head sec__head--split">
-          <div>
-            <h2 class="title" id="mt-title" data-split>
-              <span class="ln"><span>Choisis</span></span>
-              <span class="ln"><span><span class="hl">ton métier</span><span class="dot">.</span></span></span>
-            </h2>
-            <p class="lead" data-reveal>Des prompts écrits pour les tâches qui reviennent chaque semaine. Pas une liste générique&nbsp;: la méthode de chaque métier.</p>
+          <div class="ingredients__col">
+            <div class="ingr" data-color="sky" data-reveal><span class="ingr__n">04</span><div><h3 class="ingr__title">Le format</h3><p class="ingr__text">La forme exacte de la réponse&nbsp;: longueur, plan, tableau, versions à comparer.</p></div></div>
+            <div class="ingr" data-color="mint" data-reveal><span class="ingr__n">05</span><div><h3 class="ingr__title">Les garde-fous</h3><p class="ingr__text">Ce que l'IA doit signaler au lieu d'inventer&nbsp;: chiffres, sources, points à vérifier.</p></div></div>
+            <div class="ingr" data-color="ink" data-reveal><span class="ingr__n">06</span><div><h3 class="ingr__title">La dernière consigne</h3><p class="ingr__text">Si une information manque encore, l'IA te pose ses questions au lieu de deviner.</p></div></div>
           </div>
-          <a class="btn btn--ghost" href="bibliotheque.html" data-reveal>Tous les prompts</a>
-        </div>
-
-        <div class="metiers" data-metiers></div>
-
-        <div class="parcours-card" data-reveal>
-          <span class="parcours-card__tag">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            De bout en bout
-          </span>
-          <div>
-            <p class="parcours-card__kicker">Les parcours</p>
-            <h3 class="parcours-card__title">Une mission, <span>4 prompts</span> enchaînés.</h3>
-            <p class="parcours-card__text">Un prompt isolé règle une tâche. Un parcours mène une mission jusqu'au bout, dans le bon ordre&nbsp;: la sortie d'une étape nourrit la suivante.</p>
-            <a class="btn btn--cta" href="bibliotheque.html">Explorer les parcours</a>
-          </div>
-          <ul class="plist" data-parcours></ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Profil et confidentialité -->
-    <section class="sec sec--night on-dark" id="profil" aria-labelledby="pr-title">
-      <div class="wrap privacy">
-        <div class="profile-mock" data-reveal aria-hidden="true">
-          <p class="profile-mock__head">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Mon profil
-          </p>
-          <div class="profile-mock__fields">
-            <p class="profile-mock__field"><span>Ton activité</span><b>Agence web de 12 personnes, Lyon</b></p>
-            <p class="profile-mock__field"><span>Tes clients</span><b>PME industrielles de la région</b></p>
-            <p class="profile-mock__field"><span>Ton de communication</span><b>Direct, sobre, vouvoiement</b></p>
-            <p class="profile-mock__field"><span>Pays</span><b>France</b></p>
-          </div>
-          <p class="profile-mock__badge">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span><small>Stocké</small>dans ton navigateur</span>
-          </p>
-        </div>
-
-        <div>
-          <h2 class="title" id="pr-title" data-split>
-            <span class="ln"><span>Remplis une fois<span class="dot">.</span></span></span>
-            <span class="ln"><span><span class="hl">Ça suit partout</span><span class="dot">.</span></span></span>
-          </h2>
-          <p class="lead" data-reveal>Ton activité, ta cible, ton ton, ton pays&nbsp;: tu les renseignes une fois et chaque prompt se pré-remplit. <strong>Tout reste dans ton navigateur.</strong></p>
-          <ul class="checks" data-reveal>
-            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Aucun compte à créer</li>
-            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Aucune saisie envoyée à un serveur</li>
-            <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Tout s'efface en un clic</li>
-          </ul>
-          <p class="warn" data-reveal>
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-            <span>Quand tu colles un prompt dans une IA, ce sont les règles de cet outil qui s'appliquent. Retire les noms, les données personnelles et les chiffres confidentiels.</span>
-          </p>
-          <a class="btn btn--cta" href="bibliotheque.html#profil" data-reveal>Remplir mon profil</a>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="sec sec--white" id="faq" aria-labelledby="faq-title">
+    <section class="sec sec--cream" id="faq" aria-labelledby="faq-title">
       <div class="wrap faq">
         <div class="faq__head">
           <h2 class="title" id="faq-title" data-split>
-            <span class="ln"><span>Encore</span></span>
-            <span class="ln"><span><span class="hl">un doute&nbsp;?</span></span></span>
+            <span class="ln">Encore</span>
+            <span class="ln"><span class="hl">un doute&nbsp;?</span></span>
           </h2>
         </div>
         <div>
@@ -371,27 +331,27 @@
           <div class="faq__list">
             <details class="qa" open>
               <summary><span class="qa__q">«&nbsp;Ça marche avec quelle IA&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Avec toutes celles qui comprennent le français&nbsp;: Claude, ChatGPT, Gemini, Mistral, Copilot… Les prompts sont du texte simple, sans syntaxe propre à un outil. Deux boutons ouvrent directement Claude ou ChatGPT avec le prompt.</p>
+              <p class="qa__a">Avec toutes celles qui comprennent le français&nbsp;: ChatGPT, Claude, Gemini, Mistral, Copilot et les autres. Le prompt est du texte simple. Deux boutons l'ouvrent directement dans Claude ou ChatGPT.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Pourquoi ne pas demander directement à l'IA&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Tu peux. Mais l'IA répond au niveau de la question. Le prompt apporte ce que tu n'as pas le temps d'écrire à chaque fois&nbsp;: la méthode du métier, le format de sortie et les règles qui l'empêchent d'inventer.</p>
+              <summary><span class="qa__q">«&nbsp;Pourquoi des questions plutôt qu'un modèle tout fait&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Un modèle tout fait ne connaît pas ta situation. Les questions vont chercher exactement ce dont l'IA a besoin pour ton idée à toi&nbsp;: ton public, ton but, tes contraintes, tes détails.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Je peux faire confiance aux réponses&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Pas aveuglément. Chaque prompt demande à l'IA de signaler ce qu'elle ignore au lieu de l'inventer, et chaque fiche liste ce que tu dois vérifier. En droit, en finance et en RH, la décision reste la tienne, et celle d'un professionnel quand l'enjeu le demande.</p>
+              <summary><span class="qa__q">«&nbsp;Ça prend combien de temps&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Quelques minutes. La plupart des questions se répondent en un clic, toutes peuvent être passées, et tu peux laisser l'IA décider quand tu n'as pas d'avis.</p>
             </details>
             <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Mes infos partent où&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Nulle part chez nous&nbsp;: ton profil, tes champs et tes favoris restent dans ton navigateur. Quand tu colles un prompt dans une IA, ce sont les conditions de cet outil qui s'appliquent&nbsp;: anonymise ce qui est sensible.</p>
+              <summary><span class="qa__q">«&nbsp;Et si mon idée ne rentre dans aucune case&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Choisis «&nbsp;Autre chose&nbsp;»&nbsp;: des questions universelles (résultat attendu, public, contexte, forme, ton) cadrent n'importe quelle demande.</p>
+            </details>
+            <details class="qa">
+              <summary><span class="qa__q">«&nbsp;Mes réponses partent où&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
+              <p class="qa__a">Nulle part chez nous&nbsp;: tes réponses et tes prompts restent dans ton navigateur. Quand tu colles un prompt dans une IA, ce sont les règles de cet outil qui s'appliquent&nbsp;: évite les données personnelles ou confidentielles.</p>
             </details>
             <details class="qa">
               <summary><span class="qa__q">«&nbsp;C'est gratuit&nbsp;?&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Oui. Pas de compte, pas d'abonnement, pas de limite d'utilisation.</p>
-            </details>
-            <details class="qa">
-              <summary><span class="qa__q">«&nbsp;Mon métier n'est pas dans la liste.&nbsp;»</span><span class="qa__toggle" aria-hidden="true"></span></summary>
-              <p class="qa__a">Commence par le métier le plus proche&nbsp;: les prompts de rédaction et d'analyse s'adaptent dès que tu changes le contexte. De nouveaux métiers arrivent au fil des mises à jour.</p>
+              <p class="qa__a">Oui. Pas de compte, pas d'abonnement, pas de limite.</p>
             </details>
           </div>
         </div>
@@ -399,21 +359,21 @@
     </section>
 
     <!-- Appel final -->
-    <section class="sec cta on-dark" id="go" aria-labelledby="cta-title">
-      <span class="cloud" style="width:520px;height:260px;left:-140px;bottom:-60px"></span>
-      <span class="cloud" style="width:460px;height:240px;right:-120px;bottom:-40px"></span>
-      <span class="cloud" style="width:300px;height:160px;left:30%;bottom:-90px"></span>
-      <svg class="sticker" style="width:96px;left:12%;top:22%;--r:-14deg" aria-hidden="true"><use href="#s-spark"/></svg>
-      <svg class="sticker" style="width:84px;right:13%;top:18%;--r:10deg;--fd:-3s" aria-hidden="true"><use href="#s-bolt"/></svg>
-      <svg class="sticker" style="width:70px;right:22%;bottom:16%;--r:-6deg;--fd:-1.5s" aria-hidden="true"><use href="#s-check"/></svg>
+    <section class="sec cta on-dark" aria-labelledby="cta-title">
+      <span class="cloud" style="width:520px;height:260px;left:-140px;bottom:-70px"></span>
+      <span class="cloud" style="width:460px;height:240px;right:-120px;bottom:-50px"></span>
+      <svg class="sticker" style="width:96px;left:9%;top:16%;--r:-14deg" aria-hidden="true"><use href="#s-spark"/></svg>
+      <svg class="sticker" style="width:90px;right:10%;top:12%;--r:10deg;--fd:-3s" aria-hidden="true"><use href="#s-bulb"/></svg>
+      <svg class="sticker" style="width:70px;right:16%;bottom:14%;--r:-6deg;--fd:-1.5s" aria-hidden="true"><use href="#s-check"/></svg>
       <div class="wrap">
         <div class="cta__card" data-reveal>
-          <h2 class="cta__title" id="cta-title">Ton prochain prompt <span>est déjà écrit.</span></h2>
-          <p class="cta__text">Choisis ton métier, remplis quelques champs, copie. <strong>Sans compte. Sans blabla.</strong></p>
-          <a class="btn btn--cta btn--lg" href="bibliotheque.html">
-            Ouvrir la bibliothèque
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
+          <h2 class="cta__title" id="cta-title">Ton idée, <span>on s'occupe du reste.</span></h2>
+          <p class="cta__text">Écris-la en quelques mots. Les questions arrivent, le prompt se construit.</p>
+          <form class="idea-form" action="creer.html" method="get">
+            <label class="sr-only" for="cta-idea">Ton idée en quelques mots</label>
+            <textarea id="cta-idea" name="idee" rows="1" maxlength="240" placeholder="Ex. : un discours pour le mariage de ma sœur" required></textarea>
+            <button class="btn btn--sun btn--lg" type="submit">C'est parti</button>
+          </form>
         </div>
       </div>
     </section>
@@ -421,28 +381,21 @@
 
   <footer class="footer on-dark">
     <div class="wrap">
-      <div class="footer__top">
-        <a class="footer__up" href="#top" aria-label="Revenir en haut">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-        </a>
-        <svg class="footer__mark" aria-hidden="true"><use href="#logo"/></svg>
-        <span class="footer__spacer"></span>
-      </div>
-      <p class="footer__title">Trouve ton prompt.</p>
+      <p class="footer__title">Dis ton idée.</p>
       <nav class="footer__nav" aria-label="Pied de page">
-        <a href="bibliotheque.html">Bibliothèque</a>
+        <a href="creer.html">Créer un prompt</a>
+        <a href="#comment">Comment ça marche</a>
         <a href="#exemple">Exemple</a>
-        <a href="#methode">Méthode</a>
-        <a href="#metiers">Métiers</a>
+        <a href="#possibilites">Possibilités</a>
         <a href="#faq">FAQ</a>
       </nav>
     </div>
     <div class="paper">
-      <svg class="paper__edge" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40V22l38-10 31 12 44-17 29 9 52-14 26 15 41-7 35 10 47-18 24 12 39-6 33 13 50-16 28 8 45-11 30 14 37-9 42 12 33-15 47 9 26-6 40 13 36-12 49 8 27-10 44 14 32-7 39 10 45-17 30 11 41-6 34 12 38-9 40 9 36-12 42 8 40-10 50 6V40z" fill="#f2f4f9"/></svg>
+      <svg class="paper__edge" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40V22l38-10 31 12 44-17 29 9 52-14 26 15 41-7 35 10 47-18 24 12 39-6 33 13 50-16 28 8 45-11 30 14 37-9 42 12 33-15 47 9 26-6 40 13 36-12 49 8 27-10 44 14 32-7 39 10 45-17 30 11 41-6 34 12 38-9 40 9 36-12 42 8 40-10 50 6V40z" fill="#fff8ec"/></svg>
       <span class="paper__word">Promptoir</span>
       <div class="paper__row">
         <span>© 2026 Promptoir</span>
-        <a href="#profil">Confidentialité&nbsp;: tout reste dans ton navigateur</a>
+        <a href="#faq">Tes réponses restent dans ton navigateur</a>
       </div>
     </div>
   </footer>

@@ -1,58 +1,43 @@
-import { METIERS, CATEGORIES, PARCOURS } from "./data/metiers.js";
-import { VARIABLES } from "./data/variables.js";
-import { PROMPTS } from "./data/prompts/index.js";
-import { compile, typo } from "./lib/prompt.js";
+import { TYPES, TYPE_BY_ID, visibleQuestions } from "./data/types/index.js";
 import { icon } from "./lib/icons.js";
 import { initHeader, initReveal, initSmoothScroll, countUp, reducedMotion } from "./lib/ui.js";
 
-const byId = Object.fromEntries(PROMPTS.map((p) => [p.id, p]));
-const metierById = Object.fromEntries(METIERS.map((m) => [m.id, m]));
-const PALETTE = [
-  { c: "var(--blue)", fg: "var(--white)" },
-  { c: "var(--night)", fg: "var(--white)" },
-  { c: "var(--orange)", fg: "var(--night)" },
-  { c: "var(--lime)", fg: "var(--night)" },
-];
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const ideaUrl = (idea) => `creer.html?idee=${encodeURIComponent(idea)}`;
 
-function renderMetiers() {
-  const root = document.querySelector("[data-metiers]");
-  if (!root) return;
-  root.innerHTML = METIERS.map((m, i) => {
-    const n = PROMPTS.filter((p) => p.metier === m.id).length;
-    const col = PALETTE[i % PALETTE.length];
-    return `
-      <a class="mcard" href="bibliotheque.html?metier=${m.id}" data-reveal style="--d:${(i % 4) * 0.06}s">
-        <span class="mcard__top">
-          <span class="mcard__icon" style="--c:${col.c};--fg:${col.fg}">${icon(m.icon)}</span>
-          <span class="mcard__count">${n} prompts</span>
-        </span>
-        <h3 class="mcard__name">${m.nom}</h3>
-        <p class="mcard__text">${typo(m.accroche)}</p>
-        <ul class="mcard__tasks">${m.taches.map((t) => `<li>${icon("check")}${t}</li>`).join("")}</ul>
-        <span class="mcard__go">Voir les prompts ${icon("arrow")}</span>
-      </a>`;
-  }).join("");
+function chipType(type) {
+  return `<span class="chip-type" data-color="${type.couleur}"><span class="chip-type__icon">${icon(type.icon)}</span>${esc(type.nom)}</span>`;
 }
 
-function renderParcours() {
-  const root = document.querySelector("[data-parcours]");
+function renderHeroExamples() {
+  const root = document.querySelector("[data-hero-examples]");
   if (!root) return;
-  const shown = ["cm", "commercial", "immo", "juridique"];
-  root.innerHTML = PARCOURS.filter((p) => shown.includes(p.metier))
-    .map((p) => {
-      const m = metierById[p.metier];
-      return `
-        <li><a href="bibliotheque.html?metier=${m.id}">
-          <span class="plist__icon">${icon(m.icon)}</span>
-          <span class="plist__name">${p.titre}<span class="plist__meta">${m.nom}</span></span>
-          <span class="plist__steps">${p.etapes.length} étapes</span>
-        </a></li>`;
-    })
-    .join("");
+  const picks = ["histoire", "business", "apprendre", "poeme", "travail"].map((id) => TYPE_BY_ID[id].exemples[0]);
+  root.insertAdjacentHTML("beforeend", picks.map((ex) => `<a class="chip" href="${ideaUrl(ex)}">${esc(ex)}</a>`).join(""));
+}
+
+function renderTypes() {
+  const root = document.querySelector("[data-types]");
+  if (!root) return;
+  root.innerHTML = TYPES.map(
+    (t, i) => `
+    <article class="tcard" data-color="${t.couleur}" data-reveal style="--d:${(i % 3) * 0.06}s">
+      <span class="tcard__icon">${icon(t.icon)}</span>
+      <h3 class="tcard__name">${esc(t.nom)}</h3>
+      <p class="tcard__text">${esc(t.description)}</p>
+      <div class="tcard__ex">${t.exemples.slice(0, 2).map((ex) => `<a href="${ideaUrl(ex)}">« ${esc(ex)} »</a>`).join("")}</div>
+      <a class="tcard__go" href="creer.html?type=${t.id}">Commencer ${icon("arrow")}</a>
+    </article>`,
+  ).join("");
 }
 
 function renderCounts() {
-  const totals = { prompts: PROMPTS.length, metiers: METIERS.length, parcours: PARCOURS.length };
+  const totals = {
+    types: TYPES.length,
+    questions: TYPES.reduce((n, t) => n + t.questions.length, 0),
+    min: Math.min(...TYPES.map((t) => visibleQuestions(t, {}).length)),
+    max: Math.max(...TYPES.map((t) => t.questions.length)),
+  };
   document.querySelectorAll("[data-count]").forEach((el) => {
     const to = totals[el.dataset.count];
     if (el.classList.contains("stat__n")) countUp(el, to);
@@ -60,41 +45,53 @@ function renderCounts() {
   });
 }
 
-// ---------- Démo du constructeur dans le hero ----------
+// ---------- Démo du questionnaire dans le hero ----------
 
-const SCENARIOS = [
+const SCENES = [
   {
-    id: "immo-annonce",
-    typed: ["bien", "quartier"],
-    values: {
-      bien: "T3 de 68 m², 3e étage, balcon plein sud",
-      quartier: "Tram à 3 min, école à 5 min",
-      prix_bien: "289 000 € honoraires inclus",
-      dpe: "C / B",
-      cible: "Jeunes couples, premier achat",
-    },
+    idea: "Un poème pour les 60 ans de ma mère",
+    type: "poeme",
+    q1: "Quel ton ?",
+    opts: ["Tendre", "Drôle", "Solennel", "Mélancolique"],
+    on: [0, 1],
+    q2: "Détails personnels à glisser",
+    a2: "Sylvie, nos dimanches à Biarritz, elle chante faux",
+    lines: [
+      "Tu es poète. Tu écris des textes précis, imagés et sincères.",
+      "Forme : <mark class=\"v\">poème rimé</mark>",
+      "Ton : <mark class=\"v\">tendre, drôle</mark>",
+      "Détails : <mark class=\"v\">Sylvie, nos dimanches à Biarritz, elle chante faux</mark>",
+    ],
   },
   {
-    id: "rh-fiche-poste",
-    typed: ["poste", "conditions"],
-    values: {
-      activite: "Agence web de 25 personnes à Lyon",
-      poste: "Chargé·e de clientèle",
-      missions: "Suivi de 40 comptes, devis, accueil des nouveaux clients",
-      conditions: "CDI, 34-38 k€, 2 jours de télétravail",
-      equipe: "Équipe de 5, manager présente depuis 4 ans",
-      pays: "France",
-    },
+    idea: "Lancer un food truck à Lyon",
+    type: "business",
+    q1: "De quoi as-tu besoin en priorité ?",
+    opts: ["Vérifier que l'idée tient la route", "Écrire un business plan", "Trouver des clients"],
+    on: [0],
+    q2: "Ton budget et ton temps",
+    a2: "15 000 €, à temps plein",
+    lines: [
+      "Tu es consultant en création d'entreprise, concret et honnête sur les risques.",
+      "Besoin : <mark class=\"v\">vérifier que l'idée tient la route</mark>",
+      "Budget et temps : <mark class=\"v\">15 000 €, à temps plein</mark>",
+      "Calcule le point mort, avec tes hypothèses écrites.",
+    ],
   },
   {
-    id: "cm-hooks",
-    typed: ["sujet_video", "promesse"],
-    values: {
-      sujet_video: "3 erreurs d'une coloration maison",
-      cible: "Personnes qui font leur couleur seules",
-      ton: "Direct, complice, tutoiement",
-      promesse: "Éviter une couleur ratée",
-    },
+    idea: "Comprendre comment fonctionne la blockchain",
+    type: "apprendre",
+    q1: "Quel est ton niveau sur le sujet ?",
+    opts: ["Je pars de zéro", "J'ai quelques notions", "Je connais bien"],
+    on: [0],
+    q2: "Dans quel cadre ?",
+    a2: "Pour mon travail dans une banque",
+    lines: [
+      "Tu es un pédagogue expert du sujet.",
+      "Niveau : <mark class=\"v\">je pars de zéro</mark>",
+      "Cadre : <mark class=\"v\">pour mon travail dans une banque</mark>",
+      "Termine par 3 questions pour vérifier que j'ai compris.",
+    ],
   },
 ];
 
@@ -103,16 +100,17 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function initDemo() {
   const demo = document.querySelector(".demo");
   if (!demo) return;
-  const q = (name) => demo.querySelector(`[data-demo="${name}"]`);
-  const els = {
-    metier: q("metier"),
-    categorie: q("categorie"),
-    titre: q("titre"),
-    fields: [q("f0"), q("f1")],
-    preview: q("preview"),
-    copy: q("copy"),
-    copied: q("copied"),
-  };
+  const el = (name) => demo.querySelector(`[data-demo="${name}"]`);
+  const idea = el("idea");
+  const detect = el("detect");
+  const q1 = el("q1");
+  const opts = el("opts");
+  const q2 = el("q2");
+  const a2 = el("a2");
+  const answer = el("answer");
+  const lines = el("lines");
+  const count = el("count");
+  const copied = el("copied");
 
   let visible = true;
   new IntersectionObserver((entries) => (visible = entries[0].isIntersecting)).observe(demo);
@@ -120,63 +118,64 @@ function initDemo() {
     while (!visible || document.hidden) await wait(300);
   };
 
-  const render = (prompt, values, activeKey) => {
-    els.preview.innerHTML = compile(prompt, values).html;
-    const mark = activeKey && els.preview.querySelector(`mark[data-key="${activeKey}"]`);
-    if (mark) els.preview.scrollTop = Math.max(0, mark.offsetTop - 48);
+  const type = async (target, text, node) => {
+    node.classList.add("is-typing");
+    for (let i = 1; i <= text.length; i++) {
+      await gate();
+      target.textContent = text.slice(0, i);
+      await wait(24 + Math.random() * 40);
+    }
+    node.classList.remove("is-typing");
   };
 
-  const setScene = (scene, values) => {
-    const prompt = byId[scene.id];
-    els.metier.textContent = metierById[prompt.metier].nom;
-    els.categorie.textContent = CATEGORIES.find((c) => c.id === prompt.categorie).nom;
-    els.titre.textContent = prompt.titre;
-    scene.typed.forEach((key, i) => {
-      els.fields[i].querySelector(".demo__label").textContent = VARIABLES[key].label;
-      els.fields[i].querySelector(".demo__value").textContent = values[key] || "";
-      els.fields[i].classList.remove("is-active");
-    });
-    render(prompt, values, scene.typed[0]);
-    return prompt;
+  const show = (scene, full) => {
+    const t = TYPE_BY_ID[scene.type];
+    idea.textContent = full ? scene.idea : "";
+    detect.innerHTML = full ? chipType(t) : "";
+    q1.textContent = full ? scene.q1 : "";
+    opts.innerHTML = full ? scene.opts.map((o, i) => `<span class="demo__opt${scene.on.includes(i) ? " is-on" : ""}">${esc(o)}</span>`).join("") : "";
+    q2.textContent = full ? scene.q2 : "";
+    a2.textContent = full ? scene.a2 : "";
+    lines.innerHTML = scene.lines.map((l) => `<span class="demo__line${full ? " is-on" : ""}">${l}</span>`).join("");
+    count.textContent = full ? "Prompt complet" : "";
   };
 
   if (reducedMotion) {
-    setScene(SCENARIOS[0], SCENARIOS[0].values);
+    show(SCENES[0], true);
     return;
   }
 
   const play = async () => {
-    for (let s = 0; ; s = (s + 1) % SCENARIOS.length) {
-      const scene = SCENARIOS[s];
-      const values = { ...scene.values };
-      scene.typed.forEach((k) => (values[k] = ""));
-      const prompt = setScene(scene, values);
-      await wait(700);
-
-      for (let i = 0; i < scene.typed.length; i++) {
-        const key = scene.typed[i];
-        const field = els.fields[i];
-        const out = field.querySelector(".demo__value");
-        field.classList.add("is-active");
-        const text = scene.values[key];
-        for (let c = 1; c <= text.length; c++) {
-          await gate();
-          values[key] = text.slice(0, c);
-          out.textContent = values[key];
-          render(prompt, values, key);
-          await wait(26 + Math.random() * 44);
-        }
-        await wait(350);
-        field.classList.remove("is-active");
-      }
-
+    for (let s = 0; ; s = (s + 1) % SCENES.length) {
+      const scene = SCENES[s];
+      show(scene, false);
       await wait(500);
-      els.copy.style.scale = "0.95";
-      await wait(140);
-      els.copy.style.scale = "";
-      els.copied.classList.add("is-on");
-      await wait(1600);
-      els.copied.classList.remove("is-on");
+      await type(idea, scene.idea, idea);
+      await wait(350);
+      detect.innerHTML = chipType(TYPE_BY_ID[scene.type]);
+      const lineEls = lines.querySelectorAll(".demo__line");
+      lineEls[0].classList.add("is-on");
+      await wait(600);
+      q1.textContent = scene.q1;
+      opts.innerHTML = scene.opts.map((o) => `<span class="demo__opt">${esc(o)}</span>`).join("");
+      await wait(700);
+      for (const i of scene.on) {
+        await gate();
+        opts.children[i].classList.add("is-on");
+        await wait(380);
+      }
+      lineEls[1].classList.add("is-on");
+      await wait(300);
+      q2.textContent = scene.q2;
+      await type(a2, scene.a2, answer);
+      lineEls[2].classList.add("is-on");
+      await wait(400);
+      lineEls[3].classList.add("is-on");
+      count.textContent = "Prompt complet";
+      await wait(700);
+      copied.classList.add("is-on");
+      await wait(1700);
+      copied.classList.remove("is-on");
       await wait(900);
       await gate();
     }
@@ -184,8 +183,32 @@ function initDemo() {
   play();
 }
 
-renderMetiers();
-renderParcours();
+// Champs d'idée : la zone grandit avec le texte (rien n'est coupé), Entrée envoie
+function initIdeaForms() {
+  const grows = [...document.querySelectorAll(".idea-form")].map((form) => {
+    const area = form.querySelector("textarea");
+    const grow = () => {
+      area.style.height = "auto";
+      area.style.height = `${area.scrollHeight}px`;
+    };
+    area.addEventListener("input", grow);
+    area.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || e.shiftKey) return;
+      e.preventDefault();
+      if (area.value.trim()) form.requestSubmit();
+    });
+    return grow;
+  });
+  const growAll = () => grows.forEach((grow) => grow());
+  growAll();
+  // La hauteur dépend de la police et de la largeur : on la recalcule quand elles changent
+  document.fonts?.ready.then(growAll);
+  window.addEventListener("resize", growAll, { passive: true });
+}
+
+renderHeroExamples();
+initIdeaForms();
+renderTypes();
 renderCounts();
 initHeader();
 initReveal();

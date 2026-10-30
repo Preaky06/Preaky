@@ -1,6 +1,8 @@
 # Promptoir
 
-Bibliothèque de prompts IA classés par métier. Chaque prompt contient la méthode du métier, des champs à remplir (le prompt s'adapte au contexte de la personne) et des garde-fous contre les inventions de l'IA. Site statique : HTML, CSS et JavaScript sans framework ni étape de build.
+Tu décris ton idée en quelques mots, le site reconnaît de quoi il s'agit, te pose les questions qui comptent pour ce type d'idée, puis assemble un prompt complet : rôle, contexte, méthode, format, garde-fous et dernière consigne. Le prompt se copie ou s'ouvre directement dans Claude ou ChatGPT.
+
+Site statique : HTML, CSS et JavaScript sans framework ni étape de build. Rien n'est envoyé à un serveur.
 
 ## Lancer en local
 
@@ -14,42 +16,51 @@ python3 -m http.server 4173
 ## Structure
 
 ```
-index.html              page d'accueil
-bibliotheque.html       la bibliothèque (recherche, filtres, fiche prompt, profil)
-404.html                page introuvable
-css/style.css           toute la DA (couleurs, typographie, composants)
-js/home.js              accueil : métiers, parcours, démo animée du hero
-js/library.js           bibliothèque
-js/lib/                 assemblage des prompts, stockage local, icônes, interface
-js/data/metiers.js      métiers, catégories de tâches, parcours
-js/data/variables.js    champs à remplir ({{cle}}) : libellé, exemple, profil, facultatif
-js/data/prompts/        un fichier par métier
-fonts/                  Chewy (titres) et Inter (texte), hébergées sur le site
-vendor/lenis.min.js     défilement fluide de l'accueil
-scripts/check-data.mjs  vérification des données
+index.html               accueil
+creer.html               le créateur : idée → questions → prompt
+404.html                 page introuvable
+css/style.css            toute la DA (palette, typographie, composants)
+js/home.js               accueil : démo animée, types d'idées, compteurs
+js/builder.js            créateur : étapes, questions, aperçu en direct, historique
+js/data/types/           un fichier par type d'idée (13), index.js les rassemble
+js/lib/kit.js            assemblage du prompt (sections, surlignage des réponses)
+js/lib/detect.js         reconnaissance du type d'idée par mots-clés
+js/lib/store.js          brouillon et historique (localStorage)
+js/lib/share.js          copier, ouvrir dans Claude ou ChatGPT, télécharger
+js/lib/ui.js, icons.js   en-tête, apparitions, toast, icônes
+fonts/                   Chewy (titres) et Inter (texte), hébergées sur le site
+vendor/lenis.min.js      défilement fluide de l'accueil
+scripts/check.mjs        vérification des types d'idées
+scripts/typo-fr.py       espaces insécables de la typographie française dans les pages
 ```
 
-## Ajouter un prompt
+## Comment fonctionne un type d'idée
 
-1. Ajoute un objet dans le fichier du métier (`js/data/prompts/<metier>.js`), sur le modèle des autres : `id`, `metier`, `categorie`, `niveau`, `titre`, `resume`, `tags`, `prompt`, `resultat`, `verifier`, `relance`.
-2. Dans le texte du prompt, écris les champs à remplir sous la forme `{{cle}}`. Toute nouvelle clé doit être déclarée dans `js/data/variables.js`.
-3. Lance la vérification :
+Chaque fichier de `js/data/types/` exporte :
+
+- `nom`, `icon`, `couleur`, `description`, `exemples` : ce qui s'affiche ;
+- `motsCles` : `[mot, poids]` pour la reconnaissance. Un mot-clé matche en début de mot (`poem` trouve « poèmes ») ; terminé par `$`, il doit correspondre au mot entier (`post$` ne trouve pas « poste ») ;
+- `questions` : `choice` (un choix), `multi` (plusieurs), `text` (réponse courte), `long` (texte libre). Options possibles : `pourquoi` (affiché sous la question), `optional`, `auto` (bouton « Laisse l'IA décider »), `when(réponses)` (question conditionnelle), `suggestions`, `prefill(idée)`, et pour chaque option `match` (pré-sélection d'après les mots de l'idée) ;
+- `build(c)` : construit le prompt avec `c.v(id)` (texte saisi), `c.l(id)` (libellés choisis), `c.is(id, valeur)`, `c.has(id)`, et les fonctions `sec`, `line`, `steps` de `kit.js`.
+
+## Ajouter ou modifier un type d'idée
+
+1. Copie un fichier de `js/data/types/`, adapte-le, puis ajoute-le dans `js/data/types/index.js`.
+2. Lance la vérification :
 
 ```bash
-node scripts/check-data.mjs
+node scripts/check.mjs
 ```
 
-Elle échoue sur un identifiant en double, un métier ou une catégorie inconnus, un champ non déclaré ou un parcours qui pointe vers un prompt absent.
-
-Pour ajouter un métier : une entrée dans `METIERS` (et éventuellement un parcours dans `PARCOURS`), un fichier dans `js/data/prompts/`, et son import dans `js/data/prompts/index.js`.
+Elle assemble chaque prompt avec des réponses vides, complètes et « laissées à l'IA », et refuse : les erreurs, les lignes vides, les doubles espaces, les « … » qui donnent l'impression d'un texte coupé, les exemples affichés qui ne seraient pas reconnus comme leur propre type, et 26 cas de reconnaissance de référence.
 
 ## Données personnelles
 
-Rien n'est envoyé à un serveur : le profil, les champs remplis et les favoris sont stockés dans le `localStorage` du navigateur. Le site ne charge aucun script tiers ni outil de mesure d'audience.
+Le brouillon en cours et les prompts terminés sont stockés dans le `localStorage` du navigateur. Le site ne charge aucun script tiers ni outil de mesure d'audience.
 
 ## Déploiement
 
-Le dossier se déploie tel quel sur Vercel (aucune commande de build). `vercel.json` règle le cache des polices et quelques en-têtes de sécurité.
+Le dossier se déploie tel quel sur Vercel (aucune commande de build). `vercel.json` règle le cache des polices et quelques en-têtes de sécurité. Après le premier déploiement, remplace `og.png` par son adresse complète dans les balises `og:image` : les réseaux sociaux l'exigent.
 
 ## Licences
 
