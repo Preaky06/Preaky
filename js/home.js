@@ -16,7 +16,7 @@ function renderExamples() {
   const hero = document.querySelector("[data-hero-examples]");
   hero?.insertAdjacentHTML(
     "beforeend",
-    ["restaurant", "CV", "révisions de maths", "avis négatif", "course à pied"].map((q) => `<a class="chip" href="${searchUrl(q)}">${esc(q)}</a>`).join(""),
+    ["restaurant", "CV", "révisions de maths", "avis négatif"].map((q) => `<a class="chip" href="${searchUrl(q)}">${esc(q)}</a>`).join(""),
   );
   const custom = document.querySelector("[data-custom-examples]");
   custom?.insertAdjacentHTML(

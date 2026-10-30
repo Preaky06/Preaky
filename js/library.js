@@ -140,7 +140,6 @@ const els = {
   selD: $("[data-select-domaine]"),
   selC: $("[data-select-cat]"),
   domainCard: $("[data-domain-card]"),
-  cats: $("[data-cats]"),
   count: $("[data-count]"),
   reset: $("[data-reset]"),
   approx: $("[data-approx]"),
@@ -152,15 +151,13 @@ const els = {
   custom: $("[data-custom-link]"),
 };
 
-const U_COUNT = Object.fromEntries(UNIVERS.map((u) => [u.id, CATALOGUE.filter((e) => e.d.univers === u.id).length]));
-
 function renderNav() {
   const btn = (attrs, inner, pressed) => `<button class="unav__btn" type="button" ${attrs} aria-pressed="${pressed}">${inner}</button>`;
-  let html = btn('data-univers=""', `<span class="unav__icon">${icon("grid")}</span><span class="unav__name">Tous les univers</span><span class="unav__n">${nf.format(CATALOGUE.length)}</span>`, !state.univers);
+  let html = btn('data-univers=""', `<span class="unav__icon">${icon("grid")}</span><span class="unav__name">Tous les univers</span>`, !state.univers);
   for (const u of UNIVERS) {
     const on = state.univers === u.id;
     html += `<div class="unav__group" data-color="${u.couleur}">`;
-    html += btn(`data-univers="${u.id}"`, `<span class="unav__icon">${icon(u.icon)}</span><span class="unav__name">${fr(u.nom)}</span><span class="unav__n">${nf.format(U_COUNT[u.id])}</span>`, on && !state.domaine);
+    html += btn(`data-univers="${u.id}"`, `<span class="unav__icon">${icon(u.icon)}</span><span class="unav__name">${fr(u.nom)}</span>`, on && !state.domaine);
     if (on) {
       html += `<div class="unav__doms">${DOMAINES.filter((d) => d.univers === u.id)
         .map((d) => `<button class="unav__dom" type="button" data-domaine="${d.id}" aria-pressed="${state.domaine === d.id}">${fr(d.nom)}</button>`)
@@ -171,7 +168,7 @@ function renderNav() {
   els.unav.innerHTML = html;
 
   els.selU.innerHTML = `<option value="">Tous les univers</option>${UNIVERS.map((u) => `<option value="${u.id}"${u.id === state.univers ? " selected" : ""}>${esc(u.nom)}</option>`).join("")}`;
-  const active = [state.univers, state.domaine, state.cat].filter(Boolean).length;
+  const active = [state.univers, state.domaine].filter(Boolean).length;
   const badge = $("[data-filter-count]");
   badge.hidden = !active;
   badge.textContent = active;
@@ -191,21 +188,23 @@ function renderDomainCard() {
     <div>
       <p class="lib-domain__kicker">${fr(u.nom)}</p>
       <h2 class="lib-domain__name">${fr(d.nom)}</h2>
-      <p class="lib-domain__text">${plural(n, "prompt", "prompts")}, dont ${d.sp.length} écrits pour ce seul domaine. Dans chacun, l'IA joue le rôle ${/^une? /.test(d.role) ? "d'" : "de "}${fr(d.role)}.</p>
+      <p class="lib-domain__text">${plural(n, "prompt", "prompts")}, dont ${d.sp.length} écrits pour ce seul domaine.</p>
     </div>`;
 }
 
 function renderCats(beforeCat) {
-  const counts = {};
-  for (const e of beforeCat) counts[e.cat] = (counts[e.cat] || 0) + 1;
-  els.selC.innerHTML = `<option value="">Toutes (${nf.format(beforeCat.length)})</option>${CATEGORIES.filter((c) => counts[c.id] || state.cat === c.id)
-    .map((c) => `<option value="${c.id}"${c.id === state.cat ? " selected" : ""}>${esc(c.nom)} (${nf.format(counts[c.id] || 0)})</option>`)
-    .join("")}`;
-  const chip = (attrs, label, n, pressed) => `<button class="chip" type="button" ${attrs} aria-pressed="${pressed}">${label}<span class="chip__n">${nf.format(n)}</span></button>`;
-  let html = chip('data-cat=""', "Toutes", beforeCat.length, !state.cat);
-  for (const c of CATEGORIES) if (counts[c.id] || state.cat === c.id) html += chip(`data-cat="${c.id}"`, esc(c.nom), counts[c.id] || 0, state.cat === c.id);
-  html += `<button class="chip chip--fav" type="button" data-fav-filter aria-pressed="${state.fav}">${icon("star")}Favoris<span class="chip__n">${nf.format(favorites.size)}</span></button>`;
-  els.cats.innerHTML = html;
+  const present = new Set(beforeCat.map((e) => e.cat));
+  const cats = CATEGORIES.filter((c) => present.has(c.id) || state.cat === c.id);
+  els.selC.innerHTML = `<option value="">Toutes les tâches</option>${cats.map((c) => `<option value="${c.id}"${c.id === state.cat ? " selected" : ""}>${esc(c.nom)}</option>`).join("")}`;
+  const favBtn = $("[data-fav-filter]");
+  favBtn.setAttribute("aria-pressed", String(state.fav));
+  renderFavCount();
+}
+
+function renderFavCount() {
+  const badge = $("[data-fav-count]");
+  badge.textContent = nf.format(favorites.size);
+  badge.hidden = favorites.size === 0;
 }
 
 function card(e) {
@@ -217,8 +216,6 @@ function card(e) {
       <button class="pc__fav" type="button" data-fav="${e.id}" aria-pressed="${fav}" aria-label="Favori : ${esc(e.t)} (${esc(e.d.nom)})">${icon("star")}</button>
     </div>
     <h3 class="pc__title"><a href="#${e.id}" data-open="${e.id}">${fr(e.t)}</a></h3>
-    <p class="pc__text">${fr(e.r)}</p>
-    <p class="pc__foot"><span class="pc__cat">${esc(CAT_BY_ID[e.cat].nom)}</span>${e.s ? `<span class="pc__spec">${icon("sparkle")}Propre à ce domaine</span>` : ""}</p>
   </li>`;
 }
 
@@ -253,9 +250,12 @@ function render({ keepPage = false } = {}) {
 
 // Après un changement de filtre, la nouvelle liste se lit depuis son début :
 // si l'utilisateur était descendu plus bas, on remonte au haut des résultats.
-function toResultsTop() {
+function toResultsTop({ always = false } = {}) {
   const results = $("#resultats");
-  if (results.getBoundingClientRect().top >= $(".header").offsetHeight) return;
+  const top = results.getBoundingClientRect().top;
+  const header = $(".header").offsetHeight;
+  // « always » : aussi quand la liste commence trop bas pour être vue
+  if (top >= header && (!always || top < innerHeight * 0.4)) return;
   results.scrollIntoView({ block: "start", behavior: reducedMotion ? "auto" : "smooth" });
 }
 
@@ -273,8 +273,7 @@ function toggleFavorite(id) {
   else favorites.add(id);
   saveFavorites([...favorites]);
   document.querySelectorAll(`[data-fav="${CSS.escape(id)}"]`).forEach((b) => b.setAttribute("aria-pressed", String(favorites.has(id))));
-  const chipN = $("[data-fav-filter] .chip__n");
-  if (chipN) chipN.textContent = nf.format(favorites.size);
+  renderFavCount();
   return favorites.has(id);
 }
 
@@ -311,8 +310,11 @@ function fieldHtml(e, key, value) {
   return `<div class="pf">
     <label class="pf__label" for="pf-${key}">${fr(c.l)}${c.opt ? ' <span class="pf__opt">facultatif</span>' : ""}</label>
     <textarea class="q-input pf__input${multi ? "" : " q-input--line"}" id="pf-${key}" data-key="${key}" rows="${multi ? 3 : 1}"${multi ? "" : " data-line"} placeholder="${esc(placeholder(key, e.d))}">${esc(value)}</textarea>
-    ${c.profil ? '<p class="pf__hint">Retenu sur cet appareil pour tes autres prompts.</p>' : ""}
   </div>`;
+}
+
+function favLabel(on) {
+  return on ? "Retirer des favoris" : "Ajouter aux favoris";
 }
 
 function renderDialog(e) {
@@ -320,46 +322,45 @@ function renderDialog(e) {
   const v = valuesOf(e);
   const keys = fieldsOf(e);
   const fav = favorites.has(e.id);
+  const hasProfile = keys.some((k) => PROFILE_KEYS.includes(k));
   dlg.dataset.color = u.couleur;
   pForm.innerHTML = `
-    <p class="pdlg__crumbs">
-      <button class="pdlg__crumb" type="button" data-goto-univers="${u.id}"><span class="pdlg__crumb-icon">${icon(u.icon)}</span>${fr(u.nom)}</button>
-      <span aria-hidden="true">›</span>
-      <button class="pdlg__crumb" type="button" data-goto-domaine="${e.d.id}">${fr(e.d.nom)}</button>
-    </p>
-    <h2 class="pdlg__title" id="pdlg-title">${fr(e.t)}</h2>
+    <button class="pdlg__crumb" type="button" data-goto-domaine="${e.d.id}"><span class="pdlg__crumb-icon">${icon(u.icon)}</span>${fr(e.d.nom)}</button>
+    <div class="pdlg__head">
+      <h2 class="pdlg__title" id="pdlg-title">${fr(e.t)}</h2>
+      <button class="pdlg__fav" type="button" data-act="fav" aria-pressed="${fav}" aria-label="${favLabel(fav)}" title="${favLabel(fav)}">${icon("star")}</button>
+    </div>
     <p class="pdlg__lead">${fr(e.r)}</p>
-    <p class="pdlg__tags"><span class="tag">${esc(CAT_BY_ID[e.cat].nom)}</span>${e.s ? `<span class="tag tag--spec">${icon("sparkle")}Propre à ce domaine</span>` : ""}</p>
     <button class="btn btn--ghost btn--sm pdlg__jump" type="button" data-act="jump">${icon("eye")}Voir le prompt complet</button>
 
     <section class="pdlg__block" aria-labelledby="pf-title">
       <h3 class="block-title" id="pf-title">${icon("edit")}${keys.length > 1 ? `Complète ces ${keys.length} champs` : "Complète ce champ"}</h3>
-      <p class="pdlg__help">Tout est facultatif&nbsp;: un champ vide reste marqué [À&nbsp;COMPLÉTER] et l'IA te posera la question.</p>
+      <p class="pdlg__help">Un champ vide&nbsp;? L'IA te posera la question.</p>
       <div class="pfields">${keys.map((k) => fieldHtml(e, k, v[k])).join("")}</div>
+      ${hasProfile ? `<p class="pf__hint">Ton activité et ton public sont retenus sur cet appareil. <button class="link-btn" type="button" data-open-profile>Modifier mon profil</button></p>` : ""}
     </section>
 
-    <section class="pdlg__block" aria-labelledby="po-title">
-      <h3 class="block-title" id="po-title">${icon("sliders")}Options</h3>
+    <div class="pdlg__actions">
+      <button class="btn btn--sun btn--lg" type="button" data-act="copy">${icon("copy")}Copier le prompt</button>
+      ${Object.entries(TARGETS)
+        .map(([k, t]) => `<button class="btn btn--ghost" type="button" data-act="${k}">${icon("external")}Ouvrir dans ${t.nom}</button>`)
+        .join("")}
+    </div>
+
+    <details class="pdlg__extra">
+      <summary>${icon("sliders")}Plus d'options</summary>
       <div class="switches">${Object.entries(OPTION_LABELS)
         .map(([k, label]) => `<button class="switch" type="button" role="switch" aria-checked="${Boolean(opts[k])}" data-switch="${k}"><span class="switch__track"></span>${fr(label)}</button>`)
         .join("")}</div>
-    </section>
-
-    <div class="actions pdlg__actions">
-      <button class="btn btn--sun btn--lg" type="button" data-act="copy">${icon("copy")}Copier le prompt</button>
-      ${Object.entries(TARGETS)
-        .map(([k, t]) => `<button class="btn btn--ink" type="button" data-act="${k}">${icon("external")}Ouvrir dans ${t.nom}</button>`)
-        .join("")}
-    </div>
-    <div class="pdlg__more">
-      <button class="link-btn" type="button" data-act="fav" aria-pressed="${fav}">${icon("star")}<span>${fav ? "Retirer des favoris" : "Ajouter aux favoris"}</span></button>
-      <button class="link-btn" type="button" data-act="link">${icon("link")}Copier le lien de ce prompt</button>
-      <button class="link-btn" type="button" data-act="clear">${icon("refresh")}Vider les champs</button>
-    </div>
-    <div class="pdlg__relance">
-      <p><b>Pour aller plus loin</b>, une fois la réponse reçue, envoie&nbsp;: «&nbsp;<span data-p-relance></span>&nbsp;»</p>
-      <button class="btn btn--ghost btn--sm" type="button" data-act="relance">${icon("copy")}Copier</button>
-    </div>`;
+      <div class="pdlg__relance">
+        <p><b>Pour aller plus loin</b>, une fois la réponse reçue&nbsp;: «&nbsp;<span data-p-relance></span>&nbsp;»</p>
+        <button class="btn btn--ghost btn--sm" type="button" data-act="relance">${icon("copy")}Copier</button>
+      </div>
+      <p class="pdlg__more">
+        <button class="link-btn" type="button" data-act="link">${icon("link")}Copier le lien de ce prompt</button>
+        <button class="link-btn" type="button" data-act="clear">${icon("refresh")}Vider les champs</button>
+      </p>
+    </details>`;
   pForm.querySelectorAll("textarea").forEach(autoGrow);
   updatePreview();
 }
@@ -437,7 +438,9 @@ async function act(name, btn) {
   } else if (name === "fav") {
     const on = toggleFavorite(current.id);
     btn.setAttribute("aria-pressed", String(on));
-    btn.querySelector("span").textContent = on ? "Retirer des favoris" : "Ajouter aux favoris";
+    btn.setAttribute("aria-label", favLabel(on));
+    btn.title = favLabel(on);
+    toast(on ? "Ajouté à tes favoris." : "Retiré de tes favoris.");
     if (state.fav) render({ keepPage: true });
   } else if (name === "link") {
     const ok = await copyText(`${location.origin}${location.pathname}#${current.id}`);
@@ -522,24 +525,33 @@ profileFields.addEventListener("input", (e) => {
   if (!t.dataset.profileKey) return;
   if (t.value.includes("\n")) t.value = t.value.replace(/\s*\n\s*/g, " ");
   autoGrow(t);
-  profile = { ...profile, [t.dataset.profileKey]: t.value.trim() };
-  saveProfile(profile);
-  // Les prompts pas encore ouverts reprendront le profil à jour
-  values.clear();
+  applyProfile(t.dataset.profileKey, t.value.trim());
 });
+
+// Reporte une valeur du profil dans les prompts déjà ouverts et dans la fiche affichée
+function applyProfile(key, value) {
+  profile = { ...profile, [key]: value };
+  saveProfile(profile);
+  for (const v of values.values()) if (key in v) v[key] = value;
+  const field = pForm.querySelector(`textarea[data-key="${key}"]`);
+  if (field) {
+    field.value = value;
+    autoGrow(field);
+    updatePreview();
+  }
+}
 
 profileDlg.addEventListener("click", (e) => {
   if (e.target.closest("[data-close]") || e.target === profileDlg) profileDlg.close();
   if (e.target.closest("[data-profile-clear]")) {
-    profile = {};
-    saveProfile(profile);
-    values.clear();
+    PROFILE_KEYS.forEach((key) => applyProfile(key, ""));
     renderProfile();
     toast("Profil effacé.");
   }
 });
 
-$("[data-open-profile]").addEventListener("click", () => {
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("[data-open-profile]")) return;
   renderProfile();
   profileDlg.showModal();
   requestAnimationFrame(() => profileFields.querySelectorAll("textarea").forEach(autoGrow));
@@ -601,7 +613,7 @@ els.selC.addEventListener("change", () => {
 });
 
 // Recherches suggérées sous le champ
-const TRIES = ["avis négatif", "CV", "fiche de révision", "boulangerie", "plan de 4 semaines", "prospection"];
+const TRIES = ["avis négatif", "CV", "fiche de révision", "boulangerie"];
 $("[data-try]").insertAdjacentHTML("beforeend", TRIES.map((t) => `<button class="chip" type="button" data-try-q="${esc(t)}">${esc(t)}</button>`).join(""));
 $("[data-try]").addEventListener("click", (e) => {
   const b = e.target.closest("[data-try-q]");
@@ -612,13 +624,11 @@ $("[data-try]").addEventListener("click", (e) => {
   toResultsTop();
 });
 
-els.cats.addEventListener("click", (e) => {
-  const b = e.target.closest("button");
-  if (!b) return;
-  if (b.hasAttribute("data-fav-filter")) state.fav = !state.fav;
-  else state.cat = state.cat === b.dataset.cat ? "" : b.dataset.cat;
+// Favoris, dans l'en-tête : affiche ou masque uniquement les favoris, puis montre la liste
+$("[data-fav-filter]").addEventListener("click", () => {
+  state.fav = !state.fav;
   render();
-  toResultsTop();
+  toResultsTop({ always: true });
 });
 
 els.reset.addEventListener("click", () => {
@@ -652,7 +662,7 @@ window.addEventListener("resize", () => {
 readUrl();
 els.q.value = state.q;
 // Sur mobile, les filtres sont repliés, sauf si l'adresse en contient
-if (state.univers || state.domaine || state.cat) $("[data-filters]").open = true;
+if (state.univers || state.domaine) $("[data-filters]").open = true;
 initHeader();
 render();
 document.fonts?.ready.then(() => dlg.open && pForm.querySelectorAll("textarea").forEach(autoGrow));

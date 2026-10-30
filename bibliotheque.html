@@ -38,13 +38,13 @@
       <nav class="nav" id="nav" aria-label="Navigation principale">
         <a href="bibliotheque.html" aria-current="page">Bibliothèque</a>
         <a href="creer.html">Sur mesure</a>
-        <a href="index.html#comment">Comment ça marche</a>
         <a href="index.html#faq">FAQ</a>
       </nav>
       <div class="header__actions">
-        <button class="btn btn--ghost btn--sm" type="button" data-open-profile aria-label="Mon profil">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-          <span class="header__cta-long">Mon profil</span>
+        <button class="btn btn--ghost btn--sm fav-btn" type="button" data-fav-filter aria-pressed="false" aria-label="Mes favoris">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z"/></svg>
+          <span class="header__cta-long">Favoris</span>
+          <span class="badge" data-fav-count hidden>0</span>
         </button>
       </div>
       <button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><span></span><span></span></button>
@@ -54,7 +54,7 @@
   <main class="lib" id="main">
     <section class="wrap lib-top" aria-labelledby="lib-title">
       <h1 class="lib-title" id="lib-title">La bibliothèque<span class="dot">.</span></h1>
-      <p class="lib-lead"><strong data-total>6 709</strong> prompts prêts à l'emploi dans <strong data-total-domaines>196</strong> domaines. Choisis un prompt, complète deux ou trois champs, copie.</p>
+      <p class="lib-lead"><strong>6&nbsp;709</strong> prompts prêts à l'emploi. Cherche, complète, copie.</p>
       <form class="lib-search" role="search" data-search-form>
         <label class="sr-only" for="q">Rechercher un prompt</label>
         <svg class="ic lib-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
@@ -70,7 +70,7 @@
           <summary class="btn btn--ghost lib-filters__toggle">
             <span class="lib-filters__label">
               <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
-              Univers, domaine, tâche
+              Univers et domaine
               <span class="badge" data-filter-count hidden></span>
             </span>
             <svg class="ic lib-filters__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -84,10 +84,6 @@
             <span>Domaine</span>
             <select data-select-domaine></select>
           </label>
-          <label class="lib-select">
-            <span>Type de tâche</span>
-            <select data-select-cat></select>
-          </label>
         </div>
         </details>
         <nav class="unav" data-unav aria-label="Univers"></nav>
@@ -95,9 +91,12 @@
 
       <section class="lib-main" id="resultats" tabindex="-1" aria-labelledby="res-count">
         <div class="lib-domain" data-domain-card hidden></div>
-        <div class="cats" role="group" aria-label="Filtrer par type de tâche" data-cats></div>
         <div class="lib-bar">
           <h2 class="lib-count" id="res-count" data-count aria-live="polite"></h2>
+          <label class="lib-select lib-select--inline">
+            <span class="sr-only">Type de tâche</span>
+            <select data-select-cat></select>
+          </label>
           <button class="link-btn" type="button" data-reset hidden>
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
             Tout afficher
