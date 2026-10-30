@@ -1624,7 +1624,7 @@ dialog::backdrop { background: rgba(21, 17, 46, 0.55); backdrop-filter: blur(4px
 .unav__dom[aria-pressed="true"] { background: var(--t); color: var(--tt); font-weight: 750; box-shadow: inset 0 0 0 1.5px var(--c); }
 
 /* Hauteur réservée : la liste arrive avec le script, le pied de page ne doit pas sauter */
-.lib-main { min-height: 100vh; }
+.lib-main { min-height: 100vh; scroll-margin-top: calc(var(--header-h) + 16px); }
 .lib-main:focus { outline: none; }
 
 .lib-domain {

@@ -6,7 +6,7 @@ import { CHAMPS } from "./data/catalogue/champs.js";
 import { loadFavorites, saveFavorites, loadProfile, saveProfile } from "./lib/store.js";
 import { TARGETS, targetUrl, copyText } from "./lib/share.js";
 import { icon } from "./lib/icons.js";
-import { initHeader, toast } from "./lib/ui.js";
+import { initHeader, toast, reducedMotion } from "./lib/ui.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const PAGE = 36;
@@ -249,6 +249,14 @@ function render({ keepPage = false } = {}) {
   els.custom.href = state.q ? `creer.html?idee=${encodeURIComponent(state.q)}` : "creer.html";
   $("[data-custom]").hidden = false;
   writeUrl();
+}
+
+// Après un changement de filtre, la nouvelle liste se lit depuis son début :
+// si l'utilisateur était descendu plus bas, on remonte au haut des résultats.
+function toResultsTop() {
+  const results = $("#resultats");
+  if (results.getBoundingClientRect().top >= $(".header").offsetHeight) return;
+  results.scrollIntoView({ block: "start", behavior: reducedMotion ? "auto" : "smooth" });
 }
 
 function appendMore() {
@@ -567,6 +575,7 @@ els.unav.addEventListener("click", (e) => {
   }
   state.cat = "";
   render();
+  toResultsTop();
 });
 
 els.selU.addEventListener("change", () => {
@@ -574,6 +583,7 @@ els.selU.addEventListener("change", () => {
   state.domaine = "";
   state.cat = "";
   render();
+  toResultsTop();
 });
 
 els.selD.addEventListener("change", () => {
@@ -581,11 +591,13 @@ els.selD.addEventListener("change", () => {
   if (state.domaine) state.univers = DOMAINE_BY_ID[state.domaine].univers;
   state.cat = "";
   render();
+  toResultsTop();
 });
 
 els.selC.addEventListener("change", () => {
   state.cat = els.selC.value;
   render();
+  toResultsTop();
 });
 
 // Recherches suggérées sous le champ
@@ -597,6 +609,7 @@ $("[data-try]").addEventListener("click", (e) => {
   els.q.value = b.dataset.tryQ;
   state.q = b.dataset.tryQ;
   render();
+  toResultsTop();
 });
 
 els.cats.addEventListener("click", (e) => {
@@ -605,12 +618,14 @@ els.cats.addEventListener("click", (e) => {
   if (b.hasAttribute("data-fav-filter")) state.fav = !state.fav;
   else state.cat = state.cat === b.dataset.cat ? "" : b.dataset.cat;
   render();
+  toResultsTop();
 });
 
 els.reset.addEventListener("click", () => {
   Object.assign(state, { q: "", univers: "", domaine: "", cat: "", fav: false });
   els.q.value = "";
   render();
+  toResultsTop();
 });
 
 els.results.addEventListener("click", (e) => {
