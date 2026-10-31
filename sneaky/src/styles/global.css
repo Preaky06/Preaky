@@ -540,20 +540,9 @@ p {
   max-width: 320px;
 }
 
-.redacted-inline {
-  position: relative;
-  color: var(--text);
-  white-space: nowrap;
-}
-
-.redacted-inline::after {
-  content: '';
-  position: absolute;
-  inset: -1px -3px;
-  background: #000;
-  border-radius: 3px;
-  animation: redact 6s ease-in-out infinite;
-  transform-origin: right;
+.tagline-hl {
+  color: var(--amber);
+  font-weight: 700;
 }
 
 .profile-card {
@@ -3759,21 +3748,6 @@ p {
 @keyframes bandGlow {
   50% {
     fill: #ffd28a;
-  }
-}
-
-@keyframes redact {
-  0%,
-  35% {
-    transform: scaleX(1);
-  }
-  45%,
-  75% {
-    transform: scaleX(0);
-  }
-  85%,
-  100% {
-    transform: scaleX(1);
   }
 }
 

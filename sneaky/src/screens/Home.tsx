@@ -87,7 +87,7 @@ export function Home() {
         </h1>
         <p className="hero-tagline">
           Un quiz de culture générale. <br />
-          L’un de vous <span className="redacted-inline">connaît toutes les réponses</span>.
+          L’un de vous <span className="tagline-hl">connaît toutes les réponses</span>.
         </p>
       </div>
 
