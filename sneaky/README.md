@@ -7,6 +7,7 @@
 Plusieurs séries de questions de culture générale. À chaque série, un joueur tiré au sort devient **la taupe** : il connaît toutes les réponses et doit faire échouer l'équipe sans se faire démasquer. Les autres répondent, débattent à voix haute, convoquent des réunions d'urgence, recoupent les indices… puis votent.
 
 - 384 questions de culture générale en 12 catégories (+ vos **questions maison**)
+- Après chaque question, un **tableau public des réponses** : qui a eu juste, qui a eu faux (en option : la réponse choisie par chacun)
 - Rôles secrets révélés par **scanner d'empreinte** (maintenir le doigt), dossier identique pour tous
 - **Gadgets de la taupe** : brouillage, coupe-chrono, falsification d'indice
 - **Indices** débloqués par les bonnes réponses : agent blanchi, message intercepté, périmètre de suspects…
@@ -22,10 +23,11 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 1. Le chef d'opération crée un salon. Les autres rejoignent avec le **code à 4 lettres** ou le **QR code**.
 2. Chaque série commence par la révélation secrète des rôles : **agent** ou **taupe**.
 3. Chaque question est une **mission d'équipe** : elle est réussie si la **réponse majoritaire** est la bonne (égalité = échec). Débattez à voix haute avant de verrouiller !
-4. La taupe voit la bonne réponse dans son **dossier**. Tout le monde a un dossier identique : ouvrez-le aussi pour brouiller les pistes.
-5. Toutes les 2 missions réussies, l'équipe gagne un **indice** révélé à la réunion suivante.
-6. Entre deux questions, un agent peut déclencher une **réunion d'urgence** (1 par partie par défaut).
-7. En fin de série : briefing puis **vote**. Le plus voté (s'il dépasse les abstentions) est démasqué. Taupe démasquée → les agents gagnent la série. Innocent démasqué → il est écarté et ne vote plus de la série.
+4. Après chaque question, tout le monde voit **qui a eu juste et qui a eu faux** (et la réponse choisie si le chef active « Montrer la réponse de chacun »). Un joueur qui ne se trompe jamais devient suspect.
+5. La taupe voit la bonne réponse dans son **dossier**. Tout le monde a un dossier identique : ouvrez-le aussi pour brouiller les pistes.
+6. Toutes les 2 missions réussies, l'équipe gagne un **indice** révélé à la réunion suivante.
+7. Entre deux questions, un agent peut déclencher une **réunion d'urgence** (1 par partie par défaut).
+8. En fin de série : briefing puis **vote**. Le plus voté (s'il dépasse les abstentions) est démasqué. Taupe démasquée → les agents gagnent la série. Innocent démasqué → il est écarté et ne vote plus de la série.
 
 | Action | Points |
 | --- | --- |

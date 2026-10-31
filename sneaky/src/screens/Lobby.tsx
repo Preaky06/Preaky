@@ -241,7 +241,7 @@ function SettingsPanel({ s, editable, customCount }: { s: Settings; editable: bo
           {s.useCustom && customCount > 0 && <span className="chip chip-sm">🏠 {customCount} questions maison</span>}
         </div>
         <p className="hint">
-          {s.sabotages ? '🕶️ Gadgets de la taupe activés' : '🕶️ Sans gadgets'} · {s.speakingTurns ? '🎙️ Tour de parole' : '🗣️ Débat libre'} ·
+          {s.sabotages ? '🕶️ Gadgets de la taupe activés' : '🕶️ Sans gadgets'} · {s.speakingTurns ? '🎙️ Tour de parole' : '🗣️ Débat libre'} · {s.revealAnswers === 'full' ? '🔎 Réponses de chacun visibles' : '✓✗ Juste/faux de chacun visible'} ·
           🚨 {s.emergencyPerPlayer} réunion{s.emergencyPerPlayer > 1 ? 's' : ''} d’urgence · ≈ {minutes} min
         </p>
       </div>
@@ -283,6 +283,12 @@ function SettingsPanel({ s, editable, customCount }: { s: Settings; editable: bo
       </div>
       <Toggle label="Gadgets de la taupe" hint="Brouillage, coupe-chrono, faux indice" value={s.sabotages} onChange={(v) => set({ sabotages: v })} />
       <Toggle label="Tour de parole" hint="Chacun son tour pour se défendre" value={s.speakingTurns} onChange={(v) => set({ speakingTurns: v })} />
+      <Toggle
+        label="Montrer la réponse de chacun"
+        hint={s.revealAnswers === 'full' ? 'Après chaque question : la lettre choisie et juste/faux' : 'Après chaque question : seulement juste/faux (plus de bluff)'}
+        value={s.revealAnswers === 'full'}
+        onChange={(v) => set({ revealAnswers: v ? 'full' : 'correctness' })}
+      />
       {s.speakingTurns && (
         <Stepper label="Temps de parole" value={s.speakingTime} min={LIMITS.speakingTime[0]} max={LIMITS.speakingTime[1]} step={5} unit="s" onChange={(v) => set({ speakingTime: v })} />
       )}

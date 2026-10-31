@@ -26,6 +26,7 @@ import type {
   PublicPlayer,
   QuestionResultView,
   Role,
+  AnswerStatus,
   RoundEndView,
   RoundLogEntry,
   SabotageKind,
@@ -38,7 +39,7 @@ import { clamp, cleanText, pick, shuffle } from './util.ts';
 
 // Durées fixes (secondes)
 const ROLE_REVEAL_TIME = 30;
-const RESULT_TIME = 7;
+const RESULT_TIME = 10;
 const VOTE_RESULT_TIME = 10;
 const ROUND_END_TIME = 30;
 const ALL_DONE_DELAY = 1.2;
@@ -479,6 +480,7 @@ export class Room {
       sabotages: typeof patch.sabotages === 'boolean' ? patch.sabotages : s.sabotages,
       speakingTurns: typeof patch.speakingTurns === 'boolean' ? patch.speakingTurns : s.speakingTurns,
       useCustom: typeof patch.useCustom === 'boolean' ? patch.useCustom : s.useCustom,
+      revealAnswers: patch.revealAnswers === 'full' || patch.revealAnswers === 'correctness' ? patch.revealAnswers : s.revealAnswers,
     };
     this.settings = next;
     for (const p of this.players.values()) p.emergencyLeft = next.emergencyPerPlayer;
@@ -631,11 +633,14 @@ export class Room {
     const q = r.questions[r.qIndex];
     const distribution = [0, 0, 0, 0];
     const answers: Record<string, number | null> = {};
+    const results: Record<string, AnswerStatus> = {};
     for (const p of this.players.values()) {
       const a = r.answers.get(p.id);
       answers[p.id] = a?.option ?? null;
+      results[p.id] = answers[p.id] === null ? 'none' : answers[p.id] === q.correct ? 'ok' : 'ko';
       if (a?.option !== null && a?.option !== undefined) distribution[a.option]++;
     }
+    const picks = this.settings.revealAnswers === 'full' ? { ...answers } : null;
     const max = Math.max(...distribution);
     const tops = distribution.map((c, i) => (c === max ? i : -1)).filter((i) => i >= 0);
     const majority = max > 0 && tops.length === 1 ? tops[0] : null;
@@ -684,6 +689,8 @@ export class Room {
       lockOrder,
       jammed: r.jammed,
       rushed: r.rushed,
+      results,
+      picks,
       answers,
     });
 
@@ -697,6 +704,8 @@ export class Room {
       lockOrder,
       intelUnlocked,
       isLast,
+      results,
+      picks,
     };
     this.log(
       success ? `Question ${r.qIndex + 1} : mission réussie.` : `Question ${r.qIndex + 1} : mission échouée.`,
@@ -778,6 +787,7 @@ export class Room {
       })),
       intercepted: r.intercepted,
       usedKinds: r.usedIntelKinds,
+      reveal: this.settings.revealAnswers,
     };
   }
 

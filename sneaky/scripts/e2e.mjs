@@ -123,6 +123,7 @@ async function playRound(round) {
       await p.locator('.bottom-bar .btn-xl').click();
     }
     await host.waitForSelector('.result-stamp', { timeout: 20000 });
+    if (round === 2 && q === 0) await shot(tv, '29-plateau-tv-resultat');
     if (round === 1 && q < 2) await shot(host, `11-resultat-q${q + 1}`);
     if (round === 1 && q === 1) await shot(pages[moleIndex], '12-jam-attendu');
     if (round === 1 && q === 0) {

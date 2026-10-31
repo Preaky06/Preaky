@@ -32,6 +32,11 @@ export type Role = 'agent' | 'mole';
 
 export type SabotageKind = 'jam' | 'rush' | 'falsify';
 
+/** Ce que l'on montre à tous après chaque question : juste/faux seulement, ou aussi la réponse choisie. */
+export type RevealMode = 'correctness' | 'full';
+
+export type AnswerStatus = 'ok' | 'ko' | 'none';
+
 export interface Settings {
   rounds: number;
   questionsPerRound: number;
@@ -45,6 +50,7 @@ export interface Settings {
   speakingTime: number;
   emergencyPerPlayer: number;
   useCustom: boolean;
+  revealAnswers: RevealMode;
 }
 
 export interface CustomQuestion {
@@ -102,6 +108,10 @@ export interface QuestionResultView {
   lockOrder: string[];
   intelUnlocked: boolean;
   isLast: boolean;
+  /** Résultat de chaque joueur, visible par tous. */
+  results: Record<string, AnswerStatus>;
+  /** Réponse choisie par chaque joueur (uniquement si le réglage « réponses complètes » est actif). */
+  picks: Record<string, number | null> | null;
 }
 
 export interface RoundLogEntry {
@@ -116,6 +126,8 @@ export interface RoundLogEntry {
   lockOrder: string[];
   jammed: boolean;
   rushed: boolean;
+  results: Record<string, AnswerStatus>;
+  picks: Record<string, number | null> | null;
 }
 
 export interface MissionView {

@@ -4,6 +4,7 @@ import type { PublicPlayer } from '../../shared/types.ts';
 import { TopBar, Ticker } from '../components/Chrome.tsx';
 import { NOTE_ICON, NotePicker } from '../components/Dossier.tsx';
 import { IntelList, Journal } from '../components/Intel.tsx';
+import { useRoundScores } from '../components/Answers.tsx';
 import { Avatar, Sheet, TimerRing } from '../components/ui.tsx';
 import { useCountdown, useGame, useNotes, useOnce, usePlayers } from '../lib/hooks.ts';
 import { sfx } from '../lib/sound.ts';
@@ -52,6 +53,7 @@ function Suspects({ onPick }: { onPick: (p: PublicPlayer) => void }) {
   const g = useGame();
   const m = g.meeting!;
   const [notes] = useNotes(g.code, g.round);
+  const scores = useRoundScores(g.history);
   return (
     <div className="suspects">
       {g.players.map((p) => {
@@ -68,6 +70,11 @@ function Suspects({ onPick }: { onPick: (p: PublicPlayer) => void }) {
           >
             <Avatar player={p} size={52} />
             <span className="suspect-name">{p.name}</span>
+            {scores[p.id] && (
+              <span className="suspect-score mono" title="Bonnes réponses cette série">
+                ✓ {scores[p.id].good}/{scores[p.id].played}
+              </span>
+            )}
             {p.benched ? (
               <span className="suspect-tag">innocent·e écarté·e</span>
             ) : (

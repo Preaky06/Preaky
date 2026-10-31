@@ -19,6 +19,10 @@ export function Rules() {
           la bonne. En cas d’égalité, elle échoue.
         </p>
         <p>
+          Après chaque question, un tableau montre à tout le monde <strong>qui a eu juste et qui a eu faux</strong> (et, si le chef l’a
+          activé, la réponse choisie par chacun). Un joueur qui ne se trompe jamais devient vite suspect…
+        </p>
+        <p>
           La taupe voit la bonne réponse dans son <strong>dossier</strong>. Son but : faire échouer les missions en orientant le débat… sans
           paraître trop sûre d’elle. Tout le monde possède un dossier identique : ouvrez-le aussi pour brouiller les pistes.
         </p>
@@ -100,7 +104,7 @@ export function Rules() {
         <ul>
           <li>Observez qui verrouille vite, qui hésite, qui insiste trop.</li>
           <li>Notez vos soupçons dans le carnet du dossier : il est privé.</li>
-          <li>Taupe : répondez juste de temps en temps pour rester crédible.</li>
+          <li>Taupe : trop de bonnes réponses te trahiront, trop de mauvaises aussi. Dose.</li>
           <li>Posez les téléphones pendant les réunions et regardez-vous dans les yeux.</li>
         </ul>
       </section>

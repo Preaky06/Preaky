@@ -89,6 +89,7 @@ export const DEFAULT_SETTINGS: Settings = {
   speakingTime: 20,
   emergencyPerPlayer: 1,
   useCustom: true,
+  revealAnswers: 'correctness',
 };
 
 /** Un indice est débloqué toutes les N bonnes réponses collectives, au plus 3 par série. */

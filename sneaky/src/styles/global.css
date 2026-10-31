@@ -2196,6 +2196,161 @@ p {
   gap: 4px;
 }
 
+/* ─── Tableau des réponses (après chaque question) ─── */
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.answers .section-title {
+  margin: 0;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.ans-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px 8px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  min-width: 0;
+  animation: popIn 0.4s cubic-bezier(0.2, 1.4, 0.4, 1) backwards;
+}
+
+.ans-card.ans-ok {
+  border-color: rgba(61, 255, 168, 0.65);
+  background: linear-gradient(180deg, rgba(61, 255, 168, 0.16), transparent 75%), var(--panel);
+}
+
+.ans-card.ans-ko {
+  border-color: rgba(255, 59, 92, 0.65);
+  background: linear-gradient(180deg, rgba(255, 59, 92, 0.16), transparent 75%), var(--panel);
+}
+
+.ans-card.ans-none {
+  opacity: 0.6;
+}
+
+.ans-me {
+  box-shadow: 0 0 0 2px rgba(255, 181, 71, 0.6);
+}
+
+.ans-rank {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.ans-name {
+  font-size: 12px;
+  font-weight: 700;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ans-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.ans-ok .ans-verdict {
+  color: var(--green);
+}
+
+.ans-ko .ans-verdict {
+  color: var(--red);
+}
+
+.ans-none .ans-verdict {
+  color: var(--muted);
+}
+
+.ans-pick {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  font-size: 10px;
+}
+
+.ans-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ans-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px 2px 2px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 11px;
+}
+
+.ans-chip.ans-ok {
+  border-color: rgba(61, 255, 168, 0.5);
+  color: var(--green);
+}
+
+.ans-chip.ans-ko {
+  border-color: rgba(255, 59, 92, 0.5);
+  color: var(--red);
+}
+
+.ans-chip.ans-none {
+  color: var(--muted);
+}
+
+.suspect-score {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.options-compact .option {
+  min-height: 46px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 14px;
+}
+
+.options-compact .option-letter {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+}
+
+.options-compact .option {
+  grid-template-columns: 30px 1fr auto;
+}
+
+.board-mode .answers-grid {
+  grid-template-columns: repeat(6, 1fr);
+}
+
 /* ─── Réunion ─── */
 .meeting-head {
   position: relative;

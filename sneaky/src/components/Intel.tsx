@@ -1,5 +1,6 @@
 import type { Intel, RoundLogEntry } from '../../shared/types.ts';
 import { usePlayers } from '../lib/hooks.ts';
+import { AnswersRow } from './Answers.tsx';
 import { Avatar, CategoryChip, Empty } from './ui.tsx';
 
 const ICON: Record<Intel['kind'], string> = {
@@ -103,6 +104,7 @@ export function Journal({ history, moleAnswers }: { history: RoundLogEntry[]; mo
               ))}
             </div>
             {moleAnswers && ma === null && <p className="small muted">🐀 La taupe n’a pas répondu.</p>}
+            <AnswersRow entry={h} />
             {h.lockOrder.length > 0 && (
               <div className="journal-locks">
                 <span className="mono small muted">Verrouillage :</span>

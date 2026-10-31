@@ -118,7 +118,7 @@ describe('déroulé de partie', () => {
           break;
         }
         case 'questionResult':
-          tick(8000);
+          tick(11_000);
           break;
         case 'meeting':
           ids.forEach((id) => room.skipMeeting(id));
@@ -201,19 +201,19 @@ describe('déroulé de partie', () => {
       room.lock(id, 1);
     });
     tick(1500);
-    tick(8000);
+    tick(11_000);
     ids.forEach((id) => {
       room.select(id, 2, 0);
       room.lock(id, 2);
     });
     tick(1500);
-    tick(8000);
+    tick(11_000);
     ids.forEach((id) => {
       room.select(id, 3, 0);
       room.lock(id, 3);
     });
     tick(1500);
-    tick(8000);
+    tick(11_000);
     expect(room.phase).toBe('meeting');
     expect(room.viewFor(ids[0]).meeting!.kind).toBe('final');
     ids.forEach((id) => room.skipMeeting(id));
@@ -259,7 +259,7 @@ describe('déroulé de partie', () => {
       });
       tick(1500);
       expect(room.phase).toBe('questionResult');
-      tick(8000);
+      tick(11_000);
     }
     expect(room.phase).toBe('meeting');
     const m = room.viewFor(ids[0]).meeting!;
@@ -313,7 +313,7 @@ describe('déroulé de partie', () => {
         room.lock(id, q);
       });
       tick(1500);
-      tick(8000);
+      tick(11_000);
     }
     expect(room.phase).toBe('meeting');
     const first = room.viewFor(ids[0]).meeting!.speakerId!;
@@ -324,5 +324,82 @@ describe('déroulé de partie', () => {
     tick(10_500);
     expect(room.viewFor(ids[0]).meeting!.speakerId).not.toBe(second);
     expect(r).toBeTruthy();
+  });
+});
+
+describe('résultats publics après chaque question', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  for (const mode of ['correctness', 'full'] as const) {
+    it(`montre à tous qui a eu juste (mode ${mode})`, () => {
+      const { room, ids } = makeRoom(4);
+      room.updateSettings({ rounds: 1, questionsPerRound: 3, revealAnswers: mode });
+      room.start();
+      ids.forEach((id) => room.setReady(id));
+      tick(1500);
+      const q = room.round!.questions[0];
+      const wrong = (q.correct + 1) % 4;
+      room.select(ids[0], 0, q.correct);
+      room.select(ids[1], 0, wrong);
+      room.select(ids[2], 0, q.correct);
+      ids.slice(0, 3).forEach((id) => room.lock(id, 0));
+      tick(30_000);
+      expect(room.phase).toBe('questionResult');
+      for (const viewer of [...ids, null]) {
+        const res = room.viewFor(viewer).questionResult!;
+        expect(res.results).toEqual({ [ids[0]]: 'ok', [ids[1]]: 'ko', [ids[2]]: 'ok', [ids[3]]: 'none' });
+        if (mode === 'full') expect(res.picks![ids[1]]).toBe(wrong);
+        else expect(res.picks).toBeNull();
+      }
+      tick(11_000);
+      const hist = room.viewFor(ids[0]).history;
+      expect(hist[0].results[ids[1]]).toBe('ko');
+      expect(JSON.stringify(hist)).not.toContain('"answers"');
+    });
+  }
+});
+
+describe('indices', () => {
+  it('ne désignent jamais la taupe à eux seuls, même avec les résultats publics', async () => {
+    const { trueIntel } = await import('../server/intel.ts');
+    for (let run = 0; run < 500; run++) {
+      const n = 4 + (run % 7);
+      const players = Array.from({ length: n }, (_, i) => `p${i}`);
+      const moleId = players[run % n];
+      const reveal = run % 2 ? 'full' : 'correctness';
+      const log = Array.from({ length: 5 }, (_, index) => {
+        const correct = index % 4;
+        const answers: Record<string, number | null> = {};
+        for (const p of players) answers[p] = Math.random() < 0.1 ? null : Math.random() < 0.6 ? correct : Math.floor(Math.random() * 4);
+        return { index, options: ['a', 'b', 'c', 'd'], correct, answers, lockOrder: [...players] };
+      });
+      const ctx = {
+        moleId,
+        suspects: [...players],
+        names: Object.fromEntries(players.map((p) => [p, p])),
+        log,
+        intercepted: new Set<number>(),
+        usedKinds: [] as never[],
+        reveal: reveal as 'full' | 'correctness',
+      };
+      for (let k = 0; k < 3; k++) {
+        const it = trueIntel(ctx);
+        if (!it) break;
+        const visible = (e: (typeof log)[number], a: number | null) =>
+          a === null ? 'none' : reveal === 'full' ? `p${a}` : a === e.correct ? 'ok' : 'ko';
+        if (it.kind === 'intercept') {
+          const e = log[Number(it.text.match(/Question (\d+)/)![1]) - 1];
+          const f = visible(e, e.answers[moleId]);
+          expect(ctx.suspects.filter((id) => visible(e, e.answers[id]) === f).length).toBeGreaterThanOrEqual(3);
+        }
+        if (it.kind === 'accuracy') {
+          const count = (id: string) => log.filter((e) => e.answers[id] === e.correct).length;
+          expect(ctx.suspects.filter((id) => count(id) === count(moleId)).length).toBeGreaterThanOrEqual(3);
+        }
+        if (it.kind === 'circle') expect(it.playerIds.length).toBeGreaterThanOrEqual(3);
+        if (it.kind === 'innocent') expect(it.playerIds[0]).not.toBe(moleId);
+      }
+    }
   });
 });

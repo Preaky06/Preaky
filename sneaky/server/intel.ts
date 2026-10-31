@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import type { Intel, IntelKind } from '../shared/types.ts';
+import type { Intel, IntelKind, RevealMode } from '../shared/types.ts';
 import { pick, shuffle } from './util.ts';
 
 export interface IntelLogEntry {
@@ -18,6 +18,30 @@ export interface IntelContext {
   log: IntelLogEntry[];
   intercepted: Set<number>;
   usedKinds: IntelKind[];
+  /** Les résultats de chaque joueur sont publics : un indice ne doit jamais isoler la taupe à lui seul. */
+  reveal: RevealMode;
+}
+
+/** Un indice doit laisser au moins ce nombre de suspects compatibles (taupe comprise). */
+const MIN_GROUP = 3;
+
+/** Ce que tout le monde a vu d'une réponse à l'écran de résultat. */
+function footprint(ctx: IntelContext, e: IntelLogEntry, answer: number | null | undefined): string {
+  if (answer === null || answer === undefined) return 'none';
+  if (ctx.reveal === 'full') return `pick-${answer}`;
+  return answer === e.correct ? 'ok' : 'ko';
+}
+
+/** Suspects dont la réponse visible à la question e est compatible avec « a répondu answer ». */
+function compatible(ctx: IntelContext, e: IntelLogEntry, answer: number | null): string[] {
+  const f = footprint(ctx, e, answer);
+  return ctx.suspects.filter((id) => footprint(ctx, e, e.answers[id]) === f);
+}
+
+function goodCounts(ctx: IntelContext): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const id of ctx.suspects) out[id] = ctx.log.filter((e) => e.answers[id] === e.correct).length;
+  return out;
 }
 
 function intel(kind: IntelKind, title: string, text: string, playerIds: string[]): Intel {
@@ -53,7 +77,9 @@ const TRUE_GENERATORS: Record<IntelKind, Generator> = {
     return intel('circle', 'Périmètre resserré', `La taupe se cache parmi : ${nameList(ids, ctx.names)}.`, ids);
   },
   intercept(ctx) {
-    const candidates = ctx.log.filter((e) => !ctx.intercepted.has(e.index));
+    const candidates = ctx.log.filter(
+      (e) => !ctx.intercepted.has(e.index) && compatible(ctx, e, e.answers[ctx.moleId] ?? null).length >= MIN_GROUP,
+    );
     if (!candidates.length) return null;
     const e = pick(candidates);
     ctx.intercepted.add(e.index);
@@ -66,7 +92,9 @@ const TRUE_GENERATORS: Record<IntelKind, Generator> = {
   },
   accuracy(ctx) {
     if (ctx.log.length < 2 || ctx.usedKinds.includes('accuracy')) return null;
-    const good = ctx.log.filter((e) => e.answers[ctx.moleId] === e.correct).length;
+    const counts = goodCounts(ctx);
+    const good = counts[ctx.moleId];
+    if (ctx.suspects.filter((id) => counts[id] === good).length < MIN_GROUP) return null;
     return intel(
       'accuracy',
       'Profil comportemental',
@@ -128,22 +156,27 @@ export function fakeIntel(ctx: IntelContext): Intel | null {
       return intel('circle', 'Périmètre resserré', `La taupe se cache parmi : ${nameList(ids, ctx.names)}.`, ids);
     },
     () => {
-      const candidates = ctx.log.filter((e) => !ctx.intercepted.has(e.index));
-      if (!candidates.length) return null;
-      const e = pick(candidates);
-      const real = e.answers[ctx.moleId];
-      // On fait dire à la taupe une réponse donnée par un agent, pour orienter les soupçons.
-      const agentAnswers = Object.entries(e.answers)
-        .filter(([id, a]) => id !== ctx.moleId && a !== null && a !== real)
-        .map(([, a]) => a as number);
-      const fake = agentAnswers.length ? pick(agentAnswers) : pick([0, 1, 2, 3].filter((i) => i !== real));
+      // On fait dire à la taupe une réponse qui accuse des innocents (et qui reste crédible au vu des résultats publics).
+      const options = ctx.log
+        .filter((e) => !ctx.intercepted.has(e.index))
+        .flatMap((e) =>
+          [0, 1, 2, 3]
+            .filter((i) => footprint(ctx, e, i) !== footprint(ctx, e, e.answers[ctx.moleId]))
+            .filter((i) => compatible(ctx, e, i).some((id) => id !== ctx.moleId))
+            .map((i) => ({ e, i })),
+        );
+      if (!options.length) return null;
+      const { e, i: fake } = pick(options);
       ctx.intercepted.add(e.index);
       return intel('intercept', 'Message intercepté', `Question ${e.index + 1} : la taupe a répondu « ${e.options[fake]} ».`, []);
     },
     () => {
       if (ctx.log.length < 2 || ctx.usedKinds.includes('accuracy')) return null;
-      const good = ctx.log.filter((e) => e.answers[ctx.moleId] === e.correct).length;
-      const choices = Array.from({ length: ctx.log.length + 1 }, (_, i) => i).filter((i) => i !== good);
+      const counts = goodCounts(ctx);
+      const good = counts[ctx.moleId];
+      // Un nombre porté par au moins un innocent : le faux indice l'accuse sans être réfutable.
+      const choices = [...new Set(ctx.suspects.filter((id) => id !== ctx.moleId).map((id) => counts[id]))].filter((n) => n !== good);
+      if (!choices.length) return null;
       const fake = pick(choices);
       return intel(
         'accuracy',
