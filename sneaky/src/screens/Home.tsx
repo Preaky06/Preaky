@@ -81,9 +81,9 @@ export function Home() {
           <span />
         </div>
         <MoleLogo size={170} />
-        <div className="hero-kicker mono">OPÉRATION</div>
+        <div className="hero-kicker mono">QUIZ D’INFILTRATION</div>
         <h1 className="hero-title">
-          TAU<span className="red">PE</span>
+          SNEA<span className="red">KY</span>
         </h1>
         <p className="hero-tagline">
           Un quiz de culture générale. <br />

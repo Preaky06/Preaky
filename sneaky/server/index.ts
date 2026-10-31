@@ -90,7 +90,7 @@ if (isMain) {
   const app = createApp({ port, timeScale });
   app.listen().then((p) => {
     const hasClient = existsSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'dist'));
-    console.log('\n  🕵️  OPÉRATION TAUPE — QG en ligne\n');
+    console.log('\n  🕵️  SNEAKY — QG en ligne\n');
     console.log(`  Sur cet ordinateur : http://localhost:${p}`);
     for (const ip of lanAddresses()) console.log(`  Sur le Wi-Fi      : http://${ip}:${p}`);
     if (!hasClient) console.log('\n  (Interface non compilée : lance « npm run build » ou utilise « npm run dev »)');

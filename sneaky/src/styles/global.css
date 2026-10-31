@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   OPÉRATION TAUPE — direction artistique « dossier d'espionnage sous terre »
+   SNEAKY — direction artistique « dossier d'espionnage sous terre »
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
@@ -515,8 +515,8 @@ p {
   margin-top: 4px;
   color: var(--amber);
   font-size: 13px;
-  letter-spacing: 0.6em;
-  padding-left: 0.6em;
+  letter-spacing: 0.4em;
+  padding-left: 0.4em;
 }
 
 .hero-title {

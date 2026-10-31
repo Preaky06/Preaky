@@ -1,4 +1,4 @@
-# Image de production d'Opération Taupe (serveur + interface)
+# Image de production de Sneaky (serveur + interface)
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./

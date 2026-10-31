@@ -1,7 +1,7 @@
 {
-  "name": "operation-taupe",
+  "name": "sneaky",
   "version": "1.0.0",
-  "description": "Opération Taupe — quiz d'infiltration en présentiel, chacun sur son téléphone.",
+  "description": "Sneaky — quiz d'infiltration en présentiel, chacun sur son téléphone.",
   "private": true,
   "type": "module",
   "engines": {

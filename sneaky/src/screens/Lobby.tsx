@@ -339,9 +339,9 @@ export function Lobby() {
 
   const share = async () => {
     sfx.tap();
-    const text = `Rejoins l’opération ${g.code} sur Opération Taupe 🕵️`;
+    const text = `Rejoins l’opération ${g.code} sur Sneaky 🕵️`;
     try {
-      if (navigator.share) await navigator.share({ title: 'Opération Taupe', text, url });
+      if (navigator.share) await navigator.share({ title: 'Sneaky', text, url });
       else {
         await navigator.clipboard.writeText(url);
         toast('Lien copié !', 'good');

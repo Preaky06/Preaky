@@ -1,4 +1,4 @@
-# 🕵️ Opération Taupe
+# 🕵️ Sneaky
 
 **Le quiz d'infiltration à jouer entre amis, dans la même pièce, chacun sur son téléphone.**
 
@@ -45,7 +45,7 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 Prérequis : [Node.js](https://nodejs.org) 20 ou plus.
 
 ```bash
-cd operation-taupe
+cd sneaky
 npm install
 npm run build
 npm start
@@ -66,11 +66,11 @@ Le plus simple, gratuit : **Render**.
 
 1. Crée un compte sur [render.com](https://render.com) avec ton compte GitHub.
 2. **New → Blueprint**, choisis ce dépôt : le fichier `render.yaml` à la racine configure tout.
-3. Attends la fin du déploiement (≈ 3 min) et ouvre l'adresse `https://operation-taupe-xxxx.onrender.com`.
+3. Attends la fin du déploiement (≈ 3 min) et ouvre l'adresse `https://sneaky-xxxx.onrender.com`.
 
 Limite de l'offre gratuite : le serveur s'endort après 15 min sans visite et met ~50 secondes à se réveiller. Ouvre l'app une minute avant de jouer. Une offre payante (≈ 7 $/mois) supprime ce délai.
 
-Alternative : l'image Docker (`docker build -t taupe . && docker run -p 3000:3000 taupe`) se déploie sur Railway, Fly.io, un VPS, etc.
+Alternative : l'image Docker (`docker build -t sneaky . && docker run -p 3000:3000 sneaky`) se déploie sur Railway, Fly.io, un VPS, etc.
 
 ## 📱 Installer l'app sur le téléphone
 

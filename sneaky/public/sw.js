@@ -1,5 +1,5 @@
 // Service worker : l'interface se charge instantanément, même avec un réseau capricieux.
-const CACHE = 'taupe-v1';
+const CACHE = 'sneaky-v1';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {
