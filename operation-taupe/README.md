@@ -2,6 +2,8 @@
 
 **Le quiz d'infiltration à jouer entre amis, dans la même pièce, chacun sur son téléphone.**
 
+![Aperçu de l'application](docs/apercu.jpg)
+
 Plusieurs séries de questions de culture générale. À chaque série, un joueur tiré au sort devient **la taupe** : il connaît toutes les réponses et doit faire échouer l'équipe sans se faire démasquer. Les autres répondent, débattent à voix haute, convoquent des réunions d'urgence, recoupent les indices… puis votent.
 
 - 384 questions de culture générale en 12 catégories (+ vos **questions maison**)
