@@ -38,7 +38,7 @@ export function RoleReveal() {
             <div className="role-kicker mono">TON RÔLE</div>
             <div className="role-title">LA TAUPE</div>
             <p>
-              Tu connais <strong>toutes les réponses</strong> (dans ton dossier). Fais échouer les missions sans te faire démasquer
+              Tu connais <strong>toutes les réponses</strong> : la bonne lettre s’affiche dans la case « RÉPONSE » en haut de chaque question. Fais échouer les missions sans te faire démasquer
               {g.settings.sabotages ? ' — tes gadgets t’y aideront.' : '.'}
             </p>
           </div>

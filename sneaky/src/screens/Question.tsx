@@ -21,6 +21,8 @@ export function Question() {
   const locked = q.myLocked;
   const lockedCount = g.players.filter((p) => p.locked).length;
   const spectator = !g.me;
+  // La taupe voit la bonne réponse en permanence ; les agents ont la même case avec « ? », pour qu'un voisin ne fasse pas la différence.
+  const secret = g.me?.role === 'mole' && q.correct !== null ? LETTERS[q.correct] : null;
 
   useEffect(() => setLocal(null), [q.index]);
   useOnce(`${g.round}-${q.index}`, () => {
@@ -50,7 +52,15 @@ export function Question() {
       <MissionTrack />
       <div className="q-meta">
         <div className="q-meta-left">
-          <CategoryChip id={q.category} />
+          <div className="q-meta-row">
+            <CategoryChip id={q.category} />
+            {!spectator && (
+              <span className="secret" aria-label={secret ? `Bonne réponse : ${secret}` : 'Aucune réponse secrète'}>
+                <span className="secret-label mono">RÉPONSE</span>
+                <span className="secret-letter">{secret ?? '?'}</span>
+              </span>
+            )}
+          </div>
           <span className="q-diff" aria-label={`Difficulté ${q.difficulty} sur 3`}>
             <span>NIV.</span>
             {[1, 2, 3].map((n) => (

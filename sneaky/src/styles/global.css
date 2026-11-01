@@ -1628,6 +1628,43 @@ p {
   gap: 6px;
 }
 
+.q-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.secret {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.secret-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.secret-letter {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-2);
+  font-family: var(--f-display);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text);
+}
+
 .q-diff {
   display: inline-flex;
   align-items: center;

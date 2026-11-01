@@ -91,7 +91,18 @@ async function playRound(round) {
       await guests[1].waitForSelector('.screen.question', { timeout: 10000 });
       console.log('🔁 Rechargement en pleine partie : OK');
       const mole = pages[moleIndex];
+      // La taupe voit la bonne réponse directement à l'écran ; les agents voient « ? ».
+      const shown = (await mole.locator('.secret-letter').innerText()).trim();
+      for (let i = 0; i < pages.length; i++) {
+        if (i === moleIndex) continue;
+        const t = (await pages[i].locator('.secret-letter').innerText()).trim();
+        if (t !== '?') throw new Error(`Un agent voit une réponse : ${t}`);
+      }
+      await shot(mole, '07b-question-taupe');
       await mole.click('.dossier-fab');
+      const inDossier = (await mole.locator('.intel-answer-letter').innerText()).trim();
+      if (!/^[ABCD]$/.test(shown) || shown !== inDossier) throw new Error(`Réponse affichée ${shown} ≠ dossier ${inDossier}`);
+      console.log(`🎯 La taupe voit la réponse ${shown} à l'écran, les agents voient « ? »`);
       await shot(mole, '08-dossier-taupe');
       if (round === 1) {
         await mole.click('.gadget >> nth=0');

@@ -24,7 +24,7 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 2. Chaque série commence par la révélation secrète des rôles : **agent** ou **taupe**.
 3. Chaque question est une **mission d'équipe** : elle est réussie si la **réponse majoritaire** est la bonne (égalité = échec). Débattez à voix haute avant de verrouiller !
 4. Après chaque question, tout le monde voit **qui a eu juste et qui a eu faux** (et la réponse choisie si le chef active « Montrer la réponse de chacun »). Un joueur qui ne se trompe jamais devient suspect.
-5. La taupe voit la bonne réponse dans son **dossier**. Tout le monde a un dossier identique : ouvrez-le aussi pour brouiller les pistes.
+5. La taupe voit la bonne réponse dans la case **« RÉPONSE »** en haut de chaque question (et dans son dossier). Les agents ont la même case avec un « ? » : de loin, impossible de faire la différence.
 6. Toutes les 2 missions réussies, l'équipe gagne un **indice** révélé à la réunion suivante.
 7. Entre deux questions, un agent peut déclencher une **réunion d'urgence** (1 par partie par défaut).
 8. En fin de série : briefing puis **vote**. Le plus voté (s'il dépasse les abstentions) est démasqué. Taupe démasquée → les agents gagnent la série. Innocent démasqué → il est écarté et ne vote plus de la série.

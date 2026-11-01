@@ -23,7 +23,8 @@ export function Rules() {
           activé, la réponse choisie par chacun). Un joueur qui ne se trompe jamais devient vite suspect…
         </p>
         <p>
-          La taupe voit la bonne réponse dans son <strong>dossier</strong>. Son but : faire échouer les missions en orientant le débat… sans
+          La taupe voit la bonne réponse dans la case <strong>« RÉPONSE »</strong> en haut de chaque question (et dans son dossier). Les agents ont
+          la même case, avec un « ? » : de loin, impossible de faire la différence. Cachez quand même votre écran. Son but : faire échouer les missions en orientant le débat… sans
           paraître trop sûre d’elle. Tout le monde possède un dossier identique : ouvrez-le aussi pour brouiller les pistes.
         </p>
       </section>
