@@ -1628,6 +1628,70 @@ p {
   gap: 6px;
 }
 
+.option-end {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.option.option-secret {
+  border-color: var(--green);
+  background: linear-gradient(90deg, rgba(61, 255, 168, 0.2), rgba(61, 255, 168, 0.06));
+  box-shadow: 0 0 18px rgba(61, 255, 168, 0.18);
+}
+
+.option.option-secret .option-letter {
+  background: var(--green);
+  border-color: var(--green);
+  color: #04220f;
+}
+
+.option.option-secret .option-text {
+  color: #c8ffe6;
+}
+
+.option.option-secret.option-on {
+  box-shadow:
+    0 0 0 3px rgba(255, 181, 71, 0.45),
+    0 0 18px rgba(61, 255, 168, 0.18);
+}
+
+.option-secret-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color: #04220f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.secret-letter.secret-letter-known {
+  background: var(--green);
+  border-color: var(--green);
+  color: #04220f;
+}
+
+.round-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.round-level-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+}
+
 .q-meta-row {
   display: flex;
   align-items: center;

@@ -1302,6 +1302,7 @@ export class Room {
         intelUnlocked: r.intelUnlocked,
         intelMax: INTEL_MAX_PER_ROUND,
         intelEvery: intelEvery(this.settings.questionsPerRound),
+        level: Math.round((r.questions.reduce((a, q) => a + q.difficulty, 0) / r.questions.length) * 10) / 10,
       };
       state.history = r.log.map(({ answers: _a, ...rest }) => rest);
     }

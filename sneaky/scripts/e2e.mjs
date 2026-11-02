@@ -98,6 +98,11 @@ async function playRound(round) {
         const t = (await pages[i].locator('.secret-letter').innerText()).trim();
         if (t !== '?') throw new Error(`Un agent voit une réponse : ${t}`);
       }
+      const greenIdx = await mole.locator('.option').evaluateAll((els) => els.findIndex((e) => e.classList.contains('option-secret')));
+      if ('ABCD'[greenIdx] !== shown) throw new Error(`Réponse verte ${greenIdx} ≠ ${shown}`);
+      for (let i = 0; i < pages.length; i++) {
+        if (i !== moleIndex && (await pages[i].locator('.option-secret').count()) > 0) throw new Error('Un agent voit une réponse en vert');
+      }
       await shot(mole, '07b-question-taupe');
       await mole.click('.dossier-fab');
       const inDossier = (await mole.locator('.intel-answer-letter').innerText()).trim();

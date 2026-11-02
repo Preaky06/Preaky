@@ -48,9 +48,51 @@ function prepare(q: BankQuestion): PreparedQuestion {
   };
 }
 
+type Level = 1 | 2 | 3;
+
 /**
- * Construit les séries de questions. Les questions maison sont toujours incluses en priorité,
- * le reste vient de la banque en évitant les questions déjà posées dans ce salon.
+ * Courbe de difficulté : part de l'échauffement (surtout faciles) et monte doucement.
+ * Même en dernière série, les questions moyennes restent majoritaires et les difficiles plafonnent à ~35 %.
+ */
+export function levelWeights(progress: number, difficulty: Settings['difficulty']): Record<Level, number> {
+  const t = Math.min(1, Math.max(0, progress));
+  const w: Record<Level, number> = { 1: 0.6 - 0.45 * t, 2: 0.35 + 0.15 * t, 3: 0.05 + 0.3 * t };
+  // Les niveaux exclus par le réglage reportent leur poids sur le niveau autorisé le plus proche.
+  if (difficulty === 'easy') {
+    w[2] += w[3];
+    w[3] = 0;
+  } else if (difficulty === 'hard') {
+    w[2] += w[1];
+    w[1] = 0;
+  }
+  return w;
+}
+
+/** Nombre de questions de chaque niveau pour une série (arrondi au plus fort reste, égalités au profit du niveau moyen). */
+export function levelPlan(count: number, progress: number, difficulty: Settings['difficulty']): Level[] {
+  const w = levelWeights(progress, difficulty);
+  const levels: Level[] = [1, 2, 3];
+  const raw = levels.map((l) => w[l] * count);
+  const n = raw.map(Math.floor);
+  let missing = count - n.reduce((a, b) => a + b, 0);
+  const order = levels
+    .map((l, i) => ({ i, rest: raw[i] - n[i], medium: l === 2 ? 1 : 0 }))
+    .filter((x) => w[levels[x.i]] > 0)
+    .sort((a, b) => b.rest - a.rest || b.medium - a.medium);
+  for (const x of order) {
+    if (missing <= 0) break;
+    n[x.i]++;
+    missing--;
+  }
+  return levels.flatMap((l, i) => Array.from({ length: n[i] }, () => l));
+}
+
+const FALLBACK: Record<Level, Level[]> = { 1: [1, 2, 3], 2: [2, 1, 3], 3: [3, 2, 1] };
+
+/**
+ * Construit les séries de questions, de plus en plus corsées au fil de la partie.
+ * Les questions maison sont toujours incluses en priorité ; le reste vient de la banque
+ * en évitant les questions déjà posées dans ce salon et deux fois la même catégorie dans une série.
  */
 export function buildRounds(
   settings: Settings,
@@ -58,33 +100,50 @@ export function buildRounds(
   used: Set<string>,
 ): PreparedQuestion[][] | null {
   const need = settings.rounds * settings.questionsPerRound;
-  const customPool = settings.useCustom ? shuffle(customToBank(custom)) : [];
+  const customPool = settings.useCustom ? shuffle(customToBank(custom)).slice(0, need) : [];
   const bank = bankPool(settings);
   if (bank.length + customPool.length < need) return null;
 
   let fresh = bank.filter((q) => !used.has(q.id));
-  const fromBank = Math.max(0, need - customPool.length);
-  if (fresh.length < fromBank) {
+  if (fresh.length < need - customPool.length) {
     for (const q of bank) used.delete(q.id);
     fresh = bank;
   }
 
-  const picked = [...customPool.slice(0, need), ...shuffle(fresh).slice(0, fromBank)];
-  for (const q of picked) used.add(q.id);
+  const pools: Record<Level, BankQuestion[]> = { 1: [], 2: [], 3: [] };
+  for (const q of shuffle(fresh)) pools[q.difficulty].push(q);
 
-  // Répartition : on évite deux questions de la même catégorie dans une série quand c'est possible.
-  const remaining = shuffle(picked);
-  const rounds: BankQuestion[][] = [];
-  for (let r = 0; r < settings.rounds; r++) {
-    const round: BankQuestion[] = [];
-    while (round.length < settings.questionsPerRound) {
+  const plans = Array.from({ length: settings.rounds }, (_, r) =>
+    levelPlan(settings.questionsPerRound, settings.rounds === 1 ? 0.5 : r / (settings.rounds - 1), settings.difficulty),
+  );
+  const rounds: BankQuestion[][] = plans.map(() => []);
+
+  // Questions maison : réparties entre les séries, sur les places de niveau moyen en priorité.
+  customPool.forEach((q, k) => {
+    const r = k % settings.rounds;
+    const plan = plans[r].length ? plans[r] : plans.find((p) => p.length)!;
+    const target = plans.indexOf(plan);
+    const idx = [plan.indexOf(2), plan.indexOf(1), plan.indexOf(3)].find((i) => i >= 0)!;
+    plan.splice(idx, 1);
+    rounds[target].push(q);
+  });
+
+  rounds.forEach((round, r) => {
+    for (const level of plans[r]) {
       const cats = new Set(round.map((q) => q.category));
-      let idx = remaining.findIndex((q) => !cats.has(q.category));
-      if (idx === -1) idx = 0;
-      round.push(remaining.splice(idx, 1)[0]);
+      let chosen: BankQuestion | undefined;
+      for (const l of FALLBACK[level]) {
+        const pool = pools[l];
+        if (!pool.length) continue;
+        const idx = pool.findIndex((q) => !cats.has(q.category));
+        chosen = pool.splice(idx === -1 ? 0 : idx, 1)[0];
+        break;
+      }
+      if (chosen) round.push(chosen);
     }
     round.sort((a, b) => a.difficulty - b.difficulty);
-    rounds.push(round);
-  }
+    for (const q of round) used.add(q.id);
+  });
+
   return rounds.map((round) => round.map(prepare));
 }

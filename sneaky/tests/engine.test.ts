@@ -403,3 +403,41 @@ describe('indices', () => {
     }
   });
 });
+
+describe('difficulté progressive', () => {
+  const avg = (qs: { difficulty: number }[]) => qs.reduce((a, q) => a + q.difficulty, 0) / qs.length;
+
+  it('monte de série en série sans devenir excessive', () => {
+    for (let run = 0; run < 50; run++) {
+      const rounds = buildRounds({ ...DEFAULT_SETTINGS, rounds: 4, questionsPerRound: 5 }, [], new Set())!;
+      const levels = rounds.map(avg);
+      expect(levels[3]).toBeGreaterThan(levels[0]);
+      for (let r = 1; r < 4; r++) expect(levels[r]).toBeGreaterThanOrEqual(levels[r - 1]);
+      expect(rounds[0].filter((q) => q.difficulty === 3)).toHaveLength(0);
+      expect(rounds[3].filter((q) => q.difficulty === 3).length).toBeLessThanOrEqual(2);
+      expect(rounds[3].filter((q) => q.difficulty === 2).length).toBeGreaterThanOrEqual(2);
+      expect(new Set(rounds.flat().map((q) => q.id)).size).toBe(20);
+    }
+  });
+
+  it('respecte les réglages Détente et Expert', () => {
+    const easy = buildRounds({ ...DEFAULT_SETTINGS, rounds: 5, questionsPerRound: 6, difficulty: 'easy' }, [], new Set())!;
+    expect(easy.flat().some((q) => q.difficulty === 3)).toBe(false);
+    expect(avg(easy[4])).toBeGreaterThan(avg(easy[0]));
+    const hard = buildRounds({ ...DEFAULT_SETTINGS, rounds: 5, questionsPerRound: 6, difficulty: 'hard' }, [], new Set())!;
+    expect(hard.flat().some((q) => q.difficulty === 1)).toBe(false);
+    expect(avg(hard[4])).toBeGreaterThan(avg(hard[0]));
+  });
+
+  it('garde les questions maison et des séries complètes', () => {
+    const custom = Array.from({ length: 7 }, (_, i) => ({ q: `Question maison ${i} ?`, answers: ['a', 'b', 'c', 'd'] as [string, string, string, string] }));
+    const rounds = buildRounds({ ...DEFAULT_SETTINGS, rounds: 3, questionsPerRound: 4 }, custom, new Set())!;
+    expect(rounds.every((r) => r.length === 4)).toBe(true);
+    expect(rounds.flat().filter((q) => q.category === 'perso')).toHaveLength(7);
+  });
+
+  it('se rabat sur un niveau voisin quand une catégorie manque de questions difficiles', () => {
+    const rounds = buildRounds({ ...DEFAULT_SETTINGS, categories: ['tech'], rounds: 3, questionsPerRound: 8 }, [], new Set())!;
+    expect(rounds.flat()).toHaveLength(24);
+  });
+});

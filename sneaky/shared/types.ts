@@ -137,6 +137,8 @@ export interface MissionView {
   intelUnlocked: number;
   intelMax: number;
   intelEvery: number;
+  /** Difficulté moyenne des questions de la série (1 à 3). */
+  level: number;
 }
 
 export interface MeetingView {

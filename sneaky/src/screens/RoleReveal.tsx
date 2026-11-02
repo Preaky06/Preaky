@@ -7,6 +7,23 @@ import { useGame } from '../lib/hooks.ts';
 import { sfx } from '../lib/sound.ts';
 import { api } from '../net.ts';
 
+function RoundLevel({ level, round, total }: { level: number; round: number; total: number }) {
+  const label =
+    total === 1 ? 'Série unique' : round === 1 ? 'Échauffement' : round === total ? 'Série finale : la plus corsée' : 'Ça se corse…';
+  const pips = Math.max(1, Math.min(3, Math.round(level)));
+  return (
+    <div className="round-level" aria-label={`Difficulté de la série : ${label}`}>
+      <span className="q-diff">
+        <span>NIV.</span>
+        {[1, 2, 3].map((n) => (
+          <i key={n} className={n <= pips ? 'on' : ''} />
+        ))}
+      </span>
+      <span className="round-level-label">{label}</span>
+    </div>
+  );
+}
+
 export function RoleReveal() {
   const g = useGame();
   const [seen, setSeen] = useState(false);
@@ -21,6 +38,7 @@ export function RoleReveal() {
       <ProgressBar endsAt={g.phaseEndsAt} duration={g.phaseDuration} />
       <div className="reveal-head">
         <div className="mono small muted">SÉRIE {g.round} SUR {g.totalRounds}</div>
+        {g.mission && <RoundLevel level={g.mission.level} round={g.round} total={g.totalRounds} />}
         <h2 className="display">Ton dossier secret</h2>
         <p className="muted small">Cache ton écran. Une taupe vient d’être désignée… peut-être toi.</p>
       </div>
@@ -38,7 +56,7 @@ export function RoleReveal() {
             <div className="role-kicker mono">TON RÔLE</div>
             <div className="role-title">LA TAUPE</div>
             <p>
-              Tu connais <strong>toutes les réponses</strong> : la bonne lettre s’affiche dans la case « RÉPONSE » en haut de chaque question. Fais échouer les missions sans te faire démasquer
+              Tu connais <strong>toutes les réponses</strong> : la bonne réponse s’affiche en vert à chaque question. Fais échouer les missions sans te faire démasquer
               {g.settings.sabotages ? ' — tes gadgets t’y aideront.' : '.'}
             </p>
           </div>

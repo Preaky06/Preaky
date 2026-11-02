@@ -57,7 +57,7 @@ export function Question() {
             {!spectator && (
               <span className="secret" aria-label={secret ? `Bonne réponse : ${secret}` : 'Aucune réponse secrète'}>
                 <span className="secret-label mono">RÉPONSE</span>
-                <span className="secret-letter">{secret ?? '?'}</span>
+                <span className={`secret-letter ${secret ? 'secret-letter-known' : ''}`}>{secret ?? '?'}</span>
               </span>
             )}
           </div>
@@ -88,14 +88,17 @@ export function Question() {
         {q.options.map((o, i) => (
           <button
             key={i}
-            className={`option ${selected === i ? 'option-on' : ''} ${locked ? 'option-locked' : ''}`}
+            className={`option ${selected === i ? 'option-on' : ''} ${locked ? 'option-locked' : ''} ${secret && i === q.correct ? 'option-secret' : ''}`}
             onClick={() => choose(i)}
             disabled={spectator || (locked && selected !== i)}
             style={{ animationDelay: `${0.08 + i * 0.06}s` }}
           >
             <span className="option-letter">{LETTERS[i]}</span>
             <span className="option-text">{jamActive ? scramble(o) : o}</span>
-            {locked && selected === i && <span className="option-lock">🔒</span>}
+            <span className="option-end">
+              {secret && i === q.correct && <span className="option-secret-mark">✓</span>}
+              {locked && selected === i && <span className="option-lock">🔒</span>}
+            </span>
           </button>
         ))}
         {jamActive && <div className="jam-overlay">📡 SIGNAL BROUILLÉ</div>}
