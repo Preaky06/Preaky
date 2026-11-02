@@ -57,7 +57,7 @@ export function RoleReveal() {
             <div className="role-title">LA TAUPE</div>
             <p>
               Tu connais <strong>toutes les réponses</strong> : la bonne réponse s’affiche en vert à chaque question. Fais échouer les missions sans te faire démasquer
-              {g.settings.sabotages ? ' — tes gadgets t’y aideront.' : '.'}
+              {g.settings.sabotages ? ' — un gadget au choix par série t’y aidera.' : '.'}
             </p>
           </div>
         ) : (

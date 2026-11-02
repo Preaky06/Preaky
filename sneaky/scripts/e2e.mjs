@@ -112,6 +112,10 @@ async function playRound(round) {
       if (round === 1) {
         await mole.click('.gadget >> nth=0');
         await mole.waitForTimeout(300);
+        const enabled = await mole.locator('.gadget:not([disabled])').count();
+        if (enabled !== 0) throw new Error(`Encore ${enabled} gadget(s) utilisable(s) après le premier`);
+        console.log('🕶️ Un seul gadget par série : OK');
+        await shot(mole, '08b-dossier-gadget-utilise');
       }
       await mole.keyboard.press('Escape');
       const agent = pages[(moleIndex + 1) % pages.length];

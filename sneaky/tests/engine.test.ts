@@ -246,11 +246,10 @@ describe('déroulé de partie', () => {
     expect(room.sabotage(ids.find((x) => x !== mole)!, 'falsify')).not.toBeNull();
     expect(room.sabotage(mole, 'falsify')).toBeNull();
     expect(room.sabotage(mole, 'falsify')).not.toBeNull();
-    expect(room.sabotage(mole, 'jam')).toBeNull();
-    expect(room.sabotage(mole, 'rush')).not.toBeNull(); // un seul sabotage de question à la fois
+    expect(room.sabotage(mole, 'jam')).toMatch(/un seul gadget/i);
     ids.forEach((id) => room.setReady(id));
     tick(1500);
-    expect(room.viewFor(ids[0]).question!.jammed).toBe(true);
+    expect(room.viewFor(ids[0]).question!.jammed).toBe(false);
     for (let q = 0; q < 6; q++) {
       expect(room.phase).toBe('question');
       ids.forEach((id) => {
@@ -439,5 +438,38 @@ describe('difficulté progressive', () => {
   it('se rabat sur un niveau voisin quand une catégorie manque de questions difficiles', () => {
     const rounds = buildRounds({ ...DEFAULT_SETTINGS, categories: ['tech'], rounds: 3, questionsPerRound: 8 }, [], new Set())!;
     expect(rounds.flat()).toHaveLength(24);
+  });
+});
+
+describe('gadgets de la taupe', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('un seul gadget au choix par série, de nouveau disponible à la série suivante', () => {
+    const { room, ids } = makeRoom(4);
+    room.updateSettings({ rounds: 2, questionsPerRound: 3 });
+    room.start();
+    const mole = room.round!.moleId!;
+    expect(room.viewFor(mole).mole!.available).toEqual(['jam', 'rush', 'falsify']);
+    expect(room.sabotage(mole, 'rush')).toBeNull();
+    const after = room.viewFor(mole).mole!;
+    expect(after.chosen).toBe('rush');
+    expect(after.available).toEqual([]);
+    expect(room.sabotage(mole, 'jam')).toMatch(/un seul gadget/i);
+    expect(room.sabotage(mole, 'falsify')).toMatch(/un seul gadget/i);
+    ids.forEach((id) => room.setReady(id));
+    tick(1500);
+    expect(room.viewFor(ids[0]).question!.rushed).toBe(true);
+    // Fin de série 1 → série 2 : le gadget est de nouveau disponible pour la nouvelle taupe.
+    room.removePlayer(mole, 'left');
+    expect(room.phase).toBe('roundEnd');
+    ids.filter((id) => id !== mole).forEach((id) => room.setReady(id));
+    tick(1500);
+    expect(room.phase).toBe('roleReveal');
+    const mole2 = room.round!.moleId!;
+    expect(room.viewFor(mole2).mole!.chosen).toBeNull();
+    expect(room.viewFor(mole2).mole!.available).toHaveLength(3);
+    expect(room.sabotage(mole2, 'jam')).toBeNull();
+    expect(room.sabotage(mole2, 'rush')).not.toBeNull();
   });
 });

@@ -101,6 +101,8 @@ interface RoundState {
   intercepted: Set<number>;
   usedIntelKinds: IntelKind[];
   sabotagesLeft: Set<SabotageKind>;
+  /** Un seul gadget par série : celui que la taupe a choisi. */
+  gadget: SabotageKind | null;
   sabotagesUsed: { kind: SabotageKind; question: number }[];
   queued: Set<SabotageKind>;
   jammed: boolean;
@@ -556,6 +558,7 @@ export class Room {
       intercepted: new Set(),
       usedIntelKinds: [],
       sabotagesLeft: new Set(this.settings.sabotages ? (Object.keys(SABOTAGES) as SabotageKind[]) : []),
+      gadget: null,
       sabotagesUsed: [],
       queued: new Set(),
       jammed: false,
@@ -731,7 +734,8 @@ export class Room {
     if (!r) return 'Aucune série en cours.';
     if (!SABOTAGES[kind]) return 'Sabotage inconnu.';
     if (!['roleReveal', 'question', 'questionResult'].includes(this.phase)) return 'Impossible maintenant.';
-    if (!r.sabotagesLeft.has(kind)) return 'Sabotage déjà utilisé cette série.';
+    if (r.gadget) return 'Un seul gadget par série : tu as déjà utilisé le tien.';
+    if (!r.sabotagesLeft.has(kind)) return 'Gadgets désactivés pour cette partie.';
     if (kind === 'jam' || kind === 'rush') {
       const hasNext = this.phase === 'roleReveal' || r.qIndex < r.questions.length - 1;
       if (!hasNext) return 'Plus aucune question à saboter.';
@@ -745,7 +749,8 @@ export class Room {
     if (!r || r.moleId !== playerId) return 'Seule la taupe peut saboter.';
     const block = this.sabotageBlock(kind);
     if (block) return block;
-    r.sabotagesLeft.delete(kind);
+    r.gadget = kind;
+    r.sabotagesLeft.clear();
     r.queued.add(kind);
     this.players.get(playerId)!.stats.sabotages++;
     this.changed();
@@ -1312,6 +1317,7 @@ export class Room {
         sabotagesLeft: [...r.sabotagesLeft],
         queued: [...r.queued],
         available: (Object.keys(SABOTAGES) as SabotageKind[]).filter((k) => !this.sabotageBlock(k)),
+        chosen: r.gadget,
       };
     }
 

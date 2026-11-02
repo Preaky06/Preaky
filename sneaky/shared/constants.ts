@@ -49,7 +49,7 @@ export const SABOTAGES: Record<SabotageKind, { label: string; emoji: string; des
   falsify: {
     label: 'Falsification',
     emoji: '🖋️',
-    description: 'Un indice de la prochaine réunion sera faux. Tout le monde saura qu’une pièce est truquée… mais pas laquelle.',
+    description: 'Un faux indice s’ajoute à la prochaine réunion qui révèle des indices. Tout le monde saura qu’une pièce est truquée… mais pas laquelle.',
   },
 };
 

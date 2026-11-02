@@ -211,6 +211,8 @@ export interface MoleView {
   sabotagesLeft: SabotageKind[];
   queued: SabotageKind[];
   available: SabotageKind[];
+  /** Le gadget choisi pour cette série (un seul par série). */
+  chosen: SabotageKind | null;
 }
 
 export interface ClientState {

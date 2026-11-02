@@ -124,12 +124,13 @@ export function Dossier() {
 
           <div className="paper-head">
             <span>Gadgets</span>
+            <small>1 au choix par série</small>
           </div>
           {mole && g.mole && g.settings.sabotages ? (
             <div className="gadgets">
               {(Object.keys(SABOTAGES) as SabotageKind[]).map((k) => {
                 const s = SABOTAGES[k];
-                const used = !g.mole!.sabotagesLeft.includes(k);
+                const chosen = g.mole!.chosen;
                 const queued = g.mole!.queued.includes(k);
                 const available = g.mole!.available.includes(k);
                 return (
@@ -137,7 +138,15 @@ export function Dossier() {
                     <span className="gadget-emoji">{s.emoji}</span>
                     <span className="gadget-body">
                       <strong>{s.label}</strong>
-                      <small>{queued ? 'Programmé ✓' : used ? 'Déjà utilisé' : s.description}</small>
+                      <small>
+                        {queued
+                          ? 'Programmé ✓'
+                          : chosen === k
+                            ? 'Utilisé ✓'
+                            : chosen
+                              ? 'Verrouillé : un seul gadget par série'
+                              : s.description}
+                      </small>
                     </span>
                   </button>
                 );

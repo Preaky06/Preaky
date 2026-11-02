@@ -9,7 +9,7 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 - 384 questions de culture générale en 12 catégories (+ vos **questions maison**)
 - Après chaque question, un **tableau public des réponses** : qui a eu juste, qui a eu faux (en option : la réponse choisie par chacun)
 - Rôles secrets révélés par **scanner d'empreinte** (maintenir le doigt), dossier identique pour tous
-- **Gadgets de la taupe** : brouillage, coupe-chrono, falsification d'indice
+- **Gadgets de la taupe** : brouillage, coupe-chrono ou falsification d'indice (un seul au choix par série)
 - **Indices** débloqués par les bonnes réponses : agent blanchi, message intercepté, périmètre de suspects…
 - **Réunions d'urgence**, accusations / défenses publiques, réactions, **tour de parole** optionnel, carnet de suspicion privé
 - Vote avec dépouillement animé, scores cachés pendant la série, **distinctions** en fin de partie

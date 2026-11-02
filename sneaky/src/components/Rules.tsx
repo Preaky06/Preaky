@@ -61,7 +61,10 @@ export function Rules() {
             </li>
           ))}
         </ul>
-        <p className="muted">Chaque gadget est utilisable une fois par série. Les sabotages de question sont annoncés à tous.</p>
+        <p className="muted">
+          À chaque série, la taupe peut utiliser <strong>un seul</strong> de ces gadgets, au choix. Les sabotages de question sont annoncés
+          à tous. Une falsification reste sans effet si aucun indice n’est révélé.
+        </p>
       </section>
       <section>
         <h3>🏆 Les points</h3>
