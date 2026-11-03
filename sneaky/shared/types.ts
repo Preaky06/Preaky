@@ -301,4 +301,6 @@ export interface ServerToClient {
   state: (s: ClientState) => void;
   reaction: (r: { playerId: string; emoji: string }) => void;
   kicked: () => void;
+  /** Version de l'interface servie par ce serveur. */
+  version: (id: string) => void;
 }

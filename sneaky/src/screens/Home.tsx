@@ -163,6 +163,7 @@ export function Home() {
         </button>
       </div>
       <p className="home-foot mono">3 à 12 agents · même pièce · un téléphone chacun</p>
+      <p className="home-foot home-version mono">Version {__APP_LABEL__}</p>
 
       <Sheet open={rules} onClose={() => setRules(false)} title="Règles de l’opération">
         <Rules />

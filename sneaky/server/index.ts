@@ -1,6 +1,6 @@
 import express from 'express';
 import { createServer } from 'node:http';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { networkInterfaces } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -29,8 +29,17 @@ export function createApp({ port = 3000, timeScale = 1, serveClient = true } = {
   });
   const manager = new RoomManager(io, timeScale);
 
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const dist = join(root, 'dist');
+  let version = { id: '', label: '' };
+  try {
+    version = JSON.parse(readFileSync(join(dist, 'version.json'), 'utf8'));
+  } catch {
+    /* interface non compilée (dev ou tests) */
+  }
+
   app.get('/api/health', (_req, res) => {
-    res.json({ ok: true, rooms: manager.rooms.size, questions: BANK.length });
+    res.json({ ok: true, rooms: manager.rooms.size, questions: BANK.length, version: version.label || null });
   });
 
   const counts: Record<string, Record<number, number>> = {};
@@ -46,8 +55,6 @@ export function createApp({ port = 3000, timeScale = 1, serveClient = true } = {
     res.json({ lan: lanAddresses(), port });
   });
 
-  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const dist = join(root, 'dist');
   if (serveClient && existsSync(dist)) {
     app.use(
       express.static(dist, {
@@ -61,7 +68,10 @@ export function createApp({ port = 3000, timeScale = 1, serveClient = true } = {
     app.get(/^\/(?!api|socket\.io).*/, (_req, res) => res.sendFile(join(dist, 'index.html')));
   }
 
-  io.on('connection', (socket) => manager.handle(socket));
+  io.on('connection', (socket) => {
+    if (version.id) socket.emit('version', version.id);
+    manager.handle(socket);
+  });
 
   return {
     http,

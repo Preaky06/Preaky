@@ -151,6 +151,18 @@ socket.on('reaction', (r) => {
   setTimeout(() => set({ reactions: store.reactions.filter((x) => x.id !== item.id) }), 2600);
 });
 
+// Après une mise à jour du jeu, les téléphones qui ont encore l'ancienne version se rechargent d'eux-mêmes.
+socket.on('version', (id) => {
+  if (!id || __APP_VERSION__ === 'dev' || id === __APP_VERSION__) return;
+  try {
+    if (sessionStorage.getItem('sneaky:reloadedFor') === id) return;
+    sessionStorage.setItem('sneaky:reloadedFor', id);
+  } catch {
+    return;
+  }
+  location.reload();
+});
+
 socket.on('kicked', () => {
   saveSession(null);
   set({ session: null, state: null, kicked: true });
