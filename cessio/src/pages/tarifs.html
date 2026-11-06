@@ -1,0 +1,32 @@
+<!--meta {
+  "title": "Tarifs",
+  "description": "Gratuit pour commencer. Solo et Studio pour des contrats illimités, l’export Word, votre logo et les rappels d’échéance. Sans engagement.",
+  "page": "pricing",
+  "faqs": [
+    { "q": "Comment vais-je recevoir mon accès ?", "a": "Juste après le paiement, vous recevez une clé de licence (dans l’e-mail de confirmation et dans votre espace client). Collez-la dans la page Compte : l’accès est immédiat." },
+    { "q": "Qui encaisse le paiement ?", "a": "Notre partenaire de paiement agit comme revendeur officiel : il sécurise la transaction, émet la facture et applique la TVA de votre pays. Nous ne voyons jamais vos coordonnées bancaires." },
+    { "q": "Puis-je annuler à tout moment ?", "a": "Oui, depuis votre espace client. L’annulation prend effet à la fin de la période payée. Vos contrats restent dans votre navigateur, consultables et exportables en PDF." },
+    { "q": "L’abonnement est-il une charge déductible ?", "a": "Oui pour une activité professionnelle : la facture émise par notre partenaire est à votre nom ou à celui de votre entreprise." },
+    { "q": "Et si l’outil ne me convient pas ?", "a": "Écrivez-nous dans les 14 jours suivant votre premier paiement : vous êtes remboursé intégralement, sans justification." }
+  ]
+} -->
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Tarifs</span>
+    <h1>Un contrat bien facturé paie l’abonnement de l’année.</h1>
+    <p>Commencez gratuitement, sans carte bancaire. Passez à Solo quand vos cessions deviennent régulières.</p>
+  </div>
+</section>
+<section class="container">
+  <div class="notice warn" data-billing-warning hidden style="max-width:760px;margin:0 auto 24px"></div>
+  {{> pricing-cards}}
+  <p class="checkout-note">Prix TTC. Paiement sécurisé par notre partenaire, qui émet votre facture et gère la TVA. Satisfait ou remboursé pendant 14 jours.<br>Déjà client ? <a href="/compte">Activez votre licence</a>.</p>
+  {{> plans-table}}
+</section>
+<section class="section">
+  <div class="container faq-wrap">
+    <h2 class="section-title">Questions sur l’abonnement</h2>
+    <p class="section-sub">&nbsp;</p>
+    {{faq}}
+  </div>
+</section>
