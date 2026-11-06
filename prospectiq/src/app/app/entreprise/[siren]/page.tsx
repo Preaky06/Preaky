@@ -145,7 +145,7 @@ export default function CompanyPage() {
                 {displayName(c)}
               </h1>
               <p className="mt-0.5 text-sm text-slate-500">
-                {c.nafLabel || c.naf || 'Activité non renseignée'} · {c.city || 'Ville non renseignée'} · SIREN {c.siren}
+                {c.nafLabel || c.naf || 'Activité non renseignée'} · {(c.establishments || 0) > 1 ? 'siège : ' : ''}{c.city || 'Ville non renseignée'} · SIREN {c.siren}
               </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <CategoryBadge category={score.category} />
@@ -258,7 +258,7 @@ export default function CompanyPage() {
                   </div>
                   <div>
                     <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-rose-700">Points faibles</h3>
-                    <ul className="space-y-1.5 text-sm text-night-800">{a.insights.weaknesses.length ? a.insights.weaknesses.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucune faiblesse détectée.</li>}</ul>
+                    <ul className="space-y-1.5 text-sm text-night-800">{a.insights.weaknesses.length ? a.insights.weaknesses.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucune faiblesse constatée dans les données disponibles{w?.findings ? '' : ' (site non audité)'}.</li>}</ul>
                   </div>
                 </div>
                 <div>
@@ -402,7 +402,7 @@ export default function CompanyPage() {
                   {c.localAddress || c.address || NR}
                 </span>
               </Row>
-              <Row label="Site web">{w?.url ? <a href={w.url} target="_blank" rel="noopener noreferrer nofollow" className="font-medium text-electric-700 hover:underline">{host}</a> : a ? 'Non trouvé' : NR}</Row>
+              <Row label="Site web">{w?.url ? <a href={w.url} target="_blank" rel="noopener noreferrer nofollow" className="font-medium text-electric-700 hover:underline">{host}</a> : w?.status === 'not_found' ? 'Non trouvé automatiquement (à confirmer)' : w ? 'Non analysé' : NR}</Row>
               <Row label="Téléphone">{phone ? <span className="inline-flex items-center gap-1.5"><Phone className="size-3.5 text-slate-400" />{phone}</span> : NR}</Row>
               <Row label="E-mail public">
                 {emails.length ? (

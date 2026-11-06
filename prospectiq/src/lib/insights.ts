@@ -1,6 +1,7 @@
 // Analyse rédigée à partir des seuls faits collectés (sans IA). Sert aussi de base et de garde-fou à l'IA.
 import type { Company, PlaceInfo, Signal, WebsiteAudit } from './connectors/types';
 import type { ScoreResult, Offer } from './scoring';
+import { serviceEvidence } from './scoring';
 import { serviceLabel, sectorById } from './sectors';
 
 export interface Insights {
@@ -70,20 +71,11 @@ export function buildInsights(company: Company, website: WebsiteAudit | null, si
   }
   for (const s of signals.filter((x) => x.kind === 'risk')) weaknesses.push(`${s.label}${s.date ? ` (${fmtDate(s.date)})` : ''}.`);
 
-  const reasonFor: Record<string, string> = {
-    site_web: website?.status === 'not_found' ? 'Pas de site trouvé : un site professionnel serait un point de départ.' : 'Le site présente des lacunes techniques ou d’actualisation.',
-    seo: 'Plusieurs éléments de référencement manquent ou sont incomplets.',
-    reseaux_sociaux: 'La présence sur les réseaux sociaux reliée au site est absente ou incomplète.',
-    contenu: 'Le contenu publié n’est pas récent ou l’activité visuelle est peu mise en valeur.',
-    identite: 'Une étape de vie récente (création, changement de nom ou de propriétaire) ouvre la question de l’image de marque.',
-    publicite: 'Aucune mesure d’audience détectée, ou un changement d’activité justifie de la visibilité.',
-    reputation: 'La note des avis clients peut être améliorée.',
-    crm: 'Pas de prise de rendez-vous ou de réservation en ligne détectée.',
-    conseil: 'Une évolution récente de l’entreprise peut justifier un accompagnement.',
-  };
+  // Chaque opportunité cite les faits qui la justifient : jamais de lacune supposée.
+  const evidence = serviceEvidence(website, signals, places);
   const offered = new Set(offer?.services || []);
-  const ordered = [...score.neededServices].sort((a, b) => Number(offered.has(b)) - Number(offered.has(a)));
-  const opportunities = ordered.slice(0, 5).map((s) => ({ service: serviceLabel(s), reason: reasonFor[s] || 'Besoin détecté.' }));
+  const ordered = [...score.neededServices].filter((s) => evidence[s]?.length).sort((a, b) => Number(offered.has(b)) - Number(offered.has(a)));
+  const opportunities = ordered.slice(0, 5).map((s) => ({ service: serviceLabel(s), reason: evidence[s].slice(0, 2).join(' ') }));
 
   const top = score.criteria.slice().sort((a, b) => b.points - a.points)[0];
   const rationale =
@@ -92,7 +84,8 @@ export function buildInsights(company: Company, website: WebsiteAudit | null, si
       : `${score.category.label} (${score.total}/100, confiance ${score.confidence}). Point le plus contributif : ${top.label.toLowerCase()} — ${top.reasons[0] || ''}`.trim();
 
   const caveats: string[] = [];
-  if (score.preliminary) caveats.push('Score préliminaire : le site web n’a pas encore été analysé.');
+  if (website?.status === 'unreachable' || website?.status === 'blocked') caveats.push(`Site web non analysé : ${website.verification}`);
+  else if (score.preliminary) caveats.push('Score préliminaire : le site web n’a pas encore été analysé.');
   if (website?.status === 'probable') caveats.push('Le site web n’a pas pu être rattaché formellement à l’entreprise (SIREN absent du site).');
   if (!places) caveats.push('Avis clients non consultés (connecteur Google Places non configuré).');
   caveats.push('L’activité réelle sur Instagram et les autres réseaux n’est pas mesurée sans connecteur dédié.');

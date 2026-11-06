@@ -73,18 +73,35 @@ const monthsSince = (iso: string | null | undefined, now: Date) => (iso ? (now.g
 const serviceName = (id: string) => SERVICES.find((s) => s.id === id)?.label || id;
 
 /** Services dont l'entreprise semble avoir besoin, déduits des constats et signaux. */
-export function neededServices(website: WebsiteAudit | null | undefined, signals: Signal[], places: PlaceInfo | null | undefined): string[] {
-  const out = new Set<string>();
-  if (website?.status === 'not_found') ['site_web', 'seo', 'identite'].forEach((s) => out.add(s));
-  for (const f of website?.findings || []) if (f.severity !== 'info') f.services.forEach((s) => out.add(s));
+/**
+ * Services potentiellement utiles et, pour chacun, les faits qui le justifient (constat sur le site, annonce officielle…).
+ * Aucun service n'est proposé sans au moins un fait source.
+ */
+export function serviceEvidence(website: WebsiteAudit | null | undefined, signals: Signal[], places: PlaceInfo | null | undefined): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  const add = (services: string[], fact: string) => services.forEach((s) => (out[s] ||= []).includes(fact) || out[s].push(fact));
+  if (website?.status === 'not_found') add(['site_web', 'seo', 'identite'], 'Aucun site trouvé automatiquement (à confirmer).');
+  for (const f of website?.findings || []) if (f.severity !== 'info') add(f.services, `Constaté sur le site : ${f.label.replace(/\.$/, '').charAt(0).toLowerCase()}${f.label.replace(/\.$/, '').slice(1)}.`);
   for (const s of signals) {
     if (s.kind !== 'opportunity') continue;
-    if (/création|immatriculation/i.test(s.label)) ['identite', 'site_web', 'reseaux_sociaux'].forEach((x) => out.add(x));
-    if (/nom|enseigne|vente|cession|dirigeant/i.test(s.label)) ['identite', 'site_web', 'conseil'].forEach((x) => out.add(x));
-    if (/transfert|activité/i.test(s.label)) ['publicite', 'site_web'].forEach((x) => out.add(x));
+    const fact = `Annonce officielle : ${s.label.charAt(0).toLowerCase()}${s.label.slice(1)}${s.date ? ` (${new Date(s.date).toLocaleDateString('fr-FR')})` : ''}.`;
+    if (/création|immatriculation/i.test(s.label)) add(['identite', 'site_web', 'reseaux_sociaux'], fact);
+    if (/nom|enseigne|vente|cession|dirigeant/i.test(s.label)) add(['identite', 'site_web', 'conseil'], fact);
+    if (/transfert|activité/i.test(s.label)) add(['publicite', 'site_web'], fact);
   }
-  if (places?.matched && places.rating != null && places.rating < 4 && (places.reviews || 0) >= 10) out.add('reputation');
-  return [...out];
+  if (places?.matched && places.rating != null && places.rating < 4 && (places.reviews || 0) >= 10) add(['reputation'], `Note Google de ${String(places.rating).replace('.', ',')}/5 sur ${places.reviews} avis.`);
+  return out;
+}
+
+export function neededServices(website: WebsiteAudit | null | undefined, signals: Signal[], places: PlaceInfo | null | undefined): string[] {
+  return Object.keys(serviceEvidence(website, signals, places));
+}
+
+/** Motif lisible quand le site n'a pas été audité. */
+function notAuditedReason(website: WebsiteAudit | null) {
+  if (website?.status === 'unreachable') return 'Site non analysable pour le moment (accès impossible)';
+  if (website?.status === 'blocked') return 'Analyse refusée par le site (robots.txt)';
+  return 'Analyse du site non lancée';
 }
 
 export interface ScoreInput {
@@ -134,7 +151,7 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     need.reasons.push('Aucun site web trouvé automatiquement (absence à confirmer).');
   } else {
     need.ratio = 0.4;
-    need.reasons.push('Analyse du site non lancée : besoin estimé à partir du seul profil de l’entreprise.');
+    need.reasons.push(`${notAuditedReason(website)} : besoin estimé à partir du seul profil de l’entreprise.`);
   }
   if (places?.matched && places.rating != null && places.rating < 4 && (places.reviews || 0) >= 10) {
     need.ratio += 0.2;
@@ -198,7 +215,7 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     digital.reasons.push('Présence en ligne non trouvée : potentiel digital élevé si confirmé.');
   } else {
     digital.ratio = 0.45 * (0.55 + 0.45 * capacity);
-    digital.reasons.push('Maturité digitale non mesurée (analyse du site non lancée).');
+    digital.reasons.push(`Maturité digitale non mesurée (${notAuditedReason(website).charAt(0).toLowerCase()}${notAuditedReason(website).slice(1)}).`);
   }
   digital.reasons.push(...capacityReasons);
 
