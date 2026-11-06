@@ -1,0 +1,25 @@
+{
+  "name": "plico",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Outils PDF 100 % locaux, avec plans payants validés par licence (sans clé API).",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/dev.mjs",
+    "dev:mock": "node scripts/build.mjs && node scripts/dev.mjs --mock",
+    "vendor": "node scripts/vendor.mjs",
+    "images": "node scripts/make-images.mjs",
+    "test": "node --test tests/unit/*.test.mjs && node tests/e2e/run.mjs",
+    "test:unit": "node --test tests/unit/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "fflate": "0.8.3",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "5.7.284"
+  }
+}
