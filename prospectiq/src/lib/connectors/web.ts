@@ -31,6 +31,28 @@ export async function resolvesPublic(hostname: string): Promise<boolean> {
   }
 }
 
+let health: { ok: boolean; at: number } | null = null;
+
+/**
+ * Le serveur peut-il résoudre des noms de domaine publics ? Sans cela, « aucun site trouvé » serait une fausse conclusion.
+ * Résultat mémorisé 5 minutes.
+ */
+export async function networkHealthy(): Promise<boolean> {
+  if (env.webFetchOverride) return true;
+  if (health && Date.now() - health.at < 300_000) return health.ok;
+  let ok = false;
+  for (const host of ['www.data.gouv.fr', 'www.google.com']) {
+    try {
+      ok = (await dns.lookup(host)).address.length > 0;
+    } catch {
+      ok = false;
+    }
+    if (ok) break;
+  }
+  health = { ok, at: Date.now() };
+  return ok;
+}
+
 export interface FetchedPage {
   url: string;
   status: number;

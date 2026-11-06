@@ -9,6 +9,7 @@ import { useToast } from '@/components/toast';
 import { api, toastError } from '@/lib/client';
 import { CHANNELS, TONES, LIMITS, type Channel, type Tone } from '@/lib/messages';
 import { SERVICES } from '@/lib/sectors';
+import { displayName } from '@/lib/insights';
 
 interface ProspectOption {
   siren: string;
@@ -73,9 +74,9 @@ function MessagesPage() {
   const [busyIndex, setBusyIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    Promise.all([api<{ prospects: { siren: string; company: { name: string; tradeNames: string[] }; score: number | null }[] }>('/api/prospects'), api<{ offer: { services: string[] } }>('/api/settings')])
+    Promise.all([api<{ prospects: { siren: string; company: Parameters<typeof displayName>[0]; score: number | null }[] }>('/api/prospects'), api<{ offer: { services: string[] } }>('/api/settings')])
       .then(([p, s]) => {
-        const analyzed = p.prospects.filter((x) => x.score !== null).map((x) => ({ siren: x.siren, name: x.company.tradeNames[0] || x.company.name, score: x.score }));
+        const analyzed = p.prospects.filter((x) => x.score !== null).map((x) => ({ siren: x.siren, name: displayName(x.company), score: x.score }));
         setOptions(analyzed);
         if (!service) setService(s.offer.services[0] || 'site_web');
       })

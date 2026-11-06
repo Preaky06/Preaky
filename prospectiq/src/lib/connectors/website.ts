@@ -2,7 +2,7 @@
 // Un site n'est dit « vérifié » que si le SIREN de l'entreprise y figure (mentions légales obligatoires).
 import 'server-only';
 import { parse, type HTMLElement } from 'node-html-parser';
-import { safeGet, robotsAllows, type FetchedPage } from './web';
+import { safeGet, robotsAllows, networkHealthy, type FetchedPage } from './web';
 import { logApi } from '../apilog';
 import type { Company, Finding, WebsiteAudit } from './types';
 
@@ -98,7 +98,13 @@ export async function discoverWebsite(company: Company, hint?: string | null): P
   })() : null;
   const domains = [...new Set([...(hinted ? [hinted] : []), ...candidateDomains(company)])];
   const sirenRe = sirenPattern(company.siren);
+  const deadline = Date.now() + 20_000; // budget global : l'analyse doit tenir dans la durée d'une requête serverless
+  let timedOut = false;
   for (const domain of domains) {
+    if (Date.now() > deadline) {
+      timedOut = true;
+      break;
+    }
     tried.push(domain);
     const home = await fetchHome(domain);
     if (!home) continue;
@@ -118,6 +124,12 @@ export async function discoverWebsite(company: Company, hint?: string | null): P
   }
   if (probable) {
     return { status: 'probable', page: probable, verification: hinted && probable.url.includes(hinted) ? 'Site associé à l’établissement par Google, SIREN non retrouvé sur le site.' : 'Le nom de l’entreprise apparaît sur le site, mais le SIREN n’y a pas été trouvé : à confirmer.', tried };
+  }
+  if (timedOut) {
+    return { status: 'unreachable', page: null, verification: `Délai d’analyse dépassé (sites trop lents à répondre ; domaines essayés : ${tried.join(', ')}). Aucune conclusion n’est tirée sur la présence en ligne.`, tried };
+  }
+  if (!(await networkHealthy())) {
+    return { status: 'unreachable', page: null, verification: 'Analyse du site impossible pour le moment : le serveur n’accède pas à Internet. Aucune conclusion n’est tirée sur la présence en ligne.', tried };
   }
   return { status: 'not_found', page: null, verification: `Aucun site trouvé automatiquement (domaines essayés : ${tried.join(', ') || 'aucun'}). Cela ne prouve pas l’absence de site.`, tried };
 }
@@ -186,7 +198,6 @@ export async function auditPage(page: FetchedPage, company: Pick<Company, 'secto
   const url = new URL(page.url);
   const meta = (name: string) => root.querySelector(`meta[name="${name}"], meta[property="${name}"]`)?.getAttribute('content')?.trim() || null;
   const hrefs = root.querySelectorAll('a[href]').map((a) => a.getAttribute('href') || '');
-  const allLinks = `${hrefs.join(' ')} ${html.slice(0, 400000)}`;
 
   const socials: WebsiteAudit['socials'] = {};
   for (const [key, re] of SOCIAL_PATTERNS) {
@@ -197,15 +208,23 @@ export async function auditPage(page: FetchedPage, company: Pick<Company, 'secto
   const emailSet = new Set<string>([...hrefs.filter((h) => h.startsWith('mailto:')).map((h) => decodeURIComponent(h.slice(7).split('?')[0]).trim().toLowerCase()), ...(text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi) || []).map((e) => e.toLowerCase())]);
   const emails = [...emailSet]
     .filter((e) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(e) && !/\.(png|jpe?g|gif|webp|svg)$/.test(e) && !/example|domain|sentry|wixpress/.test(e))
-    .slice(0, 4)
-    .map((address) => ({ address, kind: GENERIC_MAILBOXES.test(address.split('@')[0]) ? ('generique' as const) : ('nominative' as const) }));
+    .map((address) => ({ address, kind: GENERIC_MAILBOXES.test(address.split('@')[0]) ? ('generique' as const) : ('nominative' as const) }))
+    // Minimisation : les adresses nominatives (prenom.nom@…) sont des données personnelles, elles ne sont pas conservées.
+    .filter((e) => e.kind === 'generique')
+    .slice(0, 3);
 
   const copyrightYears = [...text.matchAll(/(?:©|copyright)\s*(?:\d{4}\s*[-–]\s*)?((?:19|20)\d{2})/gi)].map((m) => Number(m[1]));
   const copyrightYear = copyrightYears.length ? Math.max(...copyrightYears) : null;
   const cms = CMS.find(([, re]) => re.test(html))?.[0] || meta('generator')?.split(/[\s;]/)[0] || null;
   const analytics = ANALYTICS.filter(([, re]) => re.test(html)).map(([n]) => n);
-  const booking = /r[ée]server|r[ée]servation|prendre rendez-vous|thefork|lafourchette|doctolib|planity|calendly|booking\.com|zenchef|guestonline/i.test(allLinks + text.slice(0, 50000));
-  const ecommerce = /panier|add-to-cart|ajouter au panier|woocommerce|cdn\.shopify|\/cart\b|checkout/i.test(allLinks);
+  // Réservation / vente en ligne : uniquement des liens, boutons ou widgets (une phrase « réservations au 04… » ne suffit pas)
+  const actions = root
+    .querySelectorAll('a, button, form, iframe')
+    .map((el) => `${el.getAttribute('href') || ''} ${el.getAttribute('action') || ''} ${el.getAttribute('src') || ''} ${el.text}`)
+    .join(' ');
+  const BOOKING_WIDGETS = /thefork|lafourchette|doctolib|planity|calendly|booking\.com|zenchef|guestonline|resengo|sevenrooms|opentable|treatwell|maiia|kiute/i;
+  const booking = BOOKING_WIDGETS.test(html) || /r[ée]server|r[ée]servation|prendre (un )?rendez-vous|booking/i.test(actions);
+  const ecommerce = /woocommerce|cdn\.shopify|prestashop|add-to-cart/i.test(html) || /ajouter au panier|\/cart\b|\/panier\b|checkout/i.test(actions);
   const content = await lastContent(root, page.url);
 
   const year = new Date().getFullYear();

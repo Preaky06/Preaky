@@ -50,6 +50,14 @@ export function hooks(ctx: MessageContext): string[] {
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+/** « à Le Comptoir » → « au Comptoir », « de Les Halles » → « des Halles ». */
+export function withPrep(prep: 'à' | 'de', name: string): string {
+  const m = name.match(/^(le|les)\s+(.+)$/i);
+  if (m) return `${prep === 'à' ? (m[1].toLowerCase() === 'le' ? 'au' : 'aux') : m[1].toLowerCase() === 'le' ? 'du' : 'des'} ${m[2]}`;
+  if (prep === 'de' && /^[aeiouyhâéèêîôû]/i.test(name)) return `d’${name}`;
+  return `${prep} ${name}`;
+}
+
 /** Rédaction par modèles (sans IA). Variantes déterministes, même entrée = même sortie. */
 export function templateMessages(ctx: MessageContext, channel: Channel, tone: Tone, count = 3, short = false): string[] {
   const name = displayName(ctx.company);
@@ -61,9 +69,9 @@ export function templateMessages(ctx: MessageContext, channel: Channel, tone: To
   const sector = ctx.company.nafLabel ? ctx.company.nafLabel.toLowerCase() : 'votre secteur';
   const greet = { professionnel: 'Bonjour', direct: 'Bonjour', naturel: 'Bonjour', premium: 'Madame, Monsieur', persuasif: 'Bonjour' }[tone];
   const intros = [
-    (h: string | null) => (h ? `En m’intéressant à ${name}, ${h}.` : `En m’intéressant aux entreprises de ${sector}${city ? ` à ${city}` : ''}, j’ai découvert ${name}.`),
-    (h: string | null) => (h ? `${cap(h)}, et je me suis permis de vous écrire.` : `Je me permets de vous contacter au sujet de ${name}.`),
-    (h: string | null) => (h ? `Petite observation au sujet de ${name} : ${h}.` : `Je travaille avec des entreprises de ${sector}${city ? ` autour de ${city}` : ''}.`),
+    (h: string | null) => (h ? `En m’intéressant ${withPrep('à', name)}, ${h}.` : `En m’intéressant aux entreprises de ${sector}${city ? ` à ${city}` : ''}, j’ai découvert ${name}.`),
+    (h: string | null) => (h ? `${cap(h)}, et je me suis permis de vous écrire.` : `Je me permets de vous contacter au sujet ${withPrep('de', name)}.`),
+    (h: string | null) => (h ? `Petite observation au sujet ${withPrep('de', name)} : ${h}.` : `Je travaille avec des entreprises de ${sector}${city ? ` autour de ${city}` : ''}.`),
   ];
   const values: Record<Tone, string[]> = {
     professionnel: [`J’accompagne les entreprises de votre secteur en ${svc}.`, `Mon activité : ${svc}, pour des structures comme la vôtre.`, `Je propose un accompagnement en ${svc}.`],

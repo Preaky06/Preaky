@@ -5,6 +5,9 @@ import { rateLimit } from '@/lib/ratelimit';
 import { countSearch } from '@/lib/quota';
 import { runSearch, SearchSchema } from '@/lib/search';
 
+// Durée maximale de la fonction (Vercel) : appels à des sources externes.
+export const maxDuration = 30;
+
 async function owned(orgId: string, id: string) {
   const row = await one<{ id: string; params: unknown; sirens: string[]; name: string | null; created_at: Date }>('select id, params, sirens, name, created_at from searches where org_id = $1 and id::text = $2', [orgId, id]);
   if (!row) throw new HttpError(404, 'Recherche introuvable.', 'not_found');

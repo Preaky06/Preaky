@@ -113,6 +113,7 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
   const recentRisk = signals.some((s) => s.kind === 'risk' && monthsSince(s.date, now) <= 24);
   const createdMonths = monthsSince(company.createdOn, now);
   const range = company.employeesRange ? EMPLOYEE_RANGES[company.employeesRange] : null;
+  const large = (range?.min ?? 0) >= 50 || (company.establishments || 0) >= 5 || company.category === 'GE' || company.category === 'ETI';
 
   // 1. Besoin potentiel détecté
   const need: Criterion = { id: 'need', label: CRITERIA_LABELS.need, weight: w.need, points: 0, ratio: 0, basis: 'missing', reasons: [] };
@@ -122,6 +123,11 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     need.basis = 'verified';
     const top = findings.filter((f) => f.severity !== 'info').slice(0, 3);
     need.reasons.push(...(top.length ? top.map((f) => f.label) : ['Site en bon état : peu de lacunes techniques détectées.']));
+  } else if (website?.status === 'not_found' && large) {
+    // Une structure de cette taille a presque toujours un site : l'échec de détection est l'hypothèse la plus probable.
+    need.ratio = 0.3;
+    need.basis = 'estimated';
+    need.reasons.push('Aucun site trouvé automatiquement ; pour une structure de cette taille, il n’a probablement pas été détecté.');
   } else if (website?.status === 'not_found') {
     need.ratio = 0.7;
     need.basis = 'estimated';
@@ -151,7 +157,8 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     const sizeId = sizeOfRange(company.employeesRange)?.id;
     const sizeOk = !offer.sizes.length || (sizeId != null && offer.sizes.includes(sizeId));
     relevance.ratio = 0.6 * serviceRatio + 0.25 * (sectorOk ? 1 : 0) + 0.15 * (sizeOk ? 1 : 0);
-    relevance.basis = analyzed ? 'verified' : 'estimated';
+    // « Constaté » seulement si les besoins viennent d'un audit réel ou d'annonces officielles, pas d'une absence de site.
+    relevance.basis = audited || signals.some((x) => x.kind === 'opportunity') ? 'verified' : 'estimated';
     if (matching.length) relevance.reasons.push(`Besoins correspondant à vos services : ${matching.map(serviceName).join(', ')}.`);
     else if (analyzed) relevance.reasons.push('Aucun besoin détecté ne correspond directement à vos services.');
     else relevance.reasons.push('Correspondance avec vos services à confirmer par l’analyse du site.');
@@ -185,7 +192,7 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     digital.ratio = (1 - maturity) * (0.55 + 0.45 * capacity);
     digital.basis = 'verified';
     digital.reasons.push(`Maturité digitale mesurée : ${Math.round(maturity * 100)}/100.`);
-  } else if (website?.status === 'not_found') {
+  } else if (website?.status === 'not_found' && !large) {
     digital.ratio = 0.85 * (0.55 + 0.45 * capacity);
     digital.basis = 'estimated';
     digital.reasons.push('Présence en ligne non trouvée : potentiel digital élevé si confirmé.');
@@ -254,7 +261,7 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     total = 0;
     flags.push('inactive');
   }
-  const confidenceRatio = criteria.reduce((s, c) => s + c.weight * (c.basis === 'verified' ? 1 : c.basis === 'estimated' ? 0.55 : 0.2), 0) / 100;
+  const confidenceRatio = criteria.reduce((s, c) => s + c.weight * (c.basis === 'verified' ? 1 : c.basis === 'estimated' ? 0.4 : 0.2), 0) / 100;
   const confidence = confidenceRatio >= 0.75 ? 'élevée' : confidenceRatio >= 0.5 ? 'moyenne' : 'faible';
   return { total, category: categoryOf(total), confidence, confidenceRatio: Math.round(confidenceRatio * 100) / 100, criteria, flags, preliminary: !analyzed, neededServices: needed };
 }

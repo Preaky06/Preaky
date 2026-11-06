@@ -9,6 +9,9 @@ import { q } from '@/lib/db';
 import { CHANNELS, TONES, LIMITS, templateMessages, factsForAi, fit, type Channel, type Tone, type MessageContext } from '@/lib/messages';
 import { SERVICES } from '@/lib/sectors';
 
+// Durée maximale de la fonction (Vercel) : appels à des sources externes.
+export const maxDuration = 60;
+
 const Schema = z.object({
   siren: z.string().regex(/^\d{9}$/, 'SIREN invalide.'),
   service: z.enum(SERVICES.map((s) => s.id) as [string, ...string[]]),

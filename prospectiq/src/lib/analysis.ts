@@ -33,13 +33,22 @@ export async function isSuppressed(siren: string) {
   return !!(await one('select 1 from suppressions where siren = $1', [siren]));
 }
 
+/** Retire les adresses e-mail ayant fait l'objet d'une opposition. */
+async function withoutSuppressedEmails(website: Enrichment['website']): Promise<Enrichment['website']> {
+  if (!website?.emails?.length) return website;
+  const rows = await q<{ email: string }>('select email from suppressions where email = any($1::text[])', [website.emails.map((e) => e.address)]);
+  if (!rows.length) return website;
+  const blocked = new Set(rows.map((r) => r.email));
+  return { ...website, emails: website.emails.filter((e) => !blocked.has(e.address)) };
+}
+
 export async function enrich(company: Company, orgId: string, force = false): Promise<Enrichment> {
   if (!force) {
     const row = await one<{ website: Enrichment['website']; signals: Enrichment['signals']; places: Enrichment['places']; analyzed_at: Date }>(
       `select website, signals, places, analyzed_at from company_enrichments where siren = $1 and analyzed_at > now() - interval '14 days'`,
       [company.siren],
     );
-    if (row) return { website: row.website, signals: row.signals || [], places: row.places, analyzedAt: new Date(row.analyzed_at).toISOString() };
+    if (row) return { website: await withoutSuppressedEmails(row.website), signals: row.signals || [], places: row.places, analyzedAt: new Date(row.analyzed_at).toISOString() };
   }
   const places = await lookupPlace(company, orgId);
   const [website, signals] = await Promise.all([
@@ -48,11 +57,11 @@ export async function enrich(company: Company, orgId: string, force = false): Pr
       .then((r) => r[company.siren] || [])
       .catch(() => null),
   ]);
-  const enrichment: Enrichment = { website, signals: signals || [], places, analyzedAt: new Date().toISOString() };
+  const enrichment: Enrichment = { website: await withoutSuppressedEmails(website), signals: signals || [], places, analyzedAt: new Date().toISOString() };
   await q(
     `insert into company_enrichments (siren, website, signals, places, analyzed_at) values ($1, $2::jsonb, $3::jsonb, $4::jsonb, now())
      on conflict (siren) do update set website = excluded.website, signals = excluded.signals, places = excluded.places, analyzed_at = now()`,
-    [company.siren, json(website), json(enrichment.signals), json(places)],
+    [company.siren, json(enrichment.website), json(enrichment.signals), json(places)],
   );
   return enrichment;
 }
@@ -155,7 +164,7 @@ export async function storedAnalysis(orgId: string, siren: string): Promise<Anal
   if (!row) return null;
   return {
     company: row.data,
-    enrichment: { website: row.website, signals: row.signals || [], places: row.places, analyzedAt: new Date(row.analyzed_at || row.created_at).toISOString() },
+    enrichment: { website: await withoutSuppressedEmails(row.website), signals: row.signals || [], places: row.places, analyzedAt: new Date(row.analyzed_at || row.created_at).toISOString() },
     score: row.breakdown,
     insights: row.insights,
     aiUsed: row.ai_used,

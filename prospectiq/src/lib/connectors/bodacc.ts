@@ -71,8 +71,12 @@ export async function bodaccSignals(sirens: string[], orgId?: string | null): Pr
     fetchJson<{ results: Raw[] }>('bodacc', 'records', `${env.bodaccApi}/records?${params}`, { timeoutMs: 15000 }, orgId),
   );
   for (const r of data.results || []) {
-    const regs: string[] = (Array.isArray(r.registre) ? r.registre : [r.registre]).map((x: string) => String(x).replace(/\s/g, ''));
-    for (const siren of regs) if (out[siren]) out[siren].push(...toSignals(r));
+    // « registre » contient souvent le même SIREN sous deux formes (« 123 456 789 » et « 123456789 »)
+    const regs = new Set<string>((Array.isArray(r.registre) ? r.registre : [r.registre]).map((x: string) => String(x).replace(/\s/g, '')));
+    for (const siren of regs) {
+      if (!out[siren]) continue;
+      for (const s of toSignals(r)) if (!out[siren].some((x) => x.id === s.id)) out[siren].push(s);
+    }
   }
   return out;
 }

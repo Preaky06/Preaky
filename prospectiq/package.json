@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:live": "LIVE=1 NODE_USE_ENV_PROXY=1 vitest run",
+    "test:e2e": "node tests/e2e/run.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.15",

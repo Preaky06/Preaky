@@ -3,6 +3,9 @@ import { rateLimit } from '@/lib/ratelimit';
 import { countSearch } from '@/lib/quota';
 import { runSearch, SearchSchema } from '@/lib/search';
 
+// Durée maximale de la fonction (Vercel) : appels à des sources externes.
+export const maxDuration = 30;
+
 export const POST = authed(async (req, { user }) => {
   await rateLimit(`search:${user.id}`, 30, 60);
   const input = await body(req, SearchSchema);

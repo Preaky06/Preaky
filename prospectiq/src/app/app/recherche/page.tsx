@@ -237,16 +237,21 @@ function SearchPage() {
 
   const patchRow = (siren: string, patch: Partial<ResultRow>) => setRes((r) => (r ? { ...r, rows: r.rows.map((row) => (row.company.siren === siren ? { ...row, ...patch } : row)) } : r));
 
-  const analyze = async (row: ResultRow, silent = false) => {
+  /** 'ok' = analysée ; 'stop' = quota atteint (inutile de continuer) ; 'fail' = échec ponctuel. */
+  const analyze = async (row: ResultRow, silent = false): Promise<'ok' | 'stop' | 'fail'> => {
     setBusy((b) => ({ ...b, [row.company.siren]: 'analyze' }));
     try {
       const r = await api<{ analysis: AnalysisView }>(`/api/companies/${row.company.siren}/analyze`, { body: {} });
       patchRow(row.company.siren, { score: r.analysis.score, analyzed: true, facts: factsFromAnalysis(r.analysis) });
-      if (!silent) toast(`${displayName(row.company)} analysée : ${r.analysis.score.total}/100.`, 'success');
-      return true;
+      if (!silent) {
+        toast(`${displayName(row.company)} analysée : ${r.analysis.score.total}/100.`, 'success');
+        router.refresh();
+      }
+      return 'ok';
     } catch (e) {
-      if (!silent || (e as ApiError).status === 402) toastError(toast, e);
-      return (e as ApiError).status !== 402;
+      const status = (e as ApiError).status;
+      if (!silent || status === 402) toastError(toast, e);
+      return status === 402 ? 'stop' : 'fail';
     } finally {
       setBusy((b) => Object.fromEntries(Object.entries(b).filter(([k]) => k !== row.company.siren)));
     }
@@ -256,14 +261,22 @@ function SearchPage() {
     if (!res) return;
     const todo = res.rows.filter((r) => !r.analyzed);
     setBulk({ done: 0, total: todo.length });
+    let failed = 0;
+    let stopped = false;
     for (let i = 0; i < todo.length; i++) {
-      const okToContinue = await analyze(todo[i], true);
+      const result = await analyze(todo[i], true);
       setBulk({ done: i + 1, total: todo.length });
-      if (!okToContinue) break;
+      if (result === 'fail') failed++;
+      if (result === 'stop') {
+        stopped = true;
+        break;
+      }
     }
     setBulk(null);
     router.refresh();
-    toast('Analyse des résultats terminée.', 'success');
+    if (stopped) return;
+    if (failed) toast(`${todo.length - failed} entreprise(s) analysée(s), ${failed} échec(s) : relancez l’analyse de celles qui restent.`, 'error');
+    else toast('Analyse des résultats terminée.', 'success');
   };
 
   const addToCrm = async (row: ResultRow, favorite?: boolean) => {

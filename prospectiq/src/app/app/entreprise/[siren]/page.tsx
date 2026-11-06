@@ -135,7 +135,7 @@ export default function CompanyPage() {
               {w?.status === 'verified' && host ? (
                 // Logo : icône publique du site vérifié ; repli sur les initiales
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={`https://${host}/favicon.ico`} alt="" className="size-8" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />
+                <img src={`https://${host}/favicon.ico`} alt="" referrerPolicy="no-referrer" className="size-8" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />
               ) : (
                 displayName(c).slice(0, 2).toUpperCase()
               )}

@@ -23,7 +23,12 @@ export function displayName(c: Pick<Company, 'name' | 'tradeNames'>) {
   return raw
     .toLowerCase()
     .split(/(\s+|-|')/)
-    .map((w) => (keep.has(w.toUpperCase()) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .map((w) => {
+      // Sigles conservés : SAS, S.A.A.M.P, (S.A.R.L.)…
+      if (keep.has(w.toUpperCase()) || /^\(?([a-z]\.){2,}[a-z]?\.?\)?$/i.test(w)) return w.toUpperCase();
+      const i = w.search(/\p{L}/u);
+      return i < 0 ? w : w.slice(0, i) + w.charAt(i).toUpperCase() + w.slice(i + 1);
+    })
     .join('');
 }
 
