@@ -1,6 +1,9 @@
 // Vibrations, maintien de l'écran allumé et préférences locales.
 
 export function vibrate(pattern: number | number[]) {
+  // Les navigateurs refusent (et signalent) une vibration avant le premier toucher sur la page.
+  const activation = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+  if (activation && !activation.hasBeenActive) return;
   try {
     navigator.vibrate?.(pattern);
   } catch {
