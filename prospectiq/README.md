@@ -52,7 +52,7 @@ La tâche quotidienne `/api/cron/cleanup` (définie dans `vercel.json`) applique
 ## Tests
 
 ```bash
-npm test             # 73 tests unitaires (scoring, audit web, SSRF, BODACC, SIRENE, messages, CSV, quotas, Stripe)
+npm test             # 76 tests unitaires (scoring, opportunités sourcées, audit web, SSRF, BODACC, SIRENE, messages, CSV, quotas, Stripe)
 npm run test:live    # 5 tests contre les vraies API SIRENE, BODACC, Géo (réseau requis)
 npm run build && npm run test:e2e   # scénario navigateur complet en 23 étapes (sources simulées, données fictives)
 ```
