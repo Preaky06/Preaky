@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { SABOTAGES } from '../../shared/constants.ts';
 import type { SabotageKind } from '../../shared/types.ts';
 import { api, toast } from '../net.ts';
-import { useGame, useNotes } from '../lib/hooks.ts';
+import { useGame, useNotes, usePlayers } from '../lib/hooks.ts';
 import { sfx } from '../lib/sound.ts';
 import { vibrate, type Note } from '../lib/device.ts';
 import { Avatar, Sheet } from './ui.tsx';
@@ -61,7 +61,64 @@ function Carnet() {
   );
 }
 
-/** Bouton « Dossier » : même apparence pour tout le monde, contenu différent pour la taupe. */
+/** « Œil de nuit » : le pouvoir de la Chouette, verrouillé pour les autres. */
+function OwlEye() {
+  const g = useGame();
+  const players = usePlayers();
+  const [busy, setBusy] = useState(false);
+  const owl = g.owl;
+  if (!owl) {
+    return (
+      <div className="gadget gadget-locked owl-locked" aria-hidden>
+        <span className="gadget-emoji">🔒</span>
+        <span className="gadget-body">
+          <strong>Œil de nuit</strong>
+          <small>Réservé à la Chouette. Une agente secrète joue cette série… à moins que quelqu’un ne mente.</small>
+        </span>
+      </div>
+    );
+  }
+  if (owl.result) {
+    const t = players[owl.result.targetId];
+    return (
+      <div className={`owl-result ${owl.result.isMole ? 'owl-result-mole' : ''}`}>
+        <Avatar player={t} size={40} />
+        <span>
+          <strong>{t?.name ?? '???'}</strong> {owl.result.isMole ? 'EST la taupe !' : 'n’est PAS la taupe.'}
+          <small>Toi seule le sais. Si la taupe tombe, elle tentera de te démasquer : reste discrète.</small>
+        </span>
+      </div>
+    );
+  }
+  const peek = async (id: string) => {
+    if (busy) return;
+    setBusy(true);
+    const r = await api.owlPeek(id);
+    setBusy(false);
+    if (!r.ok) return toast(r.error ?? 'Impossible.', 'bad');
+    sfx.reveal();
+    vibrate([30, 40, 30]);
+  };
+  return (
+    <div className="owl-eye">
+      <p className="paper-text">
+        {owl.canPeek ? 'Choisis un joueur : tu sauras s’il est la taupe. Une seule fois par série.' : 'Ton œil s’ouvre après la première question.'}
+      </p>
+      <div className="owl-targets">
+        {g.players
+          .filter((p) => p.id !== g.me?.id)
+          .map((p) => (
+            <button key={p.id} className="owl-target" disabled={!owl.canPeek || busy} onClick={() => peek(p.id)}>
+              <Avatar player={p} size={30} />
+              <span>{p.name}</span>
+            </button>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+/** Bouton « Dossier » : même apparence pour tout le monde, contenu différent pour la taupe et la Chouette. */
 export function Dossier() {
   const g = useGame();
   const [open, setOpen] = useState(false);
@@ -70,7 +127,7 @@ export function Dossier() {
 
   useEffect(() => {
     if (!open) return;
-    const t = setTimeout(() => setOpen(false), 12000);
+    const t = setTimeout(() => setOpen(false), 20000);
     return () => clearTimeout(t);
   }, [open]);
 
@@ -165,6 +222,16 @@ export function Dossier() {
                 </div>
               ))}
             </div>
+          )}
+
+          {g.mission?.owl && (
+            <>
+              <div className="paper-head">
+                <span>Œil de nuit 🦉</span>
+                <small>1 regard par série</small>
+              </div>
+              <OwlEye />
+            </>
           )}
 
           <div className="paper-head">

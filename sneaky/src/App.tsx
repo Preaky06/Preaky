@@ -4,6 +4,7 @@ import { MoleLogo } from './components/Logo.tsx';
 import { keepAwake } from './lib/device.ts';
 import { api, useStore } from './net.ts';
 import { GameEnd } from './screens/GameEnd.tsx';
+import { Hunt } from './screens/Hunt.tsx';
 import { Home } from './screens/Home.tsx';
 import { Lobby } from './screens/Lobby.tsx';
 import { Meeting } from './screens/Meeting.tsx';
@@ -73,6 +74,9 @@ function Screen() {
     case 'voteResult':
       screen = <VoteResult />;
       break;
+    case 'hunt':
+      screen = <Hunt />;
+      break;
     case 'roundEnd':
       screen = <RoundEnd />;
       break;
@@ -90,13 +94,14 @@ function Screen() {
 export function App() {
   const inGame = useStore((s) => !!s.state && s.state.phase !== 'lobby');
   const board = useStore((s) => !!s.boardCode);
+  const phase = useStore((s) => s.state?.phase ?? 'home');
 
   useEffect(() => {
     keepAwake(inGame || board);
   }, [inGame, board]);
 
   return (
-    <div className={`app ${board ? 'board-mode' : ''}`}>
+    <div className={`app ${board ? 'board-mode' : ''}`} data-phase={phase}>
       <div className="bg-grid" aria-hidden />
       <div className="bg-noise" aria-hidden />
       <Screen />

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { REACTIONS } from '../../shared/constants.ts';
 import type { PublicPlayer } from '../../shared/types.ts';
 import { TopBar, Ticker } from '../components/Chrome.tsx';
-import { NOTE_ICON, NotePicker } from '../components/Dossier.tsx';
+import { Dossier, NOTE_ICON, NotePicker } from '../components/Dossier.tsx';
 import { IntelList, Journal } from '../components/Intel.tsx';
 import { useRoundScores } from '../components/Answers.tsx';
 import { Avatar, Sheet, TimerRing } from '../components/ui.tsx';
@@ -173,12 +173,15 @@ export function Meeting() {
               </button>
             ))}
           </div>
-          <button className={`btn btn-xl ${iSkipped ? 'btn-ghost' : 'btn-primary'}`} disabled={!canSkip} onClick={() => api.skip()}>
-            {iSkipped ? '↩︎ Annuler' : '🗳️ Passer au vote'}{' '}
-            <small className="mono">
-              {m.skipVotes.length}/{m.skipNeeded}
-            </small>
-          </button>
+          <div className="bottom-row">
+            <Dossier />
+            <button className={`btn btn-xl ${iSkipped ? 'btn-ghost' : 'btn-primary'}`} disabled={!canSkip} onClick={() => api.skip()}>
+              {iSkipped ? '↩︎ Annuler' : '🗳️ Passer au vote'}{' '}
+              <small className="mono">
+                {m.skipVotes.length}/{m.skipNeeded}
+              </small>
+            </button>
+          </div>
         </div>
       )}
 

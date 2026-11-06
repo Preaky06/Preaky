@@ -3,7 +3,7 @@ import { JAM_SECONDS } from '../../shared/constants.ts';
 import { TopBar } from '../components/Chrome.tsx';
 import { Dossier } from '../components/Dossier.tsx';
 import { MissionTrack } from '../components/Mission.tsx';
-import { Avatar, CategoryChip, TimerRing } from '../components/ui.tsx';
+import { Avatar, CategoryChip, ProgressBar, TimerRing } from '../components/ui.tsx';
 import { useGame, useOnce, usePhaseElapsed } from '../lib/hooks.ts';
 import { sfx } from '../lib/sound.ts';
 import { vibrate } from '../lib/device.ts';
@@ -61,14 +61,8 @@ export function Question() {
               </span>
             )}
           </div>
-          <span className="q-diff" aria-label={`Difficulté ${q.difficulty} sur 3`}>
-            <span>NIV.</span>
-            {[1, 2, 3].map((n) => (
-              <i key={n} className={n <= q.difficulty ? 'on' : ''} />
-            ))}
-          </span>
         </div>
-        <TimerRing endsAt={g.phaseEndsAt} duration={g.phaseDuration} paused={g.paused} />
+        <TimerRing endsAt={g.phaseEndsAt} duration={g.phaseDuration} paused={g.paused} size={54} />
       </div>
 
       {(q.jammed || q.rushed) && (
@@ -80,8 +74,25 @@ export function Question() {
       )}
 
       <div className="q-card" key={q.index}>
-        <div className="q-num mono">QUESTION {q.index + 1}</div>
+        <div className="q-card-head">
+          <span className="q-num mono">QUESTION {q.index + 1}</span>
+          <span className="q-diff" aria-label={`Difficulté ${q.difficulty} sur 3`}>
+            <span>NIV.</span>
+            {[1, 2, 3].map((n) => (
+              <i key={n} className={n <= q.difficulty ? 'on' : ''} />
+            ))}
+          </span>
+        </div>
         <h2 className="q-text">{q.text}</h2>
+        <div className="q-card-foot">
+          <span className="mono small muted">🔒 {lockedCount}/{g.players.length}</span>
+          <span className="q-locks">
+            {g.players.map((p) => (
+              <Avatar key={p.id} player={p} size={22} dim={!p.locked} />
+            ))}
+          </span>
+        </div>
+        <ProgressBar endsAt={g.phaseEndsAt} duration={g.phaseDuration} />
       </div>
 
       <div className={`options ${jamActive ? 'options-jammed' : ''}`}>
@@ -104,14 +115,6 @@ export function Question() {
         {jamActive && <div className="jam-overlay">📡 SIGNAL BROUILLÉ</div>}
       </div>
 
-      <div className="lock-row">
-        {g.players.map((p) => (
-          <Avatar key={p.id} player={p} size={30} dim={!p.locked} badge={p.locked ? '🔒' : undefined} />
-        ))}
-        <span className="mono small muted">
-          {lockedCount}/{g.players.length}
-        </span>
-      </div>
 
       {!spectator && (
         <div className="bottom-bar bottom-bar-split">

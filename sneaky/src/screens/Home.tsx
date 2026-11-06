@@ -127,6 +127,24 @@ export function Home() {
         </div>
       )}
 
+      {mode === 'menu' && (
+        <div className="howto">
+          {[
+            ['Créez un salon', 'les autres rejoignent avec le code ou le QR'],
+            ['Une taupe connaît les réponses', 'répondez, débattez à voix haute, verrouillez'],
+            ['Démasquez-la', 'indices, réunions d’urgence, vote… et une Chouette'],
+          ].map(([t, d], i) => (
+            <div key={t} className="howto-step" style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
+              <span className="howto-n">{i + 1}</span>
+              <span>
+                <strong>{t}</strong>
+                <small>{d}</small>
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {mode === 'join' && (
         <div className="card join-card">
           <span className="label mono">Code de l’opération</span>

@@ -80,7 +80,7 @@ describe('déroulé de partie', () => {
     expect(room.phase).toBe('question');
     for (const id of ids) {
       const v: ClientState = room.viewFor(id);
-      expect(v.me!.role).toBe(id === moleId ? 'mole' : 'agent');
+      expect(v.me!.role).toBe(id === moleId ? 'mole' : id === room.round!.owlId ? 'owl' : 'agent');
       if (id === moleId) {
         expect(v.question!.correct).not.toBeNull();
         expect(v.mole).not.toBeNull();
@@ -133,6 +133,10 @@ describe('déroulé de partie', () => {
           break;
         case 'voteResult':
           tick(11000);
+          break;
+        case 'hunt':
+          tick(26_000);
+          tick(9_000);
           break;
         case 'roundEnd': {
           const v = room.viewFor(ids[0]);
@@ -471,5 +475,136 @@ describe('gadgets de la taupe', () => {
     expect(room.viewFor(mole2).mole!.available).toHaveLength(3);
     expect(room.sabotage(mole2, 'jam')).toBeNull();
     expect(room.sabotage(mole2, 'rush')).not.toBeNull();
+  });
+});
+
+describe('la Chouette', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  function playQuestion(room: Room, ids: string[], q: number) {
+    ids.forEach((id) => {
+      room.select(id, q, room.round!.questions[q].correct);
+      room.lock(id, q);
+    });
+    tick(1500);
+  }
+
+  it('n’apparaît qu’à partir de 4 joueurs et si le réglage est actif', () => {
+    const small = makeRoom(3);
+    small.room.updateSettings({ rounds: 1, questionsPerRound: 3 });
+    small.room.start();
+    expect(small.room.round!.owlId).toBeNull();
+    expect(small.room.viewFor(small.ids[0]).mission!.owl).toBe(false);
+
+    const off = makeRoom(5);
+    off.room.updateSettings({ rounds: 1, questionsPerRound: 3, owl: false });
+    off.room.start();
+    expect(off.room.round!.owlId).toBeNull();
+
+    const on = makeRoom(4);
+    on.room.updateSettings({ rounds: 1, questionsPerRound: 3 });
+    on.room.start();
+    const r = on.room.round!;
+    expect(r.owlId).not.toBeNull();
+    expect(r.owlId).not.toBe(r.moleId);
+    expect(on.room.viewFor(r.owlId!).me!.role).toBe('owl');
+    for (const id of on.ids) {
+      const v = on.room.viewFor(id);
+      expect(v.mission!.owl).toBe(true);
+      if (id !== r.owlId) {
+        expect(v.owl).toBeNull();
+        expect(JSON.stringify(v)).not.toContain(`"role":"owl"`);
+      }
+    }
+  });
+
+  it('observe un seul joueur, après la première question', () => {
+    const { room, ids } = makeRoom(5);
+    room.updateSettings({ rounds: 1, questionsPerRound: 3 });
+    room.start();
+    const r = room.round!;
+    const owl = r.owlId!;
+    const agent = ids.find((id) => id !== owl && id !== r.moleId)!;
+    expect(room.owlPeekAt(owl, r.moleId!)).toMatch(/Impossible/);
+    ids.forEach((id) => room.setReady(id));
+    tick(1500);
+    expect(room.owlPeekAt(owl, r.moleId!)).toMatch(/première question/);
+    expect(room.owlPeekAt(agent, r.moleId!)).toMatch(/Seule la Chouette/);
+    playQuestion(room, ids, 0);
+    expect(room.phase).toBe('questionResult');
+    expect(room.owlPeekAt(owl, owl)).toMatch(/autre joueur/);
+    expect(room.owlPeekAt(owl, r.moleId!)).toEqual({ isMole: true });
+    expect(room.owlPeekAt(owl, agent)).toMatch(/déjà/);
+    const v = room.viewFor(owl).owl!;
+    expect(v.result).toEqual({ targetId: r.moleId, isMole: true });
+    expect(v.canPeek).toBe(false);
+  });
+
+  it('contre-attaque : la taupe démasquée peut capturer la Chouette', () => {
+    for (const capture of [true, false]) {
+      const { room, ids } = makeRoom(5);
+      room.updateSettings({ rounds: 1, questionsPerRound: 3 });
+      room.start();
+      const r = room.round!;
+      const mole = r.moleId!;
+      const owl = r.owlId!;
+      const other = ids.find((id) => id !== owl && id !== mole)!;
+      ids.forEach((id) => room.setReady(id));
+      tick(1500);
+      for (let q = 0; q < 3; q++) {
+        playQuestion(room, ids, q);
+        tick(11_000);
+      }
+      expect(room.phase).toBe('meeting');
+      ids.forEach((id) => room.skipMeeting(id));
+      tick(1500);
+      ids.forEach((id) => room.castVote(id, id === mole ? other : mole));
+      tick(1500);
+      expect(room.viewFor(ids[0]).voteResult!.accusedWasMole).toBe(true);
+      tick(11_000);
+      expect(room.phase).toBe('hunt');
+      const before = room.viewFor(other).hunt!;
+      expect(before.moleId).toBe(mole);
+      expect(before.wasOwl).toBeNull();
+      expect(before.candidates).not.toContain(mole);
+      room.huntPick(other, owl); // seule la taupe choisit
+      expect(room.viewFor(other).hunt!.resolved).toBe(false);
+      room.huntPick(mole, capture ? owl : other);
+      const after = room.viewFor(other).hunt!;
+      expect(after.resolved).toBe(true);
+      expect(after.wasOwl).toBe(capture);
+      tick(9_000);
+      expect(room.phase).toBe('roundEnd');
+      const end = room.viewFor(mole).roundEnd!;
+      expect(end.owlId).toBe(owl);
+      expect(end.owlCaptured).toBe(capture);
+      const owlLines = room.viewFor(owl).roundEnd!.myLines.map((l) => l.label);
+      expect(owlLines.some((l) => l.startsWith('Chouette restée'))).toBe(!capture);
+      expect(end.myLines.some((l) => l.label === 'Chouette capturée')).toBe(capture);
+    }
+  });
+
+  it('sans désignation dans le temps imparti, la Chouette s’envole', () => {
+    const { room, ids } = makeRoom(4);
+    room.updateSettings({ rounds: 1, questionsPerRound: 3 });
+    room.start();
+    const r = room.round!;
+    ids.forEach((id) => room.setReady(id));
+    tick(1500);
+    playQuestion(room, ids, 0);
+    expect(room.emergency(ids.find((id) => id !== r.moleId)!)).toBeNull();
+    ids.forEach((id) => room.skipMeeting(id));
+    tick(1500);
+    ids.forEach((id) => room.castVote(id, id === r.moleId ? ids.find((x) => x !== id)! : r.moleId!));
+    tick(1500);
+    tick(11_000);
+    expect(room.phase).toBe('hunt');
+    tick(26_000);
+    expect(room.viewFor(ids[0]).hunt!.resolved).toBe(true);
+    expect(room.viewFor(ids[0]).hunt!.wasOwl).toBe(false);
+    tick(9_000);
+    expect(room.phase).toBe('roundEnd');
+    expect(room.viewFor(ids[0]).roundEnd!.outcome).toBe('caught');
   });
 });

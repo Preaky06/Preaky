@@ -105,3 +105,51 @@ export function MoleLogo({ size = 160, animated = true, evil = false }: Props) {
 export function MoleMark({ size = 28 }: { size?: number }) {
   return <MoleLogo size={size} animated={false} />;
 }
+
+/** La Chouette : elle voit dans le noir… et chasse les taupes. */
+export function OwlLogo({ size = 120, animated = true }: { size?: number; animated?: boolean }) {
+  return (
+    <svg className={`owl-logo ${animated ? 'owl-anim' : ''}`} width={size} height={size} viewBox="0 0 100 100" role="img" aria-label="Chouette">
+      <defs>
+        <radialGradient id="ow-body" cx="45%" cy="35%" r="75%">
+          <stop offset="0" stopColor="#7E6BC4" />
+          <stop offset="0.65" stopColor="#5A4896" />
+          <stop offset="1" stopColor="#3A2E66" />
+        </radialGradient>
+      </defs>
+      {/* Branche */}
+      <path d="M8 90 Q50 84 92 90" stroke="#5A4030" strokeWidth="5" strokeLinecap="round" fill="none" />
+      {/* Corps et aigrettes */}
+      <path d="M24 34 L27 12 L40 26 Z" fill="#3A2E66" />
+      <path d="M76 34 L73 12 L60 26 Z" fill="#3A2E66" />
+      <ellipse cx="50" cy="56" rx="31" ry="33" fill="url(#ow-body)" />
+      <ellipse cx="50" cy="68" rx="17" ry="18" fill="#A898DB" opacity="0.55" />
+      <g stroke="#3A2E66" strokeWidth="1.6" fill="none" opacity="0.7">
+        <path d="M40 62 q3 3 6 0" />
+        <path d="M54 62 q3 3 6 0" />
+        <path d="M44 70 q3 3 6 0" />
+        <path d="M50 70 q3 3 6 0" />
+        <path d="M46 78 q4 3 8 0" />
+      </g>
+      {/* Disque facial */}
+      <circle cx="38" cy="43" r="13.5" fill="#EFE6D2" />
+      <circle cx="62" cy="43" r="13.5" fill="#EFE6D2" />
+      <g className="owl-eyes">
+        <circle cx="38" cy="43" r="8.5" fill="#FFB547" />
+        <circle cx="62" cy="43" r="8.5" fill="#FFB547" />
+        <circle cx="38" cy="43" r="4.5" fill="#0B0D12" />
+        <circle cx="62" cy="43" r="4.5" fill="#0B0D12" />
+        <circle cx="36" cy="41" r="1.6" fill="#fff" />
+        <circle cx="60" cy="41" r="1.6" fill="#fff" />
+      </g>
+      <path d="M46 52 L50 60 L54 52 Z" fill="#FFB547" />
+      {/* Serres */}
+      <g stroke="#FFB547" strokeWidth="2.4" strokeLinecap="round">
+        <path d="M42 87 L40 92" />
+        <path d="M45 87 L45 92" />
+        <path d="M55 87 L55 92" />
+        <path d="M58 87 L60 92" />
+      </g>
+    </svg>
+  );
+}

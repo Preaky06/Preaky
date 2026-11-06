@@ -8,6 +8,7 @@ import {
   LIMITS,
   MAX_PLAYERS,
   MIN_PLAYERS,
+  MIN_PLAYERS_OWL,
   NAME_MAX,
   POINTS,
   REACTIONS,
@@ -42,6 +43,8 @@ const ROLE_REVEAL_TIME = 30;
 const RESULT_TIME = 10;
 const VOTE_RESULT_TIME = 10;
 const ROUND_END_TIME = 30;
+const HUNT_TIME = 25;
+const HUNT_REVEAL_TIME = 8;
 const ALL_DONE_DELAY = 1.2;
 
 interface PlayerStats {
@@ -57,6 +60,8 @@ interface PlayerStats {
   emergencies: number;
   sabotages: number;
   fastestLocks: number;
+  owlRounds: number;
+  owlHits: number;
 }
 
 export interface Player {
@@ -110,6 +115,10 @@ interface RoundState {
   benched: Set<string>;
   caughtIn: 'emergency' | 'final' | null;
   moleLeft: boolean;
+  owlId: string | null;
+  owlPeek: { targetId: string; isMole: boolean } | null;
+  owlCaptured: boolean;
+  hunt: { targetId: string | null; resolved: boolean } | null;
   ready: Set<string>;
   lines: Map<string, Map<string, { points: number; count: number }>>;
   rewardedVoters: Set<string>;
@@ -147,6 +156,7 @@ interface VoteResultState {
 interface RoundSummary {
   round: number;
   moleId: string | null;
+  owlId: string | null;
   outcome: RoundEndView['outcome'];
 }
 
@@ -172,6 +182,8 @@ function emptyStats(): PlayerStats {
     emergencies: 0,
     sabotages: 0,
     fastestLocks: 0,
+    owlRounds: 0,
+    owlHits: 0,
   };
 }
 
@@ -286,12 +298,13 @@ export class Room {
   }
 
   private inRound(): boolean {
-    return ['roleReveal', 'question', 'questionResult', 'meeting', 'vote', 'voteResult', 'roundEnd'].includes(this.phase);
+    return ['roleReveal', 'question', 'questionResult', 'meeting', 'vote', 'voteResult', 'hunt', 'roundEnd'].includes(this.phase);
   }
 
   private roleOf(id: string): Role | null {
     if (!this.round || !this.inRound()) return null;
-    return this.round.moleId === id ? 'mole' : 'agent';
+    if (this.round.moleId === id) return 'mole';
+    return this.round.owlId === id ? 'owl' : 'agent';
   }
 
   private addLine(playerId: string, label: string, points: number) {
@@ -482,6 +495,7 @@ export class Room {
       sabotages: typeof patch.sabotages === 'boolean' ? patch.sabotages : s.sabotages,
       speakingTurns: typeof patch.speakingTurns === 'boolean' ? patch.speakingTurns : s.speakingTurns,
       useCustom: typeof patch.useCustom === 'boolean' ? patch.useCustom : s.useCustom,
+      owl: typeof patch.owl === 'boolean' ? patch.owl : s.owl,
       revealAnswers: patch.revealAnswers === 'full' || patch.revealAnswers === 'correctness' ? patch.revealAnswers : s.revealAnswers,
     };
     this.settings = next;
@@ -541,6 +555,10 @@ export class Room {
     const pool = candidates.length ? candidates : [...this.players.values()];
     const mole = pick(pool);
     mole.stats.moleRounds++;
+    // La Chouette : une agente tirée au sort parmi les autres, à partir de 4 joueurs.
+    const owlPool = pool.filter((p) => p.id !== mole.id);
+    const owl = this.settings.owl && pool.length >= MIN_PLAYERS_OWL ? pick(owlPool) : null;
+    if (owl) owl.stats.owlRounds++;
     for (const p of this.players.values()) p.joinedMidGame = false;
     this.round = {
       number: n,
@@ -566,6 +584,10 @@ export class Room {
       benched: new Set(),
       caughtIn: null,
       moleLeft: false,
+      owlId: owl?.id ?? null,
+      owlPeek: null,
+      owlCaptured: false,
+      hunt: null,
       ready: new Set(),
       lines: new Map(),
       rewardedVoters: new Set(),
@@ -1043,8 +1065,71 @@ export class Room {
     const r = this.round;
     const vr = this.voteResult;
     if (!r || !vr) return;
-    if (vr.accusedWasMole || vr.kind === 'final') this.endRound();
+    if (vr.accusedWasMole && this.canHunt()) this.startHunt();
+    else if (vr.accusedWasMole || vr.kind === 'final') this.endRound();
     else this.startQuestion(r.qIndex + 1);
+  }
+
+  // ───────────────────────────── La Chouette ─────────────────────────────
+
+  private owlBlock(playerId: string): string | null {
+    const r = this.round;
+    if (!r || r.owlId !== playerId) return 'Seule la Chouette peut observer.';
+    if (r.owlPeek) return 'Tu as déjà ouvert l’œil cette série.';
+    if (!['question', 'questionResult', 'meeting'].includes(this.phase)) return 'Impossible maintenant.';
+    if (r.log.length < 1) return 'Ton œil s’ouvre après la première question.';
+    return null;
+  }
+
+  owlPeekAt(playerId: string, targetId: string): { isMole: boolean } | string {
+    const block = this.owlBlock(playerId);
+    if (block) return block;
+    const r = this.round!;
+    if (targetId === playerId || !this.players.has(targetId)) return 'Choisis un autre joueur.';
+    const isMole = targetId === r.moleId;
+    r.owlPeek = { targetId, isMole };
+    if (isMole) this.players.get(playerId)!.stats.owlHits++;
+    this.changed();
+    return { isMole };
+  }
+
+  private canHunt(): boolean {
+    const r = this.round;
+    return !!(r && r.owlId && r.moleId && this.players.has(r.owlId) && this.players.has(r.moleId));
+  }
+
+  private startHunt() {
+    const r = this.round;
+    if (!r) return;
+    r.hunt = { targetId: null, resolved: false };
+    this.meeting = null;
+    this.vote = null;
+    this.setPhase('hunt');
+    this.log('🦉 La taupe démasquée tente une dernière chose : attraper la Chouette…', 'alert');
+    this.schedule(HUNT_TIME, () => this.resolveHunt(null));
+    this.changed();
+  }
+
+  huntPick(playerId: string, targetId: string) {
+    const r = this.round;
+    if (!r || this.phase !== 'hunt' || !r.hunt || r.hunt.resolved) return;
+    if (r.moleId !== playerId || targetId === playerId || !this.players.has(targetId)) return;
+    this.resolveHunt(targetId);
+  }
+
+  private resolveHunt(targetId: string | null) {
+    const r = this.round;
+    if (!r) return;
+    r.hunt = { targetId, resolved: true };
+    if (targetId && targetId === r.owlId && r.moleId) {
+      r.owlCaptured = true;
+      this.addLine(r.moleId, 'Chouette capturée', POINTS.moleCatchOwl);
+      this.log(`🦉 ${this.name(targetId)} était la Chouette… et s'est fait attraper !`, 'bad');
+    } else {
+      this.log(targetId ? `🦉 ${this.name(targetId)} n'était pas la Chouette. Elle s'est envolée.` : '🦉 La taupe n’a désigné personne.', 'good');
+    }
+    this.schedule(HUNT_REVEAL_TIME, () => this.endRound());
+    this.changed();
   }
 
   // ───────────────────────────── Fin de série / partie ─────────────────────────────
@@ -1067,6 +1152,9 @@ export class Room {
         this.addLine(mole.id, 'Taupe démasquée', POINTS.moleCaught);
       }
     }
+    if (outcome === 'caught' && r.owlId && this.players.has(r.owlId) && !r.owlCaptured) {
+      this.addLine(r.owlId, 'Chouette restée dans l’ombre', POINTS.owlHidden);
+    }
     const deltas: Record<string, number> = {};
     for (const p of this.players.values()) {
       deltas[p.id] = p.score - p.shownScore;
@@ -1085,8 +1173,12 @@ export class Room {
       log: r.log.map(({ answers: _a, ...rest }) => rest),
       deltas,
       myLines: [],
+      owlId: r.owlId,
+      owlCaptured: r.owlCaptured,
+      owlPeek: r.owlPeek,
+      huntTargetId: r.hunt?.targetId ?? null,
     };
-    this.summaries.push({ round: r.number, moleId: mole?.id ?? null, outcome });
+    this.summaries.push({ round: r.number, moleId: mole?.id ?? null, owlId: r.owlId, outcome });
     if (outcome === 'escaped') this.log(`🐀 ${this.name(r.moleId)} était la taupe et s'en est sorti(e) !`, 'bad');
     r.ready = new Set();
     this.meeting = null;
@@ -1136,6 +1228,7 @@ export class Room {
     add('paranoid', '🌀', 'Paranoïaque', 'Le plus de votes contre des innocents', best((p) => p.stats.votesOnInnocent), (v) => `${v} fausse${v > 1 ? 's' : ''} piste${v > 1 ? 's' : ''}`);
     add('scapegoat', '🐐', 'Bouc émissaire', 'Innocent le plus suspecté', best((p) => p.stats.votesReceivedInnocent), (v) => `${v} vote${v > 1 ? 's' : ''} reçu${v > 1 ? 's' : ''}`);
     add('whistle', '🚨', 'Lanceur d’alerte', 'Le plus de réunions d’urgence', best((p) => p.stats.emergencies), (v) => `${v} alerte${v > 1 ? 's' : ''}`);
+    add('owl', '🦉', 'Œil de nuit', 'Chouette qui a repéré la taupe', best((p) => p.stats.owlHits), (v) => `${v} taupe${v > 1 ? 's' : ''} repérée${v > 1 ? 's' : ''}`);
     add('flash', '⚡', 'Gâchette rapide', 'Le plus souvent premier à verrouiller', best((p) => p.stats.fastestLocks), (v) => `${v} fois premier`);
     return awards;
   }
@@ -1287,6 +1380,8 @@ export class Room {
           }
         : null,
       mole: null,
+      owl: null,
+      hunt: null,
       mission: null,
       question: null,
       questionResult: null,
@@ -1308,6 +1403,7 @@ export class Room {
         intelMax: INTEL_MAX_PER_ROUND,
         intelEvery: intelEvery(this.settings.questionsPerRound),
         level: Math.round((r.questions.reduce((a, q) => a + q.difficulty, 0) / r.questions.length) * 10) / 10,
+        owl: !!r.owlId,
       };
       state.history = r.log.map(({ answers: _a, ...rest }) => rest);
     }
@@ -1318,6 +1414,20 @@ export class Room {
         queued: [...r.queued],
         available: (Object.keys(SABOTAGES) as SabotageKind[]).filter((k) => !this.sabotageBlock(k)),
         chosen: r.gadget,
+      };
+    }
+
+    if (r && role === 'owl' && me && this.phase !== 'roundEnd') {
+      state.owl = { used: !!r.owlPeek, canPeek: !this.owlBlock(me.id), result: r.owlPeek };
+    }
+
+    if (r && this.phase === 'hunt' && r.hunt && r.moleId) {
+      state.hunt = {
+        moleId: r.moleId,
+        candidates: [...this.players.keys()].filter((id) => id !== r.moleId),
+        targetId: r.hunt.targetId,
+        resolved: r.hunt.resolved,
+        wasOwl: r.hunt.resolved ? r.hunt.targetId !== null && r.hunt.targetId === r.owlId : null,
       };
     }
 

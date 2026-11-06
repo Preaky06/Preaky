@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { SABOTAGES } from '../../shared/constants.ts';
 import { TopBar } from '../components/Chrome.tsx';
 import { Journal } from '../components/Intel.tsx';
-import { MoleLogo } from '../components/Logo.tsx';
+import { MoleLogo, OwlLogo } from '../components/Logo.tsx';
 import { Avatar, Countdown, ProgressBar, Stamp } from '../components/ui.tsx';
 import { useGame, useOnce, usePlayers } from '../lib/hooks.ts';
 import { sfx } from '../lib/sound.ts';
@@ -26,6 +26,38 @@ export function Leaderboard({ deltas, limit }: { deltas?: Record<string, number>
         );
       })}
     </ol>
+  );
+}
+
+function OwlReveal() {
+  const g = useGame();
+  const re = g.roundEnd!;
+  const players = usePlayers();
+  const owl = players[re.owlId!];
+  const peeked = re.owlPeek ? players[re.owlPeek.targetId] : null;
+  const status = re.owlCaptured
+    ? 'Capturée par la taupe'
+    : re.outcome === 'caught'
+      ? 'Restée dans l’ombre'
+      : re.outcome === 'escaped'
+        ? 'La taupe lui a échappé'
+        : 'Série interrompue';
+  return (
+    <div className={`owl-reveal ${re.owlCaptured ? 'owl-captured' : ''}`}>
+      <OwlLogo size={56} animated={false} />
+      <div className="owl-reveal-body">
+        <span className="mono small">LA CHOUETTE ÉTAIT</span>
+        <span className="owl-reveal-name">
+          <Avatar player={owl} size={26} /> {owl?.id === g.me?.id ? 'Toi' : (owl?.name ?? '???')}
+        </span>
+        <span className="owl-reveal-status">{status}</span>
+        <small className="muted">
+          {peeked
+            ? `Elle avait observé ${peeked.name} : ${re.owlPeek!.isMole ? 'la taupe !' : 'innocent·e.'}`
+            : 'Elle n’a observé personne.'}
+        </small>
+      </div>
+    </div>
   );
 }
 
@@ -68,6 +100,8 @@ export function RoundEnd() {
               : 'Elle a quitté la partie.'}
         </p>
       </div>
+
+      {re.owlId && <OwlReveal />}
 
       <div className="stat-row">
         <div className="stat">

@@ -13,6 +13,7 @@ const PHASE_LABEL: Record<string, string> = {
   meeting: 'Réunion',
   vote: 'Vote',
   voteResult: 'Verdict',
+  hunt: 'Contre-attaque',
   roundEnd: 'Fin de série',
   gameEnd: 'Débriefing',
 };

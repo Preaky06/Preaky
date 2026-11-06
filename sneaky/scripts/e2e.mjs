@@ -62,6 +62,7 @@ await host.waitForSelector('.scanner');
 await shot(host, '05-role-cache');
 
 let moleIndex = -1;
+let owlIndex = -1;
 for (let i = 0; i < pages.length; i++) {
   const p = pages[i];
   await p.locator('.scanner').scrollIntoViewIfNeeded();
@@ -70,11 +71,14 @@ for (let i = 0; i < pages.length; i++) {
   await p.mouse.down();
   await p.waitForTimeout(1100);
   const isMole = (await p.locator('.role-mole').count()) > 0;
+  const isOwl = (await p.locator('.role-owl').count()) > 0;
   if (isMole) moleIndex = i;
-  await shot(p, `06-role-${isMole ? 'taupe' : 'agent'}-${names[i]}`);
+  if (isOwl) owlIndex = i;
+  await shot(p, `06-role-${isMole ? 'taupe' : isOwl ? 'chouette' : 'agent'}-${names[i]}`);
   await p.mouse.up();
 }
-console.log('Taupe :', names[moleIndex]);
+console.log('Taupe :', names[moleIndex], '· Chouette :', names[owlIndex]);
+if (owlIndex < 0 || owlIndex === moleIndex) throw new Error('Pas de Chouette distincte à 4 joueurs');
 for (const p of pages) {
   const txt = await p.locator('.bottom-bar .btn-xl').first().innerText().catch(() => '(aucun bouton)');
   if (!txt.includes('compris')) console.log('⚠️ bouton inattendu :', txt, await p.locator('.topbar-phase').innerText().catch(() => '?'));
@@ -112,7 +116,7 @@ async function playRound(round) {
       if (round === 1) {
         await mole.click('.gadget >> nth=0');
         await mole.waitForTimeout(300);
-        const enabled = await mole.locator('.gadget:not([disabled])').count();
+        const enabled = await mole.locator('button.gadget:not([disabled])').count();
         if (enabled !== 0) throw new Error(`Encore ${enabled} gadget(s) utilisable(s) après le premier`);
         console.log('🕶️ Un seul gadget par série : OK');
         await shot(mole, '08b-dossier-gadget-utilise');
@@ -145,6 +149,17 @@ async function playRound(round) {
     await host.waitForSelector('.result-stamp', { timeout: 20000 });
     if (round === 2 && q === 0) await shot(tv, '29-plateau-tv-resultat');
     if (round === 1 && q < 2) await shot(host, `11-resultat-q${q + 1}`);
+    if (round === 1 && q === 0) {
+      const owl = pages[owlIndex];
+      await owl.click('.dossier-fab');
+      await owl.locator('.owl-target', { hasText: names[moleIndex] }).click();
+      await owl.waitForSelector('.owl-result');
+      const seen = await owl.locator('.owl-result').innerText();
+      if (!/EST la taupe/.test(seen)) throw new Error(`Œil de nuit incorrect : ${seen}`);
+      console.log('🦉 La Chouette a observé la taupe :', seen.split('\n')[0]);
+      await shot(owl, '11b-chouette-oeil-de-nuit');
+      await owl.keyboard.press('Escape');
+    }
     if (round === 1 && q === 1) await shot(pages[moleIndex], '12-jam-attendu');
     if (round === 1 && q === 0) {
       // Réunion d'urgence par un agent
@@ -191,6 +206,20 @@ async function playRound(round) {
   await host.waitForTimeout(4500);
   if (round === 1) await shot(host, '20-verdict-taupe');
   if (round === 2) await shot(tv, '28-plateau-tv-verdict');
+  // Taupe démasquée + Chouette en jeu → contre-attaque.
+  const mole = pages[moleIndex];
+  await mole.waitForSelector('.hunt', { timeout: 20000 });
+  await shot(mole, `30-contre-attaque-taupe-s${round}`);
+  await shot(pages[owlIndex], `31-contre-attaque-autres-s${round}`);
+  const target = round === 1 ? names[owlIndex] : names[[0, 1, 2, 3].find((i) => i !== moleIndex && i !== owlIndex)];
+  await mole.locator('.hunt-card', { hasText: target }).click();
+  await mole.locator('.btn-hunt').click();
+  await host.waitForSelector('.hunt-verdict', { timeout: 10000 });
+  const verdict = await host.locator('.hunt-verdict').innerText();
+  const captured = /capturée/i.test(verdict);
+  if (captured !== (round === 1)) throw new Error(`Contre-attaque inattendue : ${verdict}`);
+  console.log(`🦉 Contre-attaque série ${round} : ${captured ? 'Chouette capturée' : 'ratée'}`);
+  await shot(host, `32-contre-attaque-verdict-s${round}`);
   await host.waitForSelector('.mole-reveal', { timeout: 20000 });
   if (round === 1) {
     await shot(host, '21-fin-serie');
@@ -203,6 +232,7 @@ async function playRound(round) {
 await playRound(1);
 await host.waitForSelector('.scanner', { timeout: 20000 });
 moleIndex = -1;
+owlIndex = -1;
 for (let i = 0; i < pages.length; i++) {
   const p = pages[i];
   await p.locator('.scanner').scrollIntoViewIfNeeded();
@@ -211,6 +241,7 @@ for (let i = 0; i < pages.length; i++) {
   await p.mouse.down();
   await p.waitForTimeout(1000);
   if ((await p.locator('.role-mole').count()) > 0) moleIndex = i;
+  if ((await p.locator('.role-owl').count()) > 0) owlIndex = i;
   await p.mouse.up();
   await p.click('text=J’ai compris');
 }

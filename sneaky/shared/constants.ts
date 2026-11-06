@@ -1,6 +1,8 @@
 import type { CategoryId, SabotageKind, Settings } from './types.ts';
 
 export const MIN_PLAYERS = 3;
+/** La Chouette n'entre en jeu qu'à partir de ce nombre de joueurs connectés. */
+export const MIN_PLAYERS_OWL = 4;
 export const MAX_PLAYERS = 12;
 export const CODE_LENGTH = 4;
 export const NAME_MAX = 14;
@@ -64,6 +66,8 @@ export const POINTS = {
   moleEscape: 300,
   moleCaught: -200,
   moleMisdirect: 50,
+  moleCatchOwl: 300,
+  owlHidden: 150,
 };
 
 export const LIMITS = {
@@ -90,6 +94,7 @@ export const DEFAULT_SETTINGS: Settings = {
   emergencyPerPlayer: 1,
   useCustom: true,
   revealAnswers: 'correctness',
+  owl: true,
 };
 
 /** Un indice est débloqué toutes les N bonnes réponses collectives, au plus 3 par série. */

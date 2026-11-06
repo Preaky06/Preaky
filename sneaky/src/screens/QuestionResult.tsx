@@ -1,5 +1,6 @@
 import { TopBar } from '../components/Chrome.tsx';
 import { AnswersBoard } from '../components/Answers.tsx';
+import { Dossier } from '../components/Dossier.tsx';
 import { MissionTrack } from '../components/Mission.tsx';
 import { ConfirmButton, Countdown, ProgressBar, Stamp } from '../components/ui.tsx';
 import { useGame, useOnce } from '../lib/hooks.ts';
@@ -22,6 +23,12 @@ export function QuestionResult() {
     else sfx.fail();
     vibrate(res.success ? 30 : [50, 30, 50]);
     if (res.intelUnlocked) setTimeout(() => sfx.pop(), 700);
+  });
+
+  // La Chouette est prévenue (sur son seul écran) dès que son pouvoir est utilisable.
+  useOnce(g.owl?.canPeek ? `${g.round}-owl-ready` : null, () => {
+    toast('🦉 Ton Œil de nuit est prêt : ouvre ton dossier.', 'good');
+    vibrate(30);
   });
 
   const call = async () => {
@@ -81,10 +88,17 @@ export function QuestionResult() {
       )}
 
       <div className="bottom-bar">
-        {canCall && (
-          <ConfirmButton className="btn btn-emergency btn-xl" confirmText="🚨 Confirmer la réunion d’urgence" onConfirm={call}>
-            🚨 Réunion d’urgence <small>({me!.emergencyLeft})</small>
-          </ConfirmButton>
+        {me && (
+          <div className="bottom-row">
+            <Dossier />
+            {canCall ? (
+              <ConfirmButton className="btn btn-emergency btn-xl" confirmText="🚨 Confirmer ?" onConfirm={call}>
+                🚨 Réunion d’urgence <small>({me.emergencyLeft})</small>
+              </ConfirmButton>
+            ) : (
+              <span className="bottom-hint">{res.isLast ? 'Le briefing arrive…' : 'Débattez : la prochaine question arrive.'}</span>
+            )}
+          </div>
         )}
         <Countdown endsAt={g.phaseEndsAt} prefix={res.isLast ? 'Briefing de fin de série dans' : 'Question suivante dans'} />
       </div>

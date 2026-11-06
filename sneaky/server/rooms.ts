@@ -263,6 +263,17 @@ export class RoomManager {
         reply(err ? { ok: false, error: err } : { ok: true });
       }),
     );
+    socket.on(
+      'owl:peek',
+      safe((p, ack) => {
+        const reply = ackOf(ack);
+        const c = this.ctx(socket);
+        if (!c) return reply({ ok: false, error: 'Hors opération.' });
+        const res = c.room.owlPeekAt(c.playerId, String(p?.targetId ?? ''));
+        reply(typeof res === 'string' ? { ok: false, error: res } : { ok: true, isMole: res.isMole });
+      }),
+    );
+    socket.on('hunt:pick', (p) => withPlayer((room, id) => room.huntPick(id, String(p?.targetId ?? '')))());
     socket.on('meeting:accuse', (p) => withPlayer((room, id) => room.accuse(id, p?.targetId))());
     socket.on('meeting:defend', (p) => withPlayer((room, id) => room.defend(id, p?.targetId))());
     socket.on('meeting:react', (p) => withPlayer((room, id) => room.react(id, p?.emoji))());

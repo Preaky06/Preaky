@@ -81,7 +81,10 @@ export function GameEnd() {
           <div key={r.round} className="mh-item">
             <span className="mono small">S{r.round}</span>
             <Avatar player={r.moleId ? players[r.moleId] : null} size={30} />
-            <span>{r.moleId ? (players[r.moleId]?.name ?? '???') : '???'}</span>
+            <span>
+              {r.moleId ? (players[r.moleId]?.name ?? '???') : '???'}
+              {r.owlId && <small className="mh-owl">🦉 {players[r.owlId]?.name ?? '???'}</small>}
+            </span>
             <span className={`mh-out ${r.outcome === 'escaped' ? 'red' : 'green'}`}>
               {r.outcome === 'escaped' ? '🐀 infiltrée' : r.outcome === 'caught' ? '🎯 démasquée' : '🏃 en fuite'}
             </span>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import QRCode from 'qrcode';
-import { AVATARS, CATEGORIES, BANK_CATEGORIES, LIMITS, MAX_PLAYERS, MIN_PLAYERS, NAME_MAX } from '../../shared/constants.ts';
+import { AVATARS, CATEGORIES, BANK_CATEGORIES, LIMITS, MAX_PLAYERS, MIN_PLAYERS, MIN_PLAYERS_OWL, NAME_MAX } from '../../shared/constants.ts';
+import { MoleLogo, OwlLogo } from '../components/Logo.tsx';
 import type { CategoryId, CustomQuestion, Difficulty, PublicPlayer, Settings } from '../../shared/types.ts';
 import { TopBar, Ticker } from '../components/Chrome.tsx';
 import { Avatar, ConfirmButton, Sheet, Stepper, Toggle } from '../components/ui.tsx';
@@ -241,7 +242,7 @@ function SettingsPanel({ s, editable, customCount }: { s: Settings; editable: bo
           {s.useCustom && customCount > 0 && <span className="chip chip-sm">🏠 {customCount} questions maison</span>}
         </div>
         <p className="hint">
-          {s.sabotages ? '🕶️ Gadgets de la taupe activés' : '🕶️ Sans gadgets'} · {s.speakingTurns ? '🎙️ Tour de parole' : '🗣️ Débat libre'} · {s.revealAnswers === 'full' ? '🔎 Réponses de chacun visibles' : '✓✗ Juste/faux de chacun visible'} ·
+          {s.owl ? '🦉 Chouette (dès 4 joueurs)' : '🦉 Sans Chouette'} · {s.sabotages ? '🕶️ Gadgets de la taupe activés' : '🕶️ Sans gadgets'} · {s.speakingTurns ? '🎙️ Tour de parole' : '🗣️ Débat libre'} · {s.revealAnswers === 'full' ? '🔎 Réponses de chacun visibles' : '✓✗ Juste/faux de chacun visible'} ·
           🚨 {s.emergencyPerPlayer} réunion{s.emergencyPerPlayer > 1 ? 's' : ''} d’urgence · ≈ {minutes} min
         </p>
       </div>
@@ -249,85 +250,147 @@ function SettingsPanel({ s, editable, customCount }: { s: Settings; editable: bo
   }
 
   return (
-    <div className="card settings">
-      <Stepper label="Séries" value={s.rounds} min={LIMITS.rounds[0]} max={LIMITS.rounds[1]} onChange={(v) => set({ rounds: v })} />
-      <Stepper
-        label="Questions par série"
-        value={s.questionsPerRound}
-        min={LIMITS.questionsPerRound[0]}
-        max={LIMITS.questionsPerRound[1]}
-        onChange={(v) => set({ questionsPerRound: v })}
-      />
-      <Stepper label="Temps par question" value={s.questionTime} min={LIMITS.questionTime[0]} max={LIMITS.questionTime[1]} step={5} unit="s" onChange={(v) => set({ questionTime: v })} />
-      <Stepper label="Durée des réunions" value={s.meetingTime} min={LIMITS.meetingTime[0]} max={LIMITS.meetingTime[1]} step={15} unit="s" onChange={(v) => set({ meetingTime: v })} />
-      <Stepper label="Durée du vote" value={s.voteTime} min={LIMITS.voteTime[0]} max={LIMITS.voteTime[1]} step={5} unit="s" onChange={(v) => set({ voteTime: v })} />
-      <Stepper
-        label="Réunions d’urgence / agent"
-        value={s.emergencyPerPlayer}
-        min={LIMITS.emergencyPerPlayer[0]}
-        max={LIMITS.emergencyPerPlayer[1]}
-        onChange={(v) => set({ emergencyPerPlayer: v })}
-      />
-      <div className="segmented" role="radiogroup" aria-label="Difficulté">
-        {(
-          [
-            ['easy', 'Détente'],
-            ['mixed', 'Mixte'],
-            ['hard', 'Expert'],
-          ] as [Difficulty, string][]
-        ).map(([d, label]) => (
-          <button key={d} className={s.difficulty === d ? 'on' : ''} onClick={() => set({ difficulty: d })} role="radio" aria-checked={s.difficulty === d}>
-            {label}
-          </button>
-        ))}
-      </div>
-      <Toggle label="Gadgets de la taupe" hint="Brouillage, coupe-chrono, faux indice" value={s.sabotages} onChange={(v) => set({ sabotages: v })} />
-      <Toggle label="Tour de parole" hint="Chacun son tour pour se défendre" value={s.speakingTurns} onChange={(v) => set({ speakingTurns: v })} />
-      <Toggle
-        label="Montrer la réponse de chacun"
-        hint={s.revealAnswers === 'full' ? 'Après chaque question : la lettre choisie et juste/faux' : 'Après chaque question : seulement juste/faux (plus de bluff)'}
-        value={s.revealAnswers === 'full'}
-        onChange={(v) => set({ revealAnswers: v ? 'full' : 'correctness' })}
-      />
-      {s.speakingTurns && (
-        <Stepper label="Temps de parole" value={s.speakingTime} min={LIMITS.speakingTime[0]} max={LIMITS.speakingTime[1]} step={5} unit="s" onChange={(v) => set({ speakingTime: v })} />
-      )}
-      <div className="cat-head">
-        <span className="label mono">Catégories</span>
-        <span className="row">
-          <button className="btn btn-link btn-sm" onClick={() => set({ categories: [...BANK_CATEGORIES] })}>
-            Toutes
-          </button>
-          <button className="btn btn-link btn-sm" onClick={() => set({ categories: [] })}>
-            Aucune
-          </button>
-        </span>
-      </div>
-      <div className="chips">
-        {CATEGORIES.filter((c) => c.id !== 'perso').map((c) => {
-          const on = s.categories.includes(c.id);
-          return (
-            <button
-              key={c.id}
-              className={`chip chip-toggle ${on ? 'chip-on' : ''}`}
-              style={on ? { color: c.color, borderColor: c.color, background: `${c.color}1f` } : undefined}
-              onClick={() => toggleCat(c.id)}
-            >
-              {c.emoji} {c.label}
+    <div className="settings-groups">
+      <SettingsGroup icon="⏱️" title="Rythme" summary={`${s.rounds} séries · ${s.questionsPerRound} questions · ≈ ${minutes} min`} defaultOpen>
+        <Stepper label="Séries" value={s.rounds} min={LIMITS.rounds[0]} max={LIMITS.rounds[1]} onChange={(v) => set({ rounds: v })} />
+        <Stepper
+          label="Questions par série"
+          value={s.questionsPerRound}
+          min={LIMITS.questionsPerRound[0]}
+          max={LIMITS.questionsPerRound[1]}
+          onChange={(v) => set({ questionsPerRound: v })}
+        />
+        <Stepper label="Temps par question" value={s.questionTime} min={LIMITS.questionTime[0]} max={LIMITS.questionTime[1]} step={5} unit="s" onChange={(v) => set({ questionTime: v })} />
+        <Stepper label="Durée des réunions" value={s.meetingTime} min={LIMITS.meetingTime[0]} max={LIMITS.meetingTime[1]} step={15} unit="s" onChange={(v) => set({ meetingTime: v })} />
+        <Stepper label="Durée du vote" value={s.voteTime} min={LIMITS.voteTime[0]} max={LIMITS.voteTime[1]} step={5} unit="s" onChange={(v) => set({ voteTime: v })} />
+      </SettingsGroup>
+
+      <SettingsGroup icon="🎭" title="Rôles & règles" summary={[s.owl ? '🦉 Chouette' : null, s.sabotages ? '🕶️ Gadgets' : null, s.speakingTurns ? '🎙️ Tour de parole' : null].filter(Boolean).join(' · ') || 'Règles de base'}>
+        <Toggle label="🦉 La Chouette" hint="Dès 4 joueurs : une agente secrète peut observer un joueur par série" value={s.owl} onChange={(v) => set({ owl: v })} />
+        <Toggle label="🕶️ Gadgets de la taupe" hint="Brouillage, coupe-chrono ou faux indice : un au choix par série" value={s.sabotages} onChange={(v) => set({ sabotages: v })} />
+        <Toggle label="🎙️ Tour de parole" hint="Chacun son tour pour se défendre" value={s.speakingTurns} onChange={(v) => set({ speakingTurns: v })} />
+        {s.speakingTurns && (
+          <Stepper label="Temps de parole" value={s.speakingTime} min={LIMITS.speakingTime[0]} max={LIMITS.speakingTime[1]} step={5} unit="s" onChange={(v) => set({ speakingTime: v })} />
+        )}
+        <Toggle
+          label="🔎 Montrer la réponse de chacun"
+          hint={s.revealAnswers === 'full' ? 'Après chaque question : la lettre choisie et juste/faux' : 'Après chaque question : seulement juste/faux (plus de bluff)'}
+          value={s.revealAnswers === 'full'}
+          onChange={(v) => set({ revealAnswers: v ? 'full' : 'correctness' })}
+        />
+        <Stepper
+          label="Réunions d’urgence / agent"
+          value={s.emergencyPerPlayer}
+          min={LIMITS.emergencyPerPlayer[0]}
+          max={LIMITS.emergencyPerPlayer[1]}
+          onChange={(v) => set({ emergencyPerPlayer: v })}
+        />
+      </SettingsGroup>
+
+      <SettingsGroup icon="📚" title="Questions" summary={`${s.categories.length} catégories · ${{ easy: 'Détente', mixed: 'Mixte', hard: 'Expert' }[s.difficulty]}${customCount ? ` · ${customCount} maison` : ''}`}>
+        <div className="segmented" role="radiogroup" aria-label="Difficulté">
+          {(
+            [
+              ['easy', 'Détente'],
+              ['mixed', 'Mixte'],
+              ['hard', 'Expert'],
+            ] as [Difficulty, string][]
+          ).map(([d, label]) => (
+            <button key={d} className={s.difficulty === d ? 'on' : ''} onClick={() => set({ difficulty: d })} role="radio" aria-checked={s.difficulty === d}>
+              {label}
             </button>
-          );
-        })}
-      </div>
-      <Toggle label={`Questions maison (${customCount})`} hint="Vos propres questions, mélangées aux autres" value={s.useCustom} onChange={(v) => set({ useCustom: v })} />
-      <button className="btn btn-ghost" onClick={() => setCustomOpen(true)}>
-        🏠 Écrire des questions maison
-      </button>
-      <p className={`hint ${have !== null && have < need ? 'red' : ''}`}>
+          ))}
+        </div>
+        <p className="hint">Les questions se corsent au fil des séries, quel que soit le niveau choisi.</p>
+        <div className="cat-head">
+          <span className="label mono">Catégories</span>
+          <span className="row">
+            <button className="btn btn-link btn-sm" onClick={() => set({ categories: [...BANK_CATEGORIES] })}>
+              Toutes
+            </button>
+            <button className="btn btn-link btn-sm" onClick={() => set({ categories: [] })}>
+              Aucune
+            </button>
+          </span>
+        </div>
+        <div className="chips">
+          {CATEGORIES.filter((c) => c.id !== 'perso').map((c) => {
+            const on = s.categories.includes(c.id);
+            return (
+              <button
+                key={c.id}
+                className={`chip chip-toggle ${on ? 'chip-on' : ''}`}
+                style={on ? { color: c.color, borderColor: c.color, background: `${c.color}1f` } : undefined}
+                onClick={() => toggleCat(c.id)}
+              >
+                {c.emoji} {c.label}
+              </button>
+            );
+          })}
+        </div>
+        <Toggle label={`🏠 Questions maison (${customCount})`} hint="Vos propres questions, mélangées aux autres" value={s.useCustom} onChange={(v) => set({ useCustom: v })} />
+        <button className="btn btn-ghost" onClick={() => setCustomOpen(true)}>
+          ✍️ Écrire des questions maison
+        </button>
+      </SettingsGroup>
+
+      <p className={`hint center ${have !== null && have < need ? 'red' : ''}`}>
         {have === null ? '' : `${have} questions disponibles · ${need} nécessaires · `}≈ {minutes} min de jeu
       </p>
       <Sheet open={customOpen} onClose={() => setCustomOpen(false)} title="Questions maison">
         <CustomEditor onClose={() => setCustomOpen(false)} />
       </Sheet>
+    </div>
+  );
+}
+
+function SettingsGroup({ icon, title, summary, defaultOpen, children }: { icon: string; title: string; summary: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  return (
+    <details className="sgroup" open={defaultOpen}>
+      <summary>
+        <span className="sgroup-icon">{icon}</span>
+        <span className="sgroup-text">
+          <strong>{title}</strong>
+          <small>{summary}</small>
+        </span>
+        <span className="sgroup-chevron">›</span>
+      </summary>
+      <div className="sgroup-body">{children}</div>
+    </details>
+  );
+}
+
+/** Les rôles de la prochaine série, visibles par tous dans le salon. */
+function RolesStrip({ connected, owl }: { connected: number; owl: boolean }) {
+  const owlOn = owl && connected >= MIN_PLAYERS_OWL;
+  const agents = Math.max(0, connected - 1 - (owlOn ? 1 : 0));
+  return (
+    <div className="roles-strip">
+      <div className="role-pill role-pill-mole">
+        <MoleLogo size={34} animated={false} />
+        <span>
+          <strong>1 taupe</strong>
+          <small>connaît les réponses</small>
+        </span>
+      </div>
+      {owl && (
+        <div className={`role-pill role-pill-owl ${owlOn ? '' : 'role-pill-off'}`}>
+          <OwlLogo size={34} animated={false} />
+          <span>
+            <strong>{owlOn ? '1 chouette' : 'Chouette'}</strong>
+            <small>{owlOn ? 'observe en secret' : `dès ${MIN_PLAYERS_OWL} joueurs`}</small>
+          </span>
+        </div>
+      )}
+      <div className="role-pill role-pill-agent">
+        <span className="role-pill-emoji">🕵️</span>
+        <span>
+          <strong>
+            {agents} agent{agents > 1 ? 's' : ''}
+          </strong>
+          <small>démasquent</small>
+        </span>
+      </div>
     </div>
   );
 }
@@ -420,6 +483,11 @@ export function Lobby() {
           </div>
         ))}
       </div>
+
+      <div className="section-title">
+        <span>Rôles de la série</span>
+      </div>
+      <RolesStrip connected={connected} owl={g.settings.owl} />
 
       <div className="section-title">
         <span>Paramètres de mission</span>

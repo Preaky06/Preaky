@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TopBar } from '../components/Chrome.tsx';
-import { MoleLogo } from '../components/Logo.tsx';
+import { MoleLogo, OwlLogo } from '../components/Logo.tsx';
 import { Scanner } from '../components/Scanner.tsx';
 import { Avatar, ProgressBar } from '../components/ui.tsx';
 import { useGame } from '../lib/hooks.ts';
@@ -60,6 +60,16 @@ export function RoleReveal() {
               {g.settings.sabotages ? ' — un gadget au choix par série t’y aidera.' : '.'}
             </p>
           </div>
+        ) : g.me?.role === 'owl' ? (
+          <div className="role role-owl">
+            <OwlLogo size={60} animated={false} />
+            <div className="role-kicker mono">TON RÔLE · AGENTE SPÉCIALE</div>
+            <div className="role-title">LA CHOUETTE</div>
+            <p>
+              Tu vois dans le noir : une fois par série, observe un joueur dans ton <strong>dossier</strong> et découvre s’il est la taupe. Si la
+              taupe est démasquée, elle tentera de te trouver : reste discrète.
+            </p>
+          </div>
         ) : (
           <div className="role role-agent">
             <div className="role-badge">🕵️</div>
@@ -68,6 +78,7 @@ export function RoleReveal() {
             <p>
               {late ? 'Tu arrives en cours de route : tu es agent pour cette série. ' : ''}
               Réponds juste, observe les autres et <strong>démasque la taupe</strong> avant la fin de la série.
+              {g.mission?.owl ? ' Une Chouette veille parmi vous… mais qui ?' : ''}
             </p>
           </div>
         )}

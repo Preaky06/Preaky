@@ -221,6 +221,8 @@ export const api = {
   sabotage: (kind: Parameters<ClientToServer['mole:sabotage']>[0]['kind']) =>
     emitAck<Ack>((cb) => socket.emit('mole:sabotage', { kind }, cb)),
   emergency: () => emitAck<Ack>((cb) => socket.emit('meeting:emergency', cb)),
+  owlPeek: (targetId: string) => emitAck<Ack & { isMole?: boolean }>((cb) => socket.emit('owl:peek', { targetId }, cb)),
+  huntPick: (targetId: string) => socket.emit('hunt:pick', { targetId }),
   accuse: (targetId: string) => socket.emit('meeting:accuse', { targetId }),
   defend: (targetId: string) => socket.emit('meeting:defend', { targetId }),
   react: (emoji: string) => socket.emit('meeting:react', { emoji }),

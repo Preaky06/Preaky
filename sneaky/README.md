@@ -9,6 +9,7 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 - 384 questions de culture générale en 12 catégories (+ vos **questions maison**)
 - Après chaque question, un **tableau public des réponses** : qui a eu juste, qui a eu faux (en option : la réponse choisie par chacun)
 - Rôles secrets révélés par **scanner d'empreinte** (maintenir le doigt), dossier identique pour tous
+- **La Chouette** (dès 4 joueurs) : une agente secrète qui peut observer un joueur par série… et que la taupe démasquée tentera de capturer
 - **Gadgets de la taupe** : brouillage, coupe-chrono ou falsification d'indice (un seul au choix par série)
 - **Indices** débloqués par les bonnes réponses : agent blanchi, message intercepté, périmètre de suspects…
 - **Réunions d'urgence**, accusations / défenses publiques, réactions, **tour de parole** optionnel, carnet de suspicion privé
@@ -27,7 +28,8 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 5. La taupe voit la bonne réponse **en vert** sur son écran à chaque question. Les questions se corsent au fil des séries (échauffement → série finale), sans devenir impossibles.
 6. Toutes les 2 missions réussies, l'équipe gagne un **indice** révélé à la réunion suivante.
 7. Entre deux questions, un agent peut déclencher une **réunion d'urgence** (1 par partie par défaut).
-8. En fin de série : briefing puis **vote**. Le plus voté (s'il dépasse les abstentions) est démasqué. Taupe démasquée → les agents gagnent la série. Innocent démasqué → il est écarté et ne vote plus de la série.
+8. **La Chouette** (dès 4 joueurs) : un agent tiré au sort est secrètement la Chouette. Une fois par série, après la première question, il observe un joueur dans son dossier et apprend s'il est la taupe. Si la taupe est démasquée, elle a une dernière chance : désigner la Chouette. Si elle a raison, elle récupère 300 points ; sinon la Chouette gagne 150 points de discrétion.
+9. En fin de série : briefing puis **vote**. Le plus voté (s'il dépasse les abstentions) est démasqué. Taupe démasquée → les agents gagnent la série. Innocent démasqué → il est écarté et ne vote plus de la série.
 
 | Action | Points |
 | --- | --- |
@@ -39,6 +41,8 @@ Plusieurs séries de questions de culture générale. À chaque série, un joueu
 | Taupe : vote d'un agent sur un innocent | +50 |
 | Taupe : non démasquée en fin de série | +300 |
 | Taupe : démasquée | −200 |
+| Taupe : Chouette capturée | +300 |
+| Chouette : taupe démasquée sans être capturée | +150 |
 
 ---
 

@@ -8,6 +8,7 @@ export type Phase =
   | 'meeting'
   | 'vote'
   | 'voteResult'
+  | 'hunt'
   | 'roundEnd'
   | 'gameEnd';
 
@@ -28,7 +29,8 @@ export type CategoryId =
 
 export type Difficulty = 'mixed' | 'easy' | 'hard';
 
-export type Role = 'agent' | 'mole';
+/** La Chouette est une agente avec un pouvoir : observer un joueur une fois par série. */
+export type Role = 'agent' | 'mole' | 'owl';
 
 export type SabotageKind = 'jam' | 'rush' | 'falsify';
 
@@ -51,6 +53,8 @@ export interface Settings {
   emergencyPerPlayer: number;
   useCustom: boolean;
   revealAnswers: RevealMode;
+  /** La Chouette (dès 4 joueurs). */
+  owl: boolean;
 }
 
 export interface CustomQuestion {
@@ -139,6 +143,23 @@ export interface MissionView {
   intelEvery: number;
   /** Difficulté moyenne des questions de la série (1 à 3). */
   level: number;
+  /** Une Chouette joue cette série (information publique). */
+  owl: boolean;
+}
+
+export interface OwlView {
+  used: boolean;
+  canPeek: boolean;
+  result: { targetId: string; isMole: boolean } | null;
+}
+
+export interface HuntView {
+  moleId: string;
+  candidates: string[];
+  targetId: string | null;
+  resolved: boolean;
+  /** Révélé seulement une fois la cible désignée. */
+  wasOwl: boolean | null;
 }
 
 export interface MeetingView {
@@ -190,6 +211,10 @@ export interface RoundEndView {
   log: RoundLogEntry[];
   deltas: Record<string, number>;
   myLines: ScoreLine[];
+  owlId: string | null;
+  owlCaptured: boolean;
+  owlPeek: { targetId: string; isMole: boolean } | null;
+  huntTargetId: string | null;
 }
 
 export interface Award {
@@ -204,7 +229,7 @@ export interface Award {
 export interface GameEndView {
   ranking: { id: string; score: number }[];
   awards: Award[];
-  rounds: { round: number; moleId: string | null; outcome: RoundEndView['outcome'] }[];
+  rounds: { round: number; moleId: string | null; owlId: string | null; outcome: RoundEndView['outcome'] }[];
 }
 
 export interface MoleView {
@@ -237,6 +262,8 @@ export interface ClientState {
     benched: boolean;
   } | null;
   mole: MoleView | null;
+  owl: OwlView | null;
+  hunt: HuntView | null;
   mission: MissionView | null;
   question: QuestionView | null;
   questionResult: QuestionResultView | null;
@@ -289,6 +316,8 @@ export interface ClientToServer {
   'answer:lock': (p: { index: number }) => void;
   'mole:sabotage': (p: { kind: SabotageKind }, ack: (r: Ack) => void) => void;
   'meeting:emergency': (ack: (r: Ack) => void) => void;
+  'owl:peek': (p: { targetId: string }, ack: (r: Ack & { isMole?: boolean }) => void) => void;
+  'hunt:pick': (p: { targetId: string }) => void;
   'meeting:accuse': (p: { targetId: string }) => void;
   'meeting:defend': (p: { targetId: string }) => void;
   'meeting:react': (p: { emoji: string }) => void;

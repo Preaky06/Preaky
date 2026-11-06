@@ -50,6 +50,19 @@ export function Rules() {
         </p>
       </section>
       <section>
+        <h3>🦉 La Chouette (dès 4 joueurs)</h3>
+        <p>
+          À chaque série, un agent tiré au sort est secrètement <strong>la Chouette</strong>. Une fois par série, à partir de la fin de la
+          première question, elle ouvre son <strong>Œil de nuit</strong> dans son dossier : elle choisit un joueur et apprend en secret
+          s’il est la taupe.
+        </p>
+        <p>
+          Mais attention : si la taupe est démasquée, elle a une dernière chance, <strong>la contre-attaque</strong>. Elle désigne qui elle
+          pense être la Chouette. Si elle a raison, elle récupère {POINTS.moleCatchOwl} points. Sinon, la Chouette gagne {POINTS.owlHidden}{' '}
+          points de discrétion. Tout le monde sait qu’une Chouette existe : la taupe peut donc prétendre en être une…
+        </p>
+      </section>
+      <section>
         <h3>🕶️ Les gadgets de la taupe</h3>
         <ul>
           {Object.values(SABOTAGES).map((s) => (
@@ -101,6 +114,14 @@ export function Rules() {
             <tr className="red">
               <td>Taupe : démasquée</td>
               <td>{POINTS.moleCaught}</td>
+            </tr>
+            <tr className="red">
+              <td>Taupe : Chouette capturée</td>
+              <td>+{POINTS.moleCatchOwl}</td>
+            </tr>
+            <tr>
+              <td>Chouette : taupe démasquée sans être capturée</td>
+              <td>+{POINTS.owlHidden}</td>
             </tr>
           </tbody>
         </table>

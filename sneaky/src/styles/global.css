@@ -1311,7 +1311,7 @@ p {
 .scanner-card {
   position: relative;
   width: 100%;
-  height: 232px;
+  height: 252px;
   border-radius: 20px;
   overflow: hidden;
   background: var(--panel-solid);
@@ -3930,4 +3930,528 @@ p {
 
 .meeting {
   padding-bottom: calc(220px + var(--safe-bottom));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Passe de design : ambiance par phase, écran de question compact,
+   salon en sections, et la Chouette.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --violet: #a78bfa;
+  --violet-2: #7c5cff;
+}
+
+/* Lueur d'ambiance qui suit la phase de jeu */
+.app::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(100% 42% at 50% -6%, var(--glow, rgba(255, 181, 71, 0.13)), transparent 72%);
+}
+
+.app[data-phase='question'] {
+  --glow: rgba(90, 169, 255, 0.16);
+}
+
+.app[data-phase='questionResult'] {
+  --glow: rgba(61, 255, 168, 0.12);
+}
+
+.app[data-phase='meeting'],
+.app[data-phase='vote'] {
+  --glow: rgba(255, 59, 92, 0.16);
+}
+
+.app[data-phase='voteResult'],
+.app[data-phase='hunt'] {
+  --glow: rgba(167, 139, 250, 0.2);
+}
+
+.app[data-phase='roundEnd'],
+.app[data-phase='gameEnd'] {
+  --glow: rgba(255, 181, 71, 0.18);
+}
+
+/* Accueil : comment jouer */
+.howto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.howto-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  animation: fadeUp 0.4s ease backwards;
+}
+
+.howto-step > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.howto-step strong {
+  font-size: 14px;
+}
+
+.howto-step small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.howto-n {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-family: var(--f-display);
+  font-size: 18px;
+  color: #1c1205;
+  background: var(--amber);
+}
+
+.home-version {
+  margin-top: -10px;
+  opacity: 0.45;
+}
+
+/* Écran de question compact : les 4 réponses tiennent au-dessus des boutons */
+.question {
+  gap: 10px;
+}
+
+.question .q-meta {
+  align-items: center;
+}
+
+.q-card {
+  padding: 14px 16px 12px;
+}
+
+.q-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.q-card-head .q-num {
+  margin: 0;
+}
+
+.question .q-text {
+  font-size: 20px;
+}
+
+.q-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.q-locks {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.q-card .pbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.question .options {
+  gap: 8px;
+}
+
+.question .option {
+  min-height: 54px;
+  font-size: 15px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.question .option-letter {
+  width: 34px;
+  height: 34px;
+  font-size: 20px;
+}
+
+.question .option {
+  grid-template-columns: 34px 1fr auto;
+}
+
+.result-stamp .stamp-big {
+  font-size: 34px;
+}
+
+/* Barres d'action à deux éléments (dossier + action principale) */
+.bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bottom-row > .btn-xl {
+  flex: 1;
+}
+
+.bottom-hint {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Salon : réglages en sections repliables */
+.settings-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sgroup {
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.sgroup[open] {
+  border-color: var(--line-2);
+}
+
+.sgroup summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  list-style: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sgroup summary::-webkit-details-marker {
+  display: none;
+}
+
+.sgroup-icon {
+  font-size: 22px;
+}
+
+.sgroup-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sgroup-text small {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sgroup-chevron {
+  font-size: 22px;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+
+.sgroup[open] .sgroup-chevron {
+  transform: rotate(90deg);
+}
+
+.sgroup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 2px 16px 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+/* Salon : rôles de la série */
+.roles-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+}
+
+.role-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+
+.role-pill > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.role-pill strong {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.role-pill small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.role-pill-mole {
+  border-color: rgba(255, 59, 92, 0.45);
+}
+
+.role-pill-owl {
+  border-color: rgba(167, 139, 250, 0.5);
+}
+
+.role-pill-agent {
+  border-color: rgba(255, 181, 71, 0.4);
+}
+
+.role-pill-emoji {
+  font-size: 26px;
+  width: 34px;
+  text-align: center;
+}
+
+.role-pill-off {
+  opacity: 0.5;
+  filter: grayscale(0.7);
+}
+
+/* ─── La Chouette ─── */
+.owl-logo {
+  overflow: visible;
+  filter: drop-shadow(0 8px 20px rgba(124, 92, 255, 0.35));
+}
+
+.owl-anim .owl-eyes {
+  animation: owlBlink 4.5s infinite;
+  transform-origin: 50px 43px;
+}
+
+@keyframes owlBlink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.role-owl .role-title {
+  color: var(--violet);
+  text-shadow: 0 0 30px rgba(167, 139, 250, 0.55);
+}
+
+.owl-eye {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.owl-targets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.owl-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(124, 92, 255, 0.1);
+  border: 1px solid rgba(91, 72, 150, 0.45);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  min-width: 0;
+}
+
+.owl-target:disabled {
+  opacity: 0.45;
+}
+
+.owl-target span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owl-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px dashed #5b4896;
+  background: rgba(124, 92, 255, 0.12);
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.owl-result > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.owl-result small {
+  font-size: 11px;
+  color: #5a4f3b;
+}
+
+.owl-result-mole {
+  border-color: #b3122f;
+  background: rgba(179, 18, 47, 0.1);
+}
+
+/* Contre-attaque de la taupe */
+.hunt-pitch {
+  text-align: center;
+  color: #d9d0ff;
+}
+
+.hunt-wait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.hunt-wait .display {
+  font-size: 32px;
+}
+
+.hunt-card.vote-on {
+  border-color: var(--violet);
+  background: linear-gradient(180deg, rgba(167, 139, 250, 0.2), transparent), var(--panel);
+  box-shadow: 0 0 26px rgba(167, 139, 250, 0.35);
+}
+
+.btn-hunt {
+  color: #fff;
+  background: linear-gradient(180deg, #9a7cff, #6a48e8);
+  box-shadow: 0 10px 26px rgba(124, 92, 255, 0.35);
+}
+
+.btn-hunt:disabled {
+  opacity: 1;
+  background: #262d3b;
+  color: #7d879a;
+  box-shadow: none;
+}
+
+.hunt .meeting-title .mono,
+.hunt .meeting-title .display {
+  color: var(--violet);
+}
+
+.hunt-missed {
+  border-color: var(--violet);
+  background: radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.28), transparent 70%), var(--panel);
+}
+
+/* Fin de série : révélation de la Chouette */
+.owl-reveal {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: radial-gradient(circle at 0% 50%, rgba(167, 139, 250, 0.2), transparent 70%), var(--panel);
+  border: 1px solid rgba(167, 139, 250, 0.5);
+  animation: popIn 0.5s 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) backwards;
+}
+
+.owl-captured {
+  border-color: rgba(255, 59, 92, 0.55);
+  background: radial-gradient(circle at 0% 50%, rgba(255, 59, 92, 0.18), transparent 70%), var(--panel);
+}
+
+.owl-reveal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.owl-reveal-body .mono {
+  color: var(--violet);
+  letter-spacing: 0.16em;
+}
+
+.owl-reveal-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-size: 28px;
+  letter-spacing: 0.04em;
+}
+
+.owl-reveal-status {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.owl-captured .owl-reveal-status {
+  color: var(--red);
+}
+
+.mh-owl {
+  display: block;
+  font-size: 11px;
+  color: var(--violet);
+  font-weight: 500;
+}
+
+/* Retouches */
+.waiting {
+  background: #0d1119;
+}
+
+.hunt .display {
+  font-size: 34px;
+}
+
+.hunt-caller-text {
+  flex: 1;
+  min-width: 0;
 }
