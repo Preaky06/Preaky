@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Bleu nuit (couleur principale) */
+  --color-night-950: #070b1d;
+  --color-night-900: #0c1330;
+  --color-night-800: #141d45;
+  --color-night-700: #1f2a5c;
+  --color-night-600: #2e3b78;
+  /* Accent violet électrique */
+  --color-electric-700: #4338ca;
+  --color-electric-600: #5146e5;
+  --color-electric-500: #6366f1;
+  --color-electric-400: #818cf8;
+  --color-electric-100: #e7e8ff;
+  --color-electric-50: #f3f3ff;
+  /* Surfaces */
+  --color-canvas: #f6f7fb;
+  --color-line: #e5e7f0;
+  --shadow-card: 0 1px 2px rgb(12 19 48 / 0.04), 0 6px 20px -10px rgb(12 19 48 / 0.12);
+  --shadow-pop: 0 10px 40px -12px rgb(12 19 48 / 0.28);
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-rise: rise 0.3s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-canvas text-night-900 antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-electric-500);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-electric-100);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
