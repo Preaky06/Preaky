@@ -1,4 +1,4 @@
-# ProspectIQ
+# Pro Spectre
 
 SaaS de prospection B2B pour la France : recherche d’entreprises dans les registres officiels, analyse de leur site web et de leurs annonces légales, score explicable sur 100, générateur de messages, mini-CRM, abonnements Stripe, administration.
 

@@ -128,7 +128,7 @@ export async function runAnalysis(user: SessionUser, siren: string, { force = fa
   const company = await getCompany(siren, user.orgId);
   if (!company) throw new HttpError(404, 'Entreprise introuvable dans la base SIRENE.', 'not_found');
   if (company.optOut) throw new HttpError(403, 'Cette entreprise s’est opposée à l’utilisation de ses données à des fins de prospection (base SIRENE) : elle ne peut pas être analysée.', 'opt_out');
-  if (await isSuppressed(siren)) throw new HttpError(403, 'Cette entreprise a demandé à ne plus figurer dans ProspectIQ.', 'suppressed');
+  if (await isSuppressed(siren)) throw new HttpError(403, 'Cette entreprise a demandé à ne plus figurer dans Pro Spectre.', 'suppressed');
   await storeCompany(company);
   await consumeProspect(user.orgId, user.plan, siren);
   const enrichment = await enrich(company, user.orgId, force);

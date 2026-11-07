@@ -16,7 +16,7 @@ export const POST = publicRoute(async (req) => {
     const token = newToken();
     await q(`insert into password_resets (token_hash, user_id, expires_at) values ($1, $2, now() + interval '1 hour')`, [sha256(token), user.id]);
     const link = `${env.appUrl}/reinitialiser?token=${token}`;
-    await sendMail(email, 'Réinitialisation de votre mot de passe ProspectIQ', `Bonjour ${user.name},\n\nPour choisir un nouveau mot de passe, ouvrez ce lien (valable 1 heure) :\n${link}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez ce message.\n\nL’équipe ProspectIQ`);
+    await sendMail(email, 'Réinitialisation de votre mot de passe Pro Spectre', `Bonjour ${user.name},\n\nPour choisir un nouveau mot de passe, ouvrez ce lien (valable 1 heure) :\n${link}\n\nSi vous n’êtes pas à l’origine de cette demande, ignorez ce message.\n\nL’équipe Pro Spectre`);
   }
   // Réponse identique que le compte existe ou non (pas de divulgation des comptes)
   return ok({ ok: true });

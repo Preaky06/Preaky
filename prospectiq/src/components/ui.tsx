@@ -1,5 +1,5 @@
 'use client';
-// Composants d'interface de base (style ProspectIQ).
+// Composants d'interface de base (style Pro Spectre).
 import { forwardRef, useEffect, useRef } from 'react';
 import { Loader2, X } from 'lucide-react';
 import { cx, buttonClass, type ButtonVariant, type ButtonSize } from './styles';

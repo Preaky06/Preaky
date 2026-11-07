@@ -60,14 +60,14 @@ const TRUST = [
 ];
 
 const FAQ = [
-  ['D’où viennent les données ?', 'Des registres publics officiels : le répertoire SIRENE de l’Insee et le Registre national des entreprises, via l’API Recherche d’entreprises de l’État, et le BODACC pour les annonces légales. ProspectIQ analyse ensuite le site web public de l’entreprise, en respectant ses règles d’accès (robots.txt).'],
+  ['D’où viennent les données ?', 'Des registres publics officiels : le répertoire SIRENE de l’Insee et le Registre national des entreprises, via l’API Recherche d’entreprises de l’État, et le BODACC pour les annonces légales. Pro Spectre analyse ensuite le site web public de l’entreprise, en respectant ses règles d’accès (robots.txt).'],
   ['Le score est-il une probabilité de signer un client ?', 'Non. Il mesure un potentiel d’opportunité commerciale à partir des données disponibles : besoin détecté, pertinence pour vos services, opportunité digitale, signaux récents et qualité des données. Chaque point est justifié, et un niveau de confiance indique la part du score fondée sur des faits constatés.'],
-  ['Que se passe-t-il quand une information manque ?', 'Elle est affichée « Non renseigné ». ProspectIQ ne complète jamais un trou par une supposition présentée comme un fait : une estimation est toujours étiquetée comme telle.'],
+  ['Que se passe-t-il quand une information manque ?', 'Elle est affichée « Non renseigné ». Pro Spectre ne complète jamais un trou par une supposition présentée comme un fait : une estimation est toujours étiquetée comme telle.'],
   ['Collectez-vous des données personnelles ?', 'Le minimum. Seuls les dirigeants publiés au registre (nom et fonction) et les coordonnées professionnelles affichées publiquement par l’entreprise sont repris. Les entrepreneurs ayant demandé à ne pas être démarchés (mention « opposition » du répertoire SIRENE) sont automatiquement exclus, et toute personne peut demander la suppression de ses données.'],
-  ['Analysez-vous Instagram, LinkedIn ou Google ?', 'ProspectIQ détecte les liens vers les réseaux sociaux publiés sur le site de l’entreprise. Il ne collecte pas le contenu des réseaux sociaux, ce que leurs conditions d’utilisation interdisent. La note et les avis Google peuvent être ajoutés si l’instance est connectée à l’API officielle Google Places.'],
+  ['Analysez-vous Instagram, LinkedIn ou Google ?', 'Pro Spectre détecte les liens vers les réseaux sociaux publiés sur le site de l’entreprise. Il ne collecte pas le contenu des réseaux sociaux, ce que leurs conditions d’utilisation interdisent. La note et les avis Google peuvent être ajoutés si l’instance est connectée à l’API officielle Google Places.'],
   ['Qu’est-ce qu’un « prospect » dans les quotas ?', 'Une entreprise dont vous lancez l’analyse complète, comptée une seule fois par mois. Les recherches, l’affichage des résultats et la relance d’une analyse déjà faite sont illimités.'],
   ['Puis-je résilier à tout moment ?', 'Oui, sans engagement, depuis la page Abonnement. Votre offre reste active jusqu’à la fin de la période payée, puis votre compte repasse en offre Découverte gratuite.'],
-  ['Les messages sont-ils envoyés automatiquement ?', 'Non. ProspectIQ rédige, vous relisez et envoyez depuis votre propre messagerie. Vous restez responsable du respect des règles de prospection (droit d’opposition, mention de désinscription en e-mail).'],
+  ['Les messages sont-ils envoyés automatiquement ?', 'Non. Pro Spectre rédige, vous relisez et envoyez depuis votre propre messagerie. Vous restez responsable du respect des règles de prospection (droit d’opposition, mention de désinscription en e-mail).'],
 ];
 
 const fmtDay = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null);
@@ -172,7 +172,7 @@ export default async function Home() {
               <div className="flex flex-wrap items-center justify-between gap-4 p-6">
                 <p className="flex items-center gap-2 text-sm font-semibold">
                   <FileText className="size-4 text-electric-600" />
-                  Créations, cessions, changements de dirigeant : ProspectIQ suit les annonces légales du BODACC pour vous signaler le bon moment.
+                  Créations, cessions, changements de dirigeant : Pro Spectre suit les annonces légales du BODACC pour vous signaler le bon moment.
                 </p>
                 <a href="https://www.bodacc.fr/" className="text-sm font-semibold text-electric-700 hover:underline" rel="noopener">
                   bodacc.fr
@@ -201,14 +201,14 @@ export default async function Home() {
         {/* ------------------------------------------------ Comment ça marche */}
         <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <SectionTitle eyebrow="Comment ça marche" title="De la liste brute au rendez-vous, en trois gestes" center>
-            ProspectIQ fait le travail de recherche et de qualification. Vous gardez la main sur le contact.
+            Pro Spectre fait le travail de recherche et de qualification. Vous gardez la main sur le contact.
           </SectionTitle>
           <div className="relative mt-14">
           <div className="pointer-events-none absolute top-[3rem] right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-electric-100 via-electric-400 to-emerald-300 lg:block" />
           <ol className="relative grid gap-6 lg:grid-cols-3">
             {[
               {
-                n: '01', icon: Target, title: 'Ciblez', text: 'Zone, secteur, taille, ancienneté, signaux : ProspectIQ interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
+                n: '01', icon: Target, title: 'Ciblez', text: 'Zone, secteur, taille, ancienneté, signaux : Pro Spectre interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
                 visual: (
                   <div className="flex flex-wrap gap-1.5 text-[11px] font-medium">
                     {['Restauration', 'Lyon 2e + 5 km', 'Créée il y a moins de 2 ans', '6 à 49 salariés'].map((c) => (
@@ -400,7 +400,7 @@ export default async function Home() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="flex flex-wrap items-end justify-between gap-6">
               <SectionTitle eyebrow="Confiance" title={<>La confiance, <span className="text-gradient font-serif font-normal italic">ça se vérifie.</span></>} dark>
-                Ce que ProspectIQ fait des données, ce qu’il s’interdit, et comment le contrôler vous-même.
+                Ce que Pro Spectre fait des données, ce qu’il s’interdit, et comment le contrôler vous-même.
               </SectionTitle>
               <Link href="/confiance" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
                 Centre de confiance
@@ -429,7 +429,7 @@ export default async function Home() {
                 <span className="grid size-10 place-items-center rounded-xl bg-rose-500/15 text-rose-300">
                   <Ban className="size-5" />
                 </span>
-                Ce que ProspectIQ
+                Ce que Pro Spectre
                 <br className="hidden md:block" /> ne fait pas
               </p>
               <ul className="grid gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">

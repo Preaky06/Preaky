@@ -4,7 +4,7 @@ import { SiteHeader, SiteFooter } from '@/components/site';
 import { env, features } from '@/lib/env';
 import { sourcesStatus } from '@/lib/pulse';
 
-export const metadata = { title: 'Centre de confiance', description: 'Sources de données, méthode de score, données personnelles, sécurité et sous-traitants de ProspectIQ.' };
+export const metadata = { title: 'Centre de confiance', description: 'Sources de données, méthode de score, données personnelles, sécurité et sous-traitants de Pro Spectre.' };
 // État des sources vérifié au plus toutes les 5 minutes.
 export const revalidate = 300;
 
@@ -125,7 +125,7 @@ export default async function Page() {
 
         <div className="mx-auto max-w-4xl space-y-6 px-4 py-14 sm:px-6">
           <Section id="sources" icon={Database} title="Sources de données">
-            <p>ProspectIQ n’achète aucun fichier et ne revend aucune donnée. Les informations proviennent de sources publiques, consultables par tous :</p>
+            <p>Pro Spectre n’achète aucun fichier et ne revend aucune donnée. Les informations proviennent de sources publiques, consultables par tous :</p>
             <div className="overflow-x-auto rounded-2xl border border-line">
               <table className="w-full min-w-[34rem] text-left text-sm">
                 <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase">
@@ -159,7 +159,21 @@ export default async function Page() {
                 </tbody>
               </table>
             </div>
-            <p className="text-sm text-slate-500">ProspectIQ est un service indépendant : il réutilise ces données publiques sans être affilié à leurs producteurs.</p>
+            <p className="text-sm text-slate-500">Pro Spectre est un service indépendant : il réutilise ces données publiques sans être affilié à leurs producteurs.</p>
+            <div id="robot" className="scroll-mt-24 rounded-2xl bg-canvas p-4 text-sm">
+              <p className="font-semibold text-night-900">Vous gérez un site et avez vu passer notre robot ?</p>
+              <p className="mt-1 text-slate-600">
+                Il s’identifie comme <code className="rounded bg-white px-1.5 py-0.5 text-xs">ProSpectre-Analyse/1.0</code>, ne consulte que quelques pages publiques et respecte le fichier robots.txt. Pour exclure votre site de l’analyse, ajoutez à votre robots.txt :
+              </p>
+              <pre className="mt-2 overflow-x-auto rounded-lg bg-night-900 px-3 py-2 text-xs text-slate-100">{'User-agent: ProSpectre-Analyse\nDisallow: /'}</pre>
+              <p className="mt-2 text-slate-600">
+                Pour faire effacer les données d’une entreprise, utilisez le{' '}
+                <Link href="/opposition" className="font-medium text-electric-700 underline">
+                  formulaire d’opposition
+                </Link>
+                .
+              </p>
+            </div>
           </Section>
 
           <Section id="methode" icon={Scale} title="Méthode : un score explicable">

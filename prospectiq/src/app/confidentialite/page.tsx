@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <LegalPage title="Politique de confidentialité" updated="6 novembre 2026">
       <p>
-        Cette politique décrit les données personnelles traitées par ProspectIQ, édité par {who}, responsable de traitement. Elle concerne deux catégories de personnes : les <b>utilisateurs</b> du service, et les <b>personnes figurant dans les données d’entreprises</b> (dirigeants, entrepreneurs individuels, contacts professionnels publiés).
+        Cette politique décrit les données personnelles traitées par Pro Spectre, édité par {who}, responsable de traitement. Elle concerne deux catégories de personnes : les <b>utilisateurs</b> du service, et les <b>personnes figurant dans les données d’entreprises</b> (dirigeants, entrepreneurs individuels, contacts professionnels publiés).
       </p>
 
       <h2>1. Utilisateurs du service</h2>
@@ -25,7 +25,7 @@ export default function Page() {
         <li><b>Source</b> : registres publics (répertoire SIRENE, Registre national des entreprises, BODACC) et pages publiques du site web de l’entreprise. Aucune donnée n’est obtenue par contournement de protections ni depuis les réseaux sociaux.</li>
         <li><b>Données</b> : dénomination (qui peut être le nom d’un entrepreneur individuel), adresse de l’établissement, nom et fonction des dirigeants publiés au registre, coordonnées professionnelles affichées publiquement par l’entreprise sur son site.</li>
         <li><b>Finalité</b> : permettre à des professionnels d’identifier des entreprises susceptibles d’être intéressées par leurs services (prospection B2B).</li>
-        <li><b>Base légale</b> : intérêt légitime de ProspectIQ et de ses utilisateurs à la prospection commerciale entre professionnels, en lien avec l’activité professionnelle des personnes concernées.</li>
+        <li><b>Base légale</b> : intérêt légitime de Pro Spectre et de ses utilisateurs à la prospection commerciale entre professionnels, en lien avec l’activité professionnelle des personnes concernées.</li>
         <li><b>Minimisation</b> : seules les données utiles à la prospection sont conservées ; ni date de naissance, ni adresse personnelle, ni donnée sensible. Les entrepreneurs dont la fiche SIRENE porte la mention d’opposition à la prospection sont exclus automatiquement.</li>
         <li><b>Durée</b> : 12 mois après la dernière consultation, sauf si l’entreprise est suivie dans le CRM d’un utilisateur (jusqu’à son retrait ou la suppression du compte).</li>
       </ul>
@@ -34,7 +34,7 @@ export default function Page() {
       <p>Aucune donnée n’est vendue, louée ou cédée à des tiers. Seuls les prestataires ci-dessous la traitent, pour le compte de l’éditeur ; la liste de ceux réellement activés figure dans le <a href="/confiance#sous-traitants">centre de confiance</a>.</p>
       <ul>
         <li>Hébergement de l’application et de la base de données (voir mentions légales).</li>
-        <li>Paiement : Stripe Payments Europe Ltd. (données de facturation ; ProspectIQ n’a jamais accès à votre numéro de carte).</li>
+        <li>Paiement : Stripe Payments Europe Ltd. (données de facturation ; Pro Spectre n’a jamais accès à votre numéro de carte).</li>
         <li>Envoi d’e-mails transactionnels : prestataire SMTP configuré par l’éditeur.</li>
         <li>Rédaction assistée par IA, si activée : fournisseur d’IA configuré par l’éditeur. Seules des informations sur l’entreprise (activité, constats sur son site, annonces officielles) lui sont transmises, jamais le nom des dirigeants.</li>
         <li>Note et avis Google, si activés : Google LLC (API Places), interrogée avec le nom et l’adresse de l’établissement.</li>

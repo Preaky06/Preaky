@@ -14,5 +14,5 @@ export const GET = authed(async (_req, { user }) => {
     q('select siren, channel, tone, content, created_at from messages where org_id = $1', [user.orgId]),
   ]);
   const data = { exportedAt: new Date().toISOString(), account, organisation: org, prospects, interactions, lists, searches, messages };
-  return new NextResponse(JSON.stringify(data, null, 2), { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Disposition': 'attachment; filename="prospectiq-mes-donnees.json"' } });
+  return new NextResponse(JSON.stringify(data, null, 2), { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Disposition': 'attachment; filename="pro-spectre-mes-donnees.json"' } });
 });

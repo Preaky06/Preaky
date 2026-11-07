@@ -58,7 +58,7 @@ export function SiteFooter() {
         <div>
           <Logo dark />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Prospection B2B à partir des registres publics officiels français. Chaque information affichée cite sa source.</p>
-          <p className="mt-4 max-w-xs text-xs leading-relaxed text-slate-500">Données publiques de l’Insee, de l’INPI, de la DILA et d’Etalab. ProspectIQ est un service indépendant, sans lien avec ces organismes.</p>
+          <p className="mt-4 max-w-xs text-xs leading-relaxed text-slate-500">Données publiques de l’Insee, de l’INPI, de la DILA et d’Etalab. Pro Spectre est un service indépendant, sans lien avec ces organismes.</p>
         </div>
         <div className="space-y-2.5 text-sm">
           <p className="font-semibold text-white">Produit</p>
@@ -81,7 +81,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-5 text-xs sm:px-6">
-          <p>© {new Date().getFullYear()} ProspectIQ</p>
+          <p>© {new Date().getFullYear()} Pro Spectre</p>
           <p className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <span className="inline-flex items-center gap-1.5">
               <Lock className="size-3.5" /> Paiement sécurisé par Stripe

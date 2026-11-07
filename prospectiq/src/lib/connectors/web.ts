@@ -5,7 +5,7 @@ import dns from 'node:dns/promises';
 import net from 'node:net';
 import { env } from '../env';
 
-export const USER_AGENT = `ProspectIQ-Analyse/1.0 (+${env.appUrl}/robot)`;
+export const USER_AGENT = `ProSpectre-Analyse/1.0 (+${env.appUrl}/confiance#robot)`;
 
 export class BlockedError extends Error {}
 
@@ -143,8 +143,8 @@ export async function robotsAllows(origin: string, path = '/'): Promise<boolean>
     const value = m[2].trim();
     if (key === 'user-agent') {
       const v = value.toLowerCase();
-      applies = v === '*' || v.includes('prospectiq');
-      if (v.includes('prospectiq')) matchedSpecific = true;
+      applies = v === '*' || v.includes('prospectre');
+      if (v.includes('prospectre')) matchedSpecific = true;
     } else if (applies && (key === 'disallow' || key === 'allow') && value) {
       rules.push({ allow: key === 'allow', path: value, specific: matchedSpecific });
     }

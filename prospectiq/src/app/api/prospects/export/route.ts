@@ -33,5 +33,5 @@ export const GET = authed(async (_req, { user }) => {
       r.next_followup_at || '',
     ]),
   ]);
-  return new NextResponse(csv, { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="prospectiq-crm-${new Date().toISOString().slice(0, 10)}.csv"` } });
+  return new NextResponse(csv, { headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="pro-spectre-crm-${new Date().toISOString().slice(0, 10)}.csv"` } });
 });

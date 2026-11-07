@@ -5,9 +5,9 @@ import './globals.css';
 import { ToastProvider } from '@/components/toast';
 
 export const metadata: Metadata = {
-  title: { default: 'ProspectIQ — Les bons prospects. Au bon moment.', template: '%s — ProspectIQ' },
+  title: { default: 'Pro Spectre — Les bons prospects. Au bon moment.', template: '%s — Pro Spectre' },
   description: 'Identifiez les entreprises à fort potentiel commercial grâce à l’analyse de leurs activités et de leur présence digitale. Données officielles, score explicable, CRM intégré.',
-  applicationName: 'ProspectIQ',
+  applicationName: 'Pro Spectre',
   icons: { icon: '/icon.svg' },
 };
 

@@ -13,7 +13,7 @@ const CAT_STYLE: Record<string, string> = {
 
 export function HeroVisual({ score }: { score: ScoreResult }) {
   return (
-    <figure className="relative mx-auto w-full max-w-[460px] select-none" aria-label="Illustration : fiche d’une entreprise fictive analysée par ProspectIQ">
+    <figure className="relative mx-auto w-full max-w-[460px] select-none" aria-label="Illustration : fiche d’une entreprise fictive analysée par Pro Spectre">
       <div className="pointer-events-none absolute -inset-10 -z-10 rounded-[40px] bg-[radial-gradient(closest-side,rgba(99,102,241,0.45),transparent)] blur-2xl" />
 
       <div className="animate-float-slow rounded-[26px] border border-white/15 bg-white/[0.06] p-2 shadow-pop backdrop-blur-sm">

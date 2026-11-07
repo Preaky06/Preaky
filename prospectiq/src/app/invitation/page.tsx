@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   return (
-    <AuthFrame title="Rejoindre l’équipe" subtitle="Vous avez été invité sur ProspectIQ. Créez votre accès." >
+    <AuthFrame title="Rejoindre l’équipe" subtitle="Vous avez été invité sur Pro Spectre. Créez votre accès." >
       <Suspense>
         <ResetForm invite />
       </Suspense>

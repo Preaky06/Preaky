@@ -161,7 +161,7 @@ try {
 
   await step('Inscription (administrateur) et configuration de l’offre', async () => {
     page = await register(ctxA, { name: 'Alex Admin', email: 'admin@prospectiq.test' });
-    await page.getByText('Bienvenue sur ProspectIQ').waitFor();
+    await page.getByText('Bienvenue sur Pro Spectre').waitFor();
     await page.check('[data-testid=service-site_web]');
     await page.check('[data-testid=service-reseaux_sociaux]');
     await page.fill('#sender', 'Alex Admin');

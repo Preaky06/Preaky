@@ -15,7 +15,7 @@ export const env = {
     .filter(Boolean),
   // E-mail (réinitialisation de mot de passe, invitations)
   smtpUrl: str('SMTP_URL'),
-  mailFrom: str('MAIL_FROM') || 'ProspectIQ <no-reply@localhost>',
+  mailFrom: str('MAIL_FROM') || 'Pro Spectre <no-reply@localhost>',
   // Sources de données
   sireneApi: str('SIRENE_API_URL') || 'https://recherche-entreprises.api.gouv.fr',
   bodaccApi: str('BODACC_API_URL') || 'https://bodacc-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/annonces-commerciales',

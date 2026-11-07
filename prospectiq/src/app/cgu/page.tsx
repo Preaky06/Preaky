@@ -7,7 +7,7 @@ export default function Page() {
   return (
     <LegalPage title="Conditions générales d’utilisation et de vente" updated="6 novembre 2026">
       <h2>1. Objet</h2>
-      <p>ProspectIQ est un service en ligne de recherche, d’analyse et de suivi d’entreprises à des fins de prospection commerciale entre professionnels. Il est réservé aux professionnels agissant pour les besoins de leur activité.</p>
+      <p>Pro Spectre est un service en ligne de recherche, d’analyse et de suivi d’entreprises à des fins de prospection commerciale entre professionnels. Il est réservé aux professionnels agissant pour les besoins de leur activité.</p>
 
       <h2>2. Compte</h2>
       <p>L’utilisateur fournit des informations exactes et garde son mot de passe confidentiel. Il est responsable des actions réalisées depuis son compte et des membres qu’il invite.</p>

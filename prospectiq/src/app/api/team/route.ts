@@ -18,11 +18,11 @@ export const POST = authed(async (req, { user }) => {
   const { email } = await body(req, z.object({ email: z.string().trim().toLowerCase().email('Adresse e-mail invalide.') }));
   const used = await one<{ n: number }>(`select (select count(*) from users where org_id = $1) + (select count(*) from invitations where org_id = $1 and accepted_at is null and expires_at > now()) as n`, [user.orgId]);
   if (Number(used?.n ?? 0) >= user.plan.seats) throw new HttpError(402, `Votre offre inclut ${user.plan.seats} utilisateurs.`, 'seats');
-  if (await one('select 1 from users where email = $1', [email])) throw new HttpError(409, 'Cette adresse a déjà un compte ProspectIQ.', 'email_taken');
+  if (await one('select 1 from users where email = $1', [email])) throw new HttpError(409, 'Cette adresse a déjà un compte Pro Spectre.', 'email_taken');
   const token = newToken();
   await q(`insert into invitations (token_hash, org_id, email, invited_by, expires_at) values ($1, $2, $3, $4, now() + interval '7 days')`, [sha256(token), user.orgId, email, user.id]);
   const link = `${env.appUrl}/invitation?token=${token}`;
-  const { delivered } = await sendMail(email, `${user.name} vous invite sur ProspectIQ`, `Bonjour,\n\n${user.name} vous invite à rejoindre l’espace « ${user.orgName} » sur ProspectIQ.\n\nCréez votre accès ici (lien valable 7 jours) :\n${link}\n\nL’équipe ProspectIQ`);
+  const { delivered } = await sendMail(email, `${user.name} vous invite sur Pro Spectre`, `Bonjour,\n\n${user.name} vous invite à rejoindre l’espace « ${user.orgName} » sur Pro Spectre.\n\nCréez votre accès ici (lien valable 7 jours) :\n${link}\n\nL’équipe Pro Spectre`);
   // Sans e-mail configuré, le lien est remis au propriétaire pour qu'il le transmette lui-même.
   return ok({ ok: true, delivered, link: delivered ? undefined : link });
 });

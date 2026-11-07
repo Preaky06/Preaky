@@ -67,7 +67,7 @@ function SettingsPage() {
         <Card className="flex items-start gap-3 border-electric-100 bg-electric-50 p-5">
           <PartyPopper className="mt-0.5 size-5 text-electric-600" />
           <div>
-            <p className="font-semibold text-night-900">Bienvenue sur ProspectIQ !</p>
+            <p className="font-semibold text-night-900">Bienvenue sur Pro Spectre !</p>
             <p className="mt-1 text-sm text-night-800">Indiquez ci-dessous les services que vous vendez : le score et les messages seront personnalisés pour vous. Ensuite, lancez votre première recherche.</p>
           </div>
         </Card>
