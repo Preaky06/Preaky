@@ -31,6 +31,7 @@ export default function Page() {
       </ul>
 
       <h2>3. Destinataires et sous-traitants</h2>
+      <p>Aucune donnée n’est vendue, louée ou cédée à des tiers. Seuls les prestataires ci-dessous la traitent, pour le compte de l’éditeur ; la liste de ceux réellement activés figure dans le <a href="/confiance#sous-traitants">centre de confiance</a>.</p>
       <ul>
         <li>Hébergement de l’application et de la base de données (voir mentions légales).</li>
         <li>Paiement : Stripe Payments Europe Ltd. (données de facturation ; ProspectIQ n’a jamais accès à votre numéro de carte).</li>
@@ -55,7 +56,7 @@ export default function Page() {
       </p>
 
       <h2>5. Sécurité</h2>
-      <p>Mots de passe chiffrés (scrypt), connexions chiffrées (HTTPS), cookies de session protégés, limitation du nombre de tentatives, journalisation des accès aux sources de données, cloisonnement des données entre organisations.</p>
+      <p>Mots de passe hachés (scrypt), connexions chiffrées (HTTPS), cookies de session protégés, limitation du nombre de tentatives, journalisation des accès aux sources de données, cloisonnement des données entre organisations.</p>
 
       <h2>6. Responsabilité des utilisateurs</h2>
       <p>Chaque utilisateur est responsable de l’usage qu’il fait des données pour sa propre prospection : respect du droit d’opposition des personnes contactées, mention de désinscription dans les e-mails, et prise en compte de la liste Bloctel pour tout démarchage téléphonique de consommateurs.</p>

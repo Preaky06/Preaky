@@ -40,6 +40,13 @@ Ordre conseillé, avec le moyen de vérifier chaque étape :
 
 La tâche quotidienne `/api/cron/cleanup` (définie dans `vercel.json`) applique les durées de conservation.
 
+## Confiance : ce qui est affiché publiquement, et d’où ça vient
+
+- **Accueil** : chiffres BODACC des 7 derniers jours (créations, cessions, modifications, procédures), lus en direct dans l’open data de la DILA et rafraîchis toutes les heures. Si la source ne répond pas, le bandeau affiche un texte sans chiffre : aucun nombre n’est inventé.
+- **`/confiance`** (centre de confiance) : état réel des sources publiques (vérifié par le serveur, toutes les 5 minutes), sources et producteurs, méthode du score, données conservées et durées, mesures de sécurité, et **liste des sous-traitants générée depuis la configuration** (Stripe, SMTP, IA, Google n’apparaissent « Actif » que si leurs variables sont renseignées).
+- **`/.well-known/security.txt`** : publié automatiquement dès que `LEGAL_EMAIL` est renseigné.
+- Aucun avis client, logo de client ou statistique d’usage n’est affiché : il n’y en a pas encore. Quand vous aurez de vrais clients, ajoutez leurs retours **avec leur accord écrit**.
+
 ## Coûts réels à prévoir
 
 « Ne rien payer » n’est pas tenable pour un SaaS **commercial** ; voici le minimum :
@@ -54,10 +61,10 @@ La tâche quotidienne `/api/cron/cleanup` (définie dans `vercel.json`) applique
 ```bash
 npm test             # 76 tests unitaires (scoring, opportunités sourcées, audit web, SSRF, BODACC, SIRENE, messages, CSV, quotas, Stripe)
 npm run test:live    # 5 tests contre les vraies API SIRENE, BODACC, Géo (réseau requis)
-npm run build && npm run test:e2e   # scénario navigateur complet en 23 étapes (sources simulées, données fictives)
+npm run build && npm run test:e2e   # scénario navigateur complet en 24 étapes (sources simulées, données fictives)
 ```
 
-Le test E2E nécessite Playwright (`npm i -D playwright && npx playwright install chromium`). Il couvre : accueil et démo, inscription, configuration, recherche avec exclusion des oppositions, analyse (site vérifié par SIREN, signaux BODACC), fiche et CRM, messages, verrous d’offre, quotas serveur (402), isolation entre comptes, CSRF, administration, recherches sauvegardées, opposition RGPD de bout en bout, export des données, suppression de compte, affichage mobile.
+Le test E2E nécessite Playwright (`npm i -D playwright && npx playwright install chromium`). Il couvre : accueil et démo, centre de confiance, inscription, configuration, recherche avec exclusion des oppositions, analyse (site vérifié par SIREN, signaux BODACC), fiche et CRM, messages, verrous d’offre, quotas serveur (402), isolation entre comptes, CSRF, administration, recherches sauvegardées, opposition RGPD de bout en bout, export des données, suppression de compte, affichage mobile.
 
 ## Ce qui n’a pas pu être vérifié ici
 

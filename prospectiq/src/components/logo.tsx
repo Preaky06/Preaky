@@ -10,7 +10,7 @@ export function Logo({ dark = false, href = '/' }: { dark?: boolean; href?: stri
         <circle cx="14.5" cy="14.5" r="2.2" fill={dark ? '#0c1330' : '#ffffff'} />
       </svg>
       <span className={`text-[17px] font-bold tracking-tight ${dark ? 'text-white' : 'text-night-900'}`}>
-        Prospect<span className="text-electric-600">IQ</span>
+        Prospect<span className={dark ? 'text-electric-400' : 'text-electric-600'}>IQ</span>
       </span>
     </Link>
   );

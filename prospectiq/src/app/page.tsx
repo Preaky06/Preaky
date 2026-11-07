@@ -1,18 +1,26 @@
 import Link from 'next/link';
-import { Search, Radar, Gauge, MessageSquareText, KanbanSquare, ListChecks, Download, Users, ShieldCheck, Database, Globe, FileSearch, Check, ArrowRight, Ban } from 'lucide-react';
+import {
+  Search, Radar, Gauge, MessageSquareText, KanbanSquare, ListChecks, Download, Users, ShieldCheck, Database, Globe, FileText, Check, X, ArrowRight, Ban, Lock, Cookie,
+  FileSearch, Scale, CreditCard, KeyRound, Fingerprint, Target, Sparkles, Send, MapPin, Activity, BadgeCheck,
+} from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/site';
 import { DemoSearch } from '@/components/demo-search';
-import { ScoreBreakdown, CategoryBadge, ConfidenceBadge } from '@/components/score';
-import { Badge, Card } from '@/components/ui';
+import { HeroVisual } from '@/components/landing/hero-visual';
+import { ScoreLab } from '@/components/landing/score-lab';
+import { ScoreRing } from '@/components/landing/score-ring';
+import { CountUp } from '@/components/landing/count-up';
 import { buttonClass } from '@/components/styles';
 import { PLANS } from '@/lib/plans';
 import { scoreCompany } from '@/lib/scoring';
+import { bodaccPulse } from '@/lib/pulse';
+import { env } from '@/lib/env';
 import type { Company, WebsiteAudit, Signal } from '@/lib/connectors/types';
 
-export const revalidate = 86400;
+// Les chiffres BODACC sont rafraîchis au plus toutes les heures.
+export const revalidate = 3600;
 
 /** Exemple de démonstration : entreprise FICTIVE, notée par le vrai moteur de score. */
-function exampleScore() {
+function exampleInput() {
   const now = new Date();
   const created = new Date(now.getFullYear(), now.getMonth() - 7, 12).toISOString().slice(0, 10);
   const company: Company = {
@@ -32,18 +40,23 @@ function exampleScore() {
     ],
   };
   const signals: Signal[] = [{ id: 'x', label: 'Immatriculation publiée au BODACC', kind: 'opportunity', date: created, source: 'BODACC', verified: true }];
-  return scoreCompany({ company, website, signals, offer: { services: ['site_web', 'reseaux_sociaux'], sectors: ['restauration'], sizes: [] }, now });
+  return { company, website, signals, offer: { services: ['site_web', 'reseaux_sociaux'], sectors: ['restauration'], sizes: [] }, now: now.toISOString() };
 }
 
-const FEATURES = [
-  { icon: Search, title: 'Recherche avancée', text: 'Région, département, ville, code postal ou rayon autour d’une commune ; secteur, mots-clés, taille, ancienneté, signaux. Tous les filtres se combinent.' },
-  { icon: Radar, title: 'Analyse automatique', text: 'Site web retrouvé et vérifié par le SIREN, audit technique (mobile, HTTPS, référencement, fraîcheur du contenu), annonces légales récentes.' },
-  { icon: Gauge, title: 'Score explicable', text: 'Une note de 0 à 100 détaillée critère par critère, avec ses raisons et un niveau de confiance. Pondérations ajustables.' },
-  { icon: MessageSquareText, title: 'Messages personnalisés', text: 'E-mail, LinkedIn, Instagram ou message court, en 5 tons. L’accroche s’appuie sur une observation réelle, jamais sur une relation inventée.' },
-  { icon: KanbanSquare, title: 'Mini-CRM intégré', text: 'Statuts, notes, historique, date de relance, vue tableau et Kanban. Chaque entreprise n’y figure qu’une fois.' },
-  { icon: ListChecks, title: 'Listes et recherches sauvegardées', text: 'Relancez une recherche pour voir les nouvelles entreprises, comparez deux recherches, regroupez vos prospects par campagne.' },
-  { icon: Download, title: 'Export CSV', text: 'Exportez votre CRM ou une fiche entreprise vers votre tableur ou votre outil de prospection.' },
-  { icon: Users, title: 'Travail en équipe', text: 'Jusqu’à 5 utilisateurs partagent le même portefeuille, les mêmes listes et les mêmes paramètres.' },
+const SOURCES = [
+  { producer: 'Insee', name: 'Répertoire SIRENE', detail: 'Identité, activité, effectif, établissements' },
+  { producer: 'INPI', name: 'Registre national des entreprises', detail: 'Dirigeants, forme juridique, comptes publiés' },
+  { producer: 'DILA', name: 'BODACC', detail: 'Créations, cessions, modifications, procédures' },
+  { producer: 'Etalab', name: 'API Découpage administratif', detail: 'Communes, codes postaux, rayons de recherche' },
+];
+
+const TRUST = [
+  { icon: FileSearch, title: 'Chaque fait cite sa source', text: 'Registre, annonce légale ou page du site : la fiche entreprise indique d’où vient chaque information et à quelle date.', check: 'Les annonces renvoient au texte publié au BODACC.' },
+  { icon: Scale, title: 'Rien n’est inventé', text: 'Une information absente s’affiche « Non renseigné ». Une estimation est toujours étiquetée comme telle, jamais présentée comme un fait.', check: 'Le détail du score indique « Constaté », « Estimé » ou « Non évalué ».' },
+  { icon: Fingerprint, title: 'Opposition respectée', text: 'Les entreprises inscrites en opposition au répertoire SIRENE sont exclues de toutes les recherches. Toute personne peut demander l’effacement en ligne.', check: 'Formulaire d’opposition accessible sans compte.' },
+  { icon: CreditCard, title: 'Paiement Stripe', text: 'Votre numéro de carte ne transite jamais par nos serveurs. Factures, changement d’offre et résiliation depuis votre espace.', check: 'La page de paiement est hébergée par Stripe.' },
+  { icon: KeyRound, title: 'Compte protégé', text: 'Mots de passe hachés (scrypt), session en cookie HttpOnly, protection CSRF, limitation des tentatives, données cloisonnées par organisation.', check: 'Export et suppression du compte en libre-service.' },
+  { icon: Cookie, title: 'Aucun pistage', text: 'Un seul cookie : votre session. Ni mesure d’audience, ni publicité, ni police chargée depuis un service tiers.', check: 'Aucun bandeau cookies, car il n’y a rien à accepter.' },
 ];
 
 const FAQ = [
@@ -57,193 +70,477 @@ const FAQ = [
   ['Les messages sont-ils envoyés automatiquement ?', 'Non. ProspectIQ rédige, vous relisez et envoyez depuis votre propre messagerie. Vous restez responsable du respect des règles de prospection (droit d’opposition, mention de désinscription en e-mail).'],
 ];
 
-export default function Home() {
-  const example = exampleScore();
+const fmtDay = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null);
+
+function SectionTitle({ eyebrow, title, children, center = false, dark = false }: { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; center?: boolean; dark?: boolean }) {
+  return (
+    <div className={center ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
+      <p className={`text-xs font-semibold tracking-[0.14em] uppercase ${dark ? 'text-electric-300' : 'text-electric-600'}`}>{eyebrow}</p>
+      <h2 className={`mt-3 text-3xl font-bold tracking-tight text-balance sm:text-[2.6rem] sm:leading-[1.1] ${dark ? 'text-white' : 'text-night-900'}`}>{title}</h2>
+      {children && <p className={`mt-4 text-[17px] leading-relaxed text-pretty ${dark ? 'text-slate-300' : 'text-slate-600'}`}>{children}</p>}
+    </div>
+  );
+}
+
+export default async function Home() {
+  const input = exampleInput();
+  const example = scoreCompany({ ...input, now: new Date(input.now) });
+  const pulse = await bodaccPulse();
+  const contactEmail = env.legal.email;
+
   return (
     <>
-      <SiteHeader />
-      <main>
-        <section className="relative overflow-hidden bg-night-900 text-white">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_0%,rgba(99,102,241,0.35),transparent)]" />
-          <div className="relative mx-auto max-w-6xl px-4 pt-20 pb-24 text-center sm:px-6 sm:pt-28">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-slate-200">
-              <ShieldCheck className="size-3.5 text-electric-400" />
-              Données officielles françaises · score explicable
-            </span>
-            <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-6xl">Les bons prospects. Au bon moment.</h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-pretty text-slate-300">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
-            <div className="mt-10">
-              <DemoSearch />
+      <SiteHeader dark />
+      <main className="overflow-x-clip">
+        {/* ------------------------------------------------------------ Hero */}
+        <section className="relative isolate overflow-hidden bg-night-950 text-white">
+          <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+          <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[38rem] w-[70rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.38),transparent)]" />
+          <div className="pointer-events-none absolute right-[-10rem] bottom-[-14rem] -z-10 h-[30rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(52,211,153,0.14),transparent)]" />
+
+          <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] items-start gap-x-12 gap-y-16 px-4 pt-14 pb-32 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:pt-20 lg:pb-40">
+            <div className="stagger">
+              <p className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 py-1 pr-3.5 pl-2 text-xs font-medium text-slate-200">
+                <span className="animate-pulse-dot size-2 rounded-full bg-emerald-400" />
+                Registres officiels SIRENE · RNE · BODACC
+              </p>
+              <h1 className="mt-6 text-[2.75rem] leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl lg:text-[4.25rem]">
+                Les bons prospects. <span className="text-gradient font-serif font-normal tracking-[-0.01em] italic">Au bon moment.</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-300">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
+              <div className="mt-9">
+                <DemoSearch />
+              </div>
+              <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+                {['Gratuit, sans carte bancaire', 'Sans engagement', 'Aucune donnée inventée'].map((t) => (
+                  <li key={t} className="flex items-center gap-2">
+                    <span className="grid size-4 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
+                      <Check className="size-3" strokeWidth={3} />
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="mt-6 text-sm text-slate-400">
-              Essayez ci-dessus sur de vraies données, sans inscription. <Link href="/inscription" className="font-semibold text-white underline-offset-2 hover:underline">Créer un compte gratuit</Link> · 20 prospects analysés par mois, sans carte bancaire.
-            </p>
+            <div className="lg:pt-14">
+              <HeroVisual score={example} />
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              ['1', 'Ciblez', 'Choisissez une zone et un secteur. ProspectIQ interroge le registre officiel et écarte les entreprises fermées ou ayant refusé la prospection.'],
-              ['2', 'Qualifiez', 'Lancez l’analyse : site web, annonces légales, maturité digitale. Le score vous dit qui contacter en premier, et pourquoi.'],
-              ['3', 'Contactez', 'Générez un message qui cite un fait réel sur l’entreprise, puis suivez la conversation dans le CRM jusqu’au rendez-vous.'],
-            ].map(([n, t, d]) => (
-              <div key={n} className="rounded-2xl border border-line bg-white p-6 shadow-card">
-                <span className="grid size-9 place-items-center rounded-lg bg-night-900 text-sm font-bold text-white">{n}</span>
-                <h2 className="mt-4 text-lg font-semibold">{t}</h2>
-                <p className="mt-2 text-[15px] text-slate-600">{d}</p>
+        {/* ------------------------------------------------- Pouls BODACC */}
+        <section className="relative z-10 mx-auto -mt-20 max-w-6xl px-4 sm:px-6">
+          <div className="reveal overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
+            {pulse ? (
+              <div className="grid lg:grid-cols-[1fr_2.6fr]">
+                <div className="border-b border-line bg-gradient-to-br from-electric-50 to-white p-6 lg:border-r lg:border-b-0">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-night-900">
+                    <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
+                    En direct du BODACC
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    Annonces légales publiées ces 7 derniers jours. Autant d’entreprises qui changent, et d’occasions de les contacter au bon moment.
+                  </p>
+                  <p className="mt-3 text-xs text-slate-500">
+                    Source : <a href={pulse.sourceUrl} className="font-medium text-electric-700 hover:underline" rel="noopener">DILA, bodacc.fr</a>
+                    {pulse.lastPublication && <> · dernière parution le {fmtDay(pulse.lastPublication)}</>}
+                  </p>
+                </div>
+                <dl className="grid grid-cols-2 divide-line md:grid-cols-4 md:divide-x">
+                  {[
+                    { n: pulse.creations, label: 'Créations', hint: 'Identité, site, outils : tout est à construire.', icon: Sparkles, tone: 'text-electric-600 bg-electric-50' },
+                    { n: pulse.sales, label: 'Ventes et cessions', hint: 'Un nouveau propriétaire revoit souvent ses prestataires.', icon: KanbanSquare, tone: 'text-emerald-700 bg-emerald-50' },
+                    { n: pulse.changes, label: 'Modifications', hint: 'Dirigeant, nom, adresse ou activité qui change.', icon: Activity, tone: 'text-sky-700 bg-sky-50' },
+                    { n: pulse.insolvencies, label: 'Procédures', hint: 'Procédures collectives : signalées et pénalisées dans le score.', icon: ShieldCheck, tone: 'text-rose-700 bg-rose-50' },
+                  ].map(({ n, label, hint, icon: Icon, tone }) => (
+                    <div key={label} className="p-5 sm:p-6">
+                      <dt className="flex items-center gap-2 text-[13px] font-medium text-slate-600">
+                        <span className={`grid size-6 place-items-center rounded-md ${tone}`}>
+                          <Icon className="size-3.5" />
+                        </span>
+                        {label}
+                      </dt>
+                      <dd className="mt-2 text-3xl font-bold tracking-tight tabular-nums text-night-900">
+                        <CountUp value={n} />
+                      </dd>
+                      <dd className="mt-1 text-xs leading-snug text-slate-500">{hint}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center justify-between gap-4 p-6">
+                <p className="flex items-center gap-2 text-sm font-semibold">
+                  <FileText className="size-4 text-electric-600" />
+                  Créations, cessions, changements de dirigeant : ProspectIQ suit les annonces légales du BODACC pour vous signaler le bon moment.
+                </p>
+                <a href="https://www.bodacc.fr/" className="text-sm font-semibold text-electric-700 hover:underline" rel="noopener">
+                  bodacc.fr
+                </a>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ------------------------------------------------------ Sources */}
+        <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+          <p className="text-center text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Construit sur des sources publiques que vous pouvez vérifier</p>
+          <div className="reveal mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {SOURCES.map((s) => (
+              <div key={s.name} className="flex items-start gap-3 rounded-2xl border border-line bg-white/70 p-4">
+                <span className="grid h-8 min-w-12 place-items-center rounded-lg bg-night-900 px-2 text-[11px] font-bold tracking-wide text-white">{s.producer}</span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">{s.name}</p>
+                  <p className="text-xs text-slate-500">{s.detail}</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        <section id="fonctionnalites" className="border-y border-line bg-white py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <h2 className="text-3xl font-bold tracking-tight">Tout le cycle de prospection, au même endroit</h2>
-            <p className="mt-3 max-w-2xl text-slate-600">De la recherche d’entreprises au rendez-vous obtenu, sans jongler entre un annuaire, un tableur et une messagerie.</p>
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURES.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="rounded-2xl border border-line p-5">
-                  <span className="grid size-10 place-items-center rounded-xl bg-electric-50 text-electric-600">
+        {/* ------------------------------------------------ Comment ça marche */}
+        <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+          <SectionTitle eyebrow="Comment ça marche" title="De la liste brute au rendez-vous, en trois gestes" center>
+            ProspectIQ fait le travail de recherche et de qualification. Vous gardez la main sur le contact.
+          </SectionTitle>
+          <div className="relative mt-14">
+          <div className="pointer-events-none absolute top-[3rem] right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-electric-100 via-electric-400 to-emerald-300 lg:block" />
+          <ol className="relative grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                n: '01', icon: Target, title: 'Ciblez', text: 'Zone, secteur, taille, ancienneté, signaux : ProspectIQ interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
+                visual: (
+                  <div className="flex flex-wrap gap-1.5 text-[11px] font-medium">
+                    {['Restauration', 'Lyon 2e + 5 km', 'Créée il y a moins de 2 ans', '6 à 49 salariés'].map((c) => (
+                      <span key={c} className="rounded-full bg-electric-50 px-2.5 py-1 text-electric-700">{c}</span>
+                    ))}
+                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-rose-700"><Ban className="size-3" /> Opposition SIRENE exclue</span>
+                  </div>
+                ),
+              },
+              {
+                n: '02', icon: Radar, title: 'Qualifiez', text: 'Site web, annonces légales, maturité digitale : le score explicable vous dit qui contacter en premier, et pourquoi.',
+                visual: (
+                  <div className="space-y-2">
+                    {[86, 71, 54].map((v, i) => (
+                      <div key={v} className="flex items-center gap-2.5 text-xs">
+                        <span className="w-16 text-slate-500">Prospect {String.fromCharCode(65 + i)}</span>
+                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                          <span className={`block h-full rounded-full ${i === 0 ? 'bg-electric-500' : i === 1 ? 'bg-emerald-500' : 'bg-amber-500'}`} style={{ width: `${v}%` }} />
+                        </span>
+                        <b className="w-6 text-right tabular-nums">{v}</b>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              },
+              {
+                n: '03', icon: Send, title: 'Contactez', text: 'Un message qui s’appuie sur un fait réel, puis un suivi dans le CRM jusqu’au rendez-vous.',
+                visual: (
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold whitespace-nowrap">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">À contacter</span>
+                    <ArrowRight className="size-3 text-slate-300" />
+                    <span className="rounded-full bg-sky-50 px-2.5 py-1 text-sky-700">Contacté</span>
+                    <ArrowRight className="size-3 text-slate-300" />
+                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">Rendez-vous</span>
+                  </div>
+                ),
+              },
+            ].map(({ n, icon: Icon, title, text, visual }) => (
+              <li key={n} className="reveal relative flex flex-col rounded-3xl border border-line bg-white p-6 shadow-card transition-shadow hover:shadow-lift">
+                <div className="flex items-center gap-3">
+                  <span className="relative grid size-12 place-items-center rounded-2xl bg-night-900 text-white shadow-lift">
                     <Icon className="size-5" />
                   </span>
-                  <h3 className="mt-4 font-semibold">{title}</h3>
-                  <p className="mt-1.5 text-sm text-slate-600">{text}</p>
+                  <span className="font-mono text-xs font-semibold text-slate-400">{n}</span>
                 </div>
-              ))}
-            </div>
+                <h3 className="mt-5 text-xl font-semibold tracking-tight">{title}</h3>
+                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-600">{text}</p>
+                <div className="mt-5 rounded-2xl border border-line bg-canvas/70 p-4">{visual}</div>
+              </li>
+            ))}
+          </ol>
           </div>
         </section>
 
-        <section id="scoring" className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1fr_1.1fr]">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Un score que vous pouvez expliquer</h2>
-            <p className="mt-3 text-slate-600">Cinq critères, pondérés par défaut et ajustables selon votre activité. Chaque point attribué est justifié et étiqueté « constaté » ou « estimé ».</p>
-            <ul className="mt-6 space-y-3 text-[15px]">
-              {[
-                ['Besoin potentiel détecté', '30 %'],
-                ['Pertinence pour vos services', '25 %'],
-                ['Opportunité digitale', '20 %'],
-                ['Signaux commerciaux récents', '15 %'],
-                ['Qualité et fraîcheur des données', '10 %'],
-              ].map(([l, w]) => (
-                <li key={l} className="flex items-center justify-between rounded-xl border border-line bg-white px-4 py-2.5">
-                  {l}
-                  <b className="tabular-nums">{w}</b>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 grid grid-cols-2 gap-2 text-sm">
-              {[
-                ['80 – 100', 'Priorité élevée'],
-                ['60 – 79', 'Prospect intéressant'],
-                ['40 – 59', 'Potentiel modéré'],
-                ['0 – 39', 'Faible priorité'],
-              ].map(([r, l]) => (
-                <p key={r} className="rounded-lg bg-slate-100 px-3 py-2">
-                  <b className="tabular-nums">{r}</b> · {l}
-                </p>
-              ))}
-            </div>
-          </div>
-          <Card className="p-5" data-testid="score-example">
-            <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <Badge tone="warning">Exemple illustratif · entreprise fictive</Badge>
-                <p className="mt-2 text-lg font-semibold">Le Bistrot Exemple</p>
-                <p className="text-sm text-slate-500">Restaurant créé il y a 7 mois · 6 à 9 salariés · pour une agence web</p>
-              </div>
-              <div className="text-right">
-                <p className="text-4xl font-bold tabular-nums tracking-tight">
-                  {example.total}
-                  <span className="text-base font-medium text-slate-400">/100</span>
-                </p>
-                <div className="mt-1 flex justify-end gap-1">
-                  <CategoryBadge category={example.category} />
-                </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <ConfidenceBadge confidence={example.confidence} />
-            </div>
-            <ScoreBreakdown score={example} />
-          </Card>
-        </section>
+        {/* ------------------------------------------------ Fonctionnalités */}
+        <section id="fonctionnalites" className="relative border-y border-line bg-white py-24">
+          <div className="bg-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,#000,transparent_40%)]" />
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionTitle eyebrow="Fonctionnalités" title="Tout le cycle de prospection, au même endroit">
+              De la recherche d’entreprises au rendez-vous obtenu, sans jongler entre un annuaire, un tableur et une messagerie.
+            </SectionTitle>
 
-        <section className="border-y border-line bg-white py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <h2 className="text-3xl font-bold tracking-tight">Des sources que vous pouvez vérifier</h2>
-            <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {[
-                [Database, 'Registres officiels', 'Répertoire SIRENE (Insee) et Registre national des entreprises, via l’API publique Recherche d’entreprises : identité, activité, effectif, dirigeants, établissements.'],
-                [FileSearch, 'Annonces légales', 'BODACC : créations, changements de dirigeant ou d’enseigne, cessions, et procédures collectives (qui font baisser le score).'],
-                [Globe, 'Site web public', 'Retrouvé et vérifié par la présence du SIREN sur le site, puis audité en respectant le fichier robots.txt de l’entreprise.'],
-              ].map(([Icon, t, d]) => {
-                const I = Icon as typeof Database;
-                return (
-                  <div key={t as string} className="rounded-2xl border border-line p-5">
-                    <I className="size-5 text-electric-600" />
-                    <h3 className="mt-3 font-semibold">{t as string}</h3>
-                    <p className="mt-1.5 text-sm text-slate-600">{d as string}</p>
+            <div className="mt-12 grid gap-5 lg:grid-cols-3">
+              <article className="reveal group grid gap-6 rounded-3xl border border-line bg-gradient-to-br from-white to-electric-50/60 p-7 shadow-card sm:grid-cols-[1fr_1fr] lg:col-span-2">
+                <div>
+                  <span className="grid size-11 place-items-center rounded-xl bg-electric-600 text-white shadow-glow">
+                    <Radar className="size-5" />
+                  </span>
+                  <h3 className="mt-5 text-xl font-semibold tracking-tight">Analyse automatique</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">Site web retrouvé et rattaché par le SIREN, audit technique, annonces légales récentes. Les constats alimentent le score et les messages.</p>
+                </div>
+                <ul className="space-y-2 self-center rounded-2xl border border-line bg-white p-4 text-sm shadow-card">
+                  {[
+                    ['Site rattaché par le SIREN', true],
+                    ['Connexion sécurisée (HTTPS)', false],
+                    ['Adapté au mobile', false],
+                    ['Référencement de base', true],
+                    ['Réservation en ligne', false],
+                    ['Contenu récent', true],
+                  ].map(([l, ok]) => (
+                    <li key={l as string} className="flex items-center justify-between gap-3">
+                      <span className="text-slate-700">{l as string}</span>
+                      <span className={`grid size-5 place-items-center rounded-full ${ok ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {ok ? <Check className="size-3" strokeWidth={3} /> : <X className="size-3" strokeWidth={3} />}
+                      </span>
+                    </li>
+                  ))}
+                  <li className="pt-1 text-[11px] text-slate-400">Exemple de constats sur une entreprise fictive</li>
+                </ul>
+              </article>
+
+              <article className="reveal flex flex-col rounded-3xl border border-line bg-night-900 p-7 text-white shadow-lift">
+                <span className="grid size-11 place-items-center rounded-xl bg-white/10 text-electric-300">
+                  <Gauge className="size-5" />
+                </span>
+                <h3 className="mt-5 text-xl font-semibold tracking-tight">Score explicable</h3>
+                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-300">Une note de 0 à 100, détaillée critère par critère, avec ses raisons et un niveau de confiance.</p>
+                <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white p-3 text-night-900">
+                  <ScoreRing value={example.total} category={example.category.id} size={64} stroke={6} />
+                  <div className="text-xs">
+                    <p className="font-semibold">{example.category.label}</p>
+                    <p className="text-slate-500">Confiance {example.confidence}</p>
                   </div>
-                );
-              })}
+                </div>
+              </article>
+
+              <article className="reveal flex flex-col rounded-3xl border border-line bg-white p-7 shadow-card">
+                <span className="grid size-11 place-items-center rounded-xl bg-violet-50 text-violet-600">
+                  <MessageSquareText className="size-5" />
+                </span>
+                <h3 className="mt-5 text-xl font-semibold tracking-tight">Messages personnalisés</h3>
+                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-600">E-mail, LinkedIn, Instagram ou message court, en 5 tons. L’accroche cite une observation réelle, jamais une relation inventée.</p>
+                <div className="mt-5 flex flex-wrap gap-1.5 text-[11px] font-semibold">
+                  {['E-mail', 'LinkedIn', 'Instagram', 'Message court'].map((c) => (
+                    <span key={c} className="rounded-full border border-line px-2.5 py-1 text-slate-600">{c}</span>
+                  ))}
+                </div>
+              </article>
+
+              <article className="reveal grid gap-6 rounded-3xl border border-line bg-white p-7 shadow-card sm:grid-cols-[0.9fr_1.1fr] lg:col-span-2">
+                <div>
+                  <span className="grid size-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <KanbanSquare className="size-5" />
+                  </span>
+                  <h3 className="mt-5 text-xl font-semibold tracking-tight">Mini-CRM intégré</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">Sept statuts, notes, historique, date de relance, vue tableau et Kanban. Chaque entreprise n’y figure qu’une fois.</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 self-center text-[11px]">
+                  {[
+                    ['À contacter', 'bg-slate-400', 3],
+                    ['Contacté', 'bg-sky-500', 2],
+                    ['Rendez-vous', 'bg-emerald-500', 1],
+                  ].map(([label, dot, count]) => (
+                    <div key={label as string} className="rounded-xl bg-canvas p-2">
+                      <p className="mb-2 flex items-center gap-1.5 font-semibold text-slate-600">
+                        <span className={`size-1.5 rounded-full ${dot}`} />
+                        {label as string}
+                      </p>
+                      <div className="space-y-1.5">
+                        {Array.from({ length: count as number }).map((_, i) => (
+                          <div key={i} className="rounded-lg border border-line bg-white p-2 shadow-sm">
+                            <span className="block h-1.5 w-3/4 rounded-full bg-slate-200" />
+                            <span className="mt-1.5 block h-1.5 w-1/2 rounded-full bg-slate-100" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </article>
+
+              {[
+                { icon: Search, title: 'Recherche avancée', text: 'Région, département, ville, code postal ou rayon ; secteur, mots-clés, taille, ancienneté, signaux. Tous les filtres se combinent.' },
+                { icon: ListChecks, title: 'Listes et recherches sauvegardées', text: 'Relancez une recherche pour voir les nouvelles entreprises, comparez deux recherches, regroupez vos prospects par campagne.' },
+                { icon: Users, title: 'Export et travail en équipe', text: 'Export CSV de votre CRM. Jusqu’à 5 utilisateurs partagent le même portefeuille, les mêmes listes et les mêmes paramètres.' },
+              ].map(({ icon: Icon, title, text }) => (
+                <article key={title} className="reveal rounded-3xl border border-line bg-white p-7 shadow-card transition-shadow hover:shadow-lift">
+                  <span className="grid size-11 place-items-center rounded-xl bg-electric-50 text-electric-600">
+                    <Icon className="size-5" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-semibold tracking-tight">{title}</h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">{text}</p>
+                </article>
+              ))}
             </div>
-            <div className="mt-6 rounded-2xl bg-slate-50 p-5">
-              <p className="flex items-center gap-2 font-semibold">
-                <Ban className="size-4 text-rose-600" />
-                Ce que ProspectIQ ne fait pas
+          </div>
+        </section>
+
+        {/* ------------------------------------------------------- Score */}
+        <section id="score" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionTitle eyebrow="Score explicable" title="Un score que vous pouvez expliquer, et régler">
+              Cinq critères pondérés (30, 25, 20, 15 et 10 % par défaut), ajustables selon votre activité. Chaque point attribué est justifié et étiqueté « constaté » ou « estimé ».
+            </SectionTitle>
+            <p className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-slate-600 shadow-card">
+              <BadgeCheck className="size-4 text-emerald-600" />
+              Calcul identique à celui de l’application
+            </p>
+          </div>
+          <div className="reveal mt-12">
+            <ScoreLab input={input} />
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------- Confiance */}
+        <section id="confiance" className="relative isolate overflow-hidden bg-night-950 py-24 text-white">
+          <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+          <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.3),transparent)]" />
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <SectionTitle eyebrow="Confiance" title={<>La confiance, <span className="text-gradient font-serif font-normal italic">ça se vérifie.</span></>} dark>
+                Ce que ProspectIQ fait des données, ce qu’il s’interdit, et comment le contrôler vous-même.
+              </SectionTitle>
+              <Link href="/confiance" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+                Centre de confiance
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {TRUST.map(({ icon: Icon, title, text, check }) => (
+                <article key={title} className="reveal flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.07]">
+                  <span className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-electric-500/30 to-emerald-400/20 text-electric-200 ring-1 ring-white/10">
+                    <Icon className="size-5" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-semibold">{title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{text}</p>
+                  <p className="mt-5 flex items-start gap-2 border-t border-white/10 pt-4 text-xs text-emerald-200/90">
+                    <Check className="mt-px size-3.5 shrink-0" strokeWidth={3} />
+                    {check}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div className="reveal mt-6 grid gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
+              <p className="flex items-center gap-3 text-lg font-semibold">
+                <span className="grid size-10 place-items-center rounded-xl bg-rose-500/15 text-rose-300">
+                  <Ban className="size-5" />
+                </span>
+                Ce que ProspectIQ
+                <br className="hidden md:block" /> ne fait pas
               </p>
-              <ul className="mt-3 grid gap-2 text-sm text-slate-600 md:grid-cols-2">
-                <li>Aucune collecte du contenu des réseaux sociaux ni contournement de protections.</li>
-                <li>Aucune entreprise ayant refusé la prospection (opposition SIRENE) dans les résultats.</li>
-                <li>Aucune donnée inventée : l’inconnu est affiché « Non renseigné ».</li>
-                <li>Aucun message prétendant une relation ou un échange qui n’a pas eu lieu.</li>
+              <ul className="grid gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">
+                {[
+                  'Aucune collecte du contenu des réseaux sociaux',
+                  'Aucun contournement de protection ; robots.txt respecté',
+                  'Aucune entreprise en opposition SIRENE dans les résultats',
+                  'Aucun message prétendant un échange qui n’a pas eu lieu',
+                  'Aucune revente de données à des tiers',
+                  'Aucun envoi automatique de messages en votre nom',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2">
+                    <X className="mt-0.5 size-4 shrink-0 text-rose-300" />
+                    {t}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </section>
 
-        <section id="tarifs" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight">Des tarifs simples, sans engagement</h2>
-          <p className="mt-3 text-center text-slate-600">Commencez gratuitement. Passez à une offre payante quand la prospection devient régulière.</p>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {Object.values(PLANS).map((p) => (
-              <div key={p.id} className={`flex flex-col rounded-2xl border bg-white p-6 shadow-card ${p.id === 'pro' ? 'border-electric-500 ring-2 ring-electric-500' : 'border-line'}`}>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">{p.name}</h3>
-                  {p.id === 'pro' && <Badge tone="accent">Recommandé</Badge>}
+        {/* ------------------------------------------------------ Tarifs */}
+        <section id="tarifs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+          <SectionTitle eyebrow="Tarifs" title="Des tarifs simples, sans engagement" center>
+            Commencez gratuitement. Passez à une offre payante quand la prospection devient régulière.
+          </SectionTitle>
+          <div className="mt-14 grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {Object.values(PLANS).map((p) => {
+              const featured = p.id === 'pro';
+              return (
+                <div key={p.id} className={`reveal flex flex-col rounded-3xl p-7 ${featured ? 'ring-gradient text-white shadow-glow lg:-my-3 lg:py-10' : 'border border-line bg-white shadow-card'}`}>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">{p.name}</h3>
+                    {featured && <span className="rounded-full bg-electric-500/20 px-2.5 py-0.5 text-xs font-semibold text-electric-200 ring-1 ring-electric-400/40">Recommandé</span>}
+                  </div>
+                  <p className="mt-4 flex items-baseline gap-1.5">
+                    <span className="text-5xl font-bold tracking-tight tabular-nums">{p.price} €</span>
+                    <span className={`text-sm ${featured ? 'text-slate-400' : 'text-slate-500'}`}>{p.price ? 'HT / mois' : 'pour toujours'}</span>
+                  </p>
+                  <p className={`mt-2 text-sm ${featured ? 'text-slate-300' : 'text-slate-500'}`}>{p.prospects.toLocaleString('fr-FR')} prospects analysés par mois</p>
+                  <ul className={`mt-6 flex-1 space-y-3 border-t pt-6 text-sm ${featured ? 'border-white/10 text-slate-200' : 'border-line text-slate-700'}`}>
+                    {p.pitch.map((x) => (
+                      <li key={x} className="flex gap-2.5">
+                        <Check className={`mt-0.5 size-4 shrink-0 ${featured ? 'text-emerald-300' : 'text-electric-600'}`} strokeWidth={2.5} />
+                        {x}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/inscription" className={`${buttonClass(featured ? 'accent' : p.price ? 'primary' : 'secondary', 'md')} mt-7 w-full`}>
+                    {p.price ? `Choisir ${p.name}` : 'Commencer gratuitement'}
+                  </Link>
                 </div>
-                <p className="mt-3">
-                  <span className="text-4xl font-bold tracking-tight">{p.price} €</span>
-                  <span className="text-sm text-slate-500"> {p.price ? 'HT / mois' : 'pour toujours'}</span>
-                </p>
-                <ul className="mt-5 flex-1 space-y-2.5 text-sm">
-                  {p.pitch.map((x) => (
-                    <li key={x} className="flex gap-2">
-                      <Check className="mt-0.5 size-4 shrink-0 text-electric-600" />
-                      {x}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/inscription" className={`${buttonClass(p.id === 'pro' ? 'accent' : p.price ? 'primary' : 'secondary')} mt-6 w-full`}>
-                  {p.price ? `Choisir ${p.name}` : 'Commencer gratuitement'}
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
-          <p className="mt-6 text-center text-xs text-slate-500">Les offres payantes se souscrivent depuis l’application après création du compte. Paiement sécurisé par Stripe, factures téléchargeables.</p>
+          <div className="reveal mt-10 grid gap-3 rounded-3xl border border-line bg-white p-5 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              [ShieldCheck, 'Offre gratuite sans carte bancaire'],
+              [Lock, 'Paiement sécurisé par Stripe'],
+              [FileText, 'Factures téléchargeables'],
+              [CreditCard, 'Résiliation en ligne, sans engagement'],
+            ].map(([Icon, t]) => {
+              const I = Icon as typeof Lock;
+              return (
+                <p key={t as string} className="flex items-center gap-2.5">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
+                    <I className="size-4" />
+                  </span>
+                  {t as string}
+                </p>
+              );
+            })}
+          </div>
         </section>
 
-        <section id="faq" className="border-t border-line bg-white py-20">
-          <div className="mx-auto max-w-3xl px-4 sm:px-6">
-            <h2 className="text-3xl font-bold tracking-tight">Questions fréquentes</h2>
-            <div className="mt-8 divide-y divide-line rounded-2xl border border-line">
+        {/* --------------------------------------------------------- FAQ */}
+        <section id="faq" className="border-t border-line bg-white py-24">
+          <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <SectionTitle eyebrow="FAQ" title="Questions fréquentes">
+                Les réponses courtes aux questions qu’on nous pose avant de s’inscrire.
+              </SectionTitle>
+              <div className="mt-8 rounded-2xl bg-canvas p-5 text-sm">
+                <p className="font-semibold">Une autre question ?</p>
+                <p className="mt-1 text-slate-600">
+                  {contactEmail ? (
+                    <>
+                      Écrivez-nous à{' '}
+                      <a href={`mailto:${contactEmail}`} className="font-semibold text-electric-700 hover:underline">
+                        {contactEmail}
+                      </a>
+                      .
+                    </>
+                  ) : (
+                    <>
+                      Le{' '}
+                      <Link href="/confiance" className="font-semibold text-electric-700 hover:underline">
+                        centre de confiance
+                      </Link>{' '}
+                      détaille les sources, la sécurité et le traitement des données.
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-3">
               {FAQ.map(([q, a]) => (
-                <details key={q} className="group px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+                <details key={q} className="group rounded-2xl border border-line bg-white px-5 py-4 transition-colors open:border-electric-200 open:bg-electric-50/40 open:shadow-card [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                     {q}
-                    <span className="text-xl leading-none text-slate-400 transition-transform group-open:rotate-45">+</span>
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition-transform group-open:rotate-45 group-open:bg-electric-600 group-open:text-white">+</span>
                   </summary>
                   <p className="mt-3 text-[15px] leading-relaxed text-slate-600">{a}</p>
                 </details>
@@ -252,17 +549,30 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bg-night-900 py-16 text-center text-white">
-          <h2 className="text-3xl font-bold tracking-tight">Vos prochains clients sont déjà immatriculés.</h2>
-          <p className="mt-3 text-slate-300">Trouvez-les, comprenez leurs besoins, contactez-les avec un vrai motif.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/inscription" className={buttonClass('accent', 'lg')}>
-              Trouver mes prospects
-              <ArrowRight className="size-4" />
-            </Link>
-            <Link href="/connexion" className="inline-flex h-12 items-center rounded-lg border border-white/20 px-6 text-[15px] font-semibold text-white hover:bg-white/10">
-              Se connecter
-            </Link>
+        {/* ------------------------------------------------- Appel final */}
+        <section className="px-4 py-20 sm:px-6">
+          <div className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-night-900 px-6 py-16 text-center text-white sm:px-12">
+            <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+            <div className="pointer-events-none absolute -bottom-40 left-1/2 -z-10 h-80 w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.5),transparent)]" />
+            <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-balance sm:text-5xl">
+              Vos prochains clients sont <span className="text-gradient font-serif font-normal italic">déjà immatriculés.</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-slate-300">Trouvez-les, comprenez leurs besoins, contactez-les avec un vrai motif.</p>
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
+              <Link href="/inscription" className={buttonClass('accent', 'lg')}>
+                Trouver mes prospects
+                <ArrowRight className="size-4" />
+              </Link>
+              <Link href="/connexion" className="inline-flex h-12 items-center rounded-lg border border-white/20 px-6 text-[15px] font-semibold text-white hover:bg-white/10">
+                Se connecter
+              </Link>
+            </div>
+            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
+              <span className="inline-flex items-center gap-1.5"><Database className="size-3.5" /> Données officielles</span>
+              <span className="inline-flex items-center gap-1.5"><MapPin className="size-3.5" /> Toute la France</span>
+              <span className="inline-flex items-center gap-1.5"><Globe className="size-3.5" /> Aucune installation</span>
+              <span className="inline-flex items-center gap-1.5"><Download className="size-3.5" /> Export CSV</span>
+            </p>
           </div>
         </section>
       </main>

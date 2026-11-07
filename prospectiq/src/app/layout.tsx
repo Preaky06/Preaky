@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/inter';
+import '@fontsource/instrument-serif/latin-400-italic.css';
 import './globals.css';
 import { ToastProvider } from '@/components/toast';
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   icons: { icon: '/icon.svg' },
 };
 
-export const viewport: Viewport = { themeColor: '#0c1330', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#0b1230', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

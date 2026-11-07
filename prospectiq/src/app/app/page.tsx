@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Search, Sparkles, CalendarClock, History, ArrowRight, Target } from 'lucide-react';
+import { Search, Sparkles, CalendarClock, History, ArrowRight, Target, Building2, BadgeCheck, Bookmark, Send, Percent } from 'lucide-react';
 import { PageTitle } from '@/components/app-shell';
 import { Card, CardHeader, EmptyState, Skeleton, buttonClass } from '@/components/ui';
 import { BarList, LineChart } from '@/components/charts';
@@ -32,11 +32,11 @@ export default function DashboardPage() {
   if (error) return <EmptyState title="Tableau de bord indisponible">{error}</EmptyState>;
   const c = data?.counts;
   const stats = [
-    { label: 'Prospects trouvés', value: c?.found, hint: 'Entreprises distinctes dans vos recherches' },
-    { label: 'Prospects qualifiés', value: c?.qualified, hint: 'Analysés avec un score ≥ 60' },
-    { label: 'Prospects enregistrés', value: c?.saved, hint: 'Dans votre CRM' },
-    { label: 'Prospects contactés', value: c?.contacted, hint: 'Statut « Contacté » ou plus loin' },
-    { label: 'Taux de qualification', value: c?.qualificationRate, unit: ' %', hint: 'Qualifiés / analysés' },
+    { label: 'Prospects trouvés', value: c?.found, hint: 'Entreprises distinctes dans vos recherches', icon: Building2, tone: 'bg-electric-50 text-electric-600' },
+    { label: 'Prospects qualifiés', value: c?.qualified, hint: 'Analysés avec un score ≥ 60', icon: BadgeCheck, tone: 'bg-emerald-50 text-emerald-700' },
+    { label: 'Prospects enregistrés', value: c?.saved, hint: 'Dans votre CRM', icon: Bookmark, tone: 'bg-violet-50 text-violet-600' },
+    { label: 'Prospects contactés', value: c?.contacted, hint: 'Statut « Contacté » ou plus loin', icon: Send, tone: 'bg-sky-50 text-sky-700' },
+    { label: 'Taux de qualification', value: c?.qualificationRate, unit: ' %', hint: 'Qualifiés / analysés', icon: Percent, tone: 'bg-amber-50 text-amber-700' },
   ];
 
   return (
@@ -52,16 +52,22 @@ export default function DashboardPage() {
         }
       />
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-        {stats.map((s) => (
-          <Card key={s.label} className="p-4" title={s.hint}>
-            <p className="text-[13px] font-medium text-slate-500">{s.label}</p>
+        {stats.map(({ icon: Icon, ...s }) => (
+          <Card key={s.label} className="group relative overflow-hidden p-4 transition-shadow hover:shadow-lift" title={s.hint}>
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[13px] font-medium text-slate-500">{s.label}</p>
+              <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${s.tone}`}>
+                <Icon className="size-4" />
+              </span>
+            </div>
             {data ? (
-              <p className="mt-1 text-[28px] font-bold tracking-tight text-night-900" data-testid={`stat-${s.label}`}>
+              <p className="mt-2 text-[30px] leading-none font-bold tracking-tight tabular-nums text-night-900" data-testid={`stat-${s.label}`}>
                 {s.value === null || s.value === undefined ? '—' : `${s.value.toLocaleString('fr-FR')}${s.unit || ''}`}
               </p>
             ) : (
               <Skeleton className="mt-2 h-8 w-16" />
             )}
+            <p className="mt-2 truncate text-[11px] text-slate-400">{s.hint}</p>
           </Card>
         ))}
       </div>

@@ -1,25 +1,50 @@
 import Link from 'next/link';
+import { Menu, ShieldCheck, Lock, Cookie } from 'lucide-react';
 import { Logo } from './logo';
-import { buttonClass } from './styles';
+import { buttonClass, cx } from './styles';
 
-export function SiteHeader() {
+const NAV = [
+  ['/#fonctionnalites', 'Fonctionnalités'],
+  ['/#score', 'Score'],
+  ['/confiance', 'Confiance'],
+  ['/#tarifs', 'Tarifs'],
+  ['/#faq', 'FAQ'],
+] as const;
+
+export function SiteHeader({ dark = false }: { dark?: boolean }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-white/80 backdrop-blur">
+    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950/90 text-white' : 'border-line/70 bg-white/80 text-night-900')}>
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Logo />
-        <nav className="hidden items-center gap-7 text-sm font-medium text-slate-600 md:flex" aria-label="Navigation principale">
-          <Link href="/#fonctionnalites" className="hover:text-night-900">Fonctionnalités</Link>
-          <Link href="/#scoring" className="hover:text-night-900">Scoring</Link>
-          <Link href="/#tarifs" className="hover:text-night-900">Tarifs</Link>
-          <Link href="/#faq" className="hover:text-night-900">FAQ</Link>
+        <Logo dark={dark} />
+        <nav className={cx('hidden items-center gap-1 text-sm font-medium md:flex', dark ? 'text-slate-300' : 'text-slate-600')} aria-label="Navigation principale">
+          {NAV.map(([href, label]) => (
+            <Link key={href} href={href} className={cx('rounded-lg px-3 py-2 transition-colors', dark ? 'hover:bg-white/10 hover:text-white' : 'hover:bg-night-900/5 hover:text-night-900')}>
+              {label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Link href="/connexion" className={buttonClass('ghost', 'sm')}>
+          <Link href="/connexion" className={cx(buttonClass('ghost', 'sm'), 'max-sm:hidden', dark && 'text-slate-200 hover:bg-white/10 hover:text-white')}>
             Connexion
           </Link>
-          <Link href="/inscription" className={buttonClass('primary', 'sm')}>
+          <Link href="/inscription" className={dark ? buttonClass('accent', 'sm') : buttonClass('primary', 'sm')}>
             Essai gratuit
           </Link>
+          <details className="group relative md:hidden">
+            <summary className={cx('grid size-9 cursor-pointer list-none place-items-center rounded-lg [&::-webkit-details-marker]:hidden', dark ? 'hover:bg-white/10' : 'hover:bg-slate-100')} aria-label="Menu">
+              <Menu className="size-5" />
+            </summary>
+            <nav className="absolute top-11 right-0 w-56 rounded-2xl border border-line bg-white p-2 text-sm font-medium text-night-900 shadow-pop" aria-label="Navigation mobile">
+              {NAV.map(([href, label]) => (
+                <Link key={href} href={href} className="block rounded-lg px-3 py-2 hover:bg-slate-100">
+                  {label}
+                </Link>
+              ))}
+              <Link href="/connexion" className="block rounded-lg px-3 py-2 hover:bg-slate-100">
+                Connexion
+              </Link>
+            </nav>
+          </details>
         </div>
       </div>
     </header>
@@ -28,27 +53,48 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-white">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr]">
+    <footer className="bg-night-950 text-slate-400">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
-          <Logo />
-          <p className="mt-3 max-w-sm text-sm text-slate-500">Prospection B2B à partir de données publiques officielles françaises.</p>
+          <Logo dark />
+          <p className="mt-4 max-w-xs text-sm leading-relaxed">Prospection B2B à partir des registres publics officiels français. Chaque information affichée cite sa source.</p>
+          <p className="mt-4 max-w-xs text-xs leading-relaxed text-slate-500">Données publiques de l’Insee, de l’INPI, de la DILA et d’Etalab. ProspectIQ est un service indépendant, sans lien avec ces organismes.</p>
         </div>
-        <div className="space-y-2 text-sm">
-          <p className="font-semibold">Produit</p>
-          <Link href="/#fonctionnalites" className="block text-slate-600 hover:text-night-900">Fonctionnalités</Link>
-          <Link href="/#tarifs" className="block text-slate-600 hover:text-night-900">Tarifs</Link>
-          <Link href="/inscription" className="block text-slate-600 hover:text-night-900">Créer un compte</Link>
+        <div className="space-y-2.5 text-sm">
+          <p className="font-semibold text-white">Produit</p>
+          <Link href="/#fonctionnalites" className="block hover:text-white">Fonctionnalités</Link>
+          <Link href="/#score" className="block hover:text-white">Score explicable</Link>
+          <Link href="/#tarifs" className="block hover:text-white">Tarifs</Link>
+          <Link href="/inscription" className="block hover:text-white">Créer un compte</Link>
         </div>
-        <div className="space-y-2 text-sm">
-          <p className="font-semibold">Légal</p>
-          <Link href="/mentions-legales" className="block text-slate-600 hover:text-night-900">Mentions légales</Link>
-          <Link href="/cgu" className="block text-slate-600 hover:text-night-900">Conditions d’utilisation</Link>
-          <Link href="/confidentialite" className="block text-slate-600 hover:text-night-900">Politique de confidentialité</Link>
-          <Link href="/opposition" className="block text-slate-600 hover:text-night-900">Opposition / suppression de données</Link>
+        <div className="space-y-2.5 text-sm">
+          <p className="font-semibold text-white">Confiance</p>
+          <Link href="/confiance" className="block hover:text-white">Centre de confiance</Link>
+          <Link href="/confidentialite" className="block hover:text-white">Confidentialité</Link>
+          <Link href="/opposition" className="block hover:text-white">Opposition / suppression</Link>
+        </div>
+        <div className="space-y-2.5 text-sm">
+          <p className="font-semibold text-white">Légal</p>
+          <Link href="/mentions-legales" className="block hover:text-white">Mentions légales</Link>
+          <Link href="/cgu" className="block hover:text-white">Conditions d’utilisation</Link>
         </div>
       </div>
-      <p className="border-t border-line py-4 text-center text-xs text-slate-500">© {new Date().getFullYear()} ProspectIQ</p>
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-5 text-xs sm:px-6">
+          <p>© {new Date().getFullYear()} ProspectIQ</p>
+          <p className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <span className="inline-flex items-center gap-1.5">
+              <Lock className="size-3.5" /> Paiement sécurisé par Stripe
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Cookie className="size-3.5" /> Aucun cookie publicitaire
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="size-3.5" /> Droit d’opposition en ligne
+            </span>
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }

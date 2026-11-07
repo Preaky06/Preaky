@@ -131,14 +131,9 @@ export default function CompanyPage() {
       <Card className="p-5 sm:p-6">
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex min-w-0 items-start gap-4">
-            <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-slate-50 text-lg font-bold text-night-700">
-              {w?.status === 'verified' && host ? (
-                // Logo : icône publique du site vérifié ; repli sur les initiales
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={`https://${host}/favicon.ico`} alt="" referrerPolicy="no-referrer" className="size-8" onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = 'none')} />
-              ) : (
-                displayName(c).slice(0, 2).toUpperCase()
-              )}
+            <div className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-night-800 to-electric-600 text-lg font-bold text-white shadow-lift">
+              {/* Initiales : aucune ressource chargée depuis le site du prospect (pas de requête tierce). */}
+              {displayName(c).slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0">
               <h1 className="text-2xl font-bold tracking-tight text-night-900" data-testid="company-name">

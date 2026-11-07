@@ -2,35 +2,69 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Database, Radar, Gauge, MessageSquareText, ShieldCheck, Lock, Cookie } from 'lucide-react';
 import { Button, Field, Input, Checkbox } from './ui';
 import { Logo } from './logo';
 import { api, ApiError } from '@/lib/client';
 
 export function AuthFrame({ title, subtitle, children, footer }: { title: string; subtitle?: React.ReactNode; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1fr_1.1fr]">
+    <div className="grid min-h-dvh lg:grid-cols-[1fr_1.05fr]">
       <div className="flex flex-col px-6 py-8 sm:px-12">
         <Logo />
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
-          <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
+          <h1 className="text-[28px] font-bold tracking-tight">{title}</h1>
           {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}
           <div className="mt-8">{children}</div>
           {footer && <div className="mt-6 text-sm text-slate-600">{footer}</div>}
         </div>
+        <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+          <span className="inline-flex items-center gap-1.5"><Lock className="size-3.5" /> Connexion chiffrée</span>
+          <span className="inline-flex items-center gap-1.5"><Cookie className="size-3.5" /> Un seul cookie, votre session</span>
+          <Link href="/confiance" className="font-medium text-slate-500 hover:text-night-900 hover:underline">Centre de confiance</Link>
+        </p>
       </div>
-      <div className="relative hidden overflow-hidden bg-night-900 lg:block">
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_70%_30%,rgba(99,102,241,0.35),transparent)]" />
-        <div className="relative flex h-full flex-col justify-center px-16 text-white">
-          <p className="text-3xl font-bold leading-tight tracking-tight">Les bons prospects.<br />Au bon moment.</p>
-          <ul className="mt-8 space-y-3 text-[15px] text-slate-300">
-            {['Données officielles SIRENE, RNE et BODACC', 'Analyse du site web et des signaux commerciaux', 'Score explicable, jamais une boîte noire', 'Messages personnalisés à partir de faits vérifiés'].map((t) => (
-              <li key={t} className="flex items-center gap-3">
-                <CheckCircle2 className="size-5 text-electric-400" />
-                {t}
-              </li>
-            ))}
+      <div className="relative isolate hidden overflow-hidden bg-night-950 lg:block">
+        <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+        <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.4),transparent)]" />
+        <div className="flex h-full flex-col justify-center px-14 py-16 text-white xl:px-20">
+          <p className="text-4xl leading-tight font-bold tracking-tight">
+            Les bons prospects.
+            <br />
+            <span className="text-gradient font-serif font-normal italic">Au bon moment.</span>
+          </p>
+          <ul className="mt-9 space-y-4 text-[15px] text-slate-300">
+            {[
+              [Database, 'Données officielles SIRENE, RNE et BODACC'],
+              [Radar, 'Analyse du site web et des signaux commerciaux'],
+              [Gauge, 'Score explicable, chaque point justifié'],
+              [MessageSquareText, 'Messages fondés sur des faits vérifiés'],
+            ].map(([Icon, t]) => {
+              const I = Icon as typeof Database;
+              return (
+                <li key={t as string} className="flex items-center gap-3">
+                  <span className="grid size-9 place-items-center rounded-xl bg-white/[0.07] text-electric-300 ring-1 ring-white/10">
+                    <I className="size-4" />
+                  </span>
+                  {t as string}
+                </li>
+              );
+            })}
           </ul>
+          <div className="mt-10 max-w-md rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur">
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <ShieldCheck className="size-4 text-emerald-300" />
+              Nos engagements
+            </p>
+            <ul className="mt-3 grid gap-2 text-sm text-slate-300">
+              {['Offre Découverte gratuite, sans carte bancaire', 'Aucune donnée inventée : l’inconnu reste « Non renseigné »', 'Entreprises en opposition exclues automatiquement', 'Export et suppression du compte en libre-service'].map((t) => (
+                <li key={t} className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-300" />
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

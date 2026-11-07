@@ -123,6 +123,20 @@ try {
     assert.doesNotMatch(txt, /Traiteur Opposant|TRAITEUR OPPOSANT/i, 'une entreprise en opposition ne doit jamais apparaître');
   });
 
+  await step('Centre de confiance : sources vérifiées, sous-traitants réels, illustration signalée', async () => {
+    await page.goto(APP);
+    await page.getByText('Illustration · entreprise fictive').first().waitFor();
+    await page.goto(`${APP}/confiance`);
+    await page.locator('[data-testid=sources-status]').waitFor();
+    const txt = await page.locator('main').innerText();
+    assert.match(txt, /État des sources publiques/);
+    // Stripe n'est pas configuré dans ce test : il doit apparaître « Non utilisé », jamais « Actif ».
+    const stripe = await page.locator('li', { hasText: 'Paiement et facturation' }).innerText();
+    assert.match(stripe, /Non utilisé/);
+    const sec = await page.request.get(`${APP}/.well-known/security.txt`);
+    assert.equal(sec.status(), 404, 'security.txt ne doit pas exister sans contact renseigné');
+  });
+
   await step('Validation des formulaires : mot de passe trop faible refusé', async () => {
     const p = await ctxA.newPage();
     await p.goto(`${APP}/inscription`);
