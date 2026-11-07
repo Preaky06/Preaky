@@ -3,6 +3,14 @@
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
+  /* Typo de marque : large et géométrique, comme une bande de spectre */
+  --font-display: 'Unbounded Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Spectre : une couleur par critère du score (besoin, pertinence, digital, signaux, données) */
+  --color-spectrum-1: #8b5cf6;
+  --color-spectrum-2: #6366f1;
+  --color-spectrum-3: #06b6d4;
+  --color-spectrum-4: #10b981;
+  --color-spectrum-5: #f59e0b;
   /* Bleu nuit (couleur principale) */
   --color-night-950: #050817;
   --color-night-900: #0b1230;
@@ -74,6 +82,19 @@
     clip-path: inset(0 100% 0 0);
   }
 }
+@keyframes beam-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
 @keyframes reveal {
   from {
     opacity: 0;
@@ -98,6 +119,10 @@
   ::selection {
     background: var(--color-electric-100);
   }
+  .font-display {
+    font-optical-sizing: auto;
+    font-feature-settings: normal;
+  }
 }
 
 @layer components {
@@ -113,24 +138,54 @@
     background-image: radial-gradient(rgb(11 18 48 / 0.09) 1px, transparent 1px);
     background-size: 22px 22px;
   }
+  /* Dégradé spectral (fond sombre) */
+  .text-spectrum,
   .text-gradient {
-    background: linear-gradient(100deg, #a5b4fc 0%, #818cf8 35%, #c4b5fd 70%, #6ee7b7 100%);
+    background: linear-gradient(95deg, #c4b5fd 0%, #a5b4fc 28%, #67e8f9 55%, #6ee7b7 78%, #fcd34d 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
+  /* Dégradé spectral (fond clair, contraste suffisant) */
+  .text-spectrum-deep,
   .text-gradient-dark {
-    background: linear-gradient(100deg, #4338ca 0%, #6366f1 50%, #7c3aed 100%);
+    background: linear-gradient(95deg, #6d28d9 0%, #4f46e5 35%, #0891b2 70%, #047857 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+  .bg-spectrum {
+    background: linear-gradient(90deg, #8b5cf6, #6366f1, #06b6d4, #10b981, #f59e0b);
+  }
+  /* Filet spectral décoratif */
+  .spectrum-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8b5cf6 15%, #6366f1 35%, #06b6d4 55%, #10b981 75%, #f59e0b 90%, transparent);
   }
   /* Bordure en dégradé (carte mise en avant), fond nuit. */
   .ring-gradient {
     border: 1.5px solid transparent;
     background:
       linear-gradient(var(--color-night-900), var(--color-night-900)) padding-box,
-      linear-gradient(140deg, #818cf8, #6366f1 40%, #34d399) border-box;
+      linear-gradient(140deg, #a78bfa, #6366f1 30%, #22d3ee 60%, #34d399 80%, #fbbf24) border-box;
+  }
+  /* Impulsion lumineuse qui parcourt un faisceau du hero */
+  .beam-pulse {
+    stroke-dasharray: 90 1600;
+    stroke-dashoffset: 1690;
+    animation: beam-flow 5.5s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  }
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+    animation: shimmer 3.2s ease-in-out infinite;
   }
   .grow-x {
     transform-origin: left;
@@ -176,6 +231,10 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .beam-pulse,
+  .shimmer::after {
+    display: none;
   }
   *,
   *::before,

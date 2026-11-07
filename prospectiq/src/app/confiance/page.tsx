@@ -74,7 +74,7 @@ export default async function Page() {
   return (
     <>
       <SiteHeader />
-      <main>
+      <main id="contenu">
         <section className="relative isolate overflow-hidden border-b border-line bg-white">
           <div className="bg-dots pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,#000_30%,transparent_75%)]" />
           <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:py-20">

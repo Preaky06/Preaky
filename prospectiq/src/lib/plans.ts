@@ -17,11 +17,13 @@ export interface Plan {
     team: boolean; // plusieurs utilisateurs
   };
   pitch: string[];
+  audience: string;
 }
 
 export const PLANS: Record<PlanId, Plan> = {
   decouverte: {
     id: 'decouverte',
+    audience: 'Pour tester sur vos premiers prospects',
     name: 'Découverte',
     price: 0,
     prospects: 20,
@@ -32,6 +34,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   starter: {
     id: 'starter',
+    audience: 'Pour un indépendant qui prospecte chaque semaine',
     name: 'Starter',
     price: 19,
     prospects: 100,
@@ -42,6 +45,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   pro: {
     id: 'pro',
+    audience: 'Pour une agence ou un commercial à temps plein',
     name: 'Pro',
     price: 49,
     prospects: 500,
@@ -52,6 +56,7 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   business: {
     id: 'business',
+    audience: 'Pour une équipe commerciale, jusqu’à 5 personnes',
     name: 'Business',
     price: 99,
     prospects: 2000,

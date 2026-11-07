@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { CheckCircle2, Database, Radar, Gauge, MessageSquareText, ShieldCheck, Lock, Cookie } from 'lucide-react';
 import { Button, Field, Input, Checkbox } from './ui';
-import { Logo } from './logo';
+import { Logo, BrandMark } from './logo';
 import { api, ApiError } from '@/lib/client';
 
 export function AuthFrame({ title, subtitle, children, footer }: { title: string; subtitle?: React.ReactNode; children: React.ReactNode; footer?: React.ReactNode }) {
@@ -13,7 +13,7 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
       <div className="flex flex-col px-6 py-8 sm:px-12">
         <Logo />
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
-          <h1 className="text-[28px] font-bold tracking-tight">{title}</h1>
+          <h1 className="font-display text-[1.75rem] font-semibold tracking-[-0.02em]">{title}</h1>
           {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}
           <div className="mt-8">{children}</div>
           {footer && <div className="mt-6 text-sm text-slate-600">{footer}</div>}
@@ -28,10 +28,11 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
         <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
         <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.4),transparent)]" />
         <div className="flex h-full flex-col justify-center px-14 py-16 text-white xl:px-20">
-          <p className="text-4xl leading-tight font-bold tracking-tight">
+          <BrandMark size={52} className="mb-8 rounded-[14px] shadow-glow" />
+          <p className="font-display text-[2.2rem] leading-[1.1] font-semibold tracking-[-0.025em]">
             Les bons prospects.
             <br />
-            <span className="text-gradient font-serif font-normal italic">Au bon moment.</span>
+            <span className="text-gradient font-serif text-[1.12em] font-normal tracking-normal italic">Au bon moment.</span>
           </p>
           <ul className="mt-9 space-y-4 text-[15px] text-slate-300">
             {[

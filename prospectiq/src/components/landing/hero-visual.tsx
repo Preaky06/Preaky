@@ -2,6 +2,7 @@
 import { ShieldCheck, FileText, Send, Lock, Smartphone, Share2 } from 'lucide-react';
 import type { ScoreResult } from '@/lib/scoring';
 import { ScoreRing } from './score-ring';
+import { criterionColor } from '@/lib/brand';
 
 const SHORT: Record<string, string> = { need: 'Besoin détecté', relevance: 'Pertinence', digital: 'Opportunité digitale', signals: 'Signaux récents', data: 'Qualité des données' };
 const CAT_STYLE: Record<string, string> = {
@@ -38,10 +39,13 @@ export function HeroVisual({ score }: { score: ScoreResult }) {
 
           <div className="mt-5 space-y-2.5">
             {score.criteria.map((c, i) => (
-              <div key={c.id} className="grid grid-cols-[7.5rem_1fr_2.6rem] items-center gap-3 text-xs">
-                <span className="truncate text-slate-600">{SHORT[c.id] || c.label}</span>
+              <div key={c.id} className="grid grid-cols-[8.25rem_1fr_2.6rem] items-center gap-3 text-xs">
+                <span className="flex items-center gap-2 truncate text-slate-600">
+                  <span className="size-1.5 shrink-0 rounded-full" style={{ background: criterionColor(c.id) }} />
+                  {SHORT[c.id] || c.label}
+                </span>
                 <span className="h-1.5 overflow-hidden rounded-full bg-slate-100">
-                  <span className="grow-x block h-full rounded-full bg-gradient-to-r from-electric-500 to-violet-500" style={{ width: `${(c.points / Math.max(1, c.weight)) * 100}%`, animationDelay: `${0.3 + i * 0.12}s` }} />
+                  <span className="grow-x block h-full rounded-full" style={{ width: `${(c.points / Math.max(1, c.weight)) * 100}%`, background: criterionColor(c.id), animationDelay: `${0.3 + i * 0.12}s` }} />
                 </span>
                 <span className="text-right font-semibold tabular-nums">
                   {c.points}

@@ -9,6 +9,9 @@ import { HeroVisual } from '@/components/landing/hero-visual';
 import { ScoreLab } from '@/components/landing/score-lab';
 import { ScoreRing } from '@/components/landing/score-ring';
 import { CountUp } from '@/components/landing/count-up';
+import { HeroBeams } from '@/components/landing/hero-beams';
+import { BrandStory } from '@/components/landing/brand-story';
+import { BrandMark } from '@/components/logo';
 import { buttonClass } from '@/components/styles';
 import { PLANS } from '@/lib/plans';
 import { scoreCompany } from '@/lib/scoring';
@@ -75,8 +78,11 @@ const fmtDay = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLoc
 function SectionTitle({ eyebrow, title, children, center = false, dark = false }: { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; center?: boolean; dark?: boolean }) {
   return (
     <div className={center ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
-      <p className={`text-xs font-semibold tracking-[0.14em] uppercase ${dark ? 'text-electric-300' : 'text-electric-600'}`}>{eyebrow}</p>
-      <h2 className={`mt-3 text-3xl font-bold tracking-tight text-balance sm:text-[2.6rem] sm:leading-[1.1] ${dark ? 'text-white' : 'text-night-900'}`}>{title}</h2>
+      <p className={`inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] uppercase ${dark ? 'text-electric-300' : 'text-electric-600'} ${center ? 'justify-center' : ''}`}>
+        <span className="bg-spectrum h-[3px] w-5 rounded-full" />
+        {eyebrow}
+      </p>
+      <h2 className={`font-display mt-4 text-[1.8rem] leading-[1.16] font-semibold tracking-[-0.02em] text-balance sm:text-[2.35rem] ${dark ? 'text-white' : 'text-night-900'}`}>{title}</h2>
       {children && <p className={`mt-4 text-[17px] leading-relaxed text-pretty ${dark ? 'text-slate-300' : 'text-slate-600'}`}>{children}</p>}
     </div>
   );
@@ -91,21 +97,27 @@ export default async function Home() {
   return (
     <>
       <SiteHeader dark />
-      <main className="overflow-x-clip">
+      <main id="contenu" className="overflow-x-clip">
         {/* ------------------------------------------------------------ Hero */}
         <section className="relative isolate overflow-hidden bg-night-950 text-white">
           <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+          <HeroBeams />
           <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[38rem] w-[70rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.38),transparent)]" />
           <div className="pointer-events-none absolute right-[-10rem] bottom-[-14rem] -z-10 h-[30rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(52,211,153,0.14),transparent)]" />
 
           <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] items-start gap-x-12 gap-y-16 px-4 pt-14 pb-32 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:pt-20 lg:pb-40">
             <div className="stagger">
-              <p className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 py-1 pr-3.5 pl-2 text-xs font-medium text-slate-200">
-                <span className="animate-pulse-dot size-2 rounded-full bg-emerald-400" />
-                Registres officiels SIRENE · RNE · BODACC
+              <p className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 py-1 pr-3.5 pl-1 text-xs font-medium text-slate-200">
+                <BrandMark size={22} className="rounded-[6px]" />
+                <span className="font-display font-semibold tracking-[-0.02em] whitespace-nowrap text-white">Pro Spectre</span>
+                <span className="h-3 w-px bg-white/20" />
+                <span className="animate-pulse-dot size-1.5 shrink-0 rounded-full bg-emerald-400" />
+                <span className="whitespace-nowrap">
+                  <span className="max-sm:hidden">Registres officiels </span>SIRENE · RNE · BODACC
+                </span>
               </p>
-              <h1 className="mt-6 text-[2.75rem] leading-[1.02] font-bold tracking-[-0.035em] text-balance sm:text-6xl lg:text-[4.25rem]">
-                Les bons prospects. <span className="text-gradient font-serif font-normal tracking-[-0.01em] italic">Au bon moment.</span>
+              <h1 className="font-display mt-7 text-[2.3rem] leading-[1.06] font-semibold tracking-[-0.025em] text-balance sm:text-[3.3rem] lg:text-[3.7rem]">
+                Les bons prospects. <span className="text-gradient font-serif text-[1.12em] font-normal tracking-[-0.01em] italic">Au bon moment.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-300">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
               <div className="mt-9">
@@ -160,7 +172,7 @@ export default async function Home() {
                         </span>
                         {label}
                       </dt>
-                      <dd className="mt-2 text-3xl font-bold tracking-tight tabular-nums text-night-900">
+                      <dd className="font-display mt-2 text-[1.65rem] font-semibold tracking-[-0.025em] tabular-nums text-night-900">
                         <CountUp value={n} />
                       </dd>
                       <dd className="mt-1 text-xs leading-snug text-slate-500">{hint}</dd>
@@ -197,6 +209,9 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        {/* ---------------------------------------------- Pourquoi ce nom */}
+        <BrandStory />
 
         {/* ------------------------------------------------ Comment ça marche */}
         <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
@@ -462,14 +477,14 @@ export default async function Home() {
               return (
                 <div key={p.id} className={`reveal flex flex-col rounded-3xl p-7 ${featured ? 'ring-gradient text-white shadow-glow lg:-my-3 lg:py-10' : 'border border-line bg-white shadow-card'}`}>
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">{p.name}</h3>
+                    <h3 className="font-display text-lg font-semibold tracking-[-0.03em]">{p.name}</h3>
                     {featured && <span className="rounded-full bg-electric-500/20 px-2.5 py-0.5 text-xs font-semibold text-electric-200 ring-1 ring-electric-400/40">Recommandé</span>}
                   </div>
                   <p className="mt-4 flex items-baseline gap-1.5">
-                    <span className="text-5xl font-bold tracking-tight tabular-nums">{p.price} €</span>
+                    <span className="font-display text-[2.5rem] font-semibold tracking-[-0.03em] tabular-nums">{p.price} €</span>
                     <span className={`text-sm ${featured ? 'text-slate-400' : 'text-slate-500'}`}>{p.price ? 'HT / mois' : 'pour toujours'}</span>
                   </p>
-                  <p className={`mt-2 text-sm ${featured ? 'text-slate-300' : 'text-slate-500'}`}>{p.prospects.toLocaleString('fr-FR')} prospects analysés par mois</p>
+                  <p className={`mt-1 text-sm ${featured ? 'text-slate-300' : 'text-slate-500'}`}>{p.audience}</p>
                   <ul className={`mt-6 flex-1 space-y-3 border-t pt-6 text-sm ${featured ? 'border-white/10 text-slate-200' : 'border-line text-slate-700'}`}>
                     {p.pitch.map((x) => (
                       <li key={x} className="flex gap-2.5">
@@ -554,7 +569,8 @@ export default async function Home() {
           <div className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-night-900 px-6 py-16 text-center text-white sm:px-12">
             <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
             <div className="pointer-events-none absolute -bottom-40 left-1/2 -z-10 h-80 w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.5),transparent)]" />
-            <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-balance sm:text-5xl">
+            <BrandMark size={56} className="mx-auto mb-7 rounded-[15px] shadow-glow" />
+            <h2 className="font-display mx-auto max-w-3xl text-[1.9rem] leading-[1.14] font-semibold tracking-[-0.025em] text-balance sm:text-[2.8rem]">
               Vos prochains clients sont <span className="text-gradient font-serif font-normal italic">déjà immatriculés.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-slate-300">Trouvez-les, comprenez leurs besoins, contactez-les avec un vrai motif.</p>

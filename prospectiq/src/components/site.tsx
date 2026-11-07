@@ -1,50 +1,27 @@
 import Link from 'next/link';
-import { Menu, ShieldCheck, Lock, Cookie } from 'lucide-react';
-import { Logo } from './logo';
+import { ShieldCheck, Lock, Cookie } from 'lucide-react';
+import { Logo, Wordmark } from './logo';
+import { SiteNav } from './site-nav';
 import { buttonClass, cx } from './styles';
-
-const NAV = [
-  ['/#fonctionnalites', 'Fonctionnalités'],
-  ['/#score', 'Score'],
-  ['/confiance', 'Confiance'],
-  ['/#tarifs', 'Tarifs'],
-  ['/#faq', 'FAQ'],
-] as const;
 
 export function SiteHeader({ dark = false }: { dark?: boolean }) {
   return (
-    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950/90 text-white' : 'border-line/70 bg-white/80 text-night-900')}>
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950/85 text-white' : 'border-line/70 bg-white/85 text-night-900')}>
+      <a href="#contenu" className="sr-only rounded-lg bg-electric-600 px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50">
+        Aller au contenu
+      </a>
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo dark={dark} />
-        <nav className={cx('hidden items-center gap-1 text-sm font-medium md:flex', dark ? 'text-slate-300' : 'text-slate-600')} aria-label="Navigation principale">
-          {NAV.map(([href, label]) => (
-            <Link key={href} href={href} className={cx('rounded-lg px-3 py-2 transition-colors', dark ? 'hover:bg-white/10 hover:text-white' : 'hover:bg-night-900/5 hover:text-night-900')}>
-              {label}
+        <div className="flex items-center gap-2 md:contents">
+          <SiteNav dark={dark} />
+          <div className="flex items-center gap-2 max-md:order-first">
+            <Link href="/connexion" className={cx(buttonClass('ghost', 'sm'), 'max-md:hidden', dark && 'text-slate-200 hover:bg-white/10 hover:text-white')}>
+              Connexion
             </Link>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <Link href="/connexion" className={cx(buttonClass('ghost', 'sm'), 'max-sm:hidden', dark && 'text-slate-200 hover:bg-white/10 hover:text-white')}>
-            Connexion
-          </Link>
-          <Link href="/inscription" className={dark ? buttonClass('accent', 'sm') : buttonClass('primary', 'sm')}>
-            Essai gratuit
-          </Link>
-          <details className="group relative md:hidden">
-            <summary className={cx('grid size-9 cursor-pointer list-none place-items-center rounded-lg [&::-webkit-details-marker]:hidden', dark ? 'hover:bg-white/10' : 'hover:bg-slate-100')} aria-label="Menu">
-              <Menu className="size-5" />
-            </summary>
-            <nav className="absolute top-11 right-0 w-56 rounded-2xl border border-line bg-white p-2 text-sm font-medium text-night-900 shadow-pop" aria-label="Navigation mobile">
-              {NAV.map(([href, label]) => (
-                <Link key={href} href={href} className="block rounded-lg px-3 py-2 hover:bg-slate-100">
-                  {label}
-                </Link>
-              ))}
-              <Link href="/connexion" className="block rounded-lg px-3 py-2 hover:bg-slate-100">
-                Connexion
-              </Link>
-            </nav>
-          </details>
+            <Link href="/inscription" className={cx(dark ? buttonClass('accent', 'sm') : buttonClass('primary', 'sm'), 'rounded-full px-4')}>
+              Essai gratuit
+            </Link>
+          </div>
         </div>
       </div>
     </header>
@@ -53,7 +30,8 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
 
 export function SiteFooter() {
   return (
-    <footer className="bg-night-950 text-slate-400">
+    <footer className="relative bg-night-950 text-slate-400">
+      <div className="spectrum-line opacity-60" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
           <Logo dark />
@@ -95,6 +73,9 @@ export function SiteFooter() {
           </p>
         </div>
       </div>
+      <div className="pointer-events-none relative h-[clamp(3.2rem,9.5vw,9.5rem)] overflow-hidden select-none" aria-hidden="true">
+        <Wordmark dark className="absolute top-0 left-1/2 -translate-x-1/2 text-[clamp(3.6rem,12.4vw,12.5rem)] leading-none opacity-[0.16]" />
+      </div>
     </footer>
   );
 }
@@ -103,7 +84,7 @@ export function LegalPage({ title, updated, children }: { title: string; updated
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <main id="contenu" className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
         <p className="mt-2 text-sm text-slate-500">Dernière mise à jour : {updated}</p>
         <div className="legal mt-8 space-y-4 text-[15px] leading-relaxed text-night-800 [&_a]:font-medium [&_a]:text-electric-700 [&_a]:underline [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-night-900 [&_li]:ml-5 [&_li]:list-disc [&_li]:pl-1 [&_ul]:space-y-1.5">{children}</div>

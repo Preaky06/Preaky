@@ -61,7 +61,7 @@ export default function DashboardPage() {
               </span>
             </div>
             {data ? (
-              <p className="mt-2 text-[30px] leading-none font-bold tracking-tight tabular-nums text-night-900" data-testid={`stat-${s.label}`}>
+              <p className="font-display mt-2.5 text-[1.7rem] leading-none font-semibold tracking-[-0.02em] tabular-nums text-night-900" data-testid={`stat-${s.label}`}>
                 {s.value === null || s.value === undefined ? '—' : `${s.value.toLocaleString('fr-FR')}${s.unit || ''}`}
               </p>
             ) : (

@@ -136,7 +136,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
           </aside>
         </div>
       )}
-      <main className="mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9">{children}</main>
+      <main id="contenu" className="mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9">{children}</main>
     </div>
   );
 }
@@ -145,7 +145,7 @@ export function PageTitle({ title, subtitle, action }: { title: string; subtitle
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-[26px] font-bold tracking-tight text-night-900">{title}</h1>
+        <h1 className="font-display text-[1.6rem] leading-tight font-semibold tracking-[-0.02em] text-night-900">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
       {action}

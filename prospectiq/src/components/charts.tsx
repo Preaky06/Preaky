@@ -35,11 +35,11 @@ export function BarList({ items, unit = '' }: { items: { label: string; value: n
 }
 
 /** Barre de progression d'un ratio sur un maximum (piste de la même teinte). */
-export function RatioBar({ value, max, label, className }: { value: number; max: number; label: string; className?: string }) {
+export function RatioBar({ value, max, label, className, color }: { value: number; max: number; label: string; className?: string; color?: string }) {
   const pct = max ? Math.max(0, Math.min(100, (value / max) * 100)) : 0;
   return (
     <div className={cx('h-2 rounded-full', className)} style={{ background: TRACK }} role="meter" aria-valuenow={value} aria-valuemin={0} aria-valuemax={max} aria-label={label}>
-      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: SINGLE }} />
+      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color || SINGLE }} />
     </div>
   );
 }

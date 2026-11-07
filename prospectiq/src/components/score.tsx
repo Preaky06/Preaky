@@ -3,6 +3,7 @@ import { Info, ShieldCheck, ShieldAlert, ShieldQuestion } from 'lucide-react';
 import { Badge, cx } from './ui';
 import { RatioBar } from './charts';
 import type { ScoreResult } from '@/lib/scoring';
+import { criterionColor } from '@/lib/brand';
 
 const CAT_TONE = { elevee: 'accent', interessant: 'success', modere: 'warning', faible: 'neutral' } as const;
 
@@ -40,12 +41,15 @@ export function ScoreBreakdown({ score }: { score: ScoreResult }) {
       {score.criteria.map((c) => (
         <div key={c.id}>
           <div className="mb-1.5 flex items-baseline justify-between gap-2">
-            <span className="text-[13px] font-semibold text-night-900">{c.label}</span>
+            <span className="flex items-center gap-2 text-[13px] font-semibold text-night-900">
+              <span className="size-2 shrink-0 rounded-full" style={{ background: criterionColor(c.id) }} />
+              {c.label}
+            </span>
             <span className="text-[13px] tabular-nums text-slate-600">
               <b className="text-night-900">{c.points}</b> / {Math.round(c.weight)}
             </span>
           </div>
-          <RatioBar value={c.points} max={Math.max(1, c.weight)} label={c.label} />
+          <RatioBar value={c.points} max={Math.max(1, c.weight)} label={c.label} color={criterionColor(c.id)} />
           <div className="mt-1.5 flex flex-wrap items-start gap-x-2 gap-y-1">
             <span className={cx('rounded px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide', c.basis === 'verified' ? 'bg-emerald-50 text-emerald-700' : c.basis === 'estimated' ? 'bg-amber-50 text-amber-800' : 'bg-slate-100 text-slate-500')}>
               {BASIS[c.basis]}

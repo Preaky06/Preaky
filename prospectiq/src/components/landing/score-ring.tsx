@@ -27,7 +27,7 @@ export function ScoreRing({ value, category, size = 88, stroke = 8, animate = fa
       </svg>
       <span className="absolute inset-0 grid place-items-center text-center leading-none">
         <span>
-          <span className="block font-bold tabular-nums tracking-tight" style={{ fontSize: size * 0.3 }}>
+          <span className="font-display block font-semibold tabular-nums tracking-[-0.02em]" style={{ fontSize: size * 0.27 }}>
             {value}
           </span>
           <span className="block text-[10px] font-medium text-slate-400">/ 100</span>
