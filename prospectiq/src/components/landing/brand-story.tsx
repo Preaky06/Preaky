@@ -21,7 +21,7 @@ export function BrandStory() {
           <div className="flex items-center justify-center pb-2">
             <Wordmark className="text-[2.6rem] sm:text-[4rem]" />
           </div>
-          <p className="mt-5 text-sm font-medium text-slate-500">Un clin d’œil à « prospecter », et un œil ouvert sur les registres officiels.</p>
+          <p className="mt-5 text-sm font-medium text-slate-500">Un clin d’œil à « prospecter », et une méthode.</p>
           <p className="font-display mt-8 text-xl leading-[1.45] font-light tracking-[-0.01em] text-balance text-night-800 sm:text-[1.55rem]">
             Chaque jour, Pro Spectre observe les registres officiels, décompose chaque entreprise en <span className="text-spectrum-deep font-medium">cinq faisceaux de signaux</span>, puis les fait converger en un score que vous pouvez expliquer.
           </p>

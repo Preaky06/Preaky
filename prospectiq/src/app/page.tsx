@@ -613,7 +613,7 @@ export default async function Home() {
           <div className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-night-900 px-6 py-16 text-center text-white sm:px-12">
             <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
             <div className="pointer-events-none absolute -bottom-40 left-1/2 -z-10 h-80 w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.5),transparent)]" />
-            <BrandMark size={60} className="mx-auto mb-7 rounded-[15px] shadow-[0_18px_50px_-16px_rgba(255,230,0,0.45)]" />
+            <BrandMark size={60} className="mx-auto mb-7 rounded-[15px] shadow-[0_18px_50px_-16px_rgba(124,58,237,0.6)]" />
             <h2 className="font-display mx-auto max-w-3xl text-[1.9rem] leading-[1.14] font-semibold tracking-[-0.025em] text-balance sm:text-[2.8rem]">
               Vos prochains clients sont <span className="text-gradient font-serif font-normal italic">déjà immatriculés.</span>
             </h2>

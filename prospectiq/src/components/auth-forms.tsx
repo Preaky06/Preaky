@@ -28,7 +28,7 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
         <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
         <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.4),transparent)]" />
         <div className="flex h-full flex-col justify-center px-14 py-16 text-white xl:px-20">
-          <BrandMark size={56} className="mb-8 rounded-[14px] shadow-[0_18px_50px_-16px_rgba(255,230,0,0.45)]" />
+          <BrandMark size={56} className="mb-8 rounded-[14px] shadow-[0_18px_50px_-16px_rgba(124,58,237,0.6)]" />
           <p className="font-display text-[2.2rem] leading-[1.1] font-semibold tracking-[-0.025em]">
             Les bons prospects.
             <br />

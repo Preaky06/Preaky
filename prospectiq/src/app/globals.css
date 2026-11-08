@@ -6,8 +6,7 @@
   /* Typo de marque : géométrique et dense (logotype, titres, chiffres) */
   --font-display: 'Poppins', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
   /* Couleurs du logo */
-  --color-brand-yellow: #ffe600;
-  --color-brand-red: #e11d48;
+  --color-brand-violet: #7c3aed;
   /* Spectre : une couleur par critère du score (besoin, pertinence, digital, signaux, données) */
   --color-spectrum-1: #8b5cf6;
   --color-spectrum-2: #6366f1;
