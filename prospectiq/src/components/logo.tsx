@@ -3,7 +3,7 @@ import { cx } from './styles';
 
 /**
  * Identité Pro Spectre : « Pro » en blanc dans un bloc violet, « Spectre », puis un point violet.
- * Icône seule : un œil blanc au point rouge sur fond noir.
+ * Icône seule : un œil blanc au point violet sur fond noir.
  */
 export const BRAND_VIOLET = '#7C3AED';
 /** Variante plus claire du violet, pour le point sur fond sombre (meilleur contraste). */
@@ -12,9 +12,10 @@ export const BRAND_VIOLET_LIGHT = '#8B5CF6';
 /** Œil de l'icône : deux croissants autour d'une pupille ajourée (tracé sans masque, sûr à répéter). */
 export const EYE_PATH =
   'M2 34C12.1 22.63 26.46 16.05 41.49 14.26A21.5 21.5 0 0 0 41.49 53.74C26.46 51.95 12.1 45.37 2 34ZM98 34C87.9 22.63 73.54 16.05 58.51 14.26A21.5 21.5 0 0 1 58.51 53.74C73.54 51.95 87.9 45.37 98 34Z';
-export const EYE_RED = '#E11D48';
+/** Point de l'œil : même violet clair que le point du logotype sur fond sombre. */
+export const EYE_DOT = BRAND_VIOLET_LIGHT;
 
-/** Icône carrée (onglet, application, petits formats) : œil blanc sur fond noir, point rouge. */
+/** Icône carrée (onglet, application, petits formats) : œil blanc sur fond noir, point violet. */
 export function BrandMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className={cx('shrink-0', className)}>
@@ -22,7 +23,7 @@ export function BrandMark({ size = 32, className }: { size?: number; className?:
       <rect x="0.5" y="0.5" width="39" height="39" rx="9.5" fill="none" stroke="#ffffff" strokeOpacity="0.14" />
       <g transform="translate(5 9.5) scale(0.3)">
         <path d={EYE_PATH} fill="#ffffff" />
-        <circle cx="93" cy="7.5" r="6.5" fill={EYE_RED} />
+        <circle cx="93" cy="7.5" r="6.5" fill={EYE_DOT} />
       </g>
     </svg>
   );
