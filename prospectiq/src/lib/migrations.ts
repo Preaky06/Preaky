@@ -208,4 +208,40 @@ export const MIGRATIONS: string[] = [
     expires_at timestamptz not null
   );
   `,
+  // 2 — Radar (veille quotidienne, notifications, résumé e-mail) et rapports d'audit publics
+  `
+  create table notifications (
+    id uuid primary key default gen_random_uuid(),
+    org_id uuid not null references orgs(id) on delete cascade,
+    kind text not null,
+    siren text,
+    search_id uuid references searches(id) on delete set null,
+    title text not null,
+    detail text,
+    url text,
+    source_url text,
+    event_date date,
+    dedupe_key text not null,
+    created_at timestamptz not null default now(),
+    read_at timestamptz,
+    unique (org_id, dedupe_key)
+  );
+  create index notifications_org_idx on notifications(org_id, created_at desc);
+  alter table searches add column alert boolean not null default false;
+  alter table searches add column alert_checked_at timestamptz;
+  alter table orgs add column digest text not null default 'hebdo';
+  alter table orgs add column digest_sent_at timestamptz;
+  alter table orgs add column radar_checked_at timestamptz;
+  create table audit_reports (
+    id text primary key,
+    url text not null,
+    host text not null,
+    audit jsonb not null,
+    org_id uuid references orgs(id) on delete set null,
+    siren text,
+    created_at timestamptz not null default now(),
+    views int not null default 0
+  );
+  create index audit_reports_created_idx on audit_reports(created_at desc);
+  `,
 ];

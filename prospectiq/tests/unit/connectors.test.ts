@@ -86,6 +86,12 @@ describe('SIRENE', () => {
     expect(JSON.stringify(c)).not.toMatch(/1980/);
   });
 
+  it('entrepreneur « non diffusible » exclu comme une opposition', () => {
+    expect(normalizeCompany({ siren: '111111111', statut_diffusion: 'P', nom_complet: '[NON-DIFFUSIBLE]' }).optOut).toBe(true);
+    expect(normalizeCompany({ siren: '111111112', nom_complet: '[Non-Diffusible]' }).optOut).toBe(true);
+    expect(normalizeCompany({ siren: '111111113', statut_diffusion: 'O', nom_complet: 'ATELIER' }).optOut).toBe(false);
+  });
+
   it('valeurs inconnues à null, opposition détectée', () => {
     const c = normalizeCompany({ siren: '987654321', opposition_diffusion_commerciale: true });
     expect(c.optOut).toBe(true);

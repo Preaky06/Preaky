@@ -59,6 +59,16 @@ const SITES = {
     '/robots.txt': 'User-agent: *\nAllow: /\n',
     '/sitemap.xml': '<?xml version="1.0"?><urlset><url><loc>https://www.comptoirdemo.fr/</loc><lastmod>2021-05-04</lastmod></url></urlset>',
   },
+  // Outil d'audit gratuit : un site imparfait, et un site qui refuse les robots.
+  'www.audit-demo.fr': {
+    '/': `<!doctype html><html><head><title>Audit Demo</title></head><body><h1>Atelier Audit Demo</h1>
+      <p>Appelez le 04 00 00 00 99 ou écrivez à contact@audit-demo.fr</p><footer>© 2018 Atelier Audit Demo</footer></body></html>`,
+    '/robots.txt': 'User-agent: *\nAllow: /\n',
+  },
+  'www.robots-interdit.fr': {
+    '/': '<html><head><title>Site privé</title></head><body><h1>Privé</h1></body></html>',
+    '/robots.txt': 'User-agent: ProSpectre-Analyse\nDisallow: /\n',
+  },
 };
 
 let hits = { sirene: 0, bodacc: 0, geo: 0, web: 0 };
@@ -86,9 +96,23 @@ export function startMock(port = 4010) {
     if (p.startsWith('/bodacc/')) {
       hits.bodacc++;
       const where = url.searchParams.get('where') || '';
+      const today = new Date().toISOString().slice(0, 10);
+      // Radar : annonces récentes d'un département (zone d'une alerte)
+      if (where.includes('numerodepartement')) {
+        const zone = where.includes("'69'")
+          ? [
+              { id: 'Z1', dateparution: today, familleavis: 'creation', registre: ['100 000 002', '100000002'], cp: '69002', ville: 'Lyon', url_complete: 'https://www.bodacc.fr/' },
+              { id: 'Z2', dateparution: today, familleavis: 'creation', registre: ['100000003'], cp: '69002', ville: 'Lyon' }, // opposition : doit être exclue
+              { id: 'Z3', dateparution: today, familleavis: 'vente', registre: ['200000077'], cp: '69002', ville: 'Lyon' },
+              { id: 'Z4', dateparution: today, familleavis: 'creation', registre: ['200000078'], cp: '69003', ville: 'Lyon' }, // hors code postal
+            ]
+          : [];
+        return json(res, 200, { total_count: zone.length, results: zone });
+      }
       const sirens = [...where.matchAll(/registre="(\d{9})"/g)].map((m) => m[1]);
       const results = [];
       if (sirens.includes('100000001')) results.push({ id: 'A1', dateparution: months(5), familleavis: 'creation', registre: ['100 000 001', '100000001'], url_complete: 'https://www.bodacc.fr/' });
+      if (sirens.includes('100000002')) results.push({ id: 'M2', dateparution: today, familleavis: 'modification', registre: ['100000002'], modificationsgenerales: JSON.stringify({ descriptif: 'Modification survenue sur l’administration : nouveau gérant' }), url_complete: 'https://www.bodacc.fr/' });
       if (sirens.includes('100000004')) results.push({ id: 'A4', dateparution: months(3), familleavis: 'collective', registre: ['100000004'], jugement: JSON.stringify({ nature: 'Jugement d’ouverture d’une procédure de redressement judiciaire' }) });
       return json(res, 200, { total_count: results.length, results });
     }

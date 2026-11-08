@@ -41,7 +41,9 @@ export function SiteFooter() {
         <div className="space-y-2.5 text-sm">
           <p className="font-semibold text-white">Produit</p>
           <Link href="/#fonctionnalites" className="block hover:text-white">Fonctionnalités</Link>
+          <Link href="/#radar" className="block hover:text-white">Radar</Link>
           <Link href="/#score" className="block hover:text-white">Score explicable</Link>
+          <Link href="/outils/audit-site" className="block hover:text-white">Audit de site gratuit</Link>
           <Link href="/#tarifs" className="block hover:text-white">Tarifs</Link>
           <Link href="/inscription" className="block hover:text-white">Créer un compte</Link>
         </div>

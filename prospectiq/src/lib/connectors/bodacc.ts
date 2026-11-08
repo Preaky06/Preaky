@@ -80,3 +80,70 @@ export async function bodaccSignals(sirens: string[], orgId?: string | null): Pr
   }
   return out;
 }
+
+export interface ZoneAnnouncement {
+  siren: string;
+  date: string;
+  family: string;
+  cp: string | null;
+  city: string | null;
+  url: string | null;
+  activity: string | null;
+  signals: Signal[];
+}
+
+/** Activité déclarée dans les établissements de l'annonce (texte libre), si présente. */
+function activityOf(r: Raw): string | null {
+  const l = parse(r.listeetablissements);
+  const list = Array.isArray(l?.etablissement) ? l.etablissement : l?.etablissement ? [l.etablissement] : [];
+  const txt = list.map((e: Raw) => String(e?.activite || '')).filter(Boolean).join(' ; ');
+  return txt || null;
+}
+
+/**
+ * Annonces récentes (créations, immatriculations, cessions) publiées dans une zone : départements, et code postal si précisé.
+ * Sert au Radar : repérer chaque jour les entreprises qui apparaissent ou changent de mains dans une zone.
+ */
+export async function bodaccInZone(
+  departments: string[],
+  since: string,
+  orgId?: string | null,
+  { postalCode = null as string | null, families = ['creation', 'immatriculation', 'vente'], pages = 3 } = {},
+): Promise<ZoneAnnouncement[]> {
+  const deps = [...new Set(departments.filter((d) => /^(\d{2,3}|2A|2B)$/.test(d)))].slice(0, 13);
+  if (!deps.length || !/^\d{4}-\d{2}-\d{2}$/.test(since)) return [];
+  const fam = families.filter((f) => /^[a-z_]+$/.test(f));
+  const where = [
+    `numerodepartement in (${deps.map((d) => `'${d}'`).join(',')})`,
+    postalCode && /^\d{5}$/.test(postalCode) ? `cp = '${postalCode}'` : null,
+    `familleavis in (${fam.map((f) => `'${f}'`).join(',')})`,
+    `dateparution >= date'${since}'`,
+  ]
+    .filter(Boolean)
+    .join(' and ');
+  const raw: Raw[] = [];
+  for (let page = 0; page < Math.max(1, Math.min(pages, 5)); page++) {
+    const params = new URLSearchParams({
+      where,
+      select: 'id,dateparution,familleavis,registre,modificationsgenerales,cp,ville,url_complete,listeetablissements',
+      order_by: 'dateparution desc',
+      limit: '100',
+      offset: String(page * 100),
+    });
+    const data = await cached(`bodacc:zone:${where}:${page}`, 6 * 3600, () =>
+      fetchJson<{ results: Raw[] }>('bodacc', 'records (zone)', `${env.bodaccApi}/records?${params}`, { timeoutMs: 15000 }, orgId),
+    );
+    raw.push(...(data.results || []));
+    if ((data.results || []).length < 100) break;
+  }
+  const out: ZoneAnnouncement[] = [];
+  for (const r of raw) {
+    const regs = (Array.isArray(r.registre) ? r.registre : [r.registre]).map((x: unknown) => String(x ?? '').replace(/\s/g, ''));
+    const siren = regs.find((x: string) => /^\d{9}$/.test(x));
+    if (!siren) continue;
+    const signals = toSignals(r).filter((s) => s.kind === 'opportunity');
+    if (!signals.length) continue;
+    out.push({ siren, date: String(r.dateparution || '').slice(0, 10), family: String(r.familleavis), cp: r.cp ? String(r.cp) : null, city: r.ville ? String(r.ville) : null, url: r.url_complete || null, activity: activityOf(r), signals });
+  }
+  return out;
+}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {
   Search, Radar, Gauge, MessageSquareText, KanbanSquare, ListChecks, Download, Users, ShieldCheck, Database, Globe, FileText, Check, X, ArrowRight, Ban, Lock, Cookie,
-  FileSearch, Scale, CreditCard, KeyRound, Fingerprint, Target, Sparkles, Send, MapPin, Activity, BadgeCheck,
+  FileSearch, Scale, CreditCard, KeyRound, Fingerprint, Target, Sparkles, Send, MapPin, Activity, BadgeCheck, ScanSearch,
 } from 'lucide-react';
 import { SiteHeader, SiteFooter } from '@/components/site';
 import { DemoSearch } from '@/components/demo-search';
@@ -12,6 +12,8 @@ import { CountUp } from '@/components/landing/count-up';
 import { HeroBeams } from '@/components/landing/hero-beams';
 import { BrandStory } from '@/components/landing/brand-story';
 import { BrandMark } from '@/components/logo';
+import { RadarSection } from '@/components/landing/radar-section';
+import { AuditForm } from './outils/audit-site/form';
 import { buttonClass } from '@/components/styles';
 import { PLANS } from '@/lib/plans';
 import { scoreCompany } from '@/lib/scoring';
@@ -70,6 +72,8 @@ const FAQ = [
   ['Analysez-vous Instagram, LinkedIn ou Google ?', 'Pro Spectre détecte les liens vers les réseaux sociaux publiés sur le site de l’entreprise. Il ne collecte pas le contenu des réseaux sociaux, ce que leurs conditions d’utilisation interdisent. La note et les avis Google peuvent être ajoutés si l’instance est connectée à l’API officielle Google Places.'],
   ['Qu’est-ce qu’un « prospect » dans les quotas ?', 'Une entreprise dont vous lancez l’analyse complète, comptée une seule fois par mois. Les recherches, l’affichage des résultats et la relance d’une analyse déjà faite sont illimités.'],
   ['Puis-je résilier à tout moment ?', 'Oui, sans engagement, depuis la page Abonnement. Votre offre reste active jusqu’à la fin de la période payée, puis votre compte repasse en offre Découverte gratuite.'],
+  ['Comment fonctionne le Radar ?', 'Chaque matin, Pro Spectre lit les annonces officielles du BODACC publiées dans les zones de vos alertes (créations, immatriculations, cessions, modifications), vérifie chaque entreprise dans le répertoire SIRENE (secteur, activité, opposition au démarchage) et vous signale celles qui correspondent. Il surveille aussi les entreprises de votre CRM : changement de dirigeant, déménagement, procédure collective. Vous recevez un résumé par e-mail, chaque jour ou chaque semaine.'],
+  ['Puis-je surveiller mes clients ?', 'Oui. Ajoutez-les au CRM avec le statut « Client » : si une procédure collective est publiée à leur sujet, le Radar vous prévient, ce qui vous permet de sécuriser les factures en cours.'],
   ['Les messages sont-ils envoyés automatiquement ?', 'Non. Pro Spectre rédige, vous relisez et envoyez depuis votre propre messagerie. Vous restez responsable du respect des règles de prospection (droit d’opposition, mention de désinscription en e-mail).'],
 ];
 
@@ -93,6 +97,22 @@ export default async function Home() {
   const example = scoreCompany({ ...input, now: new Date(input.now) });
   const pulse = await bodaccPulse();
   const contactEmail = env.legal.email;
+  const base = env.appUrl.replace(/\/$/, '');
+  // Données structurées : éditeur, logiciel et offres réelles, FAQ. Aucune note ni avis (il n'y en a pas).
+  const jsonLd = [
+    { '@context': 'https://schema.org', '@type': 'Organization', name: 'Pro Spectre', url: base, logo: `${base}/icon-192.png`, ...(contactEmail ? { email: contactEmail } : {}) },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Pro Spectre',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      inLanguage: 'fr-FR',
+      description: 'Prospection B2B à partir des registres officiels français : recherche d’entreprises, score explicable, Radar quotidien des annonces légales, messages et CRM.',
+      offers: Object.values(PLANS).map((p) => ({ '@type': 'Offer', name: p.name, price: p.price, priceCurrency: 'EUR', description: p.audience })),
+    },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+  ];
 
   return (
     <>
@@ -133,6 +153,11 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
+              <Link href="/outils/audit-site" className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white">
+                <ScanSearch className="size-4 text-cyan-300" />
+                Ou auditez gratuitement le site d’un prospect
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
             <div className="lg:pt-14">
               <HeroVisual score={example} />
@@ -212,6 +237,9 @@ export default async function Home() {
 
         {/* ---------------------------------------------- Pourquoi ce nom */}
         <BrandStory />
+
+        {/* ------------------------------------------------------- Radar */}
+        <RadarSection />
 
         {/* ------------------------------------------------ Comment ça marche */}
         <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
@@ -466,6 +494,22 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* ------------------------------------------------ Audit gratuit */}
+        <section className="px-4 pt-24 sm:px-6">
+          <div className="reveal relative isolate mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] bg-night-900 p-7 text-white sm:p-10 lg:grid-cols-[1fr_1.15fr]">
+            <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+            <div className="pointer-events-none absolute -right-20 -bottom-24 -z-10 h-72 w-[30rem] rounded-full bg-[radial-gradient(closest-side,rgba(6,182,212,0.35),transparent)]" />
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200 ring-1 ring-cyan-300/20">
+                <ScanSearch className="size-3.5" /> Outil gratuit, sans inscription
+              </p>
+              <h2 className="font-display mt-4 text-[1.7rem] leading-[1.15] font-semibold tracking-[-0.02em] sm:text-[2.1rem]">Auditez n’importe quel site en 30 secondes.</h2>
+              <p className="mt-3 text-slate-300">Sécurité, mobile, référencement, réseaux sociaux, fraîcheur : un rapport clair, avec les actions à mener, à envoyer à votre prospect.</p>
+            </div>
+            <AuditForm />
+          </div>
+        </section>
+
         {/* ------------------------------------------------------ Tarifs */}
         <section id="tarifs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
           <SectionTitle eyebrow="Tarifs" title="Des tarifs simples, sans engagement" center>
@@ -591,6 +635,7 @@ export default async function Home() {
             </p>
           </div>
         </section>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       </main>
       <SiteFooter />
     </>

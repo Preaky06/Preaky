@@ -137,6 +137,28 @@ try {
     assert.equal(sec.status(), 404, 'security.txt ne doit pas exister sans contact renseigné');
   });
 
+  await step('Audit de site gratuit : robots.txt respecté, rapport sans coordonnées', async () => {
+    const p = await browser.newPage();
+    await p.goto(`${APP}/outils/audit-site`);
+    await p.fill('[data-testid=audit-url]', 'www.robots-interdit.fr');
+    await p.click('[data-testid=audit-run]');
+    await p.getByText(/robots\.txt de www\.robots-interdit\.fr refuse/).waitFor({ timeout: 30000 });
+    await p.fill('[data-testid=audit-url]', 'https://www.audit-demo.fr');
+    await p.click('[data-testid=audit-run]');
+    await p.waitForURL(/\/rapport\//, { timeout: 30000 });
+    await p.locator('[data-testid=report]').waitFor();
+    const txt = await p.locator('main').innerText();
+    assert.match(txt, /www\.audit-demo\.fr/);
+    assert.match(txt, /Adapter le site au mobile/);
+    assert.match(txt, /Mettre le site à jour/);
+    assert.doesNotMatch(txt, /04 00 00 00 99|contact@audit-demo\.fr/, 'aucune coordonnée dans un rapport public');
+    // Même site dans la journée : le rapport existant est réutilisé (le site n'est pas sollicité à nouveau)
+    const again = await api(p, '/api/public/audit', { body: { url: 'www.audit-demo.fr' } });
+    assert.equal(again.body.cached, true);
+    await p.screenshot({ path: `${OUT}rapport-audit.png`, fullPage: true });
+    await p.close();
+  });
+
   await step('Validation des formulaires : mot de passe trop faible refusé', async () => {
     const p = await ctxA.newPage();
     await p.goto(`${APP}/inscription`);
@@ -270,6 +292,59 @@ try {
     assert.equal(exp.status(), 402);
   });
 
+  await step('Radar : alerte de zone (opposition et hors zone exclues), signal du portefeuille, badge', async () => {
+    await page.goto(`${APP}/app/recherche`);
+    await page.selectOption('[data-testid=sector]', 'restauration');
+    await page.getByRole('button', { name: 'Ville', exact: true }).click();
+    await page.fill('[data-testid=postal-code]', '69002');
+    await page.click('[data-testid=run-search]');
+    await page.locator('[data-testid=results]').waitFor();
+    await page.click('[data-testid=create-alert]');
+    await page.getByText(/Alerte Radar créée : 2 entreprises détectées/).waitFor({ timeout: 30000 });
+    // Limite de l'offre Découverte : une seule alerte
+    const other = await api(page, '/api/search', { body: { sector: 'restauration', department: '69' } });
+    const second = await api(page, '/api/radar/alerts', { body: { searchId: other.body.searchId } });
+    assert.equal(second.status, 402, JSON.stringify(second.body));
+    // Portefeuille : la Brasserie Exemple entre au CRM ; une annonce de changement de dirigeant vient d'être publiée
+    const add = await api(page, '/api/prospects', { body: { siren: '100000002' } });
+    assert.equal(add.status, 200, JSON.stringify(add.body));
+    await page.goto(`${APP}/app/radar`);
+    await page.click('[data-testid=radar-run]');
+    await page.getByText(/1 nouveauté détectée/).waitFor({ timeout: 30000 });
+    const feed = await page.locator('[data-testid=radar-feed]').innerText();
+    assert.match(feed, /Nouvelle entreprise : Brasserie Exemple/);
+    assert.match(feed, /Cession de fonds de commerce : Societe Quota 77/i);
+    assert.match(feed, /Signal : Brasserie Exemple/);
+    assert.match(feed, /Changement de dirigeant/);
+    assert.doesNotMatch(feed, /Opposant/i, 'une entreprise en opposition au démarchage n’est jamais signalée');
+    assert.doesNotMatch(feed, /Quota 78/i, 'annonce hors du code postal surveillé');
+    assert.equal(await page.locator('[data-testid=radar-alert]').count(), 1);
+    await page.screenshot({ path: `${OUT}radar.png`, fullPage: true });
+    await page.goto(`${APP}/app`);
+    await page.locator('[data-testid=radar-badge]').waitFor();
+    await page.locator('[data-testid=radar-banner]').waitFor();
+    // Les 5 étapes de démarrage sont faites (offre, recherche, 3 analyses, alerte, message) : la liste disparaît.
+    const o = (await api(page, '/api/dashboard')).body.onboarding;
+    assert.ok(o.offer && o.searches > 0 && o.analyses >= 3 && o.alerts === 1 && o.messages > 0, JSON.stringify(o));
+    assert.equal(await page.locator('[data-testid=onboarding]').count(), 0);
+  });
+
+  await step('Fiche : rapport d’audit partageable, sans coordonnées', async () => {
+    await page.goto(`${APP}/app/entreprise/100000001`);
+    await page.click('[data-testid=share-audit]');
+    await page.getByText('Lien du rapport copié').waitFor();
+    const link = await page.getByRole('link', { name: 'Ouvrir le rapport' }).getAttribute('href');
+    assert.match(link, /^\/rapport\/[A-Za-z0-9_-]+$/);
+    const p2 = await browser.newPage();
+    await p2.goto(`${APP}${link}`);
+    const txt = await p2.locator('main').innerText();
+    assert.match(txt, /www\.comptoirdemo\.fr/);
+    assert.match(txt, /Recommandations/);
+    assert.doesNotMatch(txt, /contact@comptoirdemo\.fr|04 00 00 00 01/, 'aucune coordonnée dans un rapport public');
+    assert.equal(await p2.locator('meta[name=robots]').getAttribute('content'), 'noindex, nofollow');
+    await p2.close();
+  });
+
   await step('Tableau de bord : compteurs réels', async () => {
     await page.goto(`${APP}/app`);
     await page.getByText('Tableau de bord').first().waitFor();
@@ -306,6 +381,9 @@ try {
     const ctxB = await browser.newContext();
     const pB = await register(ctxB, { name: 'Bea Membre', email: 'bea@prospectiq.test' });
     assert.equal((await api(pB, '/api/prospects')).body.prospects.length, 0);
+    // Nouveau compte : le démarrage guidé s'affiche, avec 0 étape faite
+    await pB.goto(`${APP}/app`);
+    await pB.locator('[data-testid=onboarding]').getByText(/0 étape sur 5/).waitFor();
     const patch = await api(pB, `/api/prospects/${prospectIdA}`, { method: 'PATCH', body: { status: 'client' } });
     assert.equal(patch.status, 404);
     const admin = await api(pB, '/api/admin/overview');

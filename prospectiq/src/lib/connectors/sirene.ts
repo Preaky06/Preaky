@@ -94,7 +94,8 @@ export function normalizeCompany(r: Raw, fetchedAt = new Date().toISOString()): 
       d.type_dirigeant === 'personne morale' ? { name: String(d.denomination || 'Personne morale'), role: d.qualite || null } : { name: titleName(d.nom, d.prenoms), role: d.qualite || null },
     ),
     labels,
-    optOut: r.opposition_diffusion_commerciale === true,
+    // Exclus de toute prospection : opposition au démarchage, ou diffusion partielle (entrepreneur « non diffusible »).
+    optOut: r.opposition_diffusion_commerciale === true || r.statut_diffusion === 'P' || /non-diffusible/i.test(String(r.nom_complet || '')),
     isIndividual: c.est_entrepreneur_individuel === true,
     updatedAt: r.date_mise_a_jour || r.date_mise_a_jour_insee || null,
     source: { name: SOURCE, url: `https://annuaire-entreprises.data.gouv.fr/entreprise/${r.siren}`, fetchedAt },
@@ -138,7 +139,7 @@ export async function searchCompanies(p: SearchParams, orgId?: string | null): P
   const { path, query, postFilterSizes } = buildQuery(p);
   const url = `${env.sireneApi}${path}?${query}`;
   // Le cache ne contient que les données normalisées et minimisées (jamais les dates de naissance).
-  const data = await cached(`sirene:${path}?${query}`, 6 * 3600, async () => {
+  const data = await cached(`sirene:v2:${path}?${query}`, 6 * 3600, async () => {
     const raw = await fetchJson<{ results: Raw[]; total_results: number; page: number; total_pages: number }>('sirene', path, url, { timeoutMs: 12000 }, orgId);
     const fetchedAt = new Date().toISOString();
     return { companies: (raw.results || []).map((r) => normalizeCompany(r, fetchedAt)), total_results: raw.total_results, page: raw.page, total_pages: raw.total_pages };
@@ -161,7 +162,7 @@ export async function searchCompanies(p: SearchParams, orgId?: string | null): P
 export async function getCompany(siren: string, orgId?: string | null): Promise<Company | null> {
   if (!/^\d{9}$/.test(siren)) return null;
   const query = new URLSearchParams({ q: siren, minimal: 'true', include: INCLUDE, per_page: '1' });
-  return cached(`sirene:company:${siren}`, 7 * 86400, async () => {
+  return cached(`sirene:v2:company:${siren}`, 7 * 86400, async () => {
     const data = await fetchJson<{ results: Raw[] }>('sirene', '/search (siren)', `${env.sireneApi}/search?${query}`, {}, orgId);
     const r = (data.results || []).find((x) => String(x.siren) === siren);
     return r ? normalizeCompany(r) : null;

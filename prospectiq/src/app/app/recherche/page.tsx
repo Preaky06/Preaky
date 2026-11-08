@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Search, SlidersHorizontal, Star, Plus, Check, Sparkles, MapPin, Building2, CalendarDays, Save, AlertTriangle, Info, Loader2 } from 'lucide-react';
+import { Search, SlidersHorizontal, Star, Plus, Check, Sparkles, MapPin, Building2, CalendarDays, Save, AlertTriangle, Info, Loader2, Radar } from 'lucide-react';
 import { PageTitle } from '@/components/app-shell';
 import { Button, Card, Checkbox, EmptyState, Field, Input, Modal, Pagination, Select, Skeleton, Badge, cx } from '@/components/ui';
 import { CategoryBadge, ConfidenceBadge, ScorePill } from '@/components/score';
@@ -292,6 +292,24 @@ function SearchPage() {
     }
   };
 
+  const [alerting, setAlerting] = useState(false);
+  const createAlert = async () => {
+    if (!res?.searchId) return;
+    setAlerting(true);
+    try {
+      const r = await api<{ created: number; examined: number }>('/api/radar/alerts', { body: { searchId: res.searchId } });
+      toast(
+        r.created ? `Alerte Radar créée : ${r.created} entreprise${r.created > 1 ? 's' : ''} détectée${r.created > 1 ? 's' : ''} ces 7 derniers jours.` : 'Alerte Radar créée : la zone sera surveillée chaque matin.',
+        'success',
+        { label: 'Ouvrir le Radar', href: '/app/radar' },
+      );
+    } catch (e) {
+      toastError(toast, e);
+    } finally {
+      setAlerting(false);
+    }
+  };
+
   const saveSearch = async () => {
     if (!res?.searchId) return;
     try {
@@ -464,6 +482,10 @@ function SearchPage() {
                   <Button variant="secondary" size="sm" disabled={!res.searchId} onClick={() => setSaveOpen(true)}>
                     <Save className="size-3.5" />
                     Sauvegarder
+                  </Button>
+                  <Button variant="accent" size="sm" disabled={!res.searchId} loading={alerting} onClick={createAlert} data-testid="create-alert" title="Surveiller chaque matin les nouvelles entreprises et cessions de cette zone et de ce secteur">
+                    {!alerting && <Radar className="size-3.5" />}
+                    Créer une alerte Radar
                   </Button>
                 </div>
               </Card>

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LayoutDashboard, Search, KanbanSquare, MessageSquareText, ListChecks, History, Settings, CreditCard, Shield, LogOut, Menu, X, Sparkles, ArrowUpRight } from 'lucide-react';
+import { LayoutDashboard, Search, KanbanSquare, MessageSquareText, ListChecks, History, Settings, CreditCard, Shield, LogOut, Menu, X, Sparkles, ArrowUpRight, Radar } from 'lucide-react';
 import { Logo } from './logo';
 import { Meter, cx } from './ui';
 import { api } from '@/lib/client';
@@ -14,10 +14,12 @@ export interface ShellUser {
   isAdmin: boolean;
   plan: { name: string; prospects: number; aiMessages: number };
   usage: { prospects: number; aiMessages: number };
+  unread?: number;
 }
 
 const NAV = [
   { href: '/app', label: 'Tableau de bord', icon: LayoutDashboard, group: 'Prospection' },
+  { href: '/app/radar', label: 'Radar', icon: Radar, group: 'Prospection' },
   { href: '/app/recherche', label: 'Recherche', icon: Search, group: 'Prospection' },
   { href: '/app/crm', label: 'CRM', icon: KanbanSquare, group: 'Prospection' },
   { href: '/app/messages', label: 'Messages', icon: MessageSquareText, group: 'Prospection' },
@@ -59,6 +61,11 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
                 >
                   <Icon className={cx('size-4', active(href) && 'text-electric-300')} />
                   {label}
+                  {href === '/app/radar' && !!user.unread && (
+                    <span className="ml-auto rounded-full bg-electric-500 px-1.5 py-px text-[11px] font-semibold text-white tabular-nums" data-testid="radar-badge">
+                      {user.unread > 99 ? '99+' : user.unread}
+                    </span>
+                  )}
                 </Link>
               ))}
           </div>

@@ -29,6 +29,8 @@ export async function GET(req: NextRequest) {
        and not exists (select 1 from prospects p where p.siren = c.siren)
        and not exists (select 1 from analyses a where a.siren = c.siren and a.created_at > now() - interval '12 months')`,
   );
-  await run('searches', `delete from searches where saved = false and created_at < now() - interval '6 months'`);
+  await run('searches', `delete from searches where saved = false and alert = false and created_at < now() - interval '6 months'`);
+  await run('notifications', `delete from notifications where created_at < now() - interval '6 months'`);
+  await run('audit_reports', `delete from audit_reports where created_at < now() - interval '12 months'`);
   return NextResponse.json({ ok: true, deleted: done });
 }

@@ -23,6 +23,7 @@
   --color-electric-500: #6366f1;
   --color-electric-400: #818cf8;
   --color-electric-300: #a5b4fc;
+  --color-electric-200: #c7d2fe;
   --color-electric-100: #e7e8ff;
   --color-electric-50: #f3f3ff;
   /* Surfaces */
@@ -85,6 +86,11 @@
 @keyframes beam-flow {
   to {
     stroke-dashoffset: 0;
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
 }
 @keyframes shimmer {
@@ -175,6 +181,12 @@
     stroke-dashoffset: 1690;
     animation: beam-flow 5.5s cubic-bezier(0.45, 0, 0.25, 1) infinite;
   }
+  /* Balayage du radar (section Radar de l'accueil) */
+  .radar-sweep {
+    background: conic-gradient(from 0deg, rgb(99 102 241 / 0.22), rgb(99 102 241 / 0) 22%, transparent 100%);
+    animation: spin-slow 6s linear infinite;
+    mask-image: radial-gradient(circle, #000 0%, #000 69%, transparent 70%);
+  }
   .shimmer {
     position: relative;
     overflow: hidden;
@@ -235,6 +247,9 @@
   .beam-pulse,
   .shimmer::after {
     display: none;
+  }
+  .radar-sweep {
+    animation: none;
   }
   *,
   *::before,

@@ -7,11 +7,11 @@ import { Menu, X, ArrowRight } from 'lucide-react';
 import { cx, buttonClass } from './styles';
 
 export const NAV = [
+  { href: '/#radar', id: 'radar', label: 'Radar' },
   { href: '/#fonctionnalites', id: 'fonctionnalites', label: 'Fonctionnalités' },
-  { href: '/#score', id: 'score', label: 'Score' },
-  { href: '/confiance', id: null, label: 'Confiance' },
   { href: '/#tarifs', id: 'tarifs', label: 'Tarifs' },
-  { href: '/#faq', id: 'faq', label: 'FAQ' },
+  { href: '/confiance', id: null, label: 'Confiance' },
+  { href: '/outils/audit-site', id: null, label: 'Audit gratuit' },
 ] as const;
 
 function useActiveSection(enabled: boolean) {

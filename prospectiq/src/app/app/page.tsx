@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Search, Sparkles, CalendarClock, History, ArrowRight, Target, Building2, BadgeCheck, Bookmark, Send, Percent } from 'lucide-react';
+import { Search, Sparkles, CalendarClock, History, ArrowRight, Target, Building2, BadgeCheck, Bookmark, Send, Percent, Check, Radar } from 'lucide-react';
 import { PageTitle } from '@/components/app-shell';
 import { Card, CardHeader, EmptyState, Skeleton, buttonClass } from '@/components/ui';
 import { BarList, LineChart } from '@/components/charts';
@@ -16,6 +16,8 @@ interface Dashboard {
   recentSearches: { id: string; name: string | null; params: Record<string, unknown>; total: number; created_at: string }[];
   recommended: { siren: string; name: string; city: string | null; sector: string | null; score: number; category: string; confidence: string; status: string | null }[];
   followups: { id: string; siren: string; name: string; date: string }[];
+  onboarding: { offer: boolean; searches: number; analyses: number; alerts: number; messages: number; prospects: number } | null;
+  unread: number;
 }
 
 const fmtDay = (d: string) => new Date(`${d}T12:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
@@ -51,6 +53,19 @@ export default function DashboardPage() {
           </Link>
         }
       />
+      {data?.onboarding && <Onboarding o={data.onboarding} />}
+      {!!data?.unread && (
+        <Link href="/app/radar" className="mb-6 flex items-center gap-3 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 to-white px-4 py-3 text-sm transition-shadow hover:shadow-card" data-testid="radar-banner">
+          <span className="grid size-9 place-items-center rounded-xl bg-violet-600 text-white">
+            <Radar className="size-4" />
+          </span>
+          <span className="flex-1">
+            <b>{data.unread} nouveauté{data.unread > 1 ? 's' : ''} sur votre Radar</b>
+            <span className="block text-xs text-slate-500">Créations, cessions, changements de dirigeant ou risques détectés dans vos zones et votre portefeuille.</span>
+          </span>
+          <ArrowRight className="size-4 text-violet-600" />
+        </Link>
+      )}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
         {stats.map(({ icon: Icon, ...s }) => (
           <Card key={s.label} className="group relative overflow-hidden p-4 transition-shadow hover:shadow-lift" title={s.hint}>
@@ -160,5 +175,53 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Démarrage guidé : les étapes qui mènent à la première vraie valeur (calculées sur les données du compte). */
+function Onboarding({ o }: { o: NonNullable<Dashboard['onboarding']> }) {
+  const steps = [
+    { done: o.offer, label: 'Décrire votre offre', hint: 'Le score et les messages s’adaptent à ce que vous vendez.', href: '/app/parametres' },
+    { done: o.searches > 0, label: 'Lancer une première recherche', hint: 'Une zone et un secteur suffisent.', href: '/app/recherche' },
+    { done: o.analyses >= 3, label: 'Analyser 3 entreprises', hint: `${Math.min(3, o.analyses)}/3 : site web, annonces légales, score détaillé.`, href: '/app/recherche' },
+    { done: o.alerts > 0, label: 'Activer une alerte Radar', hint: 'Les nouvelles opportunités de votre zone, chaque matin.', href: '/app/recherche' },
+    { done: o.messages > 0, label: 'Rédiger un premier message', hint: 'Une accroche fondée sur un fait réel.', href: '/app/messages' },
+  ];
+  const done = steps.filter((s) => s.done).length;
+  if (done === steps.length) return null;
+  const next = steps.find((s) => !s.done)!;
+  return (
+    <Card className="mb-6 overflow-hidden" data-testid="onboarding">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line px-5 py-4">
+        <div>
+          <p className="font-display text-[1.05rem] font-semibold tracking-[-0.02em]">Bien démarrer avec Pro Spectre</p>
+          <p className="text-[13px] text-slate-500">
+            {done} étape{done > 1 ? 's' : ''} sur {steps.length} · prochaine : {next.label.toLowerCase()}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="h-2 w-40 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={done} aria-valuemax={steps.length} aria-label="Progression du démarrage">
+            <div className="bg-spectrum h-full rounded-full transition-all" style={{ width: `${(done / steps.length) * 100}%` }} />
+          </div>
+          <Link href={next.href} className={buttonClass('accent', 'sm')}>
+            Continuer
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+      </div>
+      <ol className="grid divide-y divide-line sm:grid-cols-5 sm:divide-x sm:divide-y-0">
+        {steps.map((s, i) => (
+          <li key={s.label}>
+            <Link href={s.href} className="flex h-full gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50">
+              <span className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold ${s.done ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'}`}>{s.done ? <Check className="size-3.5" strokeWidth={3} /> : i + 1}</span>
+              <span className="min-w-0">
+                <span className={`block text-[13px] font-semibold ${s.done ? 'text-slate-400 line-through' : 'text-night-900'}`}>{s.label}</span>
+                <span className="block text-xs text-slate-500">{s.hint}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </Card>
   );
 }

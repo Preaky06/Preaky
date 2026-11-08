@@ -22,7 +22,7 @@ export const PATCH = authed(
       if (report.siren) {
         await q('insert into suppressions (siren, reason) values ($1, $2) on conflict (siren) do nothing', [report.siren, 'Demande d’opposition']);
         await q('delete from companies where siren = $1', [report.siren]);
-        await q(`delete from cache where key like 'sirene:company:' || $1`, [report.siren]);
+        await q(`delete from cache where key like 'sirene:%company:' || $1`, [report.siren]);
       }
       if (report.email) await q('insert into suppressions (email, reason) values ($1, $2) on conflict (email) do nothing', [report.email, 'Demande d’opposition']);
     }

@@ -1,7 +1,7 @@
 // Anneau de score (SVG). Sans état : utilisable côté serveur comme côté client.
 import { cx } from '../styles';
 
-const COLORS: Record<string, string> = { elevee: '#5146e5', interessant: '#059669', modere: '#d97706', faible: '#64748b' };
+const COLORS: Record<string, string> = { elevee: '#5146e5', interessant: '#059669', modere: '#d97706', faible: '#64748b', mauvais: '#e11d48' };
 
 export function ScoreRing({ value, category, size = 88, stroke = 8, animate = false, className }: { value: number; category: string; size?: number; stroke?: number; animate?: boolean; className?: string }) {
   const r = (size - stroke) / 2;

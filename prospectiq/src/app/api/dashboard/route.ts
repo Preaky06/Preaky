@@ -44,6 +44,17 @@ export const GET = authed(async (_req, { user }) => {
       where p.org_id = $1 and p.next_followup_at is not null and p.next_followup_at <= current_date + 7 order by p.next_followup_at limit 6`,
     [org],
   );
+  const onboarding = await one<{ offer: boolean; searches: number; analyses: number; alerts: number; messages: number; prospects: number }>(
+    `select
+       (select jsonb_array_length(coalesce(offer->'services', '[]'::jsonb)) > 0 from orgs where id = $1) as offer,
+       (select count(*)::int from searches where org_id = $1) as searches,
+       (select count(*)::int from analyses where org_id = $1) as analyses,
+       (select count(*)::int from searches where org_id = $1 and alert) as alerts,
+       (select count(*)::int from messages where org_id = $1) as messages,
+       (select count(*)::int from prospects where org_id = $1) as prospects`,
+    [org],
+  );
+  const unread = (await one<{ n: number }>('select count(*)::int as n from notifications where org_id = $1 and read_at is null', [org]))?.n || 0;
   const c = counts!;
   return ok({
     counts: { ...c, qualificationRate: c.analyzed ? Math.round((c.qualified / c.analyzed) * 100) : null },
@@ -52,6 +63,8 @@ export const GET = authed(async (_req, { user }) => {
     recentSearches,
     recommended: top.map((t) => ({ siren: t.siren, name: displayName(t.data), city: t.data.city, sector: t.data.nafLabel, score: t.score, category: t.category, confidence: t.confidence, status: t.status })),
     followups: followups.map((f) => ({ id: f.id, siren: f.siren, name: displayName(f.data), date: f.next_followup_at })),
+    onboarding,
+    unread,
     usage: await usageOf(org),
     plan: user.plan,
   });

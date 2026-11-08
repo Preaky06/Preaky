@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Sparkles, Star, Plus, Download, MessageSquareText, PhoneCall, StickyNote, Globe, Phone, Mail, MapPin, ExternalLink, AlertTriangle, CheckCircle2, XCircle, RefreshCw, Flag, ListPlus, Building2, ShieldAlert, Lock } from 'lucide-react';
+import { Sparkles, Star, Plus, Download, MessageSquareText, PhoneCall, StickyNote, Globe, Phone, Mail, MapPin, ExternalLink, AlertTriangle, CheckCircle2, XCircle, RefreshCw, Flag, ListPlus, Building2, ShieldAlert, Lock, Share2 } from 'lucide-react';
 import { Badge, Button, Card, CardHeader, EmptyState, Field, Input, Modal, Select, Skeleton, Textarea, cx, buttonClass } from '@/components/ui';
 import { CategoryBadge, ConfidenceBadge, ScoreBreakdown } from '@/components/score';
 import { RatioBar } from '@/components/charts';
@@ -59,6 +59,20 @@ function Check({ ok, label, detail }: { ok: boolean | null | undefined; label: s
 export default function CompanyPage() {
   const { siren } = useParams<{ siren: string }>();
   const toast = useToast();
+  const [sharing, setSharing] = useState(false);
+  const shareAudit = async () => {
+    setSharing(true);
+    try {
+      const r = await api<{ path: string }>(`/api/companies/${siren}/audit-report`, { body: {} });
+      const link = `${window.location.origin}${r.path}`;
+      await navigator.clipboard?.writeText(link).catch(() => {});
+      toast('Lien du rapport copié : joignez-le à votre message.', 'success', { label: 'Ouvrir le rapport', href: r.path });
+    } catch (e) {
+      toastError(toast, e);
+    } finally {
+      setSharing(false);
+    }
+  };
   const router = useRouter();
   const [d, setD] = useState<Detail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -298,7 +312,19 @@ export default function CompanyPage() {
           {/* Site web */}
           {a && (
             <Card>
-              <CardHeader icon={<Globe className="size-4" />} title="Présence digitale" subtitle={w?.verification} />
+              <CardHeader
+                icon={<Globe className="size-4" />}
+                title="Présence digitale"
+                subtitle={w?.verification}
+                action={
+                  w?.url && w.findings ? (
+                    <Button variant="secondary" size="sm" onClick={shareAudit} loading={sharing} data-testid="share-audit" title="Créer un rapport d’audit public à joindre à votre message">
+                      {!sharing && <Share2 className="size-3.5" />}
+                      Partager l’audit
+                    </Button>
+                  ) : undefined
+                }
+              />
               <div className="grid gap-6 p-5 md:grid-cols-2">
                 <div>
                   <div className="mb-2 flex items-center gap-2">

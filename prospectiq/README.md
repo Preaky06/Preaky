@@ -1,6 +1,6 @@
 # Pro Spectre
 
-SaaS de prospection B2B pour la France : recherche d’entreprises dans les registres officiels, analyse de leur site web et de leurs annonces légales, score explicable sur 100, générateur de messages, mini-CRM, abonnements Stripe, administration.
+SaaS de prospection B2B pour la France : recherche d’entreprises dans les registres officiels, analyse de leur site web et de leurs annonces légales, score explicable sur 100, **Radar** quotidien (nouvelles entreprises, cessions, changements et risques), **audit de site gratuit** partageable, générateur de messages, mini-CRM, abonnements Stripe, administration.
 
 **Les bons prospects. Au bon moment.**
 
@@ -38,7 +38,21 @@ Ordre conseillé, avec le moyen de vérifier chaque étape :
 5. **E-mails** — créer un SMTP (Brevo gratuit : 300 e-mails/jour) et renseigner `SMTP_URL`, `MAIL_FROM`. *Vérification :* « Mot de passe oublié » envoie bien l’e-mail.
 6. **Facultatif** — `AI_API_KEY` + `AI_MODEL` (+ prix par million de jetons pour suivre les coûts), `GOOGLE_PLACES_API_KEY`.
 
-La tâche quotidienne `/api/cron/cleanup` (définie dans `vercel.json`) applique les durées de conservation.
+Deux tâches quotidiennes sont définies dans `vercel.json` (toutes deux protégées par `CRON_SECRET`) :
+- `/api/cron/radar` (6 h 41 UTC) : passage du Radar pour chaque organisation, puis résumés e-mail selon la préférence (quotidien, hebdomadaire, aucun). Budget de 50 s par appel : les organisations non traitées passent en premier le lendemain.
+- `/api/cron/cleanup` (3 h 17 UTC) : durées de conservation.
+
+## Le moteur : acquisition, activation, rétention
+
+| Brique | Rôle | Où |
+|---|---|---|
+| **Audit de site gratuit** | Attire du trafic (« audit site web gratuit ») et sert de pièce jointe aux agences : rapport public par lien privé (non indexé), sans coordonnées, robots.txt respecté, un même site au plus une fois par 24 h. | `/outils/audit-site`, `/rapport/[id]`, bouton « Partager l’audit » sur la fiche |
+| **Démo publique** | Recherche réelle sans compte, depuis l’accueil. | Accueil |
+| **Démarrage guidé** | 5 étapes calculées sur les données du compte (offre, recherche, 3 analyses, alerte, message). | Tableau de bord |
+| **Radar** | Alertes de zone (annonces BODACC de création, immatriculation, cession, pré-triées par activité puis vérifiées dans SIRENE ; oppositions et entrepreneurs non diffusibles exclus) et veille du portefeuille (changements, procédures collectives). 1 / 3 / 10 / 30 alertes selon l’offre. | `/app/radar`, badge du menu, résumé e-mail |
+| **SEO** | `sitemap.xml`, `robots.txt`, données structurées (éditeur, logiciel et offres, FAQ), image de partage. | `src/app/sitemap.ts`, `robots.ts`, `opengraph-image.tsx` |
+
+Constat sur données réelles (Rhône, novembre 2026) : une large part des entreprises nouvellement créées a demandé à ne pas être démarchée (opposition SIRENE). Le Radar les exclut : il signale moins d’entreprises, mais uniquement des entreprises démarchables.
 
 ## Confiance : ce qui est affiché publiquement, et d’où ça vient
 
@@ -59,12 +73,12 @@ La tâche quotidienne `/api/cron/cleanup` (définie dans `vercel.json`) applique
 ## Tests
 
 ```bash
-npm test             # 76 tests unitaires (scoring, opportunités sourcées, audit web, SSRF, BODACC, SIRENE, messages, CSV, quotas, Stripe)
+npm test             # 91 tests unitaires (scoring, Radar, audit web, SSRF, BODACC, SIRENE, messages, CSV, quotas, Stripe)
 npm run test:live    # 5 tests contre les vraies API SIRENE, BODACC, Géo (réseau requis)
-npm run build && npm run test:e2e   # scénario navigateur complet en 24 étapes (sources simulées, données fictives)
+npm run build && npm run test:e2e   # scénario navigateur complet en 27 étapes (sources simulées, données fictives)
 ```
 
-Le test E2E nécessite Playwright (`npm i -D playwright && npx playwright install chromium`). Il couvre : accueil et démo, centre de confiance, inscription, configuration, recherche avec exclusion des oppositions, analyse (site vérifié par SIREN, signaux BODACC), fiche et CRM, messages, verrous d’offre, quotas serveur (402), isolation entre comptes, CSRF, administration, recherches sauvegardées, opposition RGPD de bout en bout, export des données, suppression de compte, affichage mobile.
+Le test E2E nécessite Playwright (`npm i -D playwright && npx playwright install chromium`). Il couvre : accueil et démo, centre de confiance, audit de site gratuit (robots.txt, rapport sans coordonnées), inscription, configuration, recherche avec exclusion des oppositions, analyse (site vérifié par SIREN, signaux BODACC), fiche et CRM, messages, verrous d’offre, Radar (alerte de zone, oppositions exclues, signal du portefeuille, limite d’offre), rapport d’audit partagé, démarrage guidé, quotas serveur (402), isolation entre comptes, CSRF, administration, recherches sauvegardées, opposition RGPD de bout en bout, export des données, suppression de compte, affichage mobile.
 
 ## Ce qui n’a pas pu être vérifié ici
 

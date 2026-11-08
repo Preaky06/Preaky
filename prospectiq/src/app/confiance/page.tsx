@@ -220,6 +220,8 @@ export default async function Page() {
                     ['Recherches non sauvegardées', '6 mois'],
                     ['Sessions de connexion', '30 jours'],
                     ['Journaux techniques des sources', '90 jours'],
+                    ['Notifications du Radar', '6 mois'],
+                    ['Rapports d’audit de site partagés', '12 mois'],
                     ['Compte utilisateur', 'Jusqu’à sa suppression (en libre-service)'],
                   ].map(([d, t]) => (
                     <tr key={d}>
