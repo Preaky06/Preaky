@@ -363,33 +363,37 @@ function SettingsGroup({ icon, title, summary, defaultOpen, children }: { icon: 
 /** Les rôles de la prochaine série, visibles par tous dans le salon. */
 function RolesStrip({ connected, owl }: { connected: number; owl: boolean }) {
   const owlOn = owl && connected >= MIN_PLAYERS_OWL;
-  const agents = Math.max(0, connected - 1 - (owlOn ? 1 : 0));
+  const agents = connected - 1 - (owlOn ? 1 : 0);
+  const columns = owl ? 3 : 2;
   return (
-    <div className="roles-strip">
+    <div className="roles-strip" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
       <div className="role-pill role-pill-mole">
-        <MoleLogo size={34} animated={false} />
-        <span>
-          <strong>1 taupe</strong>
-          <small>connaît les réponses</small>
-        </span>
+        <MoleLogo size={38} animated={false} />
+        <strong>1 taupe</strong>
+        <small>connaît les réponses</small>
       </div>
       {owl && (
         <div className={`role-pill role-pill-owl ${owlOn ? '' : 'role-pill-off'}`}>
-          <OwlLogo size={34} animated={false} />
-          <span>
-            <strong>{owlOn ? '1 chouette' : 'Chouette'}</strong>
-            <small>{owlOn ? 'observe en secret' : `dès ${MIN_PLAYERS_OWL} joueurs`}</small>
-          </span>
+          <OwlLogo size={38} animated={false} />
+          <strong>{owlOn ? '1 chouette' : 'Chouette'}</strong>
+          <small>{owlOn ? 'observe en secret' : `dès ${MIN_PLAYERS_OWL} joueurs`}</small>
         </div>
       )}
       <div className="role-pill role-pill-agent">
         <span className="role-pill-emoji">🕵️</span>
-        <span>
-          <strong>
-            {agents} agent{agents > 1 ? 's' : ''}
-          </strong>
-          <small>démasquent</small>
-        </span>
+        {connected < MIN_PLAYERS ? (
+          <>
+            <strong>Agents</strong>
+            <small>tous les autres</small>
+          </>
+        ) : (
+          <>
+            <strong>
+              {agents} agent{agents > 1 ? 's' : ''}
+            </strong>
+            <small>démasque{agents > 1 ? 'nt' : ''} la taupe</small>
+          </>
+        )}
       </div>
     </div>
   );

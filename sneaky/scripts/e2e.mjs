@@ -8,7 +8,8 @@ const OUT = process.argv[3] ?? '/tmp/shots';
 const names = ['Léa', 'Tom', 'Inès', 'Hugo'];
 const errors = [];
 const browser = await chromium.launch();
-const phone = { ...devices['iPhone 13'] };
+// DEVICE=« Galaxy S8 » (360 px) ou « Galaxy S9+ » (320 px) pour tester les écrans étroits.
+const phone = { ...devices[process.env.DEVICE ?? 'iPhone 13'] };
 delete phone.defaultBrowserType;
 
 const pages = [];
@@ -21,9 +22,43 @@ for (let i = 0; i < names.length; i++) {
   pages.push(page);
 }
 const [host, ...guests] = pages;
+// Détecte les textes qui sortent de leur case ou de l'écran.
+const overflowIssues = [];
+const auditPage = (p, name) =>
+  p
+    .evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const out = [];
+      for (const el of document.querySelectorAll('.app *, .sheet *')) {
+        if (el.closest('svg, .reactions, .confetti, .toasts, .mole-reveal-bg, .bg-grid, .scanner-cover')) continue;
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.opacity === '0') continue;
+        const r = el.getBoundingClientRect();
+        if (!r.width || !r.height) continue;
+        const text = [...el.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join(' ').trim();
+        if (!text) continue;
+        const label = `${(typeof el.className === 'string' && el.className) || el.tagName.toLowerCase()} « ${text.slice(0, 40)} »`;
+        if (r.right > vw + 1 || r.left < -1) out.push(`hors écran : ${label}`);
+        else if (!cs.display.startsWith('inline') && cs.overflowX === 'visible' && el.scrollWidth > el.clientWidth + 2) out.push(`déborde : ${label}`);
+        else if (cs.textOverflow !== 'ellipsis') {
+          // Texte qui sort de la carte qui le contient.
+          const card = el.parentElement?.closest('.role-pill, .agent-card, .vote-card, .suspect, .ans-card, .stat, .chip, .btn, .option, .award, .board-row, .tally-row, .intel-card, .gadget, .carnet-item');
+          if (card) {
+            const c = card.getBoundingClientRect();
+            if (r.right > c.right + 1 || r.left < c.left - 1) out.push(`sort de sa carte : ${label}`);
+          }
+        }
+      }
+      return [...new Set(out)];
+    })
+    .then((issues) => {
+      for (const i of issues) overflowIssues.push(`[${name}] ${i}`);
+    })
+    .catch(() => {});
 const shot = async (p, name) => {
   await p.waitForTimeout(450);
   await p.screenshot({ path: `${OUT}/${name}.png` });
+  await auditPage(p, name);
   console.log('📸', name);
 };
 
@@ -32,6 +67,8 @@ await host.fill('#codename', names[0]);
 await shot(host, '01-accueil');
 await host.click('text=Créer une opération');
 await host.waitForSelector('.code-letters');
+await host.evaluate(() => window.scrollTo(0, 99999));
+await shot(host, '01b-salon-seul');
 const code = (await host.locator('.code-letters').innerText()).replace(/\s/g, '');
 console.log('Code :', code);
 
@@ -255,6 +292,9 @@ await shot(host, '24-fin-partie-bas');
 await host.click('text=Nouvelle opération');
 await tv.waitForSelector('.code-letters');
 
+console.log(
+  overflowIssues.length ? `\n⚠️ Textes qui débordent (${overflowIssues.length}) :\n${overflowIssues.join('\n')}` : '\n✅ Aucun texte ne déborde',
+);
 console.log(errors.length ? `\n❌ Erreurs :\n${errors.join('\n')}` : '\n✅ Aucune erreur JavaScript');
 await browser.close();
 process.exit(errors.length ? 1 : 0);

@@ -4455,3 +4455,52 @@ p {
   flex: 1;
   min-width: 0;
 }
+
+/* Rôles de la série : cartes verticales, le texte ne déborde plus sur les écrans étroits */
+.roles-strip {
+  display: grid;
+  gap: 8px;
+}
+
+.role-pill {
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+  gap: 3px;
+  padding: 10px 6px 12px;
+  min-width: 0;
+}
+
+.role-pill strong {
+  font-size: 14px;
+  white-space: normal;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+
+.role-pill small {
+  font-size: 11px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.role-pill .mole-logo,
+.role-pill .owl-logo {
+  flex: none;
+}
+
+.role-pill-emoji {
+  width: auto;
+  font-size: 30px;
+  line-height: 38px;
+  height: 38px;
+}
+
+/* Barre du bas : courte transition puis fond plein (plus de contenu en transparence derrière les boutons) */
+.bottom-bar {
+  background: linear-gradient(180deg, rgba(7, 9, 13, 0) 0px, #07090d 22px);
+}
+
+.board-mode .bottom-bar {
+  background: none;
+}
