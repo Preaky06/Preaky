@@ -3,21 +3,27 @@ import { cx } from './styles';
 
 /**
  * Identité Pro Spectre : « Pro » en blanc dans un bloc violet, « Spectre », puis un point violet.
+ * Icône seule : un œil blanc au point rouge sur fond noir.
  */
 export const BRAND_VIOLET = '#7C3AED';
 /** Variante plus claire du violet, pour le point sur fond sombre (meilleur contraste). */
 export const BRAND_VIOLET_LIGHT = '#8B5CF6';
 
-/** « P » géométrique tracé en chemin (lisible en 16 px, sans dépendre d'une police). */
-export const P_PATH = 'M11 8.5h8.6a7.6 7.6 0 0 1 0 15.2H17.2v7.8H11zM17.2 13.9v4.4h2.2a2.2 2.2 0 0 0 0-4.4z';
+/** Œil de l'icône : deux croissants autour d'une pupille ajourée (tracé sans masque, sûr à répéter). */
+export const EYE_PATH =
+  'M2 34C12.1 22.63 26.46 16.05 41.49 14.26A21.5 21.5 0 0 0 41.49 53.74C26.46 51.95 12.1 45.37 2 34ZM98 34C87.9 22.63 73.54 16.05 58.51 14.26A21.5 21.5 0 0 1 58.51 53.74C73.54 51.95 87.9 45.37 98 34Z';
+export const EYE_RED = '#E11D48';
 
-/** Icône carrée (onglet, application, petits formats) : bloc violet, « P » blanc et son point. */
+/** Icône carrée (onglet, application, petits formats) : œil blanc sur fond noir, point rouge. */
 export function BrandMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className={cx('shrink-0', className)}>
-      <rect width="40" height="40" rx="10" fill={BRAND_VIOLET} />
-      <path d={P_PATH} fill="#ffffff" fillRule="evenodd" />
-      <circle cx="30.2" cy="28.4" r="3.1" fill="#ffffff" />
+      <rect width="40" height="40" rx="10" fill="#0a0a0a" />
+      <rect x="0.5" y="0.5" width="39" height="39" rx="9.5" fill="none" stroke="#ffffff" strokeOpacity="0.14" />
+      <g transform="translate(5 9.5) scale(0.3)">
+        <path d={EYE_PATH} fill="#ffffff" />
+        <circle cx="93" cy="7.5" r="6.5" fill={EYE_RED} />
+      </g>
     </svg>
   );
 }
