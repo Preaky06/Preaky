@@ -136,7 +136,7 @@ export default async function Home() {
                   <span className="max-sm:hidden">Registres officiels </span>SIRENE · RNE · BODACC
                 </span>
               </p>
-              <h1 className="font-display mt-7 text-[2.3rem] leading-[1.06] font-semibold tracking-[-0.025em] text-balance sm:text-[3.3rem] lg:text-[3.7rem]">
+              <h1 className="font-display mt-7 text-[2.4rem] leading-[1.06] font-bold tracking-[-0.03em] text-balance sm:text-[3.3rem] lg:text-[3.7rem]">
                 Les bons prospects. <span className="text-gradient font-serif text-[1.12em] font-normal tracking-[-0.01em] italic">Au bon moment.</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-300">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
@@ -613,7 +613,7 @@ export default async function Home() {
           <div className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-night-900 px-6 py-16 text-center text-white sm:px-12">
             <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
             <div className="pointer-events-none absolute -bottom-40 left-1/2 -z-10 h-80 w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.5),transparent)]" />
-            <BrandMark size={56} className="mx-auto mb-7 rounded-[15px] shadow-glow" />
+            <BrandMark size={60} className="mx-auto mb-7 rounded-[15px] shadow-[0_18px_50px_-16px_rgba(255,230,0,0.45)]" />
             <h2 className="font-display mx-auto max-w-3xl text-[1.9rem] leading-[1.14] font-semibold tracking-[-0.025em] text-balance sm:text-[2.8rem]">
               Vos prochains clients sont <span className="text-gradient font-serif font-normal italic">déjà immatriculés.</span>
             </h2>

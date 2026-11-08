@@ -1,5 +1,5 @@
 // Section « Pourquoi Pro Spectre » : le nom expliqué par le produit (cinq faisceaux de signaux → un score).
-import { BrandMark, Wordmark } from '../logo';
+import { Wordmark } from '../logo';
 import { CRITERIA_LABELS, DEFAULT_WEIGHTS, type Weights } from '@/lib/scoring';
 import { criterionColor } from '@/lib/brand';
 
@@ -18,13 +18,12 @@ export function BrandStory() {
       <div className="pointer-events-none absolute top-10 left-1/2 -z-10 h-72 w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(139,92,246,0.10),transparent)]" />
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="reveal mx-auto max-w-3xl text-center">
-          <div className="flex items-center justify-center gap-4">
-            <BrandMark size={56} className="shadow-glow rounded-[15px]" />
-            <Wordmark className="text-[2.4rem] leading-none sm:text-[3.4rem]" />
+          <div className="flex items-center justify-center pb-2">
+            <Wordmark className="text-[2.6rem] sm:text-[4rem]" />
           </div>
-          <p className="mt-4 text-sm font-medium text-slate-500">Un clin d’œil à « prospecter », et une méthode.</p>
+          <p className="mt-5 text-sm font-medium text-slate-500">Un clin d’œil à « prospecter », et un œil ouvert sur les registres officiels.</p>
           <p className="font-display mt-8 text-xl leading-[1.45] font-light tracking-[-0.01em] text-balance text-night-800 sm:text-[1.55rem]">
-            Un prisme révèle le spectre de la lumière. Pro Spectre décompose chaque entreprise en <span className="text-spectrum-deep font-medium">cinq faisceaux de signaux</span>, puis les fait converger en un score que vous pouvez expliquer.
+            Chaque jour, Pro Spectre observe les registres officiels, décompose chaque entreprise en <span className="text-spectrum-deep font-medium">cinq faisceaux de signaux</span>, puis les fait converger en un score que vous pouvez expliquer.
           </p>
         </div>
 

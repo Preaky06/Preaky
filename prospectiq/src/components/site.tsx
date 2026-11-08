@@ -6,7 +6,7 @@ import { buttonClass, cx } from './styles';
 
 export function SiteHeader({ dark = false }: { dark?: boolean }) {
   return (
-    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950/85 text-white' : 'border-line/70 bg-white/85 text-night-900')}>
+    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950 text-white' : 'border-line/70 bg-white/85 text-night-900')}>
       <a href="#contenu" className="sr-only rounded-lg bg-electric-600 px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50">
         Aller au contenu
       </a>
@@ -76,7 +76,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="pointer-events-none relative h-[clamp(3.2rem,9.5vw,9.5rem)] overflow-hidden select-none" aria-hidden="true">
-        <Wordmark dark className="absolute top-0 left-1/2 -translate-x-1/2 text-[clamp(3.6rem,12.4vw,12.5rem)] leading-none opacity-[0.16]" />
+        <Wordmark dark className="absolute top-[0.08em] left-1/2 -translate-x-1/2 text-[clamp(3.4rem,11.5vw,11.5rem)] [mask-image:linear-gradient(to_bottom,#000_15%,transparent_95%)] opacity-90" />
       </div>
     </footer>
   );

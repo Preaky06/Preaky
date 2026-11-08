@@ -102,6 +102,7 @@ Déjà en place : exclusion automatique des entreprises en opposition SIRENE, au
 ## Architecture
 
 - Next.js 15 (App Router), TypeScript, Tailwind CSS 4, React 19.
+- Identité : logotype « Pro » dans un bloc jaune (#FFE600), « Spectre », œil au point rouge (`src/components/logo.tsx`) ; icône carrée jaune à l’œil pour l’onglet et les applications. Typos Poppins (logotype, titres) et Inter (texte), hébergées avec le site (aucune police chargée depuis un service tiers).
 - PostgreSQL via `postgres` (production) ou PGlite (local, tests) — même SQL, migrations au démarrage (`src/lib/migrations.ts`).
 - Authentification maison : mots de passe scrypt, sessions opaques en base, cookie HttpOnly, contrôle d’origine (CSRF), limitation de débit en base.
 - Connecteurs modulaires : `src/lib/connectors/` (sirene, bodacc, geo, website, places). Un nouveau fournisseur (B2B payant, API sociale autorisée) s’ajoute en produisant le type `Company`/`Signal`.

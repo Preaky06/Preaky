@@ -2,48 +2,54 @@ import Link from 'next/link';
 import { cx } from './styles';
 
 /**
- * Marque Pro Spectre : cinq faisceaux de signaux (les cinq critères du score, aux couleurs du spectre)
- * convergent vers un point unique, le bon prospect.
+ * Identité Pro Spectre : « Pro » dans un bloc jaune, « Spectre », puis l'œil au point rouge.
+ * L'œil (deux croissants autour d'une pupille ajourée) est tracé sans masque, donc sûr à répéter dans une page.
  */
-export const SPECTRUM = ['#a78bfa', '#818cf8', '#22d3ee', '#34d399', '#fbbf24'] as const;
+export const BRAND_YELLOW = '#FFE600';
+export const BRAND_RED = '#E11D48';
+export const EYE_PATH =
+  'M2 34C12.1 22.63 26.46 16.05 41.49 14.26A21.5 21.5 0 0 0 41.49 53.74C26.46 51.95 12.1 45.37 2 34ZM98 34C87.9 22.63 73.54 16.05 58.51 14.26A21.5 21.5 0 0 1 58.51 53.74C73.54 51.95 87.9 45.37 98 34Z';
 
-export function BrandMark({ size = 32, className }: { size?: number; className?: string }) {
-  const rays: [number, string][] = [
-    [10.5, SPECTRUM[0]],
-    [15.25, SPECTRUM[1]],
-    [20, SPECTRUM[2]],
-    [24.75, SPECTRUM[3]],
-    [29.5, SPECTRUM[4]],
-  ];
+/** L'œil seul (largeur 100, hauteur 58 dans son repère), couleur héritée du texte. */
+export function Eye({ className, dot = true }: { className?: string; dot?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className={cx('shrink-0', className)}>
-      <rect width="40" height="40" rx="11" fill="#0b1230" />
-      <path d="M0 11C0 4.9 4.9 0 11 0h18c6.1 0 11 4.9 11 11v2C26 13 13 21 0 30z" fill="#ffffff" opacity="0.05" />
-      <rect x="0.5" y="0.5" width="39" height="39" rx="10.5" fill="none" stroke="#ffffff" strokeOpacity="0.12" />
-      {rays.map(([y, c]) => (
-        <path key={y} d={`M8 ${y} 21.5 20`} stroke={c} strokeWidth="2.2" strokeLinecap="round" />
-      ))}
-      <path d="M21.5 20H27" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" />
-      <circle cx="30.6" cy="20" r="6.2" fill="none" stroke="#ffffff" strokeOpacity="0.22" strokeWidth="1.2" />
-      <circle cx="30.6" cy="20" r="3.3" fill="#ffffff" />
+    <svg viewBox="0 0 100 58" aria-hidden="true" className={cx('shrink-0', className)}>
+      <path d={EYE_PATH} fill="currentColor" />
+      {dot && <circle cx="93" cy="7" r="6.8" fill={BRAND_RED} />}
     </svg>
   );
 }
 
-/** Nom de marque composé : « Pro » + « Spectre » en dégradé spectral. */
-export function Wordmark({ dark = false, className }: { dark?: boolean; className?: string }) {
+/** Icône carrée (onglet, application, petits formats) : bloc jaune, œil noir, point rouge. */
+export function BrandMark({ size = 32, className }: { size?: number; className?: string }) {
   return (
-    <span className={cx('font-display font-semibold tracking-[-0.025em] whitespace-nowrap', dark ? 'text-white' : 'text-night-900', className)}>
-      Pro <span className={dark ? 'text-spectrum' : 'text-spectrum-deep'}>Spectre</span>
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className={cx('shrink-0', className)}>
+      <rect width="40" height="40" rx="10" fill={BRAND_YELLOW} />
+      <g transform="translate(5 9.5) scale(0.3)">
+        <path d={EYE_PATH} fill="#0a0a0a" />
+        <circle cx="93" cy="7.5" r="6.5" fill={BRAND_RED} />
+      </g>
+    </svg>
+  );
+}
+
+/** Logotype complet. La taille suit la taille de police (classes text-…). */
+export function Wordmark({ dark = false, className, eye = true }: { dark?: boolean; className?: string; eye?: boolean }) {
+  return (
+    <span className={cx('font-display inline-flex items-end leading-none font-extrabold tracking-[-0.035em] whitespace-nowrap', dark ? 'text-white' : 'text-night-900', className)} aria-label="Pro Spectre">
+      <span aria-hidden="true" className="mr-[0.07em] inline-flex h-[1.22em] translate-y-[0.12em] items-center rounded-[0.24em] px-[0.16em] text-[0.84em] text-[#0a0a0a]" style={{ background: BRAND_YELLOW }}>
+        Pro
+      </span>
+      <span aria-hidden="true">Spectre</span>
+      {eye && <Eye className="mb-[-0.03em] ml-[0.09em] h-[0.66em] w-auto" />}
     </span>
   );
 }
 
 export function Logo({ dark = false, href = '/', size = 'md' }: { dark?: boolean; href?: string; size?: 'md' | 'lg' }) {
   return (
-    <Link href={href} className="group inline-flex items-center gap-2.5" aria-label="Pro Spectre — accueil">
-      <BrandMark size={size === 'lg' ? 40 : 32} className="transition-transform duration-300 group-hover:scale-105" />
-      <Wordmark dark={dark} className={size === 'lg' ? 'text-[22px]' : 'text-[18px]'} />
+    <Link href={href} className="group inline-flex items-center pb-[0.12em] transition-transform duration-300 hover:-translate-y-px" aria-label="Pro Spectre — accueil">
+      <Wordmark dark={dark} className={size === 'lg' ? 'text-[26px]' : 'text-[21px]'} />
     </Link>
   );
 }
