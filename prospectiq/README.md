@@ -27,6 +27,14 @@ npm run dev                      # http://localhost:3000
 
 Sans `DATABASE_URL`, une base PostgreSQL embarquée (PGlite) est créée dans `.data/`. Les tables sont créées automatiquement au premier lancement.
 
+## Mise en ligne rapide, sans base de données (démonstration)
+
+Le site peut être mis en ligne sur Vercel **sans aucune variable** : sans `DATABASE_URL`, il utilise une base embarquée temporaire (dans `/tmp`) et affiche une pastille « Version de démonstration : base de données temporaire ». Tout fonctionne (accueil, démo, inscription, recherche, Radar, audit gratuit), mais les comptes et données peuvent être effacés à chaque redémarrage du serveur. L’adresse publique est détectée automatiquement (`VERCEL_PROJECT_PRODUCTION_URL`).
+
+1. vercel.com → *Add New → Project* → importer `Preaky06/Preaky` → *Root Directory* = `prospectiq` → *Deploy*.
+2. Le code est sur la branche `ccr-f1bc789b-viwoz2` (la branche `main` ne contient pas l’application) : *Settings → Git → Production Branch* = `ccr-f1bc789b-viwoz2`, puis *Deployments → Redeploy*.
+3. Pour conserver les comptes : créer une base Neon (région Europe), ajouter `DATABASE_URL` dans *Settings → Environment Variables*, puis *Redeploy*. La pastille disparaît.
+
 ## Mise en production (Vercel + Neon/Supabase + Stripe)
 
 Ordre conseillé, avec le moyen de vérifier chaque étape :

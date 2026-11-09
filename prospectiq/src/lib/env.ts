@@ -3,11 +3,15 @@
 import 'server-only';
 
 const str = (name: string) => (process.env[name] || '').trim();
+// Sur Vercel, l'adresse publique est fournie automatiquement si APP_URL n'est pas renseignée.
+const vercelHost = str('VERCEL_PROJECT_PRODUCTION_URL') || str('VERCEL_URL');
 
 export const env = {
-  appUrl: str('APP_URL') || 'http://localhost:3000',
+  appUrl: str('APP_URL') || (vercelHost ? `https://${vercelHost}` : 'http://localhost:3000'),
   databaseUrl: str('DATABASE_URL'),
-  pgliteDir: str('PGLITE_DIR') || '.data/pglite',
+  // Sans DATABASE_URL : base embarquée. Sur Vercel, seul /tmp est inscriptible (base temporaire).
+  pgliteDir: str('PGLITE_DIR') || (process.env.VERCEL ? '/tmp/pglite' : '.data/pglite'),
+  ephemeralDb: !str('DATABASE_URL') && !!process.env.VERCEL,
   sessionDays: Number(str('SESSION_DAYS') || 30),
   adminEmails: str('ADMIN_EMAILS')
     .split(',')

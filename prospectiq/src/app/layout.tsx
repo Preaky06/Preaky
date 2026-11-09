@@ -25,6 +25,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fr">
       <body>
+        {env.ephemeralDb && (
+          <div role="status" className="pointer-events-none fixed inset-x-0 bottom-3 z-[60] flex justify-center px-4 print:hidden">
+            <p className="max-w-xl rounded-full bg-amber-400 px-4 py-1.5 text-center text-xs font-semibold text-amber-950 shadow-lg">
+              Version de démonstration : base de données temporaire, les comptes et données peuvent être effacés à tout moment.
+            </p>
+          </div>
+        )}
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

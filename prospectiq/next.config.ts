@@ -10,6 +10,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // PGlite (Postgres embarqué, utilisé en local sans DATABASE_URL) ne doit pas être empaqueté.
   serverExternalPackages: ['@electric-sql/pglite'],
+  // Fichiers binaires de PGlite, chargés à l'exécution : à inclure dans les fonctions serveur (Vercel sans base externe).
+  outputFileTracingIncludes: { '/**/*': ['./node_modules/@electric-sql/pglite/dist/pglite.wasm', './node_modules/@electric-sql/pglite/dist/pglite.data'] },
+  // Sortie autonome uniquement pour les tests locaux de déploiement (NEXT_STANDALONE=1).
+  output: process.env.NEXT_STANDALONE ? 'standalone' : undefined,
   poweredByHeader: false,
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
