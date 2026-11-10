@@ -48,4 +48,4 @@ Un « non » = on réécrit.
 
 ## Titres : structure maison
 
-Deux phrases courtes, la seconde retourne la première. « Tu donnes ton budget. Ladalle fait le menu. » · « Moins de dépenses. Plus d'assiette. »
+Deux phrases courtes, la seconde retourne la première. « Tu donnes ton budget. Ladalle fait le menu. » · « Fin de mois ? Assiette pleine. »
