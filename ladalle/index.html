@@ -100,8 +100,8 @@
           <div class="mock" aria-hidden="true"><div class="mock-row"><span class="chip" aria-pressed="true">Moins de 2 €</span><span class="chip" aria-pressed="true">Végétarien</span><span class="chip">Four</span></div></div></div>
         <div class="step"><div class="step-h"><span class="num">2</span><h3>Le vrai prix</h3></div><p>Coût par portion, selon ton magasin.</p>
           <div class="mock" aria-hidden="true" id="mockPrice"></div></div>
-        <div class="step"><div class="step-h"><span class="num">3</span><h3>Ta liste</h3></div><p>Quantités additionnées, par rayon.</p>
-          <div class="mock" aria-hidden="true"><div class="mock-line done"><span>☑ Riz — 340 g</span><b>0,54 €</b></div><div class="mock-line"><span>☐ Lait de coco — 1</span><b>1,20 €</b></div></div></div>
+        <div class="step"><div class="step-h"><span class="num">3</span><h3>Ta liste</h3></div><p>Les paquets à acheter, par rayon.</p>
+          <div class="mock" aria-hidden="true"><div class="mock-line done"><span>☑ Riz — paquet de 1 kg</span><b>1,52 €</b></div><div class="mock-line"><span>☐ Œufs — boîte de 6</span><b>1,54 €</b></div></div></div>
       </div>
     </section>
 
@@ -145,7 +145,7 @@
         <h2>Un dernier détail ?</h2>
         <div class="faq">
           <details><summary>C'est gratuit ?</summary><p>Le catalogue, les prix, les magasins et les bons plans sont en accès libre. La formule gratuite ouvre 3 fiches plats et génère 1 semaine par mois. Premium, à 4,99 € par mois sans engagement, rend tout illimité et débloque le Placard et l'export de la liste.</p></details>
-          <details><summary>D'où viennent les prix ?</summary><p>Ce sont des estimations basées sur des prix d'entrée de gamme en France, au prorata de la quantité utilisée. Ils servent à comparer les plats et à tenir un ordre de grandeur. En magasin tu achètes le paquet entier : le premier ticket est plus élevé, les suivants plus bas.</p></details>
+          <details><summary>D'où viennent les prix ?</summary><p>Ce sont des estimations basées sur des prix d'entrée de gamme en France. Chaque ingrédient est affiché au prix du paquet vendu en magasin (la boîte de 6 œufs, pas l'œuf), et le total de la semaine comme celui de la liste est un ticket de caisse. Le prix « par portion » des cartes sert seulement à comparer les plats entre eux.</p></details>
           <details><summary>Les filtres de régime sont-ils fiables ?</summary><p>Ils sont calculés d'après les ingrédients. « Halal-compatible » signifie sans porc ni alcool ; la certification de la viande dépend de ton achat. En cas d'allergie, l'étiquette fait foi.</p></details>
           <details><summary>Je n'ai ni four ni plaque. C'est jouable ?</summary><p>Oui. Décoche ce que tu n'as pas dans « Mon équipement » : il reste des plats au micro-ondes, à la bouilloire et sans cuisson.</p></details>
         </div>
@@ -195,7 +195,7 @@
   <section class="view" id="v-semaine" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma semaine</h1>
-      <p class="sub">Un budget, un nombre de repas : une semaine variée qui rentre dedans.</p>
+      <p class="sub">Un budget, un nombre de repas : une semaine variée dont le ticket de caisse rentre dedans.</p>
       <form class="planner" id="planForm">
         <label>Budget de la semaine
           <span class="inp-eur"><input type="number" name="budget" min="3" max="150" step="1" value="20" required><i>€</i></span>
@@ -210,6 +210,7 @@
           <select name="time"><option value="15">15 min</option><option value="30" selected>30 min</option><option value="">Sans limite</option></select>
         </label>
         <button class="btn btn-accent" type="submit">Générer ma semaine</button>
+        <label class="chk"><input type="checkbox" name="basics" checked> J'ai déjà huile, épices, farine et sucre</label>
       </form>
       <p class="fine">Les plats « batch » sont cuisinés une fois et mangés deux fois.</p>
       <div id="planOut"></div>
@@ -266,7 +267,7 @@
   <section class="view" id="v-liste" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma liste de courses</h1>
-      <p class="sub">Quantités additionnées, rangées par rayon. Prix estimés chez <b class="storeName"></b>.</p>
+      <p class="sub">Les paquets à acheter, rangés par rayon. Prix estimés chez <b class="storeName"></b>.</p>
       <div id="listOut"></div>
     </div>
   </section>

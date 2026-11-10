@@ -256,6 +256,13 @@ legend { font-weight: 600; font-size: .9rem; margin-bottom: 8px; padding: 0; }
 .swap { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; cursor: pointer; padding: 4px 12px; font-size: .84rem; font-weight: 600; min-height: 34px; }
 .warn { background: #FFF4D6; border: 1.5px solid #F2D58A; border-radius: 20px; padding: 16px 18px; margin: 20px 0; }
 
+.chk { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: .95rem; }
+.chk input { width: 20px; height: 20px; accent-color: var(--c2); }
+.item small { color: var(--mute); font-size: .85rem; margin-left: 6px; }
+.item em { white-space: normal; text-align: right; max-width: 55%; }
+.meal-f small { font-weight: 500; color: var(--mute); font-size: .8rem; }
+.ings em { text-align: right; white-space: normal; }
+
 /* Placard */
 .pantry { display: grid; gap: 16px; padding: 22px; margin-bottom: 16px; }
 .pantry h3 { font: 600 .9rem var(--f-body); letter-spacing: 0; margin-bottom: 8px; }

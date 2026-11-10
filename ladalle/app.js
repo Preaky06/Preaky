@@ -29,6 +29,19 @@
   const store = () => STORES.find((s) => s.id === S.store);
   const unitPrice = (k) => (ING[k][2] === 'pc' ? ING[k][3] : ING[k][3] / 1000);
   const lineCost = (k, q, idx = store().idx) => (q * unitPrice(k) * idx) / 100;
+  /* Achat réel : on paie le paquet entier, pas la quantité utilisée. */
+  const SKIP = ['huile', 'huile_olive', 'epices', 'farine', 'sucre'];
+  const pack = (k) => PACK[k] || (ING[k][2] === 'pc' ? [1, 'pièce'] : null);
+  const buy = (k, need, idx = store().idx) => {
+    const pk = pack(k);
+    if (!pk) return { n: 1, label: 'au poids', cost: lineCost(k, need, idx), left: 0 };
+    const n = Math.max(1, Math.ceil(need / pk[0] - 1e-9));
+    return { n, label: pk[1], cost: n * lineCost(k, pk[0], idx), left: n * pk[0] - need };
+  };
+  const buyLbl = (b) => (b.label === 'pièce' ? (b.n > 1 ? b.n + ' pièces' : 'la pièce') : (b.n > 1 ? b.n + ' × ' : '') + b.label);
+  const buyTxt = (b) => `${buyLbl(b)} · ${eur(b.cost)}`;
+  const ticket = (tot, skip = []) => Object.entries(tot).reduce((s, [k, q]) => s + (skip.includes(k) ? 0 : buy(k, q).cost), 0);
+  const dishTotals = (pairs) => { const t = {}; for (const [id, n] of pairs) { const d = DISH[id]; if (!d) continue; for (const [k, q] of d.ing) t[k] = (t[k] || 0) + (q * n) / d.p; } return t; };
   const cost = (d, idx) => d.ing.reduce((t, [k, q]) => t + lineCost(k, q, idx), 0) / d.p;
   const flags = (d) => d.ing.map(([k]) => ING[k][4]).join('');
   const DIETS = {
@@ -58,7 +71,7 @@
     const u = ING[k][2];
     if (u === 'pc') { const r = Math.round(q * 4) / 4; const w = Math.floor(r); const fr = { 0.25: '¼', 0.5: '½', 0.75: '¾' }[r - w] || ''; return (w || '') + fr || '¼'; }
     const r = q >= 100 ? Math.round(q / 10) * 10 : Math.round(q);
-    return u === 'ml' ? (r >= 1000 ? (r / 1000).toLocaleString('fr-FR') + ' l' : r / 10 + ' cl') : (r >= 1000 ? (r / 1000).toLocaleString('fr-FR') + ' kg' : r + ' g');
+    return u === 'ml' ? (r >= 1000 ? (r / 1000).toLocaleString('fr-FR') + ' l' : (r / 10).toLocaleString('fr-FR') + ' cl') : (r >= 1000 ? (r / 1000).toLocaleString('fr-FR') + ' kg' : r + ' g');
   };
   const median = (a) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 
@@ -162,13 +175,13 @@
         <div class="d-kpis">
           <div class="kpi"><b>${eur(c)}</b><span>par portion chez ${store().n}</span></div>
           <div class="kpi"><b>${d.t} min</b><span>${eqLabel(d)}</span></div>
-          <div class="kpi"><b>${eur(c * dlgPortions)}</b><span>pour ${dlgPortions} portion${dlgPortions > 1 ? 's' : ''}</span></div>
+          <div class="kpi"><b>${eur(ticket(dishTotals([[id, dlgPortions]])))}</b><span>à la caisse si tu n'as rien (paquets entiers)</span></div>
         </div>
         <div class="d-cols">
           <div><h3>Ingrédients</h3>
             <div class="stepper"><button type="button" data-step="-1" aria-label="Moins de portions">−</button><span>${dlgPortions} portion${dlgPortions > 1 ? 's' : ''}</span><button type="button" data-step="1" aria-label="Plus de portions">+</button></div>
-            <ul class="ings">${d.ing.map(([i, q]) => `<li><span>${ING[i][0]} — ${fmtQty(i, q * k)}</span><em>${eur(lineCost(i, q * k))}</em></li>`).join('')}</ul>
-            <p class="fine" style="margin-top:8px">Sel, poivre et eau non comptés.</p></div>
+            <ul class="ings">${d.ing.map(([i, q]) => `<li><span>${ING[i][0].replace(/ \(.*\)/, '')} — ${fmtQty(i, q * k)}</span><em>${buyTxt(buy(i, q * k))}</em></li>`).join('')}</ul>
+            <p class="fine" style="margin-top:8px">Prix du paquet entier : le reste sert aux plats suivants. Sel, poivre et eau non comptés.</p></div>
           <div><h3>Préparation</h3><ol class="d-steps">${d.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>
         </div>
         <div class="tipbox"><b>Le détail qui change tout.</b> ${d.tip}</div>
@@ -181,37 +194,33 @@
   }
 
   /* ---------- Liste de courses ---------- */
-  const listTotals = () => {
-    const t = {};
-    for (const [id, n] of Object.entries(S.list)) { const d = DISH[id]; if (!d) continue; for (const [k, q] of d.ing) t[k] = (t[k] || 0) + (q * n) / d.p; }
-    return t;
-  };
+  const listTotals = () => dishTotals(Object.entries(S.list));
   const updateCount = () => { $('#listCount').textContent = Object.keys(S.list).length; };
   function addToList(id, portions) { S.list[id] = (S.list[id] || 0) + portions; save(); updateCount(); }
   function listText() {
     const t = listTotals(); const by = {};
-    for (const k of Object.keys(t)) (by[ING[k][1]] ||= []).push(`- ${ING[k][0]} : ${fmtQty(k, t[k])}`);
+    for (const k of Object.keys(t)) (by[ING[k][1]] ||= []).push(`- ${ING[k][0].replace(/ \(.*\)/, '')} : ${buyLbl(buy(k, t[k]))} (besoin : ${fmtQty(k, t[k])})`);
     return 'Ma liste Ladalle\n\n' + Object.entries(by).map(([r, l]) => `${r.toUpperCase()}\n${l.join('\n')}`).join('\n\n');
   }
   function renderList() {
     const out = $('#listOut'); const ids = Object.keys(S.list).filter((id) => DISH[id]);
     if (!ids.length) { out.innerHTML = `<div class="empty"><h3>Ta liste est vide.</h3><p>Ajoute un plat depuis sa fiche, ou génère une semaine complète : la liste se remplit toute seule.</p><p><a class="btn btn-accent" href="#/semaine">Générer ma semaine</a> <a class="btn" href="#/plats">Parcourir les plats</a></p></div>`; return; }
-    const t = listTotals(); const total = Object.entries(t).reduce((s, [k, q]) => s + lineCost(k, q), 0);
-    const left = Object.entries(t).filter(([k]) => !S.checked.includes(k)).reduce((s, [k, q]) => s + lineCost(k, q), 0);
+    const t = listTotals(); const total = ticket(t);
+    const left = ticket(t, S.checked);
     const by = {}; for (const k of Object.keys(t)) (by[ING[k][1]] ||= []).push(k);
     const portions = ids.reduce((s, id) => s + S.list[id], 0);
     out.innerHTML = `
-      <div class="plan-sum"><div class="kpi"><b>${eur(total)}</b><span>coût estimé des quantités utilisées</span></div><div class="kpi"><b>${eur(left)}</b><span>reste à acheter (non coché)</span></div><div class="kpi"><b>${portions}</b><span>portions, soit ${eur(total / portions)} l'une</span></div></div>
+      <div class="plan-sum"><div class="kpi"><b>${eur(total)}</b><span>ticket de caisse estimé, paquets entiers</span></div><div class="kpi"><b>${eur(left)}</b><span>reste à payer (non coché)</span></div><div class="kpi"><b>${portions}</b><span>portions, soit ${eur(total / portions)} l'une</span></div></div>
       <div class="list-top"><div class="plan-act" style="margin:0"><button class="btn btn-ink" type="button" id="copyList">Copier la liste</button><button class="btn" type="button" id="printList">Imprimer</button><button class="btn" type="button" id="clearList">Vider</button></div></div>
       <div class="list-dishes">${ids.map((id) => `<span class="pill">${DISH[id].e} ${DISH[id].n} × ${S.list[id]}<button type="button" data-rm="${id}" aria-label="Retirer ${DISH[id].n}">✕</button></span>`).join('')}</div>
-      ${Object.entries(by).map(([r, ks]) => `<div class="aisle"><h3>${r}</h3>${ks.sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'fr')).map((k) => `<label class="item${S.checked.includes(k) ? ' done' : ''}"><input type="checkbox" data-chk="${k}" ${S.checked.includes(k) ? 'checked' : ''}><span>${ING[k][0]} — ${fmtQty(k, t[k])}</span><em>${eur(lineCost(k, t[k]))}</em></label>`).join('')}</div>`).join('')}
-      <p class="fine">Le coût correspond aux quantités réellement utilisées. En magasin tu paies le paquet entier : coche d'abord ce que tu as déjà chez toi.</p>`;
+      ${Object.entries(by).map(([r, ks]) => `<div class="aisle"><h3>${r}</h3>${ks.sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'fr')).map((k) => `<label class="item${S.checked.includes(k) ? ' done' : ''}"><input type="checkbox" data-chk="${k}" ${S.checked.includes(k) ? 'checked' : ''}><span>${ING[k][0].replace(/ \(.*\)/, '')} <small>besoin : ${fmtQty(k, t[k])}</small></span><em>${buyTxt(buy(k, t[k]))}</em></label>`).join('')}</div>`).join('')}
+      <p class="fine">Prix des paquets entiers. Coche ce que tu as déjà chez toi : le reste à payer se met à jour.</p>`;
   }
 
   /* ---------- Planificateur ---------- */
   const SLOTS = { 5: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'].map((d) => d + ' soir'), 7: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((d) => d + ' soir'), 10: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'].flatMap((d) => [d + ' midi', d + ' soir']), 14: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].flatMap((d) => [d + ' midi', d + ' soir']) };
   const planPool = (p) => DISHES.filter((d) => d.type === 'repas' && canCook(d) && (!p.diet || isDiet(d, p.diet)) && (!p.time || d.t <= +p.time));
-  const planTotal = (ids) => ids.reduce((s, id) => s + cost(DISH[id]), 0);
+  const planTotal = (ids, p = S.plan) => ticket(dishTotals(ids.map((id) => [id, 1])), p && p.basics ? SKIP : []);
   function buildPlan(p) {
     const pool = planPool(p); if (!pool.length) return null;
     const fill = (order) => {
@@ -220,19 +229,22 @@
       return ids;
     };
     const cheapest = fill([...pool].sort((a, b) => cost(a) - cost(b)));
-    let best = null, bestScore = -1;
+    let best = null, bestScore = -1, minIds = cheapest, minT = planTotal(cheapest, p);
     for (let it = 0; it < 500; it++) {
       // w = 0 : du moins cher au plus cher ; w = 1 : tirage au hasard. On garde le plan le plus varié qui tient dans le budget.
       const w = it / 499;
-      const ids = fill([...pool].map((d) => [d, cost(d) * (1 - w) + Math.random() * 4 * w]).sort((a, b) => a[1] - b[1]).map((x) => x[0]));
-      const tot = planTotal(ids); if (tot > p.budget) continue;
+      let order = [...pool].map((d) => [d, cost(d) * (1 - w) + Math.random() * 4 * w]).sort((a, b) => a[1] - b[1]).map((x) => x[0]);
+      // Une itération sur deux : peu de plats différents, donc des paquets mieux rentabilisés et un ticket plus bas.
+      if (it % 2) order = order.slice(0, 3 + (it % 5));
+      const ids = fill(order);
+      const tot = planTotal(ids, p); if (tot < minT) { minT = tot; minIds = ids; } if (tot > p.budget) continue;
       const score = new Set(ids).size * 10 + Math.min(1, tot / p.budget) * 12 + Math.random();
       if (score > bestScore) { bestScore = score; best = ids; }
     }
-    const over = !best; let ids = best || cheapest;
+    const over = !best; let ids = best || minIds;
     // Répartit les doublons (restes) pour éviter deux fois le même plat à la suite.
     for (let tries = 0; tries < 40; tries++) { ids = ids.map((v) => [v, Math.random()]).sort((a, b) => a[1] - b[1]).map((x) => x[0]); if (ids.every((v, i) => i === 0 || v !== ids[i - 1])) break; }
-    return { ...p, ids, over, min: planTotal(cheapest) };
+    return { ...p, ids, over, min: minT };
   }
   function renderPlan() {
     const out = $('#planOut'); const P = S.plan;
@@ -240,19 +252,19 @@
     if (!P.ids) { out.innerHTML = `<div class="warn"><b>Aucun plat ne correspond à ces critères avec ton équipement.</b> Élargis le temps max, change de régime ou coche plus d'équipement dans les filtres des plats.</div>`; return; }
     const ids = P.ids.filter((id) => DISH[id]); const tot = planTotal(ids); const slots = SLOTS[P.meals] || SLOTS[10];
     out.innerHTML = `
-      ${tot > P.budget + 1e-9 ? `<div class="warn"><b>${eur(P.budget)} ne suffisent pas pour ${P.meals} repas avec ces critères.</b> Le minimum atteignable chez ${store().n} est ${eur(P.min)} : voici ce plan plancher. Pour tenir, réduis le nombre de repas à cuisiner et complète avec le resto U (voir <a href="#/bons-plans">Bons plans</a>).</div>` : ''}
+      ${tot > P.budget + 1e-9 ? `<div class="warn"><b>${eur(P.budget)} ne suffisent pas pour ${P.meals} repas avec ces critères.</b> En paquets entiers, le plan le moins cher trouvé chez ${store().n} coûte ${eur(P.min)} : le voici. Pour tenir, réduis le nombre de repas à cuisiner et complète avec le resto U (voir <a href="#/bons-plans">Bons plans</a>).</div>` : ''}
       <div class="plan-sum">
-        <div class="kpi"><b>${eur(tot)}</b><span>sur ${eur(P.budget)} de budget</span><div class="bar"><i style="width:${Math.min(100, (tot / P.budget) * 100)}%"></i></div></div>
+        <div class="kpi"><b>${eur(tot)}</b><span>de ticket de caisse, sur ${eur(P.budget)} de budget</span><div class="bar"><i style="width:${Math.min(100, (tot / P.budget) * 100)}%"></i></div></div>
         <div class="kpi"><b>${eur(tot / ids.length)}</b><span>en moyenne par repas</span></div>
         <div class="kpi"><b>${eur(Math.max(0, P.budget - tot))}</b><span>de marge pour le petit-déj et les extras</span></div>
       </div>
       <div class="plan-act"><button class="btn btn-accent" type="button" id="planToList">Créer ma liste de courses</button><button class="btn" type="button" id="planAgain">Autre proposition</button><button class="btn" type="button" id="printList">Imprimer</button></div>
-      <div class="meals">${ids.map((id, i) => { const d = DISH[id]; const rest = ids.indexOf(id) < i; return `<div class="meal"><div class="meal-h"><span>${slots[i] || 'Repas ' + (i + 1)}</span><span>${rest ? 'Restes' : d.t + ' min'}</span></div><button class="meal-n" type="button" data-dish="${id}">${d.e} ${d.n}</button><div class="meal-f"><b>${eur(cost(d))}</b><button class="swap" type="button" data-swap="${i}" aria-label="Remplacer ${d.n}">Changer</button></div></div>`; }).join('')}</div>
-      <p class="fine" style="margin-top:16px">Coût à la portion chez ${store().n}. « Restes » : le plat est cuisiné une fois en double quantité.</p>`;
+      <div class="meals">${ids.map((id, i) => { const d = DISH[id]; const rest = ids.indexOf(id) < i; return `<div class="meal"><div class="meal-h"><span>${slots[i] || 'Repas ' + (i + 1)}</span><span>${rest ? 'Restes' : d.t + ' min'}</span></div><button class="meal-n" type="button" data-dish="${id}">${d.e} ${d.n}</button><div class="meal-f"><b>${eur(cost(d))} <small>/ portion</small></b><button class="swap" type="button" data-swap="${i}" aria-label="Remplacer ${d.n}">Changer</button></div></div>`; }).join('')}</div>
+      <p class="fine" style="margin-top:16px">Total calculé en paquets entiers chez ${store().n}${P.basics ? ', hors huile, épices, farine et sucre que tu as déjà' : ''}. « Restes » : le plat est cuisiné une fois en double quantité.</p>`;
   }
   function swapMeal(i) {
-    const P = S.plan; const cur = P.ids[i]; const rest = planTotal(P.ids) - cost(DISH[cur]);
-    const cands = planPool(P).filter((d) => d.id !== cur && !P.ids.includes(d.id) && rest + cost(d) <= Math.max(P.budget, planTotal(P.ids)) + 1e-9);
+    const P = S.plan; const cur = P.ids[i]; const cap = Math.max(P.budget, planTotal(P.ids)) + 1e-9;
+    const cands = planPool(P).filter((d) => d.id !== cur && !P.ids.includes(d.id) && planTotal(P.ids.map((x, j) => (j === i ? d.id : x))) <= cap);
     if (!cands.length) return toast('Aucun autre plat ne rentre dans le budget restant.');
     P.ids[i] = cands[Math.floor(Math.random() * cands.length)].id; save(); renderPlan();
   }
@@ -265,7 +277,7 @@
     const out = $('#pantryOut');
     if (!S.premium) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Le Placard fait partie de Premium.</h3><p>Coche tes ingrédients, Premium te montre les plats faisables et ce qu'il manque, au centime près.</p><a class="btn btn-accent" href="#/premium">Voir les formules</a></div>`; return; }
     if (!S.pantry.length) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Coche au moins un ingrédient.</h3><p>Commence par ce qui traîne : pâtes, riz, œufs, une boîte de tomates.</p></div>`; return; }
-    const res = DISHES.filter((d) => canCook(d)).map((d) => { const need = d.ing.filter(([k]) => !BASICS.includes(k)); const miss = need.filter(([k]) => !S.pantry.includes(k)); return { d, miss, have: need.length - miss.length, mc: miss.reduce((s, [k, q]) => s + lineCost(k, q), 0) }; })
+    const res = DISHES.filter((d) => canCook(d)).map((d) => { const need = d.ing.filter(([k]) => !BASICS.includes(k)); const miss = need.filter(([k]) => !S.pantry.includes(k)); return { d, miss, have: need.length - miss.length, mc: miss.reduce((s, [k, q]) => s + buy(k, q).cost, 0) }; })
       .filter((r) => r.have > 0 && r.miss.length <= 2).sort((a, b) => a.miss.length - b.miss.length || a.mc - b.mc).slice(0, 12);
     out.innerHTML = res.length ? res.map((r) => card(r.d, r.miss.length ? `<p class="miss">Il te manque : <b>${r.miss.map(([k]) => ING[k][0].replace(/ \(.*\)/, '').toLowerCase()).join(', ')}</b> (≈ ${eur(r.mc)})</p>` : `<p class="miss"><span class="tag tag-ok">Tu as tout</span></p>`)).join('')
       : `<div class="empty" style="grid-column:1/-1"><h3>Rien de faisable à 2 ingrédients près.</h3><p>Coche davantage d'ingrédients, ou regarde les <a href="#/plats?max=1">plats à moins de 1 €</a>.</p></div>`;
@@ -359,7 +371,7 @@
 
   $('#planForm').addEventListener('submit', (e) => {
     e.preventDefault(); const f = new FormData(e.target);
-    const p = { budget: Math.max(1, +f.get('budget') || 20), meals: +f.get('meals'), diet: f.get('diet'), time: f.get('time') };
+    const p = { budget: Math.max(1, +f.get('budget') || 20), meals: +f.get('meals'), diet: f.get('diet'), time: f.get('time'), basics: f.get('basics') === 'on' };
     if (!S.premium) { if (usage().plans >= FREE_PLANS) return paywall('Ta semaine gratuite du mois est déjà générée.', 'Elle reste affichée ci-dessous. Premium en génère autant que tu veux.'); usage().plans++; }
     S.plan = buildPlan(p) || { ...p, ids: null }; save(); renderPlan();
     $('#planOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -392,7 +404,7 @@
     if (t.id === 'clearList') { S.list = {}; S.checked = []; save(); updateCount(); renderList(); return; }
     if (t.id === 'copyList') { if (needPremium('Copier la liste fait partie de Premium.')) return; const txt = listText(); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Liste copiée. Colle-la dans tes notes.'), () => toast('Copie impossible ici : utilise Imprimer.')); return; }
     if (t.id === 'planAgain') { if (needPremium('Générer une autre proposition fait partie de Premium.')) return; S.plan = buildPlan(S.plan); save(); renderPlan(); return; }
-    if (t.id === 'planToList') { S.list = {}; S.checked = []; S.plan.ids.forEach((id) => (S.list[id] = (S.list[id] || 0) + 1)); save(); updateCount(); toast('Liste créée à partir de ta semaine.'); location.hash = '#/liste'; }
+    if (t.id === 'planToList') { S.list = {}; S.checked = S.plan.basics ? [...SKIP] : []; S.plan.ids.forEach((id) => (S.list[id] = (S.list[id] || 0) + 1)); save(); updateCount(); toast('Liste créée à partir de ta semaine.'); location.hash = '#/liste'; }
   });
   document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.card')) { e.preventDefault(); openDish(e.target.dataset.dish); } });
   document.addEventListener('change', (e) => {

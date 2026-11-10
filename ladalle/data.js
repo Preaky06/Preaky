@@ -80,6 +80,28 @@ const ING = {
   baguette: ['Baguette', 'Boulangerie', 'pc', 0.9, 'g'],
 };
 
+/* Conditionnement vendu en magasin : [quantité dans l'unité de l'ingrédient, libellé].
+   Le prix du paquet = quantité × prix unitaire ci-dessus.
+   Absent de la liste : vendu à l'unité (pièce) ou au poids (vrac). */
+const PACK = {
+  pates: [500, 'paquet de 500 g'], riz: [1000, 'paquet de 1 kg'], semoule: [500, 'paquet de 500 g'],
+  lentilles_corail: [500, 'paquet de 500 g'], lentilles_vertes: [500, 'paquet de 500 g'],
+  pois_chiches: [1, 'boîte'], haricots_rouges: [1, 'boîte'], tomates_concassees: [1, 'boîte'], lait_coco: [1, 'boîte'], thon: [1, 'boîte'], mais: [1, 'boîte'],
+  concentre_tomate: [140, 'boîte de 140 g'], farine: [1000, 'paquet de 1 kg'], sucre: [1000, 'paquet de 1 kg'],
+  huile_olive: [750, 'bouteille de 75 cl'], huile: [1000, 'bouteille de 1 l'], sauce_soja: [250, 'flacon de 25 cl'],
+  nouilles_instant: [1, 'sachet'], nouilles_ble: [250, 'paquet de 250 g'], tortillas: [6, 'paquet de 6'],
+  pain_mie: [20, 'paquet de 20 tranches'], pain_burger: [4, 'paquet de 4'], flocons_avoine: [500, 'paquet de 500 g'],
+  beurre_cacahuete: [350, 'pot de 350 g'], epices: [40, 'pot de 40 g'], bouillon: [10, 'boîte de 10 cubes'],
+  miel: [250, 'pot de 250 g'], chocolat: [200, 'tablette de 200 g'], gnocchi: [500, 'paquet de 500 g'], vin_blanc: [250, 'bouteille de 25 cl'],
+  oeufs: [6, 'boîte de 6'], lait: [1000, 'brique de 1 l'], creme: [200, 'brique de 20 cl'], beurre: [250, 'plaquette de 250 g'],
+  emmental_rape: [200, 'sachet de 200 g'], feta: [200, 'bloc de 200 g'], parmesan: [100, 'sachet de 100 g'], chevre: [180, 'bûche de 180 g'],
+  yaourt: [4, 'pack de 4'], lardons: [200, 'barquette de 200 g'], jambon: [4, 'paquet de 4 tranches'], chorizo: [200, 'pièce de 200 g'],
+  saucisses: [6, 'paquet de 6'], poulet: [300, 'barquette de 300 g'], cuisses_poulet: [1000, 'barquette de 1 kg'], viande_hachee: [350, 'barquette de 350 g'],
+  tofu: [400, 'bloc de 400 g'], pate_brisee: [1, 'rouleau'], pate_feuilletee: [1, 'rouleau'],
+  ail: [10, 'tête (10 gousses)'], pdt: [1000, 'filet de 1 kg'], champignons: [250, 'barquette de 250 g'], herbes: [1, 'botte'],
+  epinards: [1000, 'sachet de 1 kg'], legumes_surgeles: [1000, 'sachet de 1 kg'], saumon: [250, 'sachet de 2 pavés'], baguette: [1, 'baguette'],
+};
+
 /* Ingrédients considérés comme "fond de placard" : ignorés par l'outil Placard. */
 const BASICS = ['huile', 'huile_olive', 'epices', 'ail', 'sucre', 'farine'];
 
