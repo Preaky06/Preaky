@@ -75,7 +75,7 @@ button, input, select { font: inherit; color: inherit; }
 /* Hero */
 .hero { padding: 64px 0 56px; text-align: center; background: radial-gradient(60% 50% at 10% 30%, rgba(255, 196, 214, .45), transparent 70%), radial-gradient(55% 55% at 95% 75%, rgba(255, 205, 225, .5), transparent 70%); margin-top: -90px; padding-top: 154px; }
 .pill-tag { display: inline-block; border: 1.5px solid var(--line); background: rgba(255, 255, 255, .8); border-radius: 999px; padding: 8px 20px; color: #50505b; margin-bottom: 26px; font-size: .98rem; }
-.hero h1 { max-width: 13ch; margin: 0 auto 22px; }
+.hero h1 { max-width: 18ch; margin: 0 auto 22px; }
 .lead { font-size: 1.2rem; color: #4a4a55; max-width: 60ch; }
 .hero .lead { margin: 0 auto 30px; }
 .versus { display: flex; justify-content: center; align-items: center; gap: 22px; margin: 52px auto 34px; }
