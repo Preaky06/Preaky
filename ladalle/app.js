@@ -313,7 +313,6 @@
   ];
   function renderHome() {
     const meals = DISHES.filter((d) => d.type === 'repas'); const med = median(meals.map((d) => cost(d)));
-    $('#heroPrice').textContent = eur(med);
     const v = DISH.dahl; $('#vsPrice').textContent = eur(cost(v)); $('#vsArt').innerHTML = art(v); $('#vsName').textContent = v.n; $('#vsTime').textContent = v.t;
     $('#medianFig').textContent = eur(med);
     $('#mockPrice').innerHTML = ['dahl', 'fried_rice'].map((id) => `<div class="mock-line"><span>${DISH[id].e} ${DISH[id].n}</span><b>${eur(cost(DISH[id]))}</b></div>`).join('') ;
@@ -361,7 +360,11 @@
   $('#carPrev').addEventListener('click', () => $('#collections').scrollBy({ left: -320, behavior: 'smooth' }));
   $('#carNext').addEventListener('click', () => $('#collections').scrollBy({ left: 320, behavior: 'smooth' }));
 
-  $('#quickForm').addEventListener('submit', (e) => { e.preventDefault(); const p = new URLSearchParams([...new FormData(e.target)].filter(([, v]) => v)); location.hash = '#/plats?' + p; if (![...p].length) location.hash = '#/plats?all'; });
+  $('#quickForm').addEventListener('submit', (e) => {
+    e.preventDefault(); const f = new FormData(e.target), pf = $('#planForm');
+    for (const k of ['budget', 'meals', 'diet']) pf.elements[k].value = f.get(k);
+    location.hash = '#/semaine'; setTimeout(() => pf.requestSubmit(), 60);
+  });
   $('#q').addEventListener('input', (e) => { F.q = e.target.value; renderDishes(); });
   $('#sort').addEventListener('change', (e) => { F.sort = e.target.value; renderDishes(); });
   $('#max').addEventListener('input', (e) => { F.max = +e.target.value; $('#maxLbl').textContent = F.max >= 4 ? 'sans limite' : eur(F.max); renderDishes(); });

@@ -41,18 +41,16 @@
   <section class="view" id="v-home">
     <div class="hero">
       <div class="wrap">
-        <p class="pill-tag">Pour les étudiants qui comptent chaque euro</p>
-        <h1>Ton repas à <span class="gt" id="heroPrice">1,24 €</span></h1>
+        <p class="pill-tag">Le planificateur de repas des étudiants fauchés</p>
+        <h1>10 repas pour <span class="gt">20 €.</span></h1>
+        <p class="lead">Tu donnes ton budget. Ladalle compose ton menu et ta liste de courses, au prix réel des paquets.</p>
         <form class="quick" id="quickForm">
           <div class="quick-row">
-            <label>Budget par repas
-              <select name="max">
-                <option value="1">Moins de 1 €</option>
-                <option value="1.5">Moins de 1,50 €</option>
-                <option value="2" selected>Moins de 2 €</option>
-                <option value="3">Moins de 3 €</option>
-                <option value="">Peu importe</option>
-              </select>
+            <label>Budget de la semaine
+              <span class="inp-eur"><input type="number" name="budget" min="3" max="150" step="1" value="20" required><i>€</i></span>
+            </label>
+            <label>Repas à couvrir
+              <select name="meals"><option value="5">5 dîners</option><option value="7">7 dîners</option><option value="10" selected>10 repas (midi + soir)</option><option value="14">14 repas</option></select>
             </label>
             <label>Régime
               <select name="diet">
@@ -65,18 +63,10 @@
                 <option value="nolactose">Sans lactose</option>
               </select>
             </label>
-            <label>Temps
-              <select name="time">
-                <option value="10">10 min max</option>
-                <option value="20" selected>20 min max</option>
-                <option value="30">30 min max</option>
-                <option value="">J'ai le temps</option>
-              </select>
-            </label>
           </div>
-          <button class="btn btn-accent btn-lg" type="submit">Trouve mes plats <span aria-hidden="true">→</span></button>
+          <button class="btn btn-accent btn-lg" type="submit">Génère ma semaine <span aria-hidden="true">→</span></button>
         </form>
-        <p class="fine">3 fiches plats offertes chaque mois, sans compte.</p>
+        <p class="fine">1 semaine et 3 fiches plats offertes chaque mois, sans compte.</p>
 
         <div class="versus" aria-label="Comparaison : repas livré contre repas maison">
           <div class="vs-card">
