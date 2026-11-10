@@ -9,11 +9,20 @@
   const DISH = Object.fromEntries(DISHES.map((d, i) => [d.id, Object.assign(d, { tint: TINTS[i % TINTS.length] })]));
 
   /* ---------- État persistant ---------- */
+  /* Abonnement. PAY_LINK : URL d'un lien de paiement (ex. Stripe Payment Link) dont la page de retour est « #/premium?ok=1 ».
+     Tant qu'il est vide, le bouton active un mode démo sans paiement.
+     Le compteur vit dans le navigateur : il informe l'utilisateur, il ne protège pas le contenu. */
+  const PAY_LINK = '';
+  const PRICE = 4.99, FREE_DISHES = 3, FREE_PLANS = 1;
+  const IMG = window.IMAGES || {};
   const KEY = 'ladalle:v1';
-  const def = { store: 'lidl', fav: [], list: {}, checked: [], pantry: [], eq: ['plaque', 'four', 'micro', 'bouilloire'], plan: null };
+  const def = { store: 'lidl', fav: [], list: {}, checked: [], pantry: [], eq: ['plaque', 'four', 'micro', 'bouilloire'], plan: null, premium: false, usage: { month: '', dishes: [], plans: 0 } };
   let S = { ...def };
   try { S = { ...def, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (e) { /* stockage indisponible */ }
   if (!STORES.some((s) => s.id === S.store)) S.store = def.store;
+  const month = () => new Date().toISOString().slice(0, 7);
+  const usage = () => { if (!S.usage || S.usage.month !== month()) S.usage = { month: month(), dishes: [], plans: 0 }; return S.usage; };
+  const dishesLeft = () => Math.max(0, FREE_DISHES - usage().dishes.length);
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* idem */ } };
 
   /* ---------- Calculs ---------- */
@@ -38,7 +47,7 @@
     reconfort: ['Réconfort', (d) => d.s.includes('reconfort')],
     leger: ['Léger', (d) => d.s.includes('leger')],
     nocook: ['Sans cuisson', (d) => d.eq.length === 0],
-    fav: ['♥ Mes favoris', (d) => S.fav.includes(d.id)],
+    fav: ['♥ Mes favoris (Premium)', (d) => S.fav.includes(d.id)],
   };
   const EQ = { plaque: 'Plaques', four: 'Four', micro: 'Micro-ondes', bouilloire: 'Bouilloire' };
   const TYPES = { '': 'Tout', repas: 'Repas', matin: 'Petit-déj', douceur: 'Douceurs' };
@@ -57,13 +66,37 @@
   let toastT;
   const toast = (m) => { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); };
 
+  /* ---------- Visuel : photo si disponible, sinon emoji ---------- */
+  const art = (d) => (IMG[d.id] ? `<img src="img/${IMG[d.id].file}" alt="" loading="lazy">` : d.e);
+
+  /* ---------- Formules ---------- */
+  const PLANS_HTML = () => `<div class="plans">
+      <div class="plan"><h3>Gratuit</h3><p class="plan-p">0 €</p>
+        <ul><li>${FREE_DISHES} fiches plats par mois</li><li>${FREE_PLANS} semaine générée par mois</li><li>Catalogue, prix et bons plans</li><li>Liste de courses à l'écran</li></ul>
+        ${S.premium ? '' : '<span class="tag tag-ok">Ta formule actuelle</span>'}</div>
+      <div class="plan pro"><span class="reco">Recommandé</span><h3>Premium</h3><p class="plan-p">${eur(PRICE)} <small>par mois, sans engagement</small></p>
+        <ul><li><b>Fiches plats illimitées</b></li><li>Semaines illimitées, plats remplaçables</li><li>Placard : cuisiner avec ce que tu as</li><li>Liste de courses à copier et imprimer</li><li>Favoris</li></ul>
+        ${S.premium ? '<span class="tag tag-ok">Premium actif</span> <button class="lnk" type="button" data-unsub>Repasser en gratuit</button>' : '<button class="btn btn-accent" type="button" data-sub>Passer Premium <span aria-hidden="true">→</span></button>'}
+        <p class="fine" style="margin:12px 0 0">Rentabilisé dès le premier repas livré évité.</p></div>
+    </div>`;
+  const renderPricing = () => $$('.pricing-slot').forEach((e) => (e.innerHTML = PLANS_HTML()));
+  function paywall(title, txt) {
+    $('#dlgBody').innerHTML = `<div class="d-head pw"><div><p class="eyebrow">Premium</p><h2 id="dlgTitle">${title}</h2><p style="margin:0">${txt}</p></div><button class="d-x" type="button" data-close aria-label="Fermer">✕</button></div><div class="d-body">${PLANS_HTML()}</div>`;
+    const dlg = $('#dlg'); delete dlg.dataset.id; if (!dlg.open) dlg.showModal(); dlg.scrollTop = 0;
+  }
+  const needPremium = (what) => { if (S.premium) return false; paywall('Réservé à Premium', what); return true; };
+  function subscribe() {
+    if (PAY_LINK) { location.href = PAY_LINK; return; }
+    S.premium = true; save(); if ($('#dlg').open) $('#dlg').close(); rerender(); toast('Mode démo : Premium activé, aucun paiement effectué.');
+  }
+
   /* ---------- Carte plat ---------- */
   const dietTags = (d) => ['vegan', 'veg', 'nogluten', 'nolactose'].filter((k) => isDiet(d, k)).filter((k, i, a) => !(k === 'veg' && a.includes('vegan'))).slice(0, 2).map((k) => `<span class="tag tag-ok">${DIETS[k][0]}</span>`).join('');
   const card = (d, extra = '') => `
     <article class="card" data-dish="${d.id}" tabindex="0" role="button" aria-label="${d.n}, ${eur(cost(d))} par portion, ${d.t} minutes">
-      <div class="card-art ${d.tint}" aria-hidden="true">${d.e}</div>
+      <div class="card-art ${d.tint}" aria-hidden="true">${art(d)}</div>
       <span class="price">${eur(cost(d))} <small>/ portion</small></span>
-      <button class="fav" type="button" data-fav="${d.id}" aria-pressed="${S.fav.includes(d.id)}" aria-label="Favori : ${d.n}">♥</button>
+      ${S.premium ? `<button class="fav" type="button" data-fav="${d.id}" aria-pressed="${S.fav.includes(d.id)}" aria-label="Favori : ${d.n}">♥</button>` : ''}
       <div class="card-b"><h3>${d.n}</h3>
         <div class="meta"><span class="tag">⏱ ${d.t} min</span><span class="tag">${eqLabel(d).split(' ou ')[0]}</span>${dietTags(d)}</div>${extra}
       </div>
@@ -96,6 +129,7 @@
     const res = DISHES.filter(match).sort((a, b) => (F.sort === 'time' ? a.t - b.t || cost(a) - cost(b) : F.sort === 'name' ? a.n.localeCompare(b.n, 'fr') : cost(a) - cost(b)));
     $('#dishGrid').innerHTML = res.map((d) => card(d)).join('');
     $('#resCount').textContent = `${res.length} plat${res.length > 1 ? 's' : ''} sur ${DISHES.length}`;
+    $('#quota').innerHTML = S.premium ? '<span class="tag tag-ok">Premium · fiches illimitées</span>' : `${dishesLeft()} fiche${dishesLeft() > 1 ? 's' : ''} gratuite${dishesLeft() > 1 ? 's' : ''} sur ${FREE_DISHES} ce mois-ci · <a class="lnk" href="#/premium">Illimité</a>`;
     const empty = $('#dishEmpty'); empty.hidden = res.length > 0;
     if (!res.length) {
       const relaxed = { ...F, max: 4 }; const keep = F; F = relaxed; const n = DISHES.filter(match); F = keep;
@@ -109,12 +143,19 @@
   let dlgPortions = 1;
   function openDish(id, portions) {
     const d = DISH[id]; if (!d) return;
+    if (!S.premium) {
+      const u = usage();
+      if (!u.dishes.includes(id)) {
+        if (u.dishes.length >= FREE_DISHES) return paywall(`Tes ${FREE_DISHES} fiches gratuites du mois sont utilisées.`, `Les fiches déjà ouvertes restent accessibles. Premium ouvre les ${DISHES.length} plats, sans limite.`);
+        u.dishes.push(id); save(); if (current === 'plats') renderDishes();
+      }
+    }
     dlgPortions = portions || d.p;
     const k = dlgPortions / d.p, c = cost(d);
     const diets = Object.keys(DIETS).filter((x) => isDiet(d, x)).map((x) => `<span class="tag tag-ok">${DIETS[x][0]}</span>`).join('');
     const byStore = [...STORES].sort((a, b) => a.idx - b.idx).map((s) => `<span class="tag${s.id === S.store ? ' tag-ok' : ''}">${s.n} · ${eur(cost(d, s.idx))}</span>`).join('');
     $('#dlgBody').innerHTML = `
-      <div class="d-head"><div class="d-art ${d.tint}" aria-hidden="true">${d.e}</div>
+      <div class="d-head"><div class="d-art ${d.tint}" aria-hidden="true">${art(d)}</div>
         <div><h2 id="dlgTitle">${d.n}</h2><div class="meta">${diets || '<span class="tag">Aucun régime spécifique</span>'}</div></div>
         <button class="d-x" type="button" data-close aria-label="Fermer">✕</button></div>
       <div class="d-body">
@@ -134,6 +175,7 @@
         <div><h3>Prix par portion selon l'enseigne</h3><div class="d-stores">${byStore}</div></div>
         <div class="d-act"><button class="btn btn-accent" type="button" data-add="${d.id}">Ajouter à ma liste de courses</button>
           <button class="btn" type="button" data-fav="${d.id}" aria-pressed="${S.fav.includes(d.id)}">${S.fav.includes(d.id) ? '♥ Dans mes favoris' : '♡ Mettre en favori'}</button></div>
+        ${S.premium ? '' : `<p class="fine" style="margin:0">${dishesLeft()} fiche${dishesLeft() > 1 ? 's' : ''} gratuite${dishesLeft() > 1 ? 's' : ''} restante${dishesLeft() > 1 ? 's' : ''} ce mois-ci. <a class="lnk" href="#/premium" data-close>Passer en illimité</a></p>`}
       </div>`;
     const dlg = $('#dlg'); dlg.dataset.id = id; if (!dlg.open) dlg.showModal(); dlg.scrollTop = 0;
   }
@@ -221,6 +263,7 @@
     $('#pantry').innerHTML = Object.entries(by).map(([r, ks]) => `<div><h3>${r}</h3><div class="chips">${ks.map((k) => chip('pantry', k, ING[k][0].replace(/ \(.*\)/, ''), S.pantry.includes(k))).join('')}</div></div>`).join('');
     $('#pantryCount').textContent = `${S.pantry.length} ingrédient${S.pantry.length > 1 ? 's' : ''} coché${S.pantry.length > 1 ? 's' : ''}`;
     const out = $('#pantryOut');
+    if (!S.premium) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Le Placard fait partie de Premium.</h3><p>Coche tes ingrédients, Premium te montre les plats faisables et ce qu'il manque, au centime près.</p><a class="btn btn-accent" href="#/premium">Voir les formules</a></div>`; return; }
     if (!S.pantry.length) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Coche au moins un ingrédient.</h3><p>Commence par ce qui traîne : pâtes, riz, œufs, une boîte de tomates.</p></div>`; return; }
     const res = DISHES.filter((d) => canCook(d)).map((d) => { const need = d.ing.filter(([k]) => !BASICS.includes(k)); const miss = need.filter(([k]) => !S.pantry.includes(k)); return { d, miss, have: need.length - miss.length, mc: miss.reduce((s, [k, q]) => s + lineCost(k, q), 0) }; })
       .filter((r) => r.have > 0 && r.miss.length <= 2).sort((a, b) => a.miss.length - b.miss.length || a.mc - b.mc).slice(0, 12);
@@ -244,7 +287,7 @@
       <table><thead><tr><th>Enseigne</th><th>Par portion</th><th>10 repas</th><th>Écart sur 10 repas</th></tr></thead><tbody>${[...STORES].sort((a, b) => a.idx - b.idx).map((s) => { const c = cost(d, s.idx), b = cost(d, min); return `<tr class="${s.idx === min ? 'best' : ''}"><td>${s.n}</td><td>${eur(c)}</td><td>${eur(c * 10)}</td><td>${s.idx === min ? 'le moins cher' : '+ ' + eur((c - b) * 10)}</td></tr>`; }).join('')}</tbody></table>`;
   }
   function renderDeals() {
-    $('#deals').innerHTML = DEALS.map((d) => `<div class="deal"><h3><span>${d.e}</span>${d.t}</h3><div><span class="tag tag-ok">${d.tag}</span></div><p>${d.txt}</p><div class="act"><b>À faire cette semaine</b>${d.act}</div>${d.url ? `<a class="lnk" href="${d.url}" target="_blank" rel="noopener noreferrer">${d.src} ↗</a>` : ''}</div>`).join('');
+    $('#deals').innerHTML = DEALS.slice(0, 6).map((d) => `<div class="deal"><h3><span>${d.e}</span>${d.t}</h3><div><span class="tag tag-ok">${d.tag}</span></div><p>${d.txt}</p><div class="act"><b>À faire cette semaine</b>${d.act}</div>${d.url ? `<a class="lnk" href="${d.url}" target="_blank" rel="noopener noreferrer">${d.src} ↗</a>` : ''}</div>`).join('');
   }
 
   /* ---------- Accueil ---------- */
@@ -259,20 +302,26 @@
   function renderHome() {
     const meals = DISHES.filter((d) => d.type === 'repas'); const med = median(meals.map((d) => cost(d)));
     $('#heroPrice').textContent = eur(med);
-    const v = DISH.dahl; $('#vsPrice').textContent = eur(cost(v)); $('#vsEmoji').textContent = v.e; $('#vsName').textContent = v.n; $('#vsTime').textContent = v.t;
+    const v = DISH.dahl; $('#vsPrice').textContent = eur(cost(v)); $('#vsArt').innerHTML = art(v); $('#vsName').textContent = v.n; $('#vsTime').textContent = v.t;
     $('#medianFig').textContent = eur(med);
-    $('#mockPrice').innerHTML = ['carbo', 'dahl', 'fried_rice'].map((id) => `<div class="mock-line"><span>${DISH[id].e} ${DISH[id].n}</span><b>${eur(cost(DISH[id]))}</b></div>`).join('') + `<div class="mock-line tot"><span>Chez ${store().n}</span><b>prix par portion</b></div>`;
+    $('#mockPrice').innerHTML = ['dahl', 'fried_rice'].map((id) => `<div class="mock-line"><span>${DISH[id].e} ${DISH[id].n}</span><b>${eur(cost(DISH[id]))}</b></div>`).join('') ;
     $('#collections').innerHTML = COLLS.map(([e, t, p, href, fn], i) => `<a class="coll" href="${href}"><div class="coll-art ${TINTS[i]}"><span class="badge">${DISHES.filter(fn).length} plats</span>${e}</div><h3>${t}</h3><p>${p}</p></a>`).join('');
-    $('#stats').innerHTML = [[DISHES.length, 'plats chiffrés à la portion'], [meals.filter((d) => cost(d) <= 1).length, 'repas à moins de 1 €'], [DISHES.filter((d) => isDiet(d, 'veg')).length, 'plats végétariens'], [meals.filter((d) => d.t <= 15).length, 'repas prêts en 15 min']].map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join('');
+    renderPricing();
+  }
+
+  function renderCredits() {
+    const ids = Object.keys(IMG).filter((id) => DISH[id]);
+    $('#credits').innerHTML = ids.length ? `<p>Photos issues de Wikimedia Commons, utilisées selon leur licence.</p><ul>${ids.map((id) => { const c = IMG[id]; return `<li><b>${DISH[id].n}</b> — ${c.author || 'auteur non renseigné'}, <a href="${c.licenseUrl || c.source}" target="_blank" rel="noopener noreferrer">${c.license}</a>, <a href="${c.source}" target="_blank" rel="noopener noreferrer">source</a></li>`; }).join('')}</ul>` : '<p>Aucune photo pour le moment : les plats sont illustrés par des pictogrammes.</p>';
   }
 
   /* ---------- Routeur ---------- */
-  const VIEWS = { '': 'home', plats: 'plats', semaine: 'semaine', placard: 'placard', magasins: 'magasins', 'bons-plans': 'bons-plans', liste: 'liste', manifeste: 'manifeste' };
-  const RENDER = { home: renderHome, plats: refreshDishes, semaine: renderPlan, placard: renderPantry, magasins: renderStores, 'bons-plans': renderDeals, liste: renderList };
+  const VIEWS = { '': 'home', plats: 'plats', semaine: 'semaine', placard: 'placard', magasins: 'bons-plans', 'bons-plans': 'bons-plans', liste: 'liste', manifeste: 'manifeste', premium: 'premium', credits: 'credits' };
+  const RENDER = { home: renderHome, plats: refreshDishes, semaine: renderPlan, placard: renderPantry, 'bons-plans': () => { renderStores(); renderDeals(); }, liste: renderList, premium: renderPricing, credits: renderCredits };
   let current = 'home';
   function route() {
     const [path, qs] = location.hash.replace(/^#\/?/, '').split('?');
     current = VIEWS[path] || 'home';
+    if (current === 'premium' && PAY_LINK && new URLSearchParams(qs || '').get('ok') === '1' && !S.premium) { S.premium = true; save(); toast('Premium activé. Merci !'); }
     if (current === 'plats' && qs !== undefined) {
       const p = new URLSearchParams(qs); F = F0();
       if (p.get('max')) F.max = Math.min(4, +p.get('max') || 4);
@@ -287,9 +336,9 @@
     $('#nav').classList.remove('open'); $('#burger').setAttribute('aria-expanded', 'false');
     $$('.storeName').forEach((e) => (e.textContent = store().n));
     RENDER[current]?.(); window.scrollTo(0, 0);
-    document.title = { home: 'Ladalle — Bien manger, même le 28 du mois', plats: 'Les plats — Ladalle', semaine: 'Ma semaine — Ladalle', placard: 'Placard — Ladalle', magasins: 'Magasins — Ladalle', 'bons-plans': 'Bons plans — Ladalle', liste: 'Ma liste — Ladalle', manifeste: 'Ligne éditoriale — Ladalle' }[current];
+    document.title = { home: 'Ladalle — Bien manger, même le 28 du mois', plats: 'Les plats — Ladalle', semaine: 'Ma semaine — Ladalle', placard: 'Placard — Ladalle', premium: 'Premium — Ladalle', credits: 'Crédits photo — Ladalle', 'bons-plans': 'Bons plans — Ladalle', liste: 'Ma liste — Ladalle', manifeste: 'Ligne éditoriale — Ladalle' }[current];
   }
-  const rerender = () => { $$('.storeName').forEach((e) => (e.textContent = store().n)); RENDER[current]?.(); };
+  const rerender = () => { $$('.storeName').forEach((e) => (e.textContent = store().n)); RENDER[current]?.(); renderPricing(); };
 
   /* ---------- Événements ---------- */
   const sel = $('#storeSel');
@@ -311,15 +360,18 @@
   $('#planForm').addEventListener('submit', (e) => {
     e.preventDefault(); const f = new FormData(e.target);
     const p = { budget: Math.max(1, +f.get('budget') || 20), meals: +f.get('meals'), diet: f.get('diet'), time: f.get('time') };
+    if (!S.premium) { if (usage().plans >= FREE_PLANS) return paywall('Ta semaine gratuite du mois est déjà générée.', 'Elle reste affichée ci-dessous. Premium en génère autant que tu veux.'); usage().plans++; }
     S.plan = buildPlan(p) || { ...p, ids: null }; save(); renderPlan();
     $('#planOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   const toggle = (arr, k) => { const i = arr.indexOf(k); i < 0 ? arr.push(k) : arr.splice(i, 1); };
   document.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-fav],[data-g],[data-dish],[data-close],[data-step],[data-add],[data-rm],[data-swap],[data-store],#resetF2,#copyList,#printList,#clearList,#planToList,#planAgain');
+    const t = e.target.closest('[data-sub],[data-unsub],[data-fav],[data-g],[data-dish],[data-close],[data-step],[data-add],[data-rm],[data-swap],[data-store],#resetF2,#copyList,#printList,#clearList,#planToList,#planAgain');
     if (!t) return;
-    if (t.dataset.fav) { e.stopPropagation(); toggle(S.fav, t.dataset.fav); save(); if ($('#dlg').open) openDish($('#dlg').dataset.id, dlgPortions); rerender(); return; }
+    if ('sub' in t.dataset) return subscribe();
+    if ('unsub' in t.dataset) { S.premium = false; save(); rerender(); return toast('Formule gratuite réactivée.'); }
+    if (t.dataset.fav) { e.stopPropagation(); if (needPremium('Les favoris font partie de Premium.')) return; toggle(S.fav, t.dataset.fav); save(); if ($('#dlg').open) openDish($('#dlg').dataset.id, dlgPortions); rerender(); return; }
     if (t.dataset.g) {
       const { g, k } = t.dataset;
       if (g === 'pantry') { toggle(S.pantry, k); save(); renderPantry(); return; }
@@ -333,13 +385,13 @@
     if (t.dataset.step) return openDish($('#dlg').dataset.id, Math.min(12, Math.max(1, dlgPortions + +t.dataset.step)));
     if (t.dataset.add) { addToList(t.dataset.add, dlgPortions); toast(`${DISH[t.dataset.add].n} × ${dlgPortions} ajouté à ta liste.`); if (current === 'liste') renderList(); return; }
     if (t.dataset.rm) { delete S.list[t.dataset.rm]; save(); updateCount(); renderList(); return; }
-    if (t.dataset.swap) return swapMeal(+t.dataset.swap);
+    if (t.dataset.swap) return needPremium('Remplacer un plat de la semaine fait partie de Premium.') || swapMeal(+t.dataset.swap);
     if (t.dataset.store) return setStore(t.dataset.store);
     if (t.id === 'resetF2') return resetF();
-    if (t.id === 'printList') return window.print();
+    if (t.id === 'printList') return needPremium('Imprimer la liste ou la semaine fait partie de Premium.') || window.print();
     if (t.id === 'clearList') { S.list = {}; S.checked = []; save(); updateCount(); renderList(); return; }
-    if (t.id === 'copyList') { const txt = listText(); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Liste copiée. Colle-la dans tes notes.'), () => toast('Copie impossible ici : utilise Imprimer.')); return; }
-    if (t.id === 'planAgain') { S.plan = buildPlan(S.plan); save(); renderPlan(); return; }
+    if (t.id === 'copyList') { if (needPremium('Copier la liste fait partie de Premium.')) return; const txt = listText(); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Liste copiée. Colle-la dans tes notes.'), () => toast('Copie impossible ici : utilise Imprimer.')); return; }
+    if (t.id === 'planAgain') { if (needPremium('Générer une autre proposition fait partie de Premium.')) return; S.plan = buildPlan(S.plan); save(); renderPlan(); return; }
     if (t.id === 'planToList') { S.list = {}; S.checked = []; S.plan.ids.forEach((id) => (S.list[id] = (S.list[id] || 0) + 1)); save(); updateCount(); toast('Liste créée à partir de ta semaine.'); location.hash = '#/liste'; }
   });
   document.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.card')) { e.preventDefault(); openDish(e.target.dataset.dish); } });

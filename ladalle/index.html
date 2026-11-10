@@ -22,8 +22,8 @@
       <a href="#/plats" data-nav="plats">Plats</a>
       <a href="#/semaine" data-nav="semaine">Ma semaine</a>
       <a href="#/placard" data-nav="placard">Placard</a>
-      <a href="#/magasins" data-nav="magasins">Magasins</a>
       <a href="#/bons-plans" data-nav="bons-plans">Bons plans</a>
+      <a href="#/premium" data-nav="premium">Premium</a>
       <label class="store-pick" title="Tous les prix du site s'adaptent à ce magasin">Mon magasin
         <select id="storeSel"></select>
       </label>
@@ -42,7 +42,7 @@
     <div class="hero">
       <div class="wrap">
         <p class="pill-tag">Pour les étudiants qui comptent chaque euro</p>
-        <h1>Ton repas à <span class="gt" id="heroPrice">1,50 €</span></h1>
+        <h1>Ton repas à <span class="gt" id="heroPrice">1,24 €</span></h1>
         <form class="quick" id="quickForm">
           <div class="quick-row">
             <label>Budget par repas
@@ -76,56 +76,39 @@
           </div>
           <button class="btn btn-accent btn-lg" type="submit">Trouve mes plats <span aria-hidden="true">→</span></button>
         </form>
-        <p class="fine">Gratuit, sans compte. Tes réglages restent sur ton appareil.</p>
+        <p class="fine">3 fiches plats offertes chaque mois, sans compte.</p>
 
         <div class="versus" aria-label="Comparaison : repas livré contre repas maison">
           <div class="vs-card">
-            <div class="vs-art a"><span class="badge">13,90 €</span>🛵<small>Livraison, 35 min d'attente</small></div>
+            <div class="vs-art a"><span class="badge">13,90 €</span>🛵</div>
             <p>Livré</p>
           </div>
           <span class="vs-arrow" aria-hidden="true">→</span>
           <div class="vs-card big">
-            <div class="vs-art b"><span class="badge" id="vsPrice"></span><span id="vsEmoji">🍛</span><small id="vsName"></small></div>
-            <p>Fait maison en <span id="vsTime"></span> min</p>
+            <div class="vs-art b"><span class="badge" id="vsPrice"></span><span id="vsArt"></span><small id="vsName"></small></div>
+            <p>Maison en <span id="vsTime"></span> min</p>
           </div>
         </div>
-        <div class="plat-row"><span>🥦 Végétarien</span><span>🌱 Végan</span><span>☪️ Halal-compatible</span><span>🌾 Sans gluten</span></div>
-        <a class="btn btn-lg" href="#/semaine">Planifie ta semaine <span aria-hidden="true">→</span></a>
       </div>
     </div>
 
     <section class="wrap sec">
       <p class="eyebrow">Comment ça marche</p>
       <h2>Tu donnes ton budget.<br>Ladalle fait le menu.</h2>
-      <p class="sub">Compatible avec une kitchenette de 9 m² : plaques, micro-ondes ou simple bouilloire.</p>
       <div class="steps">
-        <div class="step">
-          <div><div class="step-h"><span class="num">1</span><h3>Tu poses tes contraintes</h3></div><p>Budget par portion, régime alimentaire, temps disponible, équipement. Tu décoches ce que tu n'as pas, les plats infaisables disparaissent.</p></div>
-          <div class="mock" aria-hidden="true">
-            <div class="mock-row"><span class="chip" aria-pressed="true">Moins de 2 €</span><span class="chip" aria-pressed="true">Végétarien</span><span class="chip">Sans gluten</span></div>
-            <div class="mock-row"><span class="chip" aria-pressed="true">20 min max</span><span class="chip" aria-pressed="true">Plaques</span><span class="chip">Four</span><span class="chip" aria-pressed="true">Micro-ondes</span></div>
-          </div>
-        </div>
-        <div class="step">
-          <div><div class="step-h"><span class="num">2</span><h3>Tu vois le vrai prix</h3></div><p>Chaque plat affiche son coût par portion, calculé ingrédient par ingrédient et ajusté au magasin que tu fréquentes.</p></div>
-          <div class="mock" aria-hidden="true" id="mockPrice"></div>
-        </div>
-        <div class="step">
-          <div><div class="step-h"><span class="num">3</span><h3>Tu repars avec ta liste</h3></div><p>Les quantités de tous tes plats sont additionnées et rangées par rayon. Tu coches en magasin, tu ne rachètes rien en double.</p></div>
-          <div class="mock" aria-hidden="true">
-            <div class="mock-line done"><span>☑ Riz — 340 g</span><b>0,54 €</b></div>
-            <div class="mock-line done"><span>☑ Lentilles corail — 200 g</span><b>0,70 €</b></div>
-            <div class="mock-line"><span>☐ Lait de coco — 1</span><b>1,20 €</b></div>
-            <div class="mock-line"><span>☐ Œufs — 6</span><b>1,62 €</b></div>
-          </div>
-        </div>
+        <div class="step"><div class="step-h"><span class="num">1</span><h3>Tes contraintes</h3></div><p>Budget, régime, temps, équipement.</p>
+          <div class="mock" aria-hidden="true"><div class="mock-row"><span class="chip" aria-pressed="true">Moins de 2 €</span><span class="chip" aria-pressed="true">Végétarien</span><span class="chip">Four</span></div></div></div>
+        <div class="step"><div class="step-h"><span class="num">2</span><h3>Le vrai prix</h3></div><p>Coût par portion, selon ton magasin.</p>
+          <div class="mock" aria-hidden="true" id="mockPrice"></div></div>
+        <div class="step"><div class="step-h"><span class="num">3</span><h3>Ta liste</h3></div><p>Quantités additionnées, par rayon.</p>
+          <div class="mock" aria-hidden="true"><div class="mock-line done"><span>☑ Riz — 340 g</span><b>0,54 €</b></div><div class="mock-line"><span>☐ Lait de coco — 1</span><b>1,20 €</b></div></div></div>
       </div>
     </section>
 
     <section class="wrap sec" style="padding-top:0">
       <p class="eyebrow">Les sélections</p>
       <div class="car-head">
-        <div><h2>Des menus déjà triés<br><span class="soft">en 1 clic !</span></h2><p class="sub">Un même budget, six façons de le manger.</p></div>
+        <h2>Des menus déjà triés<br><span class="soft">en 1 clic !</span></h2>
         <div class="car-nav"><button class="round" id="carPrev" type="button" aria-label="Sélections précédentes">‹</button><button class="round" id="carNext" type="button" aria-label="Sélections suivantes">›</button></div>
       </div>
       <div class="car" id="collections"></div>
@@ -138,42 +121,22 @@
         <div class="grid g2" style="margin-top:34px">
           <div class="dk no">
             <h3>Quand tu improvises</h3>
-            <ul><li>Commander parce que le frigo est vide</li><li>Racheter ce que tu as déjà au fond du placard</li><li>Faire tes courses à la supérette la plus proche</li></ul>
+            <ul><li>Commander parce que le frigo est vide</li><li>Racheter ce que tu as déjà</li><li>Payer le prix de la supérette</li></ul>
             <div class="dk-fig">12 à 15 € <small>par repas livré</small></div>
           </div>
           <div class="dk yes">
             <h3 class="logo">la<b>dalle</b></h3>
-            <ul><li>Les plats rentrent dans ton budget avant d'entrer dans ton panier</li><li>La liste de courses est calculée au gramme</li><li>Le magasin le moins cher est indiqué</li></ul>
-            <div class="dk-fig"><span id="medianFig"></span> <small>par repas maison (médiane du site)</small></div>
+            <ul><li>Les plats rentrent dans ton budget</li><li>La liste est calculée au gramme</li><li>Le magasin le moins cher est indiqué</li></ul>
+            <div class="dk-fig"><span id="medianFig"></span> <small>par repas maison</small></div>
           </div>
         </div>
-        <div class="stats" id="stats"></div>
-        <p class="center"><a class="btn btn-accent btn-lg" href="#/plats">Voir tous les plats <span aria-hidden="true">→</span></a></p>
       </div>
     </section>
 
     <section class="wrap sec">
-      <p class="eyebrow">Les outils</p>
-      <h2>Quatre outils.<br><span class="soft">Un seul ticket de caisse.</span></h2>
-      <div class="grid g2 tools" style="margin-top:34px">
-        <a class="tool" href="#/semaine"><span class="tool-e t2">🗓️</span><h3>Ma semaine</h3><p>Tu donnes un budget hebdo, le générateur compose des repas variés qui rentrent dedans, puis la liste de courses complète.</p><span class="lnk">Générer ma semaine →</span></a>
-        <a class="tool" href="#/placard"><span class="tool-e t1">🥫</span><h3>Placard</h3><p>Tu coches ce que tu as déjà. Tu vois ce que tu peux cuisiner ce soir et ce qu'il manque, au centime près.</p><span class="lnk">Vider mon placard →</span></a>
-        <a class="tool" href="#/magasins"><span class="tool-e t3">🏪</span><h3>Magasins</h3><p>Où faire tes courses, avec un niveau de prix estimé par enseigne et les réflexes qui font baisser le ticket.</p><span class="lnk">Comparer les enseignes →</span></a>
-        <a class="tool" href="#/bons-plans"><span class="tool-e t0">💸</span><h3>Bons plans</h3><p>Repas à 1 €, épiceries solidaires, paniers d'invendus, distributions gratuites : ce qui existe et comment y accéder.</p><span class="lnk">Voir les bons plans →</span></a>
-      </div>
-    </section>
-
-    <section class="wrap sec" style="padding-top:0">
-      <div class="manif">
-        <div><p class="eyebrow">Notre ligne</p><h2>Le prix d'abord.<br><span class="soft">Zéro leçon de morale.</span></h2></div>
-        <ul class="rules">
-          <li><b>Chaque plat est chiffré.</b> Aucun « petit budget » sans montant.</li>
-          <li><b>La vraie cuisine étudiante.</b> Deux plaques, parfois un micro-ondes, rarement un four.</li>
-          <li><b>Tous les régimes au même rang.</b> Un filtre, jamais une rubrique à part.</li>
-          <li><b>Aucune enseigne ne nous paie.</b> Les prix sont des estimations, et c'est écrit.</li>
-          <li><a class="lnk" href="#/manifeste">Lire la ligne éditoriale complète →</a></li>
-        </ul>
-      </div>
+      <p class="eyebrow">Les formules</p>
+      <h2>Trois plats offerts.<br><span class="soft">L'illimité pour 4,99 €.</span></h2>
+      <div class="pricing-slot"></div>
     </section>
 
     <section class="sec sec-white">
@@ -181,11 +144,10 @@
         <p class="eyebrow">On te répond</p>
         <h2>Un dernier détail ?</h2>
         <div class="faq">
-          <details><summary>D'où viennent les prix ?</summary><p>Ce sont des estimations basées sur des prix d'entrée de gamme et de marque distributeur en France, au prorata de la quantité utilisée dans la recette. Ils varient selon ta ville, la saison et les promotions. Sers-t'en pour comparer les plats entre eux et tenir un ordre de grandeur, pas comme d'un ticket de caisse.</p></details>
-          <details><summary>Pourquoi mon ticket réel dépasse le total affiché ?</summary><p>Le coût affiché est celui de la portion. En magasin tu achètes le paquet entier : 1 kg de riz, une bouteille d'huile. La première semaine coûte donc plus cher, les suivantes moins, car le fond de placard est constitué. La liste de courses te donne les quantités exactes à comparer avec ce que tu as déjà.</p></details>
-          <details><summary>Les filtres « sans gluten » ou « halal-compatible » sont-ils fiables ?</summary><p>Ils sont calculés à partir des ingrédients de la recette. Ils ne remplacent pas la lecture des étiquettes : traces, bouillons cubes et sauces varient d'une marque à l'autre. « Halal-compatible » signifie sans porc ni alcool ; la certification de la viande dépend de ce que tu achètes. En cas d'allergie, l'étiquette fait foi.</p></details>
-          <details><summary>Je n'ai ni four ni plaque. C'est jouable ?</summary><p>Oui. Décoche ce que tu n'as pas dans le filtre « Mon équipement » : il reste des plats au micro-ondes, à la bouilloire et sans cuisson.</p></details>
-          <details><summary>Je dois créer un compte ?</summary><p>Non. Tes favoris, ta liste et ton magasin sont enregistrés dans le stockage local de ton navigateur. Rien ne quitte ton appareil, aucun traceur.</p></details>
+          <details><summary>C'est gratuit ?</summary><p>Le catalogue, les prix, les magasins et les bons plans sont en accès libre. La formule gratuite ouvre 3 fiches plats et génère 1 semaine par mois. Premium, à 4,99 € par mois sans engagement, rend tout illimité et débloque le Placard et l'export de la liste.</p></details>
+          <details><summary>D'où viennent les prix ?</summary><p>Ce sont des estimations basées sur des prix d'entrée de gamme en France, au prorata de la quantité utilisée. Ils servent à comparer les plats et à tenir un ordre de grandeur. En magasin tu achètes le paquet entier : le premier ticket est plus élevé, les suivants plus bas.</p></details>
+          <details><summary>Les filtres de régime sont-ils fiables ?</summary><p>Ils sont calculés d'après les ingrédients. « Halal-compatible » signifie sans porc ni alcool ; la certification de la viande dépend de ton achat. En cas d'allergie, l'étiquette fait foi.</p></details>
+          <details><summary>Je n'ai ni four ni plaque. C'est jouable ?</summary><p>Oui. Décoche ce que tu n'as pas dans « Mon équipement » : il reste des plats au micro-ondes, à la bouilloire et sans cuisson.</p></details>
         </div>
       </div>
     </section>
@@ -203,7 +165,7 @@
   <section class="view" id="v-plats" hidden>
     <div class="wrap page">
       <h1 class="h-page">Les plats</h1>
-      <p class="sub">Coût par portion estimé chez <b class="storeName"></b>. Change de magasin en haut de page, tous les prix suivent.</p>
+      <p class="sub">Coût par portion estimé chez <b class="storeName"></b>.</p>
       <div class="filters" id="filters">
         <div class="f-row">
           <input type="search" id="q" placeholder="Chercher un plat ou un ingrédient (riz, œufs, curry…)" aria-label="Rechercher">
@@ -215,12 +177,14 @@
           <label for="max">Budget max par portion : <b id="maxLbl"></b></label>
           <input type="range" id="max" min="0.5" max="4" step="0.25" value="4">
         </div>
-        <fieldset><legend>Temps</legend><div class="chips" data-group="time" data-single></div></fieldset>
         <fieldset><legend>Régime <span class="hint">(cumulables)</span></legend><div class="chips" data-group="diet"></div></fieldset>
+        <details class="more"><summary>Plus de filtres : temps, envie, équipement</summary><div class="more-in">
+        <fieldset><legend>Temps</legend><div class="chips" data-group="time" data-single></div></fieldset>
         <fieldset><legend>Envie</legend><div class="chips" data-group="style"></div></fieldset>
         <fieldset><legend>Mon équipement <span class="hint">(décoche ce que tu n'as pas)</span></legend><div class="chips" data-group="eq"></div></fieldset>
         <fieldset><legend>Moment</legend><div class="chips" data-group="type" data-single></div></fieldset>
-        <div class="f-foot"><span id="resCount"></span><button class="lnk" id="resetF" type="button">Réinitialiser les filtres</button></div>
+        </div></details>
+        <div class="f-foot"><span id="resCount"></span><span class="quota" id="quota"></span><button class="lnk" id="resetF" type="button">Réinitialiser les filtres</button></div>
       </div>
       <div class="grid g4" id="dishGrid"></div>
       <div class="empty" id="dishEmpty" hidden></div>
@@ -231,7 +195,7 @@
   <section class="view" id="v-semaine" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma semaine</h1>
-      <p class="sub">Un budget, un nombre de repas. Le générateur compose une semaine variée qui rentre dedans.</p>
+      <p class="sub">Un budget, un nombre de repas : une semaine variée qui rentre dedans.</p>
       <form class="planner" id="planForm">
         <label>Budget de la semaine
           <span class="inp-eur"><input type="number" name="budget" min="3" max="150" step="1" value="20" required><i>€</i></span>
@@ -247,7 +211,7 @@
         </label>
         <button class="btn btn-accent" type="submit">Générer ma semaine</button>
       </form>
-      <p class="fine">Équipement pris en compte : celui que tu as réglé dans les filtres des plats. Les plats « batch » sont cuisinés une fois et mangés deux fois.</p>
+      <p class="fine">Les plats « batch » sont cuisinés une fois et mangés deux fois.</p>
       <div id="planOut"></div>
     </div>
   </section>
@@ -256,7 +220,7 @@
   <section class="view" id="v-placard" hidden>
     <div class="wrap page">
       <h1 class="h-page">Placard</h1>
-      <p class="sub">Coche ce que tu as déjà. Huile, épices, ail, farine et sucre sont supposés présents.</p>
+      <p class="sub">Coche ce que tu as. Huile, épices, ail, farine et sucre sont supposés présents.</p>
       <div class="pantry" id="pantry"></div>
       <div class="f-foot"><span id="pantryCount"></span><button class="lnk" id="pantryReset" type="button">Tout décocher</button></div>
       <h2 class="h-sub">Ce que tu peux cuisiner</h2>
@@ -264,27 +228,37 @@
     </div>
   </section>
 
-  <!-- ===================== MAGASINS ===================== -->
-  <section class="view" id="v-magasins" hidden>
-    <div class="wrap page">
-      <h1 class="h-page">Magasins</h1>
-      <p class="sub">Niveau de prix estimé par enseigne pour un panier de base. Clique sur « C'est mon magasin » pour recalculer tous les prix du site.</p>
-      <div class="stores" id="stores"></div>
-      <p class="fine">Indices estimés (base 100 = l'hypermarché le moins cher), à prendre comme un ordre de grandeur : l'écart réel dépend du magasin précis et de ta ville. Le prix au kilo affiché en rayon reste la seule vérité.</p>
-      <h2 class="h-sub">Les adresses hors grande surface</h2>
-      <div class="grid g2" id="spots"></div>
-      <h2 class="h-sub">Ce que ça change sur un plat</h2>
-      <div class="cmp" id="cmp"></div>
-    </div>
-  </section>
-
   <!-- ===================== BONS PLANS ===================== -->
   <section class="view" id="v-bons-plans" hidden>
     <div class="wrap page">
       <h1 class="h-page">Bons plans</h1>
-      <p class="sub">Les dispositifs et réflexes qui font réellement baisser la facture. Chacun se termine par une action à faire cette semaine.</p>
+      <p class="sub">Où acheter, et les dispositifs qui font baisser la facture.</p>
+      <h2 class="h-sub" style="margin-top:0">Les enseignes</h2>
+      <div class="stores" id="stores"></div>
+      <p class="fine">Niveaux de prix estimés (base 100 = l'hypermarché le moins cher) : un ordre de grandeur, à vérifier près de chez toi.</p>
+      <div class="cmp" id="cmp" style="margin-top:20px"></div>
+      <h2 class="h-sub">Hors grande surface</h2>
+      <div class="grid g2" id="spots"></div>
+      <h2 class="h-sub">Aides et réflexes</h2>
       <div class="grid g2" id="deals"></div>
-      <p class="fine">Tarifs et conditions des dispositifs publics et associatifs : vérifie-les à la source, ils évoluent chaque année.</p>
+      <p class="fine" style="margin-top:16px">Tarifs et conditions des dispositifs publics et associatifs : vérifie-les à la source, ils évoluent chaque année.</p>
+    </div>
+  </section>
+
+  <!-- ===================== PREMIUM ===================== -->
+  <section class="view" id="v-premium" hidden>
+    <div class="wrap page">
+      <p class="eyebrow">Les formules</p>
+      <h1 class="h-page">Trois plats offerts.<br><span class="soft">L'illimité pour 4,99 €.</span></h1>
+      <div class="pricing-slot"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CRÉDITS ===================== -->
+  <section class="view" id="v-credits" hidden>
+    <div class="wrap page prose">
+      <h1 class="h-page">Crédits photo</h1>
+      <div id="credits"></div>
     </div>
   </section>
 
@@ -292,7 +266,7 @@
   <section class="view" id="v-liste" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma liste de courses</h1>
-      <p class="sub">Quantités additionnées pour tous tes plats, rangées par rayon. Prix estimés chez <b class="storeName"></b>.</p>
+      <p class="sub">Quantités additionnées, rangées par rayon. Prix estimés chez <b class="storeName"></b>.</p>
       <div id="listOut"></div>
     </div>
   </section>
@@ -310,7 +284,7 @@
         <li><b>La cuisine réelle.</b> On écrit pour 9 m², deux plaques et une poêle qui attache. L'équipement requis est indiqué, les alternatives aussi.</li>
         <li><b>Tous les régimes au même rang.</b> Végétarien, végan, sans porc, halal-compatible, sans gluten, sans lactose : ce sont des filtres, jamais des rubriques de seconde zone.</li>
         <li><b>La franchise sur les chiffres.</b> Les prix sont des estimations et c'est écrit. On explique pourquoi le ticket réel dépasse le coût à la portion.</li>
-        <li><b>L'indépendance.</b> Aucune enseigne ne paie pour apparaître. Si un lien devient un jour affilié, il sera marqué.</li>
+        <li><b>L'indépendance.</b> Aucune enseigne ne paie pour apparaître. Le site est financé par l'abonnement Premium, jamais par la publicité. Les prix, les magasins et les bons plans restent en accès libre.</li>
       </ol>
       <h2>Le ton</h2>
       <p>On tutoie. Phrases courtes, verbes d'action, chiffres. On peut être drôle, on ne fait jamais le malin aux dépens du lecteur. On ne culpabilise ni sur l'argent, ni sur le niveau en cuisine, ni sur le recours à l'aide alimentaire.</p>
@@ -321,8 +295,7 @@
         <li><b>Plats</b> — la base, filtrable par budget, temps, régime, envie, équipement.</li>
         <li><b>Ma semaine</b> — la planification sous contrainte de budget.</li>
         <li><b>Placard</b> — cuisiner avec ce qu'on a déjà.</li>
-        <li><b>Magasins</b> — où acheter quoi.</li>
-        <li><b>Bons plans</b> — aides, anti-gaspi, réflexes en rayon.</li>
+        <li><b>Bons plans</b> — où acheter, aides, anti-gaspi, réflexes en rayon.</li>
       </ul>
       <h2>Le test avant publication</h2>
       <p>Trois questions : est-ce que le prix est écrit ? Est-ce faisable dans une kitchenette ? Est-ce que le lecteur sait quoi faire ensuite ? Si une réponse est non, on réécrit.</p>
@@ -334,7 +307,7 @@
   <div class="wrap foot-in">
     <div><a class="logo" href="#/">la<b>dalle</b></a><p class="fine" style="margin-top:12px">Bien manger, même le 28 du mois.</p></div>
     <nav aria-label="Outils"><h4>Outils</h4><a href="#/plats">Plats</a><a href="#/semaine">Ma semaine</a><a href="#/placard">Placard</a><a href="#/liste">Ma liste</a></nav>
-    <nav aria-label="Informations"><h4>Informations</h4><a href="#/magasins">Magasins</a><a href="#/bons-plans">Bons plans</a><a href="#/manifeste">Ligne éditoriale</a></nav>
+    <nav aria-label="Informations"><h4>Informations</h4><a href="#/bons-plans">Bons plans</a><a href="#/premium">Premium</a><a href="#/manifeste">Ligne éditoriale</a><a href="#/credits">Crédits photo</a></nav>
     <p class="fine">Prix indicatifs estimés, non contractuels. Informations sur les régimes calculées d'après les ingrédients : en cas d'allergie, l'étiquette fait foi.</p>
   </div>
 </footer>
@@ -342,6 +315,7 @@
 <dialog id="dlg" aria-labelledby="dlgTitle"><div id="dlgBody"></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="images.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>

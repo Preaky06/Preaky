@@ -12,7 +12,7 @@
 2. **La cuisine réelle.** On écrit pour 9 m², deux plaques et une poêle qui attache. L'équipement requis est indiqué, les alternatives aussi.
 3. **Tous les régimes au même rang.** Végétarien, végan, sans porc, halal-compatible, sans gluten, sans lactose : des filtres, jamais des rubriques de seconde zone.
 4. **La franchise sur les chiffres.** Les prix sont des estimations et c'est écrit. On explique pourquoi le ticket réel dépasse le coût à la portion.
-5. **L'indépendance.** Aucune enseigne ne paie pour apparaître. Un lien affilié serait marqué comme tel.
+5. **L'indépendance.** Aucune enseigne ne paie pour apparaître. Le site est financé par l'abonnement Premium (4,99 €/mois), jamais par la publicité. Les prix, les magasins et les bons plans restent en accès libre.
 
 ## Ton
 
