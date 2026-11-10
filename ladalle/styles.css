@@ -386,7 +386,10 @@ dialog::backdrop { background: rgba(17, 18, 22, .62); backdrop-filter: blur(3px)
   .car-head { align-items: start; flex-direction: column; }
   .coll { flex-basis: 78%; }
   .f-row { flex-direction: column; align-items: stretch; }
-  .plan-sum { grid-template-columns: 1fr; }
+  .plan-sum { gap: 8px; }
+  .plan-sum .kpi span { font-size: .78rem; line-height: 1.3; display: block; }
+  .d-kpis { gap: 8px; }
+  .d-kpis .kpi span { font-size: .8rem; }
   .d-head { grid-template-columns: 64px 1fr; padding: 18px 60px 16px 16px; }
   .d-art { width: 64px; height: 64px; font-size: 2rem; border-radius: 18px; }
   .d-head h2 { font-size: 1.35rem; }

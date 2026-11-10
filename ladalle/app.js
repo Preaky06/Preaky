@@ -54,17 +54,17 @@
   };
   const isDiet = (d, k) => DIETS[k][1](flags(d));
   const STYLES = {
-    rapide: ['Rapide (15 min max)', (d) => d.t <= 15],
+    rapide: ['Rapide', (d) => d.t <= 15],
     chic: ['Sophistiqué', (d) => d.s.includes('chic')],
-    batch: ['Batch / à congeler', (d) => d.s.includes('batch')],
+    batch: ['À préparer d’avance', (d) => d.s.includes('batch')],
     reconfort: ['Réconfort', (d) => d.s.includes('reconfort')],
     leger: ['Léger', (d) => d.s.includes('leger')],
     nocook: ['Sans cuisson', (d) => d.eq.length === 0],
-    fav: ['♥ Mes favoris (Premium)', (d) => S.fav.includes(d.id)],
+    fav: ['♥ Favoris', (d) => S.fav.includes(d.id)],
   };
   const EQ = { plaque: 'Plaques', four: 'Four', micro: 'Micro-ondes', bouilloire: 'Bouilloire' };
-  const TYPES = { '': 'Tout', repas: 'Repas', matin: 'Petit-déj', douceur: 'Douceurs' };
-  const TIMES = { '': 'Peu importe', 10: '10 min', 20: '20 min', 30: '30 min' };
+  const TYPES = { '': 'Tous', repas: 'Repas', matin: 'Petit-déj', douceur: 'Douceurs' };
+  const TIMES = { '': 'Tous', 10: '10 min', 20: '20 min', 30: '30 min' };
   const canCook = (d, eq = S.eq) => d.eq.length === 0 || d.eq.some((alt) => alt.split('+').every((e) => eq.includes(e)));
   const eqLabel = (d) => (d.eq.length ? d.eq.map((a) => a.split('+').map((e) => EQ[e]).join(' + ')).join(' ou ') : 'Sans cuisson');
   const fmtQty = (k, q) => {
@@ -85,12 +85,12 @@
   /* ---------- Formules ---------- */
   const PLANS_HTML = () => `<div class="plans">
       <div class="plan"><h3>Gratuit</h3><p class="plan-p">0 €</p>
-        <ul><li>${FREE_DISHES} fiches plats par mois</li><li>${FREE_PLANS} semaine générée par mois</li><li>Catalogue, prix et bons plans</li><li>Liste de courses à l'écran</li></ul>
+        <ul><li>${FREE_DISHES} fiches plats par mois</li><li>${FREE_PLANS} semaine par mois</li><li>Prix et bons plans</li></ul>
         ${S.premium ? '' : '<span class="tag tag-ok">Ta formule actuelle</span>'}</div>
-      <div class="plan pro"><span class="reco">Recommandé</span><h3>Premium</h3><p class="plan-p">${eur(PRICE)} <small>par mois, sans engagement</small></p>
-        <ul><li><b>Fiches plats illimitées</b></li><li>Semaines illimitées, plats remplaçables</li><li>Placard : cuisiner avec ce que tu as</li><li>Liste de courses à copier et imprimer</li><li>Favoris</li></ul>
+      <div class="plan pro"><span class="reco">Recommandé</span><h3>Premium</h3><p class="plan-p">${eur(PRICE)} <small>/ mois, sans engagement</small></p>
+        <ul><li><b>Fiches et semaines illimitées</b></li><li>Placard : cuisine avec ce que tu as</li><li>Liste à copier et imprimer</li><li>Favoris</li></ul>
         ${S.premium ? '<span class="tag tag-ok">Premium actif</span> <button class="lnk" type="button" data-unsub>Repasser en gratuit</button>' : '<button class="btn btn-accent" type="button" data-sub>Passer Premium <span aria-hidden="true">→</span></button>'}
-        <p class="fine" style="margin:12px 0 0">Rentabilisé dès le premier repas livré évité.</p></div>
+</div>
     </div>`;
   const renderPricing = () => $$('.pricing-slot').forEach((e) => (e.innerHTML = PLANS_HTML()));
   function paywall(title, txt) {
@@ -122,7 +122,7 @@
   function renderChips() {
     $('[data-group=time]').innerHTML = Object.entries(TIMES).sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : a[0] - b[0])).map(([k, l]) => chip('time', k, l, String(F.time) === k)).join('');
     $('[data-group=diet]').innerHTML = Object.entries(DIETS).map(([k, v]) => chip('diet', k, v[0], F.diet.includes(k))).join('');
-    $('[data-group=style]').innerHTML = Object.entries(STYLES).map(([k, v]) => chip('style', k, v[0], F.style.includes(k))).join('');
+    $('[data-group=style]').innerHTML = Object.entries(STYLES).filter(([k]) => k !== 'reconfort' && k !== 'leger').map(([k, v]) => chip('style', k, v[0], F.style.includes(k))).join('');
     $('[data-group=eq]').innerHTML = Object.entries(EQ).map(([k, l]) => chip('eq', k, l, S.eq.includes(k))).join('');
     $('[data-group=type]').innerHTML = Object.entries(TYPES).map(([k, l]) => chip('type', k, l, F.type === k)).join('');
     $('#q').value = F.q; $('#max').value = F.max; $('#sort').value = F.sort;
@@ -173,19 +173,18 @@
         <button class="d-x" type="button" data-close aria-label="Fermer">✕</button></div>
       <div class="d-body">
         <div class="d-kpis">
-          <div class="kpi"><b>${eur(c)}</b><span>par portion chez ${store().n}</span></div>
-          <div class="kpi"><b>${d.t} min</b><span>${eqLabel(d)}</span></div>
-          <div class="kpi"><b>${eur(ticket(dishTotals([[id, dlgPortions]])))}</b><span>à la caisse si tu n'as rien (paquets entiers)</span></div>
+          <div class="kpi"><b>${eur(c)}</b><span>par portion</span></div>
+          <div class="kpi"><b>${d.t} min</b><span>${eqLabel(d).split(' ou ')[0]}</span></div>
+          <div class="kpi"><b>${eur(ticket(dishTotals([[id, dlgPortions]])))}</b><span>ticket complet</span></div>
         </div>
         <div class="d-cols">
           <div><h3>Ingrédients</h3>
             <div class="stepper"><button type="button" data-step="-1" aria-label="Moins de portions">−</button><span>${dlgPortions} portion${dlgPortions > 1 ? 's' : ''}</span><button type="button" data-step="1" aria-label="Plus de portions">+</button></div>
             <ul class="ings">${d.ing.map(([i, q]) => `<li><span>${ING[i][0].replace(/ \(.*\)/, '')} — ${fmtQty(i, q * k)}</span><em>${buyTxt(buy(i, q * k))}</em></li>`).join('')}</ul>
-            <p class="fine" style="margin-top:8px">Prix du paquet entier : le reste sert aux plats suivants. Sel, poivre et eau non comptés.</p></div>
+            <p class="fine" style="margin-top:8px">Prix du paquet entier chez ${store().n}.</p></div>
           <div><h3>Préparation</h3><ol class="d-steps">${d.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>
         </div>
         <div class="tipbox"><b>Le détail qui change tout.</b> ${d.tip}</div>
-        <div><h3>Prix par portion selon l'enseigne</h3><div class="d-stores">${byStore}</div></div>
         <div class="d-act"><button class="btn btn-accent" type="button" data-add="${d.id}">Ajouter à ma liste de courses</button>
           <button class="btn" type="button" data-fav="${d.id}" aria-pressed="${S.fav.includes(d.id)}">${S.fav.includes(d.id) ? '♥ Dans mes favoris' : '♡ Mettre en favori'}</button></div>
         ${S.premium ? '' : `<p class="fine" style="margin:0">${dishesLeft()} fiche${dishesLeft() > 1 ? 's' : ''} gratuite${dishesLeft() > 1 ? 's' : ''} restante${dishesLeft() > 1 ? 's' : ''} ce mois-ci. <a class="lnk" href="#/premium" data-close>Passer en illimité</a></p>`}
@@ -210,11 +209,11 @@
     const by = {}; for (const k of Object.keys(t)) (by[ING[k][1]] ||= []).push(k);
     const portions = ids.reduce((s, id) => s + S.list[id], 0);
     out.innerHTML = `
-      <div class="plan-sum"><div class="kpi"><b>${eur(total)}</b><span>ticket de caisse estimé, paquets entiers</span></div><div class="kpi"><b>${eur(left)}</b><span>reste à payer (non coché)</span></div><div class="kpi"><b>${portions}</b><span>portions, soit ${eur(total / portions)} l'une</span></div></div>
+      <div class="plan-sum"><div class="kpi"><b>${eur(total)}</b><span>ticket total</span></div><div class="kpi"><b>${eur(left)}</b><span>reste à payer</span></div><div class="kpi"><b>${portions}</b><span>portions</span></div></div>
       <div class="list-top"><div class="plan-act" style="margin:0"><button class="btn btn-ink" type="button" id="copyList">Copier la liste</button><button class="btn" type="button" id="printList">Imprimer</button><button class="btn" type="button" id="clearList">Vider</button></div></div>
       <div class="list-dishes">${ids.map((id) => `<span class="pill">${DISH[id].e} ${DISH[id].n} × ${S.list[id]}<button type="button" data-rm="${id}" aria-label="Retirer ${DISH[id].n}">✕</button></span>`).join('')}</div>
-      ${Object.entries(by).map(([r, ks]) => `<div class="aisle"><h3>${r}</h3>${ks.sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'fr')).map((k) => `<label class="item${S.checked.includes(k) ? ' done' : ''}"><input type="checkbox" data-chk="${k}" ${S.checked.includes(k) ? 'checked' : ''}><span>${ING[k][0].replace(/ \(.*\)/, '')} <small>besoin : ${fmtQty(k, t[k])}</small></span><em>${buyTxt(buy(k, t[k]))}</em></label>`).join('')}</div>`).join('')}
-      <p class="fine">Prix des paquets entiers. Coche ce que tu as déjà chez toi : le reste à payer se met à jour.</p>`;
+      ${Object.entries(by).map(([r, ks]) => `<div class="aisle"><h3>${r}</h3>${ks.sort((a, b) => ING[a][0].localeCompare(ING[b][0], 'fr')).map((k) => `<label class="item${S.checked.includes(k) ? ' done' : ''}"><input type="checkbox" data-chk="${k}" ${S.checked.includes(k) ? 'checked' : ''}><span>${ING[k][0].replace(/ \(.*\)/, '')} <small>${buyLbl(buy(k, t[k]))}</small></span><em>${eur(buy(k, t[k]).cost)}</em></label>`).join('')}</div>`).join('')}
+      <p class="fine">Coche ce que tu as déjà : le reste à payer se met à jour.</p>`;
   }
 
   /* ---------- Planificateur ---------- */
@@ -252,15 +251,15 @@
     if (!P.ids) { out.innerHTML = `<div class="warn"><b>Aucun plat ne correspond à ces critères avec ton équipement.</b> Élargis le temps max, change de régime ou coche plus d'équipement dans les filtres des plats.</div>`; return; }
     const ids = P.ids.filter((id) => DISH[id]); const tot = planTotal(ids); const slots = SLOTS[P.meals] || SLOTS[10];
     out.innerHTML = `
-      ${tot > P.budget + 1e-9 ? `<div class="warn"><b>${eur(P.budget)} ne suffisent pas pour ${P.meals} repas avec ces critères.</b> En paquets entiers, le plan le moins cher trouvé chez ${store().n} coûte ${eur(P.min)} : le voici. Pour tenir, réduis le nombre de repas à cuisiner et complète avec le resto U (voir <a href="#/bons-plans">Bons plans</a>).</div>` : ''}
+      ${tot > P.budget + 1e-9 ? `<div class="warn"><b>${eur(P.budget)} ne suffisent pas pour ${P.meals} repas.</b> Le plan le moins cher coûte ${eur(P.min)} : le voici. Réduis le nombre de repas ou complète avec le <a href="#/bons-plans">resto U</a>.</div>` : ''}
       <div class="plan-sum">
-        <div class="kpi"><b>${eur(tot)}</b><span>de ticket de caisse, sur ${eur(P.budget)} de budget</span><div class="bar"><i style="width:${Math.min(100, (tot / P.budget) * 100)}%"></i></div></div>
-        <div class="kpi"><b>${eur(tot / ids.length)}</b><span>en moyenne par repas</span></div>
-        <div class="kpi"><b>${eur(Math.max(0, P.budget - tot))}</b><span>de marge pour le petit-déj et les extras</span></div>
+        <div class="kpi"><b>${eur(tot)}</b><span>ticket, sur ${eur(P.budget)}</span><div class="bar"><i style="width:${Math.min(100, (tot / P.budget) * 100)}%"></i></div></div>
+        <div class="kpi"><b>${eur(tot / ids.length)}</b><span>par repas</span></div>
+        <div class="kpi"><b>${eur(Math.max(0, P.budget - tot))}</b><span>restants</span></div>
       </div>
       <div class="plan-act"><button class="btn btn-accent" type="button" id="planToList">Créer ma liste de courses</button><button class="btn" type="button" id="planAgain">Autre proposition</button><button class="btn" type="button" id="printList">Imprimer</button></div>
       <div class="meals">${ids.map((id, i) => { const d = DISH[id]; const rest = ids.indexOf(id) < i; return `<div class="meal"><div class="meal-h"><span>${slots[i] || 'Repas ' + (i + 1)}</span><span>${rest ? 'Restes' : d.t + ' min'}</span></div><button class="meal-n" type="button" data-dish="${id}">${d.e} ${d.n}</button><div class="meal-f"><b>${eur(cost(d))} <small>/ portion</small></b><button class="swap" type="button" data-swap="${i}" aria-label="Remplacer ${d.n}">Changer</button></div></div>`; }).join('')}</div>
-      <p class="fine" style="margin-top:16px">Total calculé en paquets entiers chez ${store().n}${P.basics ? ', hors huile, épices, farine et sucre que tu as déjà' : ''}. « Restes » : le plat est cuisiné une fois en double quantité.</p>`;
+      <p class="fine" style="margin-top:16px">Paquets entiers, prix ${store().n}${P.basics ? ', hors huile, épices, farine et sucre' : ''}. « Restes » : cuisiné en double la veille.</p>`;
   }
   function swapMeal(i) {
     const P = S.plan; const cur = P.ids[i]; const cap = Math.max(P.budget, planTotal(P.ids)) + 1e-9;
@@ -271,12 +270,12 @@
 
   /* ---------- Placard ---------- */
   function renderPantry() {
-    const by = {}; for (const [k, v] of Object.entries(ING)) if (!BASICS.includes(k)) (by[v[1]] ||= []).push(k);
+    const by = {}; for (const [k, v] of Object.entries(ING)) if (!BASICS.includes(k) && DISHES.filter((d) => d.ing.some(([i]) => i === k)).length >= 3) (by[v[1]] ||= []).push(k);
     $('#pantry').innerHTML = Object.entries(by).map(([r, ks]) => `<div><h3>${r}</h3><div class="chips">${ks.map((k) => chip('pantry', k, ING[k][0].replace(/ \(.*\)/, ''), S.pantry.includes(k))).join('')}</div></div>`).join('');
     $('#pantryCount').textContent = `${S.pantry.length} ingrédient${S.pantry.length > 1 ? 's' : ''} coché${S.pantry.length > 1 ? 's' : ''}`;
     const out = $('#pantryOut');
     if (!S.premium) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Le Placard fait partie de Premium.</h3><p>Coche tes ingrédients, Premium te montre les plats faisables et ce qu'il manque, au centime près.</p><a class="btn btn-accent" href="#/premium">Voir les formules</a></div>`; return; }
-    if (!S.pantry.length) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Coche au moins un ingrédient.</h3><p>Commence par ce qui traîne : pâtes, riz, œufs, une boîte de tomates.</p></div>`; return; }
+    if (!S.pantry.length) { out.innerHTML = `<div class="empty" style="grid-column:1/-1"><h3>Coche au moins un ingrédient.</h3></div>`; return; }
     const res = DISHES.filter((d) => canCook(d)).map((d) => { const need = d.ing.filter(([k]) => !BASICS.includes(k)); const miss = need.filter(([k]) => !S.pantry.includes(k)); return { d, miss, have: need.length - miss.length, mc: miss.reduce((s, [k, q]) => s + buy(k, q).cost, 0) }; })
       .filter((r) => r.have > 0 && r.miss.length <= 2).sort((a, b) => a.miss.length - b.miss.length || a.mc - b.mc).slice(0, 12);
     out.innerHTML = res.length ? res.map((r) => card(r.d, r.miss.length ? `<p class="miss">Il te manque : <b>${r.miss.map(([k]) => ING[k][0].replace(/ \(.*\)/, '').toLowerCase()).join(', ')}</b> (≈ ${eur(r.mc)})</p>` : `<p class="miss"><span class="tag tag-ok">Tu as tout</span></p>`)).join('')
@@ -287,7 +286,7 @@
   function renderStores() {
     const mx = Math.max(...STORES.map((s) => s.idx));
     $('#stores').innerHTML = STORES.map((s) => `<div class="store${s.id === S.store ? ' on' : ''}"><div><h3>${s.e} ${s.n}</h3><small>${s.kind}</small></div>
-      <div><div class="idx"><b>${s.idx}</b><div class="bar"><i style="width:${(s.idx / mx) * 100}%"></i></div></div><p><b>À acheter là :</b> ${s.plus}. ${s.tip}</p></div>
+      <div><div class="idx"><b>${s.idx}</b><div class="bar"><i style="width:${(s.idx / mx) * 100}%"></i></div></div><p><b>Idéal pour :</b> ${s.plus.toLowerCase()}.</p></div>
       ${s.id === S.store ? '<span class="tag tag-ok">Mon magasin</span>' : `<button class="btn btn-sm" type="button" data-store="${s.id}">C'est mon magasin</button>`}</div>`).join('');
     $('#spots').innerHTML = SPOTS.map((s) => `<div class="spot"><h3><span>${s.e}</span>${s.n}</h3><p>${s.txt}</p></div>`).join('');
     renderCmp();
@@ -307,7 +306,7 @@
     ['🪙', 'Moins de 1 €', 'Les plats de fin de mois.', '#/plats?max=1', (d) => cost(d) <= 1],
     ['⚡', 'Prêt en 10 min', 'Entre deux cours.', '#/plats?time=10', (d) => d.t <= 10],
     ['🕯️', 'Sophistiqué', 'Pour recevoir sans se ruiner.', '#/plats?style=chic', STYLES.chic[1]],
-    ['🧊', 'Batch du dimanche', 'Une heure, quatre repas.', '#/plats?style=batch', STYLES.batch[1]],
+    ['🧊', 'Préparé d’avance', 'Une heure, quatre repas.', '#/plats?style=batch', STYLES.batch[1]],
     ['📡', 'Micro-ondes seul', 'Résidence sans cuisine.', '#/plats?eq=micro', (d) => canCook(d, ['micro'])],
     ['🌱', 'Végan', 'Sans produit animal.', '#/plats?diet=vegan', (d) => isDiet(d, 'vegan')],
   ];

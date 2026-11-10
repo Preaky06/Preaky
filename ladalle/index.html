@@ -49,8 +49,8 @@
             <label>Budget de la semaine
               <span class="inp-eur"><input type="number" name="budget" min="3" max="150" step="1" value="20" required><i>€</i></span>
             </label>
-            <label>Repas à couvrir
-              <select name="meals"><option value="5">5 dîners</option><option value="7">7 dîners</option><option value="10" selected>10 repas (midi + soir)</option><option value="14">14 repas</option></select>
+            <label>Nombre de repas
+              <select name="meals"><option value="5">5 repas</option><option value="7">7 repas</option><option value="10" selected>10 repas</option><option value="14">14 repas</option></select>
             </label>
             <label>Régime
               <select name="diet">
@@ -155,23 +155,23 @@
   <section class="view" id="v-plats" hidden>
     <div class="wrap page">
       <h1 class="h-page">Les plats</h1>
-      <p class="sub">Coût par portion estimé chez <b class="storeName"></b>.</p>
+      <p class="sub">Prix par portion chez <b class="storeName"></b>.</p>
       <div class="filters" id="filters">
         <div class="f-row">
-          <input type="search" id="q" placeholder="Chercher un plat ou un ingrédient (riz, œufs, curry…)" aria-label="Rechercher">
+          <input type="search" id="q" placeholder="Chercher un plat ou un ingrédient" aria-label="Rechercher">
           <label class="f-sort">Trier
             <select id="sort"><option value="price">Prix croissant</option><option value="time">Plus rapide</option><option value="name">A → Z</option></select>
           </label>
         </div>
         <div class="f-row f-range">
-          <label for="max">Budget max par portion : <b id="maxLbl"></b></label>
+          <label for="max">Prix max par portion : <b id="maxLbl"></b></label>
           <input type="range" id="max" min="0.5" max="4" step="0.25" value="4">
         </div>
-        <fieldset><legend>Régime <span class="hint">(cumulables)</span></legend><div class="chips" data-group="diet"></div></fieldset>
-        <details class="more"><summary>Plus de filtres : temps, envie, équipement</summary><div class="more-in">
+        <fieldset><legend>Régime</legend><div class="chips" data-group="diet"></div></fieldset>
+        <details class="more"><summary>Plus de filtres</summary><div class="more-in">
         <fieldset><legend>Temps</legend><div class="chips" data-group="time" data-single></div></fieldset>
         <fieldset><legend>Envie</legend><div class="chips" data-group="style"></div></fieldset>
-        <fieldset><legend>Mon équipement <span class="hint">(décoche ce que tu n'as pas)</span></legend><div class="chips" data-group="eq"></div></fieldset>
+        <fieldset><legend>J'ai pour cuisiner</legend><div class="chips" data-group="eq"></div></fieldset>
         <fieldset><legend>Moment</legend><div class="chips" data-group="type" data-single></div></fieldset>
         </div></details>
         <div class="f-foot"><span id="resCount"></span><span class="quota" id="quota"></span><button class="lnk" id="resetF" type="button">Réinitialiser les filtres</button></div>
@@ -185,25 +185,24 @@
   <section class="view" id="v-semaine" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma semaine</h1>
-      <p class="sub">Un budget, un nombre de repas : une semaine variée dont le ticket de caisse rentre dedans.</p>
+      <p class="sub">Ton budget, ton nombre de repas : on compose la semaine.</p>
       <form class="planner" id="planForm">
         <label>Budget de la semaine
           <span class="inp-eur"><input type="number" name="budget" min="3" max="150" step="1" value="20" required><i>€</i></span>
         </label>
-        <label>Repas à couvrir
-          <select name="meals"><option value="5">5 dîners (lun → ven)</option><option value="7">7 dîners</option><option value="10" selected>10 repas (midi + soir, lun → ven)</option><option value="14">14 repas (toute la semaine)</option></select>
+        <label>Nombre de repas
+          <select name="meals"><option value="5">5 repas</option><option value="7">7 repas</option><option value="10" selected>10 repas</option><option value="14">14 repas</option></select>
         </label>
         <label>Régime
           <select name="diet"><option value="">Je mange de tout</option><option value="veg">Végétarien</option><option value="vegan">Végan</option><option value="noporc">Sans porc</option><option value="halal">Halal-compatible</option><option value="nogluten">Sans gluten</option><option value="nolactose">Sans lactose</option></select>
         </label>
-        <label>Temps max par plat
-          <select name="time"><option value="15">15 min</option><option value="30" selected>30 min</option><option value="">Sans limite</option></select>
+        <label>Temps par plat
+          <select name="time"><option value="15">15 min max</option><option value="30" selected>30 min max</option><option value="">Sans limite</option></select>
         </label>
         <button class="btn btn-accent" type="submit">Générer ma semaine</button>
-        <label class="chk"><input type="checkbox" name="basics" checked> J'ai déjà huile, épices, farine et sucre</label>
+        <label class="chk"><input type="checkbox" name="basics" checked> J'ai déjà huile, épices, farine et sucre (non comptés)</label>
       </form>
-      <p class="fine">Les plats « batch » sont cuisinés une fois et mangés deux fois.</p>
-      <div id="planOut"></div>
+            <div id="planOut"></div>
     </div>
   </section>
 
@@ -211,7 +210,7 @@
   <section class="view" id="v-placard" hidden>
     <div class="wrap page">
       <h1 class="h-page">Placard</h1>
-      <p class="sub">Coche ce que tu as. Huile, épices, ail, farine et sucre sont supposés présents.</p>
+      <p class="sub">Coche ce que tu as : on te dit quoi cuisiner.</p>
       <div class="pantry" id="pantry"></div>
       <div class="f-foot"><span id="pantryCount"></span><button class="lnk" id="pantryReset" type="button">Tout décocher</button></div>
       <h2 class="h-sub">Ce que tu peux cuisiner</h2>
@@ -257,7 +256,7 @@
   <section class="view" id="v-liste" hidden>
     <div class="wrap page">
       <h1 class="h-page">Ma liste de courses</h1>
-      <p class="sub">Les paquets à acheter, rangés par rayon. Prix estimés chez <b class="storeName"></b>.</p>
+      <p class="sub">Les paquets à acheter, par rayon. Prix <b class="storeName"></b>.</p>
       <div id="listOut"></div>
     </div>
   </section>
