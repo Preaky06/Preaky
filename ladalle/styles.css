@@ -399,7 +399,67 @@ dialog::backdrop { background: rgba(17, 18, 22, .62); backdrop-filter: blur(3px)
   .dk { padding: 24px; }
   .dk-fig { font-size: 2.5rem; }
 }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+/* ---------- Animations ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } }
+@keyframes grow { from { transform: scaleX(0); } }
+@keyframes float { 50% { transform: translateY(-10px) rotate(1.2deg); } }
+@keyframes nudge { 50% { transform: translateX(6px); } }
+@keyframes sheen { to { background-position: 100% 0; } }
+
+/* Entrée de page */
+.view.enter { animation: fade .35s ease-out; }
+.enter .pill-tag, .enter .hero h1, .enter .hero .lead, .enter .quick, .enter .hero .fine, .enter .versus, .enter .h-page, .enter .page > .sub, .enter .filters, .enter .planner, .enter .pantry { animation: rise .7s cubic-bezier(.2, .7, .2, 1) backwards; }
+.enter .hero h1, .enter .page > .sub { animation-delay: .08s; }
+.enter .hero .lead, .enter .filters, .enter .planner, .enter .pantry { animation-delay: .16s; }
+.enter .quick { animation-delay: .26s; }
+.enter .hero .fine { animation-delay: .34s; }
+.enter .versus { animation-delay: .42s; }
+/* Cartes en cascade */
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan) { animation: rise .55s cubic-bezier(.2, .7, .2, 1) backwards; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(2) { animation-delay: .05s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(3) { animation-delay: .1s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(4) { animation-delay: .15s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(5) { animation-delay: .2s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(6) { animation-delay: .25s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(7) { animation-delay: .3s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(8) { animation-delay: .35s; }
+.enter :is(.card, .meal, .store, .deal, .spot, .aisle, .kpi, .plan):nth-child(n+9) { animation-delay: .4s; }
+
+/* Apparition au défilement (accueil) */
+.js .rv { opacity: 0; transform: translateY(26px); transition: opacity .7s ease-out, transform .7s cubic-bezier(.2, .7, .2, 1); }
+.js .rv.in { opacity: 1; transform: none; }
+.js .rv.step:nth-child(2), .js .rv.dk:nth-child(2) { transition-delay: .12s; }
+.js .rv.step:nth-child(3) { transition-delay: .24s; }
+.js h2.rv { transition-delay: .06s; }
+
+/* Mouvements permanents, discrets */
+.hero .gt { background-size: 220% 100%; background-image: linear-gradient(90deg, var(--c1), var(--c2) 30%, var(--c3) 50%, var(--c2) 70%, var(--c1)); animation: sheen 7s linear infinite alternate; }
+.vs-card.big .vs-art { animation: float 6s ease-in-out infinite; }
+.vs-arrow { animation: nudge 1.6s ease-in-out infinite; display: inline-block; }
+.bar i { transform-origin: left; animation: grow .9s .15s cubic-bezier(.2, .7, .2, 1) backwards; }
+
+/* Fenêtres et retours tactiles */
+dialog[open] { animation: pop .26s cubic-bezier(.2, .8, .2, 1); }
+dialog[open]::backdrop { animation: fade .25s ease-out; }
+.faq details[open] p { animation: rise .35s ease-out; }
+.btn span[aria-hidden] { display: inline-block; transition: transform .2s; }
+.btn:hover span[aria-hidden] { transform: translateX(5px); }
+.btn-accent { position: relative; overflow: hidden; }
+.btn-accent::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .35) 50%, transparent 65%); transform: translateX(-120%); transition: transform .7s; pointer-events: none; }
+.btn-accent:hover::after { transform: translateX(120%); }
+.chip { transition: transform .12s, background .15s, color .15s, border-color .15s; }
+.chip:active, .round:active, .swap:active { transform: scale(.94); }
+.card-art, .coll-art { transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.card:hover .card-art, .coll:hover .coll-art { transform: scale(1.03); }
+.nav a { transition: background .15s, color .15s; }
+.round { transition: transform .12s, box-shadow .15s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .js .rv { opacity: 1; transform: none; }
+}
 @media print {
   .top, .foot, .plan-act, .list-top .btn, .pill button, .toast, .swap { display: none !important; }
   body { background: #fff; }

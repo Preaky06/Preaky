@@ -324,6 +324,14 @@
     $('#credits').innerHTML = ids.length ? `<p>Photos issues de Wikimedia Commons, utilisées selon leur licence.</p><ul>${ids.map((id) => { const c = IMG[id]; return `<li><b>${DISH[id].n}</b> — ${c.author || 'auteur non renseigné'}, <a href="${c.licenseUrl || c.source}" target="_blank" rel="noopener noreferrer">${c.license}</a>, <a href="${c.source}" target="_blank" rel="noopener noreferrer">source</a></li>`; }).join('')}</ul>` : '<p>Aucune photo pour le moment : les plats sont illustrés par des pictogrammes.</p>';
   }
 
+  /* ---------- Animations ---------- */
+  // « enter » : joue l'entrée en cascade du contenu une seule fois, à l'arrivée sur une page.
+  const enter = (el) => { if (!el) return; el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('enter'), 1400); };
+  // Apparition au défilement des sections de l'accueil. Sans IntersectionObserver, tout reste visible.
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }) : null;
+  if (io) document.documentElement.classList.add('js');
+  const reveal = () => { if (!io) return; $$('#v-home .sec .eyebrow, #v-home .sec h2, #v-home .step, #v-home .car, #v-home .dk, #v-home .pricing-slot, #v-home .faq, #v-home .final .btn').forEach((el) => { if (!el.classList.contains('rv')) { el.classList.add('rv'); io.observe(el); } }); };
+
   /* ---------- Routeur ---------- */
   const VIEWS = { '': 'home', plats: 'plats', semaine: 'semaine', placard: 'placard', magasins: 'bons-plans', 'bons-plans': 'bons-plans', liste: 'liste', manifeste: 'manifeste', premium: 'premium', credits: 'credits' };
   const RENDER = { home: renderHome, plats: refreshDishes, semaine: renderPlan, placard: renderPantry, 'bons-plans': () => { renderStores(); renderDeals(); }, liste: renderList, premium: renderPricing, credits: renderCredits };
@@ -345,7 +353,7 @@
     $$('[data-nav]').forEach((a) => a.classList.toggle('on', a.dataset.nav === current));
     $('#nav').classList.remove('open'); $('#burger').setAttribute('aria-expanded', 'false');
     $$('.storeName').forEach((e) => (e.textContent = store().n));
-    RENDER[current]?.(); window.scrollTo(0, 0);
+    RENDER[current]?.(); window.scrollTo(0, 0); enter($('#v-' + current)); reveal();
     document.title = { home: 'Ladalle — Bien manger, même le 28 du mois', plats: 'Les plats — Ladalle', semaine: 'Ma semaine — Ladalle', placard: 'Placard — Ladalle', premium: 'Premium — Ladalle', credits: 'Crédits photo — Ladalle', 'bons-plans': 'Bons plans — Ladalle', liste: 'Ma liste — Ladalle', manifeste: 'Ligne éditoriale — Ladalle' }[current];
   }
   const rerender = () => { $$('.storeName').forEach((e) => (e.textContent = store().n)); RENDER[current]?.(); renderPricing(); };
@@ -375,7 +383,7 @@
     e.preventDefault(); const f = new FormData(e.target);
     const p = { budget: Math.max(1, +f.get('budget') || 20), meals: +f.get('meals'), diet: f.get('diet'), time: f.get('time'), basics: f.get('basics') === 'on' };
     if (!S.premium) { if (usage().plans >= FREE_PLANS) return paywall('Ta semaine gratuite du mois est déjà générée.', 'Elle reste affichée ci-dessous. Premium en génère autant que tu veux.'); usage().plans++; }
-    S.plan = buildPlan(p) || { ...p, ids: null }; save(); renderPlan();
+    S.plan = buildPlan(p) || { ...p, ids: null }; save(); renderPlan(); enter($('#planOut'));
     $('#planOut').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
