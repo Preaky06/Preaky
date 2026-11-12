@@ -177,6 +177,20 @@ des humeurs entière, le bas de l'écran (bouton « Je sais pas ») et la positi
 
 Reconstruire : `./build-sept.sh cinem00d.zip` (ou `… 169` / `… 916`).
 
+### Plans du site sans texte (9:16, 20,5 s, muet)
+
+`out/plans-site/cinemood-plans-site-9x16.mp4` : le téléphone seul, plein cadre, sans titres ni son, à glisser
+sous une voix (montage UGC). Tiré du film ci-dessus par recadrage sur le téléphone puis agrandissement
+(légèrement moins net qu'un rendu direct) :
+
+```bash
+ffmpeg -i out/7-questions/cinemood-7-questions-9x16.mp4 -filter_complex \
+  "[0:v]format=yuv444p,split=2[a][b];[a]trim=0:17.1167,setpts=PTS-STARTPTS,crop=675:1200:202:698,scale=1080:1920:flags=lanczos[va];\
+   [b]trim=17.1167:20.5,setpts=PTS-STARTPTS,crop=664:1180:208:690,scale=1080:1920:flags=lanczos[vb];\
+   [va][vb]concat=n=2:v=1:a=0,unsharp=5:5:0.5:5:5:0,format=yuv420p[v]" \
+  -map "[v]" -an -r 60 -c:v libx264 -preset slow -crf 16 -movflags +faststart out/plans-site/cinemood-plans-site-9x16.mp4
+```
+
 ## Version 15 s, textes du site du 20 octobre
 
 | Fichier | Format | Usage |
