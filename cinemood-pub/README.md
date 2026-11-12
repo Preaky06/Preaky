@@ -191,6 +191,32 @@ ffmpeg -i out/7-questions/cinemood-7-questions-9x16.mp4 -filter_complex \
   -map "[v]" -an -r 60 -c:v libx264 -preset slow -crf 16 -movflags +faststart out/plans-site/cinemood-plans-site-9x16.mp4
 ```
 
+## Pub UGC 30 s : une créatrice fictive (9:16)
+
+| Fichier | Format | Usage |
+| --- | --- | --- |
+| `out/ugc-30s/cinemood-ugc-30s-9x16.mp4` | 1080×1920, 60 i/s, H.264 + AAC | TikTok, Reels, Shorts |
+| `out/ugc-30s/couverture-9x16.png` | carton final | couverture |
+
+Format TikTok : une créatrice générée par IA (trois images Canva du 12 novembre, même visage et même décor),
+les plans du vrai site, des sous-titres sur cartouche noir. Pas de voix : ses lèvres ne bougent pas, les photos
+sont animées (poussée lente, flottement « à la main », coup de zoom à chaque coupe). Mention permanente
+« Publicité · personnage généré par IA » en haut à gauche (personnage fictif qui parle à la première personne).
+
+| Temps | Image | Sous-titres |
+| --- | --- | --- |
+| 0–6 s | elle, télécommande en main ; autocollant « temps perdu à chercher » qui monte jusqu'à 40:00 et passe au rouge | « Le pire moment de la soirée ? Passer 40 minutes à chercher un film… au lieu d'en regarder un. » |
+| 6–8,6 s | elle montre son téléphone (écran remplacé par la page d'accueil du site : `ugc/ecran.py`) | « J'ai découvert un site qui règle ce problème : » |
+| 8,6–21 s | le vrai site dans un téléphone : l'adresse tapée, les questions, le résultat | « Tu réponds à quelques questions sur tes goûts et ton mood, et le site te propose les films qui collent à tes envies. » |
+| 21–24,4 s | elle sourit, pop-corn | « Franchement, si tu sais jamais quoi regarder, va tester. » |
+| 24,4–30 s | carton final | « Je te mets le site : », CINÉMOOD, cinem00d.com, gratuit, sans inscription |
+
+Bande-son (`audio/score_ugc30.py`) : tic-tac sur le compteur, groove à partir de la première coupe, un clic par
+appui dans le site (recalé par la même table `UMAP` que l'image), frappe de l'adresse, signature. −14 LUFS.
+
+Reconstruire : `python3 -I ugc/ecran.py telephone.png ecran.jpg telephone_cm.png`, puis
+`./build-ugc30.sh agacee.png telephone_cm.png sourire.png`.
+
 ## Version 15 s, textes du site du 20 octobre
 
 | Fichier | Format | Usage |
