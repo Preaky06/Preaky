@@ -1,24 +1,35 @@
-/* CinéMood — pub « UGC » 30 s, 9:16, format TikTok. Une créatrice fictive (images générées : tex/face1..3.jpg),
-   les plans du vrai site (out/plans-site, lus image par image : tex/broll/), sous-titres façon TikTok.
-   0–6 s       accroche : elle, agacée, un compteur qui monte jusqu'à 40:00 ;
-   6–8,6 s     elle montre son téléphone ;
-   8,6–21 s    le vrai site dans un téléphone, l'adresse tapée, le parcours, le résultat ;
-   21–24,4 s   elle sourit : « va tester » ;
-   24,4–30 s   carton final : l'adresse en grand.
+/* CinéMood — pub « UGC », 9:16, format TikTok, calée sur une voix off (ElevenLabs, 24,3 s, posée à 0,25 s).
+   Une créatrice fictive (images générées : tex/face1..3.jpg), les plans du vrai site (out/plans-site, lus image
+   par image : tex/broll/), sous-titres façon TikTok, chacun aux instants où la voix dit la phrase.
+   accroche (elle, agacée, compteur jusqu'à 40:00) → elle montre son téléphone → le vrai site (adresse tapée
+   pendant qu'elle la dit, questions, résultat) → elle sourit → carton final.
    Zone sûre TikTok : rien d'important au-dessus de 200 px ni sous 1500 px. S'appuie sur mograph.js. */
 'use strict';
 
-const UDUR = 30, USITE = 8.6, UFACE3 = 21.0, UEND = 24.4;
+/* tous les instants du film, en secondes (voix + 0,25) */
+const UT = {
+  dur: 27.5, lock: 3.3, phone: 6.55, site: 9.1, face3: 17.8, end: 21.3,
+  pill: 9.0, pillType: [9.25, 10.45],           // l'adresse se tape pendant « cinémoud point com »
+  endPill: 22.75, endType: [23.0, 24.2], endLogo: 23.05, endTag: 23.4, endKick: 24.1, endFoot: 24.2, tap: 24.9,
+};
+const UCAPS = { // [début, fin, lignes]
+  hook: [[0.25, 2.2, [[['Le pire moment']], [['de la soirée ?']]]], [2.2, 4.6, [[['Passer '], ['40 minutes', '#ff2d4f']], [['à chercher un film…']]]],
+    [4.6, 6.55, [[['…au lieu d’en']], [['regarder un.', '#ff2d4f']]]]],
+  phone: [[6.62, 7.73, [[['J’ai découvert un site']]]], [7.73, 9.0, [[['qui règle '], ['ce problème :', '#ff2d4f']]]]],
+  site: [[11.15, 13.0, [[['Tu réponds à']], [['quelques questions', '#ff2d4f']]]], [13.0, 14.65, [[['sur tes goûts']], [['et ton '], ['mood', '#ff2d4f']]]],
+    [14.65, 15.58, [[['et le site']], [['te propose']]]], [15.58, 17.8, [[['les films', '#ff2d4f'], [' qui correspondent']], [['à tes envies.']]]]],
+  smile: [[17.85, 20.35, [[['Franchement, si tu sais']], [['jamais quoi regarder,']]]], [20.35, 21.7, [[['va tester.', '#ff2d4f']]]]],
+};
 /* temps de la vidéo → temps des plans du site. Un saut (deux points au même instant) est une coupe :
    on passe les deux zooms de la question 3, l'écran est le même avant et après. */
-const UMAP = [[8.6, 0.6], [9.6, 1.6], [10.2, 2.5], [11.0, 3.3], [11.9, 4.35], [12.1, 4.5], [12.1, 7.4], [12.9, 8.2], [13.9, 9.45],
-  [15.0, 11.15], [16.0, 12.85], [17.0, 14.55], [17.4, 14.95], [19.2, 16.3], [UFACE3 + 0.2, 17.2]];
+const UMAP = [[9.1, 0.6], [10.4, 1.6], [11.0, 3.3], [11.5, 4.4], [11.5, 7.4], [12.1, 8.25], [12.8, 9.45], [13.6, 11.15],
+  [14.4, 12.85], [15.2, 14.55], [15.5, 14.95], [17.0, 16.3], [UT.face3 + 0.2, 17.2]];
 function brollAt(t) {
   if (t <= UMAP[0][0]) return UMAP[0][1];
   for (let i = 1; i < UMAP.length; i++) if (t < UMAP[i][0]) { const [a, A] = UMAP[i - 1], [b, B] = UMAP[i]; return A + ((B - A) * (t - a)) / (b - a); }
   return UMAP[UMAP.length - 1][1];
 }
-const brollFrame = (t) => (t < USITE - 0.05 || t > UFACE3 + 0.2 ? null : clamp(Math.round(brollAt(t) * 60), 0, 1229));
+const brollFrame = (t) => (t < UT.site - 0.05 || t > UT.face3 + 0.2 ? null : clamp(Math.round(brollAt(t) * 60), 0, 1229));
 
 let UFACE = [], UCUR = null; // les trois images de la créatrice ; image courante des plans du site
 const UFR = new Map();
@@ -71,31 +82,31 @@ function ucap(x, t, t0, t1, lines, cy, size) {
   x.restore();
 }
 /* l'adresse dans sa pastille, tapée lettre à lettre */
-function upill(x, t, t0, cy, size, w, h) {
-  const pu = EZ.out(prog(t, t0, t0 + 0.4));
+function upill(x, t, t0, cy, size, w, h, ty) {
+  const pu = EZ.out(prog(t, t0, t0 + 0.4)), [ta, tb] = ty || [t0 + 0.3, t0 + 0.95];
   if (pu <= 0) return;
   const url = 'cinem00d.com', o = { fam: 'Archivo', wt: 800 }, tw = textWidth(url, size, o);
   x.save();
-  const pop = 1 + 0.035 * tri(t - t0 - 1.05, 0.3);
+  const pop = 1 + 0.035 * tri(t - tb - 0.1, 0.3);
   x.translate(CX, cy); x.scale(pop, pop); x.translate(-CX, -cy);
   rrp(x, CX - (w / 2) * pu, cy - h / 2, w * pu, h, h / 2);
   x.fillStyle = 'rgba(10,5,7,0.94)'; x.fill(); x.lineWidth = size * 0.06; x.strokeStyle = C.red; x.stroke();
-  const n = Math.floor(url.length * prog(t, t0 + 0.3, t0 + 0.95));
+  const n = Math.floor(url.length * prog(t, ta, tb));
   let px = CX - tw / 2 - size * 0.25;
   for (let i = 0; i < n; i++) { drawText(x, url[i], px, cy + size * 0.35, size, Object.assign({ color: i === 5 || i === 6 ? C.red : '#ffffff' }, o)); px += textWidth(url.slice(0, i + 1), size, o) - textWidth(url.slice(0, i), size, o); }
-  if (t < t0 + 1.1 && Math.floor(t * 4) % 2 === 0) { x.fillStyle = '#fff'; x.fillRect(px + 4, cy - size * 0.45, size * 0.06, size * 0.9); }
-  const aa = EZ.out(prog(t, t0 + 1.0, t0 + 1.3));
+  if (t < tb + 0.15 && Math.floor(t * 4) % 2 === 0) { x.fillStyle = '#fff'; x.fillRect(px + 4, cy - size * 0.45, size * 0.06, size * 0.9); }
+  const aa = EZ.out(prog(t, tb + 0.05, tb + 0.35));
   if (aa > 0) drawText(x, '→', CX + tw / 2 + size * 0.05 - (1 - aa) * 20, cy + size * 0.35, size * 0.8, { fam: 'Archivo', wt: 800, color: redA(aa) });
   x.restore();
 }
 
-/* ---------- 0–6 s : l'accroche ---------- */
+/* ---------- l'accroche : elle, agacée ; le compteur monte jusqu'à 40:00 ---------- */
 function sHook(x, t) {
-  face(x, UFACE[0], t, 0, 6, 1.3);
+  face(x, UFACE[0], t, 0, UT.phone, 1.3);
   // autocollant « compteur » : 00:00 → 40:00, se verrouille en rouge
-  const lock = 4.7, secs = Math.round(2400 * EZ.inOut(prog(t, 0.5, lock)));
+  const lock = UT.lock, secs = Math.round(2400 * EZ.inOut(prog(t, 0.4, lock)));
   const s = `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
-  const a = Math.min(1.06, spr(t - 0.25, 16, 8)), on = t >= lock, pun = 1 + 0.12 * tri(t - lock, 0.3);
+  const a = Math.min(1.06, spr(t - 0.2, 16, 8)), on = t >= lock, pun = 1 + 0.12 * tri(t - lock, 0.3);
   if (a > 0) {
     const size = 112, o = { fam: 'Anton' }, cell = textWidth('0', size, o) * 1.04, col = textWidth(':', size, o) * 1.3, tw = 4 * cell + col;
     const cy = 400, w = tw + 92, h = 172;
@@ -113,26 +124,23 @@ function sHook(x, t) {
     }
     x.restore();
   }
-  ucap(x, t, 0.3, 2.3, [[['Le pire moment']], [['de la soirée ?']]], 1260, 76);
-  ucap(x, t, 2.3, 4.5, [[['Passer '], ['40 minutes', C.red]], [['à chercher un film…']]], 1260, 76);
-  ucap(x, t, 4.5, 6.0, [[['…au lieu d’en']], [['regarder un.', C.red]]], 1260, 76);
+  for (const [a0, a1, l] of UCAPS.hook) ucap(x, t, a0, a1, l, 1260, 76);
 }
 
-/* ---------- 6–8,6 s : elle montre son téléphone ---------- */
+/* ---------- elle montre son téléphone ---------- */
 function sPhone(x, t) {
-  face(x, UFACE[1], t, 6, USITE, 4.7);
-  ucap(x, t, 6.15, 7.35, [[['J’ai découvert un site']]], 1260, 66);
-  ucap(x, t, 7.35, USITE, [[['qui règle '], ['ce problème :', C.red]]], 1260, 66);
+  face(x, UFACE[1], t, UT.phone, UT.site, 4.7);
+  for (const [a0, a1, l] of UCAPS.phone) ucap(x, t, a0, a1, l, 1260, 66);
 }
 
-/* ---------- 8,6–21 s : le vrai site, dans un téléphone ---------- */
+/* ---------- le vrai site, dans un téléphone ---------- */
 const UPH = { s: 0.76, x: 192, y: 474, w: 696, h: 1435, r: 98 }; // le téléphone des plans (83..999 × 19..1907), réduit
 function sSite(x, t) {
   bgFill(x, 'blk');
   const hg = x.createRadialGradient(CX, 1150, 0, CX, 1150, 1000);
   hg.addColorStop(0, redA(0.3)); hg.addColorStop(0.5, redA(0.08)); hg.addColorStop(1, 'rgba(255,45,79,0)');
   x.fillStyle = hg; x.fillRect(0, 0, W, H);
-  const P = UPH, pop = 1 + 0.06 * (1 - EZ.out(prog(t, USITE, USITE + 0.45)));
+  const P = UPH, pop = 1 + 0.06 * (1 - EZ.out(prog(t, UT.site, UT.site + 0.45)));
   x.save();
   x.translate(CX, P.y + P.h / 2); x.scale(pop, pop); x.translate(-CX, -(P.y + P.h / 2));
   x.save();
@@ -147,38 +155,36 @@ function sSite(x, t) {
   }
   rrp(x, P.x, P.y, P.w, P.h, P.r); x.lineWidth = 3; x.strokeStyle = 'rgba(255,120,140,0.5)'; x.stroke();
   x.restore();
-  if (t < 11.95) { x.save(); x.globalAlpha = 1 - prog(t, 11.8, 11.95); upill(x, t, USITE, 370, 76, 720, 136); x.restore(); }
-  ucap(x, t, 12.1, 14.6, [[['Tu réponds à']], [['quelques questions', C.red]]], 370, 60);
-  ucap(x, t, 14.6, 17.0, [[['sur tes goûts']], [['et ton '], ['mood', C.red]]], 370, 60);
-  ucap(x, t, 17.0, 18.8, [[['et le site']], [['te propose']]], 370, 60);
-  ucap(x, t, 18.8, UFACE3, [[['les films', C.red], [' qui collent']], [['à tes envies.']]], 370, 60);
+  const pe = UCAPS.site[0][0];
+  if (t < pe) { x.save(); x.globalAlpha = 1 - prog(t, pe - 0.15, pe); upill(x, t, UT.pill, 370, 76, 720, 136, UT.pillType); x.restore(); }
+  for (const [a0, a1, l] of UCAPS.site) ucap(x, t, a0, a1, l, 370, 60);
 }
 
-/* ---------- 21–24,4 s : elle sourit ---------- */
+/* ---------- elle sourit ---------- */
 function sSmile(x, t) {
-  face(x, UFACE[2], t, UFACE3, UEND + 0.4, 9.1);
-  ucap(x, t, UFACE3 + 0.15, 23.0, [[['Franchement, si tu sais']], [['jamais quoi regarder,']]], 1260, 64);
-  ucap(x, t, 23.0, UEND + 0.4, [[['va tester.', C.red]]], 1260, 92);
+  face(x, UFACE[2], t, UT.face3, UT.end + 0.4, 9.1);
+  ucap(x, t, UCAPS.smile[0][0], UCAPS.smile[0][1], UCAPS.smile[0][2], 1260, 64);
+  ucap(x, t, UCAPS.smile[1][0], UCAPS.smile[1][1], UCAPS.smile[1][2], 1260, 92);
 }
 
-/* ---------- 24,4–30 s : le carton final ---------- */
+/* ---------- le carton final ---------- */
 function sEnd(x, t) {
   bgFill(x, 'blk');
   const hg = x.createRadialGradient(CX, 900, 0, CX, 900, 1000);
   hg.addColorStop(0, redA(0.34)); hg.addColorStop(0.5, redA(0.09)); hg.addColorStop(1, 'rgba(255,45,79,0)');
   x.fillStyle = hg; x.fillRect(0, 0, W, H);
-  ucap(x, t, 24.75, 26.5, [[['Je te mets le site :']]], 640, 66);
+  ucap(x, t, UT.end + 0.25, UT.endLogo, [[['Je te mets le site :']]], 640, 66);
   const LW = layoutChars('CINÉMOOD', 190, { fam: 'Anton' }), x0 = CX - LW.w / 2;
-  LW.chars.forEach((c, i) => revealLine(x, c.ch, x0 + c.x, 680, 190, (t - 26.55 - i * 0.04) / 0.55, { fam: 'Anton', color: i < 4 ? C.cream : C.red, ease: EZ.out, asc: 1.2, desc: 0.08 }));
-  tl(x, [['TON HUMEUR CHOISIT TON ', C.cream], ['CINÉMA.', C.red]], CX, 770, 50, t, 26.9, null, { align: 'center' });
-  upill(x, t, 25.0, 960, 100, 900, 176);
-  kick(x, 'GRATUIT  ·  SANS INSCRIPTION', CX, 1130, t, 26.3, null, { align: 'center', size: 32, color: cream(0.9) });
-  if (t > 27.3) { // un appui sur l'adresse
+  LW.chars.forEach((c, i) => revealLine(x, c.ch, x0 + c.x, 680, 190, (t - UT.endLogo - i * 0.04) / 0.55, { fam: 'Anton', color: i < 4 ? C.cream : C.red, ease: EZ.out, asc: 1.2, desc: 0.08 }));
+  tl(x, [['TON HUMEUR CHOISIT TON ', C.cream], ['CINÉMA.', C.red]], CX, 770, 50, t, UT.endTag, null, { align: 'center' });
+  upill(x, t, UT.endPill, 960, 100, 900, 176, UT.endType);
+  kick(x, 'GRATUIT  ·  SANS INSCRIPTION', CX, 1130, t, UT.endKick, null, { align: 'center', size: 32, color: cream(0.9) });
+  if (t > UT.tap - 0.5) { // un appui sur l'adresse
     const px = CX + 398, py = 985;
-    finger(x, px, py, prog(t, 27.3, 27.5) * (1 - prog(t, 28.4, 28.7)), press(t, 27.8), false);
-    ripple(x, px, py, t - 27.8, false);
+    finger(x, px, py, prog(t, UT.tap - 0.5, UT.tap - 0.3) * (1 - prog(t, UT.tap + 0.6, UT.tap + 0.9)), press(t, UT.tap), false);
+    ripple(x, px, py, t - UT.tap, false);
   }
-  para(x, 'Interface réelle  ·  films fictifs, à titre d’illustration', CX, 1440, 22, 1000, t, 26.8, null, { align: 'center', color: cream(0.45) });
+  para(x, 'Interface réelle  ·  films fictifs, à titre d’illustration', CX, 1440, 22, 1000, t, UT.endFoot, null, { align: 'center', color: cream(0.45) });
 }
 
 /* mention permanente, en haut à gauche, sous la barre de TikTok */
@@ -190,11 +196,11 @@ function ulabel(x) {
 
 /* ---------- le film ---------- */
 function sUgc(x, t) {
-  if (t < 6) sHook(x, t);
-  else if (t < USITE) sPhone(x, t);
-  else if (t < UFACE3) sSite(x, t);
+  if (t < UT.phone) sHook(x, t);
+  else if (t < UT.site) sPhone(x, t);
+  else if (t < UT.face3) sSite(x, t);
   else {
-    const e = EZ.inOut(prog(t, UEND, UEND + 0.4));
+    const e = EZ.inOut(prog(t, UT.end, UT.end + 0.4));
     if (e <= 0) sSmile(x, t);
     else if (e >= 1) sEnd(x, t);
     else { // le carton final pousse l'image vers le haut
@@ -206,18 +212,18 @@ function sUgc(x, t) {
   ulabel(x);
 }
 function ugcBlurAt(t) {
-  if (t >= UEND && t < UEND + 0.42) return { n: 6, shutter: 0.8 };
-  if ((t > 0.25 && t < 0.7) || (t > 4.6 && t < 5.1)) return { n: 4, shutter: 0.6 };
+  if (t >= UT.end && t < UT.end + 0.42) return { n: 6, shutter: 0.8 };
+  if ((t > 0.2 && t < 0.65) || (t > UT.lock - 0.1 && t < UT.lock + 0.4)) return { n: 4, shutter: 0.6 };
   return { n: 1, shutter: 0 };
 }
 function ugcFx(t) {
   const sh = { x: 0, y: 0 };
   let env = 0;
-  for (const [t0, amp] of [[4.7, 7], [UEND + 0.38, 4]]) {
+  for (const [t0, amp] of [[UT.lock, 7], [UT.end + 0.38, 4]]) {
     const u = t - t0;
     if (u <= 0 || u >= 0.4) continue;
     const k = (1 - u / 0.4) ** 2, s = shake(t, amp * k, 26, t0 * 7);
     sh.x += s.x; sh.y += s.y; env += amp * k;
   }
-  return { shake: sh, env, vignette: 0.18, grain: 0.035, fade: Math.max(1 - t / 0.12, prog(t, UDUR - 0.5, UDUR)) };
+  return { shake: sh, env, vignette: 0.18, grain: 0.035, fade: Math.max(1 - t / 0.12, prog(t, UT.dur - 0.5, UT.dur)) };
 }

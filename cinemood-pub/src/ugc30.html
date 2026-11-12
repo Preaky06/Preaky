@@ -36,7 +36,7 @@ function renderScene(tk, tc) {
   SX.fillStyle = '#000';
   SX.fillRect(0, 0, W, H);
   SX.save();
-  sUgc(SX, Math.min(Math.max(tk, 0), UDUR - 1e-4));
+  sUgc(SX, Math.min(Math.max(tk, 0), UT.dur - 1e-4));
   SX.restore();
   resetCtx(SX);
 }
