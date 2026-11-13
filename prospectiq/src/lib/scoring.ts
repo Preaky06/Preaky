@@ -191,9 +191,9 @@ export function scoreCompany(input: ScoreInput): ScoreResult {
     capacity = range.min >= 3 ? 1 : range.min >= 1 ? 0.8 : 0.55;
     capacityReasons.push(`Effectif : ${range.label.toLowerCase()}${company.employeesYear ? ` (${company.employeesYear})` : ''}.`);
   }
-  if (company.finances?.revenue != null) {
-    if (company.finances.revenue >= 150000) capacity = Math.max(capacity, 1);
-    capacityReasons.push(`Chiffre d’affaires publié : ${Math.round(company.finances.revenue / 1000).toLocaleString('fr-FR')} k€ (${company.finances.year}).`);
+  if ((company.finances?.revenue ?? 0) > 0) {
+    if (company.finances!.revenue! >= 150000) capacity = Math.max(capacity, 1);
+    capacityReasons.push(`Chiffre d’affaires publié : ${Math.round(company.finances!.revenue! / 1000).toLocaleString('fr-FR')} k€ (${company.finances!.year}).`);
   }
   if ((company.establishments || 0) >= 2) {
     capacity = Math.max(capacity, 1);

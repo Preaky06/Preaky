@@ -157,7 +157,7 @@ export default function RadarPage() {
           </Card>
         ))}
       </div>
-      <p className="mt-3 text-xs text-slate-500">Dernière vérification : {when(data?.checkedAt || null)}. Sources : annonces officielles du BODACC, entreprises vérifiées dans le répertoire SIRENE (oppositions au démarchage exclues).</p>
+      <p className="mt-3 text-xs text-slate-500">Dernière vérification : {when(data?.checkedAt || null).replace(/\.$/, '')}. Sources : annonces officielles du BODACC, entreprises vérifiées dans le répertoire SIRENE (oppositions au démarchage exclues).</p>
 
       <div className="mt-6 grid items-start gap-6 xl:grid-cols-[1.6fr_1fr]">
         <Card>

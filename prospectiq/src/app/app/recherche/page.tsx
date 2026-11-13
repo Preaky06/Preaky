@@ -177,7 +177,7 @@ function CommunePicker({ value, onChange }: { value: Filters['commune']; onChang
 
 function SignalChip({ s }: { s: Signal }) {
   return (
-    <Badge tone={s.kind === 'risk' ? 'danger' : s.kind === 'opportunity' ? 'accent' : 'neutral'} title={`${s.source}${s.date ? ` · ${new Date(s.date).toLocaleDateString('fr-FR')}` : ''}`}>
+    <Badge wrap tone={s.kind === 'risk' ? 'danger' : s.kind === 'opportunity' ? 'accent' : 'neutral'} title={`${s.source}${s.date ? ` · ${new Date(s.date).toLocaleDateString('fr-FR')}` : ''}`}>
       {s.kind === 'risk' && <AlertTriangle className="size-3" />}
       {s.label}
       {s.date && <span className="font-normal opacity-70">· {new Date(s.date).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}</span>}
@@ -537,7 +537,7 @@ function SearchPage() {
                               ))}
                               {r.facts &&
                                 ANALYSIS_SIGNALS.filter((s) => s.test(r.facts!)).map((s) => (
-                                  <Badge key={s.id} tone="warning">
+                                  <Badge key={s.id} tone="warning" wrap>
                                     {s.label}
                                   </Badge>
                                 ))}

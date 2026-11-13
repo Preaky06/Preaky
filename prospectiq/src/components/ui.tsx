@@ -53,9 +53,13 @@ const TONES = {
   night: 'bg-night-900 text-white ring-night-900',
 };
 
-export function Badge({ tone = 'neutral', className, children, title }: { tone?: keyof typeof TONES; className?: string; children: React.ReactNode; title?: string }) {
+/** `wrap` : libellé long autorisé à passer à la ligne (sinon il déborderait sur mobile). */
+export function Badge({ tone = 'neutral', className, children, title, wrap = false }: { tone?: keyof typeof TONES; className?: string; children: React.ReactNode; title?: string; wrap?: boolean }) {
   return (
-    <span title={title} className={cx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ring-inset whitespace-nowrap', TONES[tone], className)}>
+    <span
+      title={title}
+      className={cx('inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold ring-1 ring-inset', wrap ? 'max-w-full flex-wrap rounded-lg leading-snug' : 'rounded-full whitespace-nowrap', TONES[tone], className)}
+    >
       {children}
     </span>
   );

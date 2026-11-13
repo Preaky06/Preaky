@@ -147,8 +147,8 @@ export default function AdminPage() {
         ) : (
           <div className="space-y-6" data-testid="admin-overview">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              <Stat label="Utilisateurs" value={ov.totals.users.toLocaleString('fr-FR')} hint={`${ov.totals.orgs} organisations`} />
-              <Stat label="Revenu mensuel récurrent" value={eur(ov.mrr)} hint={`${ov.totals.paying} comptes payants (HT)`} />
+              <Stat label="Utilisateurs" value={ov.totals.users.toLocaleString('fr-FR')} hint={`${ov.totals.orgs} organisation${ov.totals.orgs > 1 ? 's' : ''}`} />
+              <Stat label="Revenu mensuel récurrent" value={eur(ov.mrr)} hint={`${ov.totals.paying} compte${ov.totals.paying > 1 ? 's' : ''} payant${ov.totals.paying > 1 ? 's' : ''} (HT)`} />
               <Stat label="Analyses (30 j)" value={ov.totals.analyses30.toLocaleString('fr-FR')} hint={`${ov.totals.searches30} recherches`} />
               <Stat label="Coût IA (30 j)" value={eur(ov.ai.cost)} hint={`${ov.ai.calls} appels · ${(ov.ai.input + ov.ai.output).toLocaleString('fr-FR')} jetons`} />
             </div>

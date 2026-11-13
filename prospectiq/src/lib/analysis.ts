@@ -84,7 +84,7 @@ async function aiInsights(company: Company, enrichment: Enrichment, score: Score
       effectif: company.employeesLabel || 'Non renseigné',
       etablissements: company.establishments ?? 'Non renseigné',
       ville: company.city || 'Non renseigné',
-      chiffre_affaires: company.finances ? `${company.finances.revenue} € (${company.finances.year})` : 'Non renseigné',
+      chiffre_affaires: (company.finances?.revenue ?? 0) > 0 ? `${company.finances!.revenue} € (${company.finances!.year})` : 'Non renseigné',
       labels: company.labels,
     },
     site_web: enrichment.website

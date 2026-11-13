@@ -455,7 +455,7 @@ export default function CompanyPage() {
               <Row label="Création">{fmt(c.createdOn)}</Row>
               <Row label="Effectif">{c.employeesLabel ? `${c.employeesLabel}${c.employeesYear ? ` (${c.employeesYear})` : ''}` : null}</Row>
               <Row label="Établissements">{c.establishments}</Row>
-              <Row label="Chiffre d’affaires">{c.finances?.revenue != null ? `${c.finances.revenue.toLocaleString('fr-FR')} € (${c.finances.year})` : null}</Row>
+              <Row label="Chiffre d’affaires">{(c.finances?.revenue ?? 0) > 0 ? `${c.finances!.revenue!.toLocaleString('fr-FR')} € (${c.finances!.year})` : null}</Row>
               <Row label="Dirigeant(s)">{c.directors.length ? c.directors.map((x) => `${x.name}${x.role ? ` (${x.role})` : ''}`).join(', ') : null}</Row>
               {c.labels.length > 0 && <Row label="Labels">{c.labels.join(', ')}</Row>}
             </dl>

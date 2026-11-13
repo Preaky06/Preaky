@@ -33,6 +33,7 @@ const num = (v: unknown) => {
   const n = typeof v === 'string' ? Number(v) : typeof v === 'number' ? v : NaN;
   return Number.isFinite(n) ? n : null;
 };
+const positive = (n: number | null) => (n != null && n > 0 ? n : null);
 
 function titleName(nom: string, prenoms: string) {
   const first = String(prenoms || '').split(/\s+/)[0] || '';
@@ -88,7 +89,8 @@ export function normalizeCompany(r: Raw, fetchedAt = new Date().toISOString()): 
     lat: num(loc?.latitude ?? s.latitude),
     lon: num(loc?.longitude ?? s.longitude),
     localAddress: loc?.adresse || null,
-    finances: fin ? { year: lastYear, revenue: num(fin.ca), netIncome: num(fin.resultat_net) } : null,
+    // Un chiffre d'affaires nul ou négatif correspond le plus souvent à des comptes non publiés : traité comme « Non renseigné ».
+    finances: fin ? { year: lastYear, revenue: positive(num(fin.ca)), netIncome: num(fin.resultat_net) } : null,
     // Minimisation : nom et qualité uniquement, jamais la date de naissance.
     directors: (r.dirigeants || []).slice(0, 4).map((d: Raw) =>
       d.type_dirigeant === 'personne morale' ? { name: String(d.denomination || 'Personne morale'), role: d.qualite || null } : { name: titleName(d.nom, d.prenoms), role: d.qualite || null },
@@ -139,7 +141,7 @@ export async function searchCompanies(p: SearchParams, orgId?: string | null): P
   const { path, query, postFilterSizes } = buildQuery(p);
   const url = `${env.sireneApi}${path}?${query}`;
   // Le cache ne contient que les données normalisées et minimisées (jamais les dates de naissance).
-  const data = await cached(`sirene:v2:${path}?${query}`, 6 * 3600, async () => {
+  const data = await cached(`sirene:v3:${path}?${query}`, 6 * 3600, async () => {
     const raw = await fetchJson<{ results: Raw[]; total_results: number; page: number; total_pages: number }>('sirene', path, url, { timeoutMs: 12000 }, orgId);
     const fetchedAt = new Date().toISOString();
     return { companies: (raw.results || []).map((r) => normalizeCompany(r, fetchedAt)), total_results: raw.total_results, page: raw.page, total_pages: raw.total_pages };
@@ -162,7 +164,7 @@ export async function searchCompanies(p: SearchParams, orgId?: string | null): P
 export async function getCompany(siren: string, orgId?: string | null): Promise<Company | null> {
   if (!/^\d{9}$/.test(siren)) return null;
   const query = new URLSearchParams({ q: siren, minimal: 'true', include: INCLUDE, per_page: '1' });
-  return cached(`sirene:v2:company:${siren}`, 7 * 86400, async () => {
+  return cached(`sirene:v3:company:${siren}`, 7 * 86400, async () => {
     const data = await fetchJson<{ results: Raw[] }>('sirene', '/search (siren)', `${env.sireneApi}/search?${query}`, {}, orgId);
     const r = (data.results || []).find((x) => String(x.siren) === siren);
     return r ? normalizeCompany(r) : null;

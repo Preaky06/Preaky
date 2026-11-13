@@ -92,6 +92,11 @@ describe('SIRENE', () => {
     expect(normalizeCompany({ siren: '111111113', statut_diffusion: 'O', nom_complet: 'ATELIER' }).optOut).toBe(false);
   });
 
+  it('chiffre d’affaires nul (comptes non publiés) traité comme non renseigné', () => {
+    expect(normalizeCompany({ ...raw, finances: { '2025': { ca: 0, resultat_net: 1200 } } }).finances).toEqual({ year: '2025', revenue: null, netIncome: 1200 });
+    expect(normalizeCompany({ ...raw, finances: { '2024': { ca: 1000 }, '2025': { ca: 452000 } } }).finances).toMatchObject({ year: '2025', revenue: 452000 });
+  });
+
   it('valeurs inconnues à null, opposition détectée', () => {
     const c = normalizeCompany({ siren: '987654321', opposition_diffusion_commerciale: true });
     expect(c.optOut).toBe(true);

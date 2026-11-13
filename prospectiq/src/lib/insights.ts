@@ -53,7 +53,7 @@ export function buildInsights(company: Company, website: WebsiteAudit | null, si
   if (created && new Date().getFullYear() - created >= 10) strengths.push(`Entreprise établie depuis ${new Date().getFullYear() - created} ans.`);
   if ((company.establishments || 0) > 1) strengths.push(`Plusieurs établissements (${company.establishments}).`);
   if (company.labels.length) strengths.push(`Labels ou certifications : ${company.labels.join(', ')}.`);
-  if (company.finances?.revenue != null) strengths.push(`Chiffre d’affaires publié de ${Math.round(company.finances.revenue / 1000).toLocaleString('fr-FR')} k€ en ${company.finances.year}.`);
+  if ((company.finances?.revenue ?? 0) > 0) strengths.push(`Chiffre d’affaires publié de ${Math.round(company.finances!.revenue! / 1000).toLocaleString('fr-FR')} k€ en ${company.finances!.year}.`);
   if (website?.findings) {
     if (website.https && website.mobileViewport) strengths.push('Site sécurisé (HTTPS) et adapté au mobile.');
     const socials = Object.keys(website.socials || {});
