@@ -35,7 +35,7 @@ export function AuditForm() {
 
   return (
     <div className="w-full">
-      <form onSubmit={submit} className="flex flex-col gap-1.5 rounded-2xl bg-white p-1.5 shadow-glow sm:flex-row" aria-label="Audit de site">
+      <form onSubmit={submit} className="ring-duo flex flex-col gap-1.5 rounded-2xl p-1.5 shadow-float sm:flex-row" aria-label="Audit de site">
         <label className="flex flex-1 items-center gap-2 px-3">
           <Globe className="size-4 shrink-0 text-slate-400" />
           <span className="sr-only">Adresse du site</span>
@@ -50,13 +50,13 @@ export function AuditForm() {
             disabled={loading}
           />
         </label>
-        <button type="submit" disabled={loading} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-electric-600 px-6 text-[15px] font-semibold whitespace-nowrap text-white transition-colors hover:bg-electric-700 disabled:opacity-80" data-testid="audit-run">
+        <button type="submit" disabled={loading} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-brand-violet px-6 text-[15px] font-semibold whitespace-nowrap text-white shadow-brand transition-colors hover:bg-violet-700 disabled:opacity-80" data-testid="audit-run">
           {loading ? <Loader2 className="size-4 animate-spin" /> : <ScanSearch className="size-4" />}
           {loading ? 'Analyse en cours' : 'Lancer l’audit gratuit'}
         </button>
       </form>
       <p className="mt-3 min-h-5 text-sm" aria-live="polite">
-        {error ? <span className="font-medium text-rose-300" role="alert">{error}</span> : loading ? <span className="text-slate-300">{STEPS[step]}</span> : <span className="text-slate-400">Sans inscription · résultat en moins de 30 secondes · rapport partageable</span>}
+        {error ? <span className="font-medium text-rose-600" role="alert">{error}</span> : loading ? <span className="text-night-800">{STEPS[step]}</span> : <span className="text-slate-500">Sans inscription · résultat en moins de 30 secondes · rapport partageable</span>}
       </p>
     </div>
   );

@@ -1,8 +1,9 @@
 // Section « Radar » de l'accueil : la veille quotidienne, illustrée par un fil d'exemple (entreprises FICTIVES).
 import { Sparkles, KanbanSquare, UserRoundCog, ShieldAlert, Mail, Check } from 'lucide-react';
+import { SectionHead } from './kit';
 
 const TYPES = [
-  { icon: Sparkles, title: 'Nouvelles entreprises', text: 'Créations et immatriculations dans vos zones et vos secteurs, vérifiées dans le répertoire SIRENE.', tone: 'bg-violet-50 text-violet-700' },
+  { icon: Sparkles, title: 'Nouvelles entreprises', text: 'Créations et immatriculations dans vos zones et vos secteurs, vérifiées dans le répertoire SIRENE.', tone: 'bg-violet-100 text-violet-700' },
   { icon: KanbanSquare, title: 'Cessions de fonds', text: 'Un nouveau propriétaire reprend un commerce : il choisit souvent ses nouveaux prestataires.', tone: 'bg-indigo-50 text-indigo-700' },
   { icon: UserRoundCog, title: 'Changements chez vos prospects', text: 'Nouveau dirigeant, nouveau nom, déménagement : le bon moment pour relancer.', tone: 'bg-emerald-50 text-emerald-700' },
   { icon: ShieldAlert, title: 'Risques chez vos clients', text: 'Procédure collective publiée : vous êtes prévenu avant d’envoyer la prochaine facture.', tone: 'bg-rose-50 text-rose-700' },
@@ -17,24 +18,16 @@ const FEED = [
 
 export function RadarSection() {
   return (
-    <section id="radar" className="relative isolate overflow-hidden border-y border-line bg-white py-24">
-      <div className="bg-dots pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,#000,transparent_60%)]" />
+    <section id="radar" className="relative isolate overflow-hidden py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr]">
         <div>
-          <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-electric-600 uppercase">
-            <span className="bg-spectrum h-[3px] w-5 rounded-full" />
-            Le Radar
-          </p>
-          <h2 className="font-display mt-4 text-[1.8rem] leading-[1.16] font-semibold tracking-[-0.02em] text-balance sm:text-[2.35rem]">
-            Chaque matin, les entreprises qui <span className="text-spectrum-deep">viennent de bouger.</span>
-          </h2>
-          <p className="mt-4 text-[17px] leading-relaxed text-slate-600">
-            Le Radar lit les annonces officielles publiées dans vos zones et sur les entreprises que vous suivez, puis vous signale celles qui comptent. Vous contactez au moment où le besoin apparaît.
-          </p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <SectionHead kicker="radar" title="Chaque matin," accent="les entreprises qui viennent de bouger.">
+            Le Radar lit les annonces officielles publiées dans vos zones et sur les entreprises que vous suivez, puis vous signale celles qui comptent. <b>Vous contactez au moment où le besoin apparaît.</b>
+          </SectionHead>
+          <ul className="mt-9 grid gap-3 sm:grid-cols-2">
             {TYPES.map(({ icon: Icon, title, text, tone }) => (
-              <li key={title} className="flex gap-3">
-                <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${tone}`}>
+              <li key={title} className="flex gap-3 rounded-2xl border border-white bg-white/80 p-4 shadow-float ring-1 ring-night-900/[0.04]">
+                <span className={`grid size-10 shrink-0 place-items-center rounded-full ${tone}`}>
                   <Icon className="size-5" />
                 </span>
                 <div>
@@ -46,7 +39,7 @@ export function RadarSection() {
           </ul>
           <p className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
             <span className="inline-flex items-center gap-1.5">
-              <Mail className="size-4 text-electric-600" /> Résumé par e-mail, quotidien ou hebdomadaire
+              <Mail className="size-4 text-brand-violet" /> Résumé par e-mail, quotidien ou hebdomadaire
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Check className="size-4 text-emerald-600" strokeWidth={3} /> Inclus dans toutes les offres
@@ -57,28 +50,28 @@ export function RadarSection() {
         <figure className="relative mx-auto w-full max-w-[520px]" aria-label="Illustration du fil du Radar avec des entreprises fictives">
           {/* Balayage radar */}
           <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 aspect-square w-[130%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
-            <div className="absolute inset-0 rounded-full border border-electric-200/60" />
-            <div className="absolute inset-[16%] rounded-full border border-electric-200/60" />
-            <div className="absolute inset-[32%] rounded-full border border-electric-200/60" />
+            <div className="absolute inset-0 rounded-full border border-violet-200/70" />
+            <div className="absolute inset-[16%] rounded-full border border-violet-200/70" />
+            <div className="absolute inset-[32%] rounded-full border border-violet-200/70" />
             <div className="radar-sweep absolute inset-0 rounded-full" />
           </div>
-          <div className="rounded-3xl border border-line bg-white/90 p-2 shadow-pop backdrop-blur">
+          <div className="ring-duo rounded-[28px] p-2 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]">
             <div className="flex items-center justify-between px-3 pt-2 pb-3">
-              <p className="flex items-center gap-2 text-sm font-semibold">
+              <p className="flex items-center gap-2 font-mono text-[11.5px] font-medium tracking-[0.12em] uppercase">
                 <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
                 Radar · ce matin
               </p>
-              <span className="rounded-full bg-electric-50 px-2 py-0.5 text-xs font-semibold text-electric-700">4 nouveautés</span>
+              <span className="rounded-full bg-brand-violet px-2.5 py-0.5 text-xs font-semibold text-white">4 nouveautés</span>
             </div>
             <ul className="stagger space-y-1.5">
               {FEED.map((f) => (
-                <li key={f.title} className="flex items-start gap-3 rounded-2xl bg-canvas/80 px-3.5 py-3">
+                <li key={f.title} className="flex items-start gap-3 rounded-2xl bg-paper px-3.5 py-3">
                   <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: f.dot }} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold">{f.title}</p>
                     <p className="truncate text-xs text-slate-500">{f.detail}</p>
                   </div>
-                  <span className="shrink-0 text-[11px] text-slate-400">{f.when}</span>
+                  <span className="shrink-0 font-mono text-[11px] text-slate-400">{f.when}</span>
                 </li>
               ))}
             </ul>

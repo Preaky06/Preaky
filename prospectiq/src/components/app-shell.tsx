@@ -118,8 +118,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
     </div>
   );
   return (
-    <div className="min-h-dvh bg-[radial-gradient(70%_320px_at_60%_0%,rgba(99,102,241,0.07),transparent)] lg:pl-64">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/5 bg-night-950 bg-[radial-gradient(120%_50%_at_0%_0%,rgba(99,102,241,0.16),transparent)] lg:flex">
+    <div className="min-h-dvh bg-[radial-gradient(70%_320px_at_60%_0%,rgba(124,58,237,0.07),transparent)] lg:pl-64">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/5 bg-night-950 bg-[radial-gradient(120%_50%_at_0%_0%,rgba(124,58,237,0.2),transparent)] lg:flex">
         {top}
         {nav}
         {footer}

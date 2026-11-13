@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, XCircle, Info, ArrowRight, ScanSearch, ExternalLink } from 'lucide-react';
-import { SiteHeader, SiteFooter } from '@/components/site';
+import { SiteHeader, SiteFooter, PublicPage } from '@/components/site';
 import { ScoreRing } from '@/components/landing/score-ring';
 import { buttonClass } from '@/components/styles';
 import { getReport } from '@/lib/site-audit';
@@ -50,17 +50,17 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   ];
 
   return (
-    <>
+    <PublicPage>
       <SiteHeader />
       <main id="contenu" className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs font-semibold tracking-[0.16em] text-electric-600 uppercase">Rapport d’audit de site</p>
+          <p className="font-mono text-[11.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ Rapport d’audit de site ]</p>
           <ReportActions />
         </div>
 
-        <section className="mt-4 grid items-center gap-6 rounded-3xl border border-line bg-white p-6 shadow-lift sm:grid-cols-[1fr_auto] sm:p-8" data-testid="report">
+        <section className="ring-duo mt-4 grid items-center gap-6 rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)] sm:grid-cols-[1fr_auto] sm:p-8" data-testid="report">
           <div className="min-w-0">
-            <h1 className="font-display text-[1.9rem] leading-tight font-semibold tracking-[-0.02em] break-words">{r.host}</h1>
+            <h1 className="font-display text-[2.1rem] leading-[1.05] font-semibold tracking-[-0.045em] break-words">{r.host}</h1>
             <p className="mt-2 text-sm text-slate-500">
               Page d’accueil analysée le {fmtDate(a.checkedAt || r.created_at.toISOString())} ·{' '}
               <a href={r.url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1 font-medium text-electric-700 hover:underline">
@@ -133,7 +133,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <b className="text-slate-700">Méthode.</b> Analyse automatique de la page d’accueil publique uniquement, par le robot ProSpectre-Analyse, dans le respect du fichier robots.txt du site. La note sur 100 diminue selon la gravité des constats (important, mineur, information). Ce rapport ne mesure ni le trafic, ni le positionnement réel dans les moteurs de recherche, ni la qualité des contenus. Il ne contient aucune coordonnée personnelle.
         </section>
 
-        <section className="relative isolate mt-10 overflow-hidden rounded-3xl bg-night-900 p-7 text-white print:hidden sm:p-9">
+        <section className="island relative isolate mt-10 overflow-hidden rounded-[2.5rem] p-7 text-white print:hidden sm:p-9">
           <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
           <p className="font-display text-[1.4rem] leading-tight font-semibold tracking-[-0.02em]">Rapport réalisé avec Pro Spectre</p>
           <p className="mt-2 max-w-xl text-sm text-slate-300">Pro Spectre aide les agences et indépendants à trouver les entreprises qui ont besoin de leurs services, au bon moment, à partir des registres officiels.</p>
@@ -150,6 +150,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </section>
       </main>
       <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

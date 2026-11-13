@@ -1,25 +1,26 @@
 import Link from 'next/link';
-import { ShieldCheck, Lock, Cookie } from 'lucide-react';
+import { ShieldCheck, Lock, Cookie, ArrowUpRight } from 'lucide-react';
 import { Logo, Wordmark } from './logo';
 import { SiteNav } from './site-nav';
-import { buttonClass, cx } from './styles';
 
-export function SiteHeader({ dark = false }: { dark?: boolean }) {
+/** En-tête flottant en pilule, commun à toutes les pages publiques. */
+export function SiteHeader() {
   return (
-    <header className={cx('sticky top-0 z-40 border-b backdrop-blur-xl', dark ? 'border-white/10 bg-night-950 text-white' : 'border-line/70 bg-white/85 text-night-900')}>
-      <a href="#contenu" className="sr-only rounded-lg bg-electric-600 px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50">
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4">
+      <a href="#contenu" className="sr-only rounded-lg bg-brand-violet px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50">
         Aller au contenu
       </a>
-      <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Logo dark={dark} />
-        <div className="flex items-center gap-2 md:contents">
-          <SiteNav dark={dark} />
-          <div className="flex items-center gap-2 max-md:order-first">
-            <Link href="/connexion" className={cx(buttonClass('ghost', 'sm'), 'max-md:hidden', dark && 'text-slate-200 hover:bg-white/10 hover:text-white')}>
+      <div className="relative mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 rounded-full border border-white bg-white/80 pr-2 pl-5 text-night-900 shadow-float ring-1 ring-night-900/[0.06] backdrop-blur-xl">
+        <Logo />
+        <div className="flex items-center gap-1.5 md:contents">
+          <SiteNav />
+          <div className="flex items-center gap-1.5 max-md:order-first">
+            <Link href="/connexion" className="inline-flex h-10 items-center rounded-full border border-night-900/10 bg-white px-4 text-sm font-medium transition-colors hover:border-night-900/25 max-md:hidden">
               Connexion
             </Link>
-            <Link href="/inscription" className={cx(dark ? buttonClass('accent', 'sm') : buttonClass('primary', 'sm'), 'rounded-full px-4')}>
+            <Link href="/inscription" className="group inline-flex h-10 items-center gap-1.5 rounded-full bg-brand-violet px-4 text-sm font-semibold text-white shadow-brand transition-colors hover:bg-violet-700">
               Essai gratuit
+              <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />
             </Link>
           </div>
         </div>
@@ -28,11 +29,15 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
   );
 }
 
+/** Enveloppe des pages publiques : papier pointillé clair. */
+export function PublicPage({ children }: { children: React.ReactNode }) {
+  return <div className="paper-dots min-h-dvh">{children}</div>;
+}
+
 export function SiteFooter() {
   return (
-    <footer className="relative bg-night-950 text-slate-400">
-      <div className="spectrum-line opacity-60" />
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+    <footer className="island relative overflow-hidden rounded-t-[2.5rem] text-slate-400 sm:rounded-t-[3.5rem]">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-20 pb-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
           <Logo dark />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Prospection B2B à partir des registres publics officiels français. Chaque information affichée cite sa source.</p>
@@ -84,14 +89,14 @@ export function SiteFooter() {
 
 export function LegalPage({ title, updated, children }: { title: string; updated: string; children: React.ReactNode }) {
   return (
-    <>
+    <PublicPage>
       <SiteHeader />
-      <main id="contenu" className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-        <p className="mt-2 text-sm text-slate-500">Dernière mise à jour : {updated}</p>
-        <div className="legal mt-8 space-y-4 text-[15px] leading-relaxed text-night-800 [&_a]:font-medium [&_a]:text-electric-700 [&_a]:underline [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-night-900 [&_li]:ml-5 [&_li]:list-disc [&_li]:pl-1 [&_ul]:space-y-1.5">{children}</div>
+      <main id="contenu" className="mx-auto max-w-3xl px-4 pt-14 pb-24 sm:px-6">
+        <p className="font-mono text-[11.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ Mise à jour : {updated} ]</p>
+        <h1 className="font-display mt-4 text-[2.3rem] leading-[1.05] font-semibold tracking-[-0.045em] sm:text-[3rem]">{title}</h1>
+        <div className="legal mt-10 rounded-[28px] border border-line bg-white p-6 shadow-float sm:p-10 space-y-4 text-[15px] leading-relaxed text-night-800 [&_a]:font-medium [&_a]:text-electric-700 [&_a]:underline [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-night-900 [&_li]:ml-5 [&_li]:list-disc [&_li]:pl-1 [&_ul]:space-y-1.5">{children}</div>
       </main>
       <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

@@ -9,14 +9,16 @@ import { api, ApiError } from '@/lib/client';
 
 export function AuthFrame({ title, subtitle, children, footer }: { title: string; subtitle?: React.ReactNode; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1fr_1.05fr]">
-      <div className="flex flex-col px-6 py-8 sm:px-12">
+    <div className="paper-dots grid min-h-dvh lg:grid-cols-[1fr_1.05fr]">
+      <div className="flex flex-col px-4 py-8 sm:px-12">
         <Logo />
-        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
-          <h1 className="font-display text-[1.75rem] font-semibold tracking-[-0.02em]">{title}</h1>
-          {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}
-          <div className="mt-8">{children}</div>
-          {footer && <div className="mt-6 text-sm text-slate-600">{footer}</div>}
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
+          <div className="hairline rounded-[28px] border border-white bg-white p-6 shadow-float ring-1 ring-night-900/[0.05] sm:p-8">
+            <h1 className="font-display text-[2rem] leading-[1.05] font-semibold tracking-[-0.045em]">{title}</h1>
+            {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}
+            <div className="mt-7">{children}</div>
+          </div>
+          {footer && <div className="mt-6 text-center text-sm text-slate-600">{footer}</div>}
         </div>
         <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
           <span className="inline-flex items-center gap-1.5"><Lock className="size-3.5" /> Connexion chiffrée</span>
@@ -24,15 +26,14 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
           <Link href="/confiance" className="font-medium text-slate-500 hover:text-night-900 hover:underline">Centre de confiance</Link>
         </p>
       </div>
-      <div className="relative isolate hidden overflow-hidden bg-night-950 lg:block">
+      <div className="island relative isolate m-3 hidden overflow-hidden rounded-[2.5rem] lg:block">
         <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
-        <div className="pointer-events-none absolute top-0 right-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.4),transparent)]" />
         <div className="flex h-full flex-col justify-center px-14 py-16 text-white xl:px-20">
           <BrandMark size={56} className="mb-8 rounded-[14px] shadow-[0_18px_50px_-16px_rgba(124,58,237,0.6)]" />
-          <p className="font-display text-[2.2rem] leading-[1.1] font-semibold tracking-[-0.025em]">
+          <p className="font-display text-[2.6rem] leading-[1.04] font-semibold tracking-[-0.05em]">
             Les bons prospects.
             <br />
-            <span className="text-gradient font-serif text-[1.12em] font-normal tracking-normal italic">Au bon moment.</span>
+            <span className="bg-gradient-to-r from-violet-300 via-indigo-300 to-sky-300 bg-clip-text text-transparent">Au bon moment.</span>
           </p>
           <ul className="mt-9 space-y-4 text-[15px] text-slate-300">
             {[
@@ -44,7 +45,7 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
               const I = Icon as typeof Database;
               return (
                 <li key={t as string} className="flex items-center gap-3">
-                  <span className="grid size-9 place-items-center rounded-xl bg-white/[0.07] text-electric-300 ring-1 ring-white/10">
+                  <span className="grid size-9 place-items-center rounded-full bg-white/[0.07] text-violet-200 ring-1 ring-white/15">
                     <I className="size-4" />
                   </span>
                   {t as string}
@@ -52,7 +53,7 @@ export function AuthFrame({ title, subtitle, children, footer }: { title: string
               );
             })}
           </ul>
-          <div className="mt-10 max-w-md rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur">
+          <div className="mt-10 max-w-md rounded-[24px] border border-dashed border-white/20 p-5">
             <p className="flex items-center gap-2 text-sm font-semibold">
               <ShieldCheck className="size-4 text-emerald-300" />
               Nos engagements
@@ -127,7 +128,7 @@ export function LoginForm() {
         </Link>
       </div>
       <FormError error={error} />
-      <Button type="submit" variant="primary" size="lg" className="w-full" loading={loading}>
+      <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
         Se connecter
       </Button>
     </form>
@@ -180,7 +181,7 @@ export function RegisterForm() {
         }
       />
       {error && !['email', 'password'].includes(error.field || '') && <FormError error={error} />}
-      <Button type="submit" variant="accent" size="lg" className="w-full" loading={loading}>
+      <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
         Créer mon compte gratuit
       </Button>
     </form>
@@ -212,7 +213,7 @@ export function ForgotForm() {
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>
       <FormError error={error} />
-      <Button type="submit" size="lg" className="w-full" loading={loading}>
+      <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
         Recevoir un lien
       </Button>
     </form>
@@ -248,7 +249,7 @@ export function ResetForm({ invite = false }: { invite?: boolean }) {
         <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={10} />
       </Field>
       <FormError error={error} />
-      <Button type="submit" size="lg" className="w-full" loading={loading}>
+      <Button type="submit" variant="brand" size="lg" className="w-full" loading={loading}>
         {invite ? 'Rejoindre l’équipe' : 'Enregistrer et me connecter'}
       </Button>
     </form>

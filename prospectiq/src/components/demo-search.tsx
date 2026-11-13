@@ -55,7 +55,7 @@ export function DemoSearch() {
           e.preventDefault();
           search(postalCode);
         }}
-        className="grid gap-1.5 rounded-2xl bg-white p-1.5 shadow-glow sm:grid-cols-[minmax(0,1fr)_9.5rem_auto]"
+        className="ring-duo grid gap-1.5 rounded-2xl p-1.5 shadow-float sm:grid-cols-[minmax(0,1fr)_9.5rem_auto]"
         aria-label="Recherche de démonstration"
       >
         <label className="flex items-center gap-2 rounded-xl px-3 sm:border-r sm:border-line">
@@ -74,13 +74,13 @@ export function DemoSearch() {
           <span className="sr-only">Code postal</span>
           <Input value={postalCode} onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, '').slice(0, 5))} inputMode="numeric" placeholder="Code postal" className="border-0 px-1 shadow-none focus:ring-0" data-testid="demo-postal" />
         </label>
-        <Button type="submit" variant="accent" size="lg" loading={loading} data-testid="demo-run" className="rounded-xl">
+        <Button type="submit" variant="brand" size="lg" loading={loading} data-testid="demo-run" className="rounded-xl">
           {!loading && <Search className="size-4" />}
           Trouver mes prospects
         </Button>
       </form>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
         <span>Essayez :</span>
         {EXAMPLES.map(([cp, label]) => (
           <button
@@ -90,7 +90,7 @@ export function DemoSearch() {
               setPostalCode(cp);
               search(cp);
             }}
-            className="rounded-full border border-white/15 bg-white/5 px-2.5 py-1 font-medium text-slate-200 transition-colors hover:border-white/30 hover:bg-white/10"
+            className="rounded-full border border-night-900/10 bg-white/80 px-2.5 py-1 font-mono text-[11px] font-medium text-night-800 transition-colors hover:border-brand-violet/40 hover:text-brand-violet"
           >
             {label} · {cp}
           </button>
@@ -98,7 +98,7 @@ export function DemoSearch() {
       </div>
 
       {error && (
-        <p className="mt-3 text-sm font-medium text-rose-300" role="alert">
+        <p className="mt-3 text-center text-sm font-medium text-rose-600" role="alert">
           {error}
         </p>
       )}

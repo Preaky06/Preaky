@@ -5,6 +5,8 @@
   --font-serif: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
   /* Typo de marque : géométrique et dense (logotype, titres, chiffres) */
   --font-display: 'Poppins', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Étiquettes techniques (sources, dates, codes) */
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* Couleurs du logo */
   --color-brand-violet: #7c3aed;
   /* Spectre : une couleur par critère du score (besoin, pertinence, digital, signaux, données) */
@@ -19,22 +21,26 @@
   --color-night-800: #131c44;
   --color-night-700: #1e295b;
   --color-night-600: #2d3a77;
-  /* Accent violet électrique */
-  --color-electric-700: #4338ca;
-  --color-electric-600: #5146e5;
-  --color-electric-500: #6366f1;
-  --color-electric-400: #818cf8;
-  --color-electric-300: #a5b4fc;
-  --color-electric-200: #c7d2fe;
-  --color-electric-100: #e7e8ff;
-  --color-electric-50: #f3f3ff;
+  /* Accent : le violet du logo, décliné (site et application) */
+  --color-electric-700: #6d28d9;
+  --color-electric-600: #7c3aed;
+  --color-electric-500: #8b5cf6;
+  --color-electric-400: #a78bfa;
+  --color-electric-300: #c4b5fd;
+  --color-electric-200: #ddd6fe;
+  --color-electric-100: #ede9fe;
+  --color-electric-50: #f5f3ff;
   /* Surfaces */
   --color-canvas: #f6f7fb;
+  /* Papier des pages publiques : clair, légèrement bleuté, pointillé */
+  --color-paper: #f3f4fa;
   --color-line: #e4e7f1;
   --shadow-card: 0 1px 2px rgb(11 18 48 / 0.04), 0 8px 24px -12px rgb(11 18 48 / 0.14);
   --shadow-lift: 0 2px 4px rgb(11 18 48 / 0.04), 0 18px 40px -16px rgb(11 18 48 / 0.24);
   --shadow-pop: 0 24px 60px -20px rgb(5 8 23 / 0.45);
-  --shadow-glow: 0 0 0 1px rgb(129 140 248 / 0.25), 0 20px 50px -18px rgb(99 102 241 / 0.55);
+  --shadow-glow: 0 0 0 1px rgb(167 139 250 / 0.25), 0 20px 50px -18px rgb(124 58 237 / 0.55);
+  --shadow-float: 0 1px 0 rgb(255 255 255 / 0.9) inset, 0 10px 30px -12px rgb(11 18 48 / 0.18), 0 2px 6px -2px rgb(11 18 48 / 0.06);
+  --shadow-brand: 0 10px 24px -10px rgb(124 58 237 / 0.65);
   --animate-fade-in: fade-in 0.25s ease-out both;
   --animate-rise: rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-float: float 7s ease-in-out infinite;
@@ -134,6 +140,110 @@
 }
 
 @layer components {
+  /* Papier pointillé des pages publiques. */
+  .paper-dots {
+    background-color: var(--color-paper);
+    background-image: radial-gradient(rgb(11 18 48 / 0.075) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+  /* Mot annoté d'un titre : cadre de sélection en pointillés, poignées aux coins, étiquette dessous.
+     Tout est dessiné en pseudo-éléments : le texte du titre reste exactement le texte lu. */
+  .annotated {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    margin: 0 0.04em;
+    padding: 0 0.1em;
+  }
+  .annotated::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: calc(0.06em - 5px) -5px calc(-0.02em - 5px) -5px;
+    background:
+      linear-gradient(#fff, #fff) top 1.5px left 1.5px / 6px 6px no-repeat,
+      linear-gradient(#fff, #fff) top 1.5px right 1.5px / 6px 6px no-repeat,
+      linear-gradient(#fff, #fff) bottom 1.5px left 1.5px / 6px 6px no-repeat,
+      linear-gradient(#fff, #fff) bottom 1.5px right 1.5px / 6px 6px no-repeat,
+      linear-gradient(#7c3aed, #7c3aed) top left / 9px 9px no-repeat,
+      linear-gradient(#7c3aed, #7c3aed) top right / 9px 9px no-repeat,
+      linear-gradient(#7c3aed, #7c3aed) bottom left / 9px 9px no-repeat,
+      linear-gradient(#7c3aed, #7c3aed) bottom right / 9px 9px no-repeat,
+      repeating-linear-gradient(90deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px left 4px / calc(100% - 8px) 1.5px no-repeat,
+      repeating-linear-gradient(90deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) bottom 4px left 4px / calc(100% - 8px) 1.5px no-repeat,
+      repeating-linear-gradient(180deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px left 4px / 1.5px calc(100% - 8px) no-repeat,
+      repeating-linear-gradient(180deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px right 4px / 1.5px calc(100% - 8px) no-repeat,
+      linear-gradient(rgb(255 255 255 / 0.78), rgb(255 255 255 / 0.78)) center / calc(100% - 9px) calc(100% - 9px) no-repeat;
+    filter: drop-shadow(0 12px 18px rgb(124 58 237 / 0.22));
+  }
+  .annotated::after {
+    content: attr(data-tag);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: 14px;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #7c3aed;
+    box-shadow: var(--shadow-brand);
+    color: #fff;
+    font: 500 11px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  @media (min-width: 640px) {
+    .annotated::after {
+      font-size: 12px;
+    }
+  }
+  /* Halos colorés flous (violet à gauche, bleu à droite) derrière un titre. */
+  .halo-duo {
+    background:
+      radial-gradient(closest-side, rgb(139 92 246 / 0.20), transparent) 18% 40% / 46% 70% no-repeat,
+      radial-gradient(closest-side, rgb(59 130 246 / 0.17), transparent) 84% 45% / 44% 70% no-repeat;
+    filter: blur(8px);
+  }
+  /* Texte de marque : violet vers indigo (fond clair). */
+  .text-brand {
+    background: linear-gradient(92deg, #7c3aed 0%, #6d28d9 30%, #4f46e5 75%, #2563eb 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Liseré dégradé en haut d'une carte (violet → bleu). */
+  .hairline {
+    position: relative;
+  }
+  .hairline::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 8%;
+    right: 8%;
+    height: 1.5px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, #8b5cf6 25%, #3b82f6 75%, transparent);
+    pointer-events: none;
+  }
+  /* Carte teintée : blanche en haut, légèrement violette en bas. */
+  .card-tint {
+    background: linear-gradient(170deg, #ffffff 45%, #f5f3ff 85%, #eef2ff 100%);
+  }
+  /* Bordure en dégradé sur fond blanc (fenêtre produit, carte mise en avant claire). */
+  .ring-duo {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(#fff, #fff) padding-box,
+      linear-gradient(135deg, rgb(139 92 246 / 0.55), rgb(226 232 240 / 0.9) 40%, rgb(226 232 240 / 0.9) 60%, rgb(59 130 246 / 0.55)) border-box;
+  }
+  /* Îlot sombre arrondi au milieu d'une page claire. */
+  .island {
+    background:
+      radial-gradient(60% 50% at 15% 0%, rgb(124 58 237 / 0.28), transparent 70%),
+      radial-gradient(50% 45% at 90% 100%, rgb(37 99 235 / 0.22), transparent 70%),
+      var(--color-night-950);
+  }
   /* Quadrillage discret pour les fonds sombres. */
   .bg-grid-dark {
     background-image:
@@ -185,7 +295,7 @@
   }
   /* Balayage du radar (section Radar de l'accueil) */
   .radar-sweep {
-    background: conic-gradient(from 0deg, rgb(99 102 241 / 0.22), rgb(99 102 241 / 0) 22%, transparent 100%);
+    background: conic-gradient(from 0deg, rgb(124 58 237 / 0.2), rgb(124 58 237 / 0) 22%, transparent 100%);
     animation: spin-slow 6s linear infinite;
     mask-image: radial-gradient(circle, #000 0%, #000 69%, transparent 70%);
   }

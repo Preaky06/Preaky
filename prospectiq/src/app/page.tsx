@@ -1,20 +1,18 @@
 import Link from 'next/link';
 import {
-  Search, Radar, Gauge, MessageSquareText, KanbanSquare, ListChecks, Download, Users, ShieldCheck, Database, Globe, FileText, Check, X, ArrowRight, Ban, Lock, Cookie,
-  FileSearch, Scale, CreditCard, KeyRound, Fingerprint, Target, Sparkles, Send, MapPin, Activity, BadgeCheck, ScanSearch,
+  Search, ListChecks, Download, Users, ShieldCheck, Database, Globe, FileText, Check, X, ArrowRight, ArrowUpRight, ArrowDown, Ban, Lock, Cookie,
+  FileSearch, Scale, CreditCard, KeyRound, Fingerprint, MapPin, BadgeCheck, Building2, Landmark, Newspaper,
 } from 'lucide-react';
-import { SiteHeader, SiteFooter } from '@/components/site';
+import { SiteHeader, SiteFooter, PublicPage } from '@/components/site';
 import { DemoSearch } from '@/components/demo-search';
 import { HeroVisual } from '@/components/landing/hero-visual';
 import { ScoreLab } from '@/components/landing/score-lab';
 import { ScoreRing } from '@/components/landing/score-ring';
 import { CountUp } from '@/components/landing/count-up';
-import { HeroBeams } from '@/components/landing/hero-beams';
 import { BrandStory } from '@/components/landing/brand-story';
-import { BrandMark } from '@/components/logo';
+import { Kicker, MonoTag, DotPill, SectionHead, Annotated, ctaClass } from '@/components/landing/kit';
 import { RadarSection } from '@/components/landing/radar-section';
 import { AuditForm } from './outils/audit-site/form';
-import { buttonClass } from '@/components/styles';
 import { PLANS } from '@/lib/plans';
 import { scoreCompany } from '@/lib/scoring';
 import { bodaccPulse } from '@/lib/pulse';
@@ -79,18 +77,15 @@ const FAQ = [
 
 const fmtDay = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null);
 
-function SectionTitle({ eyebrow, title, children, center = false, dark = false }: { eyebrow: string; title: React.ReactNode; children?: React.ReactNode; center?: boolean; dark?: boolean }) {
-  return (
-    <div className={center ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
-      <p className={`inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] uppercase ${dark ? 'text-electric-300' : 'text-electric-600'} ${center ? 'justify-center' : ''}`}>
-        <span className="bg-spectrum h-[3px] w-5 rounded-full" />
-        {eyebrow}
-      </p>
-      <h2 className={`font-display mt-4 text-[1.8rem] leading-[1.16] font-semibold tracking-[-0.02em] text-balance sm:text-[2.35rem] ${dark ? 'text-white' : 'text-night-900'}`}>{title}</h2>
-      {children && <p className={`mt-4 text-[17px] leading-relaxed text-pretty ${dark ? 'text-slate-300' : 'text-slate-600'}`}>{children}</p>}
-    </div>
-  );
-}
+const SOURCE_ICONS = [
+  { icon: Building2, tint: 'from-violet-500 to-violet-700' },
+  { icon: Landmark, tint: 'from-indigo-500 to-indigo-700' },
+  { icon: Newspaper, tint: 'from-sky-500 to-cyan-600' },
+  { icon: MapPin, tint: 'from-emerald-500 to-teal-600' },
+];
+
+/** Carte claire des pages publiques : blanche, liseré dégradé, ombre flottante. */
+const card = 'hairline rounded-[28px] border border-white bg-white shadow-float ring-1 ring-night-900/[0.05]';
 
 export default async function Home() {
   const input = exampleInput();
@@ -115,92 +110,94 @@ export default async function Home() {
   ];
 
   return (
-    <>
-      <SiteHeader dark />
+    <PublicPage>
+      <SiteHeader />
       <main id="contenu" className="overflow-x-clip">
         {/* ------------------------------------------------------------ Hero */}
-        <section className="relative isolate overflow-hidden bg-night-950 text-white">
-          <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
-          <HeroBeams />
-          <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[38rem] w-[70rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.38),transparent)]" />
-          <div className="pointer-events-none absolute right-[-10rem] bottom-[-14rem] -z-10 h-[30rem] w-[40rem] rounded-full bg-[radial-gradient(closest-side,rgba(52,211,153,0.14),transparent)]" />
+        <section className="relative isolate px-4 pt-14 sm:px-6 lg:pt-20">
+          <div className="halo-duo pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[44rem]" aria-hidden="true" />
+          <div className="stagger mx-auto max-w-4xl text-center">
+            <div className="flex justify-center">
+              <DotPill>Du registre officiel au rendez-vous</DotPill>
+            </div>
+            <h1 className="font-display mt-8 text-[2.7rem] leading-[1.04] font-semibold tracking-[-0.05em] text-balance text-night-900 sm:text-[4.1rem] lg:text-[5rem]">
+              Les bons prospects.
+              <br />
+              Au bon <Annotated tag="SIGNAL · BODACC">moment</Annotated>.
+            </h1>
+            <p className="mx-auto mt-12 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
+            <div className="mx-auto mt-9 max-w-2xl">
+              <DemoSearch />
+            </div>
+            <p className="mt-6 text-sm text-slate-500">
+              ou{' '}
+              <Link href="/outils/audit-site" className="font-medium text-night-900 underline decoration-night-900/25 underline-offset-4 transition-colors hover:decoration-brand-violet">
+                auditez gratuitement le site d’un prospect
+              </Link>{' '}
+              · offre Découverte gratuite, sans carte bancaire
+            </p>
+          </div>
 
-          <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] items-start gap-x-12 gap-y-16 px-4 pt-14 pb-32 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:pt-20 lg:pb-40">
-            <div className="stagger">
-              <p className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 py-1 pr-3.5 pl-1 text-xs font-medium text-slate-200">
-                <BrandMark size={22} className="rounded-[6px]" />
-                <span className="font-display font-semibold tracking-[-0.02em] whitespace-nowrap text-white">Pro Spectre</span>
-                <span className="h-3 w-px bg-white/20" />
-                <span className="animate-pulse-dot size-1.5 shrink-0 rounded-full bg-emerald-400" />
-                <span className="whitespace-nowrap">
-                  <span className="max-sm:hidden">Registres officiels </span>SIRENE · RNE · BODACC
-                </span>
-              </p>
-              <h1 className="font-display mt-7 text-[2.4rem] leading-[1.06] font-bold tracking-[-0.03em] text-balance sm:text-[3.3rem] lg:text-[3.7rem]">
-                Les bons prospects. <span className="text-gradient font-serif text-[1.12em] font-normal tracking-[-0.01em] italic">Au bon moment.</span>
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-300">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
-              <div className="mt-9">
-                <DemoSearch />
-              </div>
-              <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
-                {['Gratuit, sans carte bancaire', 'Sans engagement', 'Aucune donnée inventée'].map((t) => (
-                  <li key={t} className="flex items-center gap-2">
-                    <span className="grid size-4 place-items-center rounded-full bg-emerald-400/15 text-emerald-300">
-                      <Check className="size-3" strokeWidth={3} />
+          <div className="mx-auto mt-16 max-w-5xl text-center">
+            <p className="text-sm text-slate-500">Construit sur des sources publiques que vous pouvez vérifier</p>
+            <ul className="mt-5 flex flex-wrap justify-center gap-3">
+              {SOURCES.map((src, i) => {
+                const { icon: Icon, tint } = SOURCE_ICONS[i];
+                return (
+                  <li key={src.name} className="flex items-center gap-3 rounded-full border border-white bg-white/85 py-1.5 pr-5 pl-1.5 text-left shadow-float ring-1 ring-night-900/[0.05]" title={src.detail}>
+                    <span className={`grid size-10 shrink-0 place-items-center rounded-full bg-gradient-to-br ${tint} text-white ring-2 ring-white`}>
+                      <Icon className="size-4" />
                     </span>
-                    {t}
+                    <span className="leading-tight">
+                      <span className="block text-sm font-semibold text-night-900">{src.name}</span>
+                      <span className="block font-mono text-[10.5px] tracking-[0.08em] text-slate-500 uppercase">{src.producer}</span>
+                    </span>
                   </li>
-                ))}
-              </ul>
-              <Link href="/outils/audit-site" className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white">
-                <ScanSearch className="size-4 text-cyan-300" />
-                Ou auditez gratuitement le site d’un prospect
-                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
-            <div className="lg:pt-14">
-              <HeroVisual score={example} />
-            </div>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div className="mx-auto mt-16 max-w-6xl">
+            <HeroVisual score={example} />
           </div>
         </section>
 
         {/* ------------------------------------------------- Pouls BODACC */}
-        <section className="relative z-10 mx-auto -mt-20 max-w-6xl px-4 sm:px-6">
-          <div className="reveal overflow-hidden rounded-3xl border border-line bg-white shadow-lift">
+        <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+          <div className="reveal ring-duo overflow-hidden rounded-[28px] shadow-float">
             {pulse ? (
               <div className="grid lg:grid-cols-[1fr_2.6fr]">
-                <div className="border-b border-line bg-gradient-to-br from-electric-50 to-white p-6 lg:border-r lg:border-b-0">
-                  <p className="flex items-center gap-2 text-sm font-semibold text-night-900">
+                <div className="border-b border-line bg-gradient-to-br from-violet-50/80 to-white p-6 lg:border-r lg:border-b-0">
+                  <p className="flex items-center gap-2 font-mono text-[11.5px] font-medium tracking-[0.14em] text-night-900 uppercase">
                     <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
-                    En direct du BODACC
+                    En direct · BODACC
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    Annonces légales publiées ces 7 derniers jours. Autant d’entreprises qui changent, et d’occasions de les contacter au bon moment.
-                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">Annonces légales publiées ces 7 derniers jours. Autant d’entreprises qui changent, et d’occasions de les contacter au bon moment.</p>
                   <p className="mt-3 text-xs text-slate-500">
-                    Source : <a href={pulse.sourceUrl} className="font-medium text-electric-700 hover:underline" rel="noopener">DILA, bodacc.fr</a>
+                    Source :{' '}
+                    <a href={pulse.sourceUrl} className="font-medium text-brand-violet hover:underline" rel="noopener">
+                      DILA, bodacc.fr
+                    </a>
                     {pulse.lastPublication && <> · dernière parution le {fmtDay(pulse.lastPublication)}</>}
                   </p>
                 </div>
                 <dl className="grid grid-cols-2 divide-line md:grid-cols-4 md:divide-x">
                   {[
-                    { n: pulse.creations, label: 'Créations', hint: 'Identité, site, outils : tout est à construire.', icon: Sparkles, tone: 'text-electric-600 bg-electric-50' },
-                    { n: pulse.sales, label: 'Ventes et cessions', hint: 'Un nouveau propriétaire revoit souvent ses prestataires.', icon: KanbanSquare, tone: 'text-emerald-700 bg-emerald-50' },
-                    { n: pulse.changes, label: 'Modifications', hint: 'Dirigeant, nom, adresse ou activité qui change.', icon: Activity, tone: 'text-sky-700 bg-sky-50' },
-                    { n: pulse.insolvencies, label: 'Procédures', hint: 'Procédures collectives : signalées et pénalisées dans le score.', icon: ShieldCheck, tone: 'text-rose-700 bg-rose-50' },
-                  ].map(({ n, label, hint, icon: Icon, tone }) => (
+                    { n: pulse.creations, label: 'Créations', hint: 'Identité, site, outils : tout est à construire.', color: '#8b5cf6' },
+                    { n: pulse.sales, label: 'Ventes et cessions', hint: 'Un nouveau propriétaire revoit souvent ses prestataires.', color: '#6366f1' },
+                    { n: pulse.changes, label: 'Modifications', hint: 'Dirigeant, nom, adresse ou activité qui change.', color: '#06b6d4' },
+                    { n: pulse.insolvencies, label: 'Procédures', hint: 'Procédures collectives : signalées et pénalisées dans le score.', color: '#e11d48' },
+                  ].map(({ n, label, hint, color }) => (
                     <div key={label} className="p-5 sm:p-6">
                       <dt className="flex items-center gap-2 text-[13px] font-medium text-slate-600">
-                        <span className={`grid size-6 place-items-center rounded-md ${tone}`}>
-                          <Icon className="size-3.5" />
-                        </span>
+                        <span className="size-2 rounded-full" style={{ background: color }} />
                         {label}
                       </dt>
-                      <dd className="font-display mt-2 text-[1.65rem] font-semibold tracking-[-0.025em] tabular-nums text-night-900">
+                      <dd className="font-display mt-2 text-[2rem] leading-none font-semibold tracking-[-0.05em] tabular-nums text-night-900">
                         <CountUp value={n} />
                       </dd>
-                      <dd className="mt-1 text-xs leading-snug text-slate-500">{hint}</dd>
+                      <dd className="mt-2 text-xs leading-snug text-slate-500">{hint}</dd>
                     </div>
                   ))}
                 </dl>
@@ -208,30 +205,14 @@ export default async function Home() {
             ) : (
               <div className="flex flex-wrap items-center justify-between gap-4 p-6">
                 <p className="flex items-center gap-2 text-sm font-semibold">
-                  <FileText className="size-4 text-electric-600" />
+                  <FileText className="size-4 text-brand-violet" />
                   Créations, cessions, changements de dirigeant : Pro Spectre suit les annonces légales du BODACC pour vous signaler le bon moment.
                 </p>
-                <a href="https://www.bodacc.fr/" className="text-sm font-semibold text-electric-700 hover:underline" rel="noopener">
+                <a href="https://www.bodacc.fr/" className="text-sm font-semibold text-brand-violet hover:underline" rel="noopener">
                   bodacc.fr
                 </a>
               </div>
             )}
-          </div>
-        </section>
-
-        {/* ------------------------------------------------------ Sources */}
-        <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-          <p className="text-center text-xs font-semibold tracking-[0.14em] text-slate-500 uppercase">Construit sur des sources publiques que vous pouvez vérifier</p>
-          <div className="reveal mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {SOURCES.map((s) => (
-              <div key={s.name} className="flex items-start gap-3 rounded-2xl border border-line bg-white/70 p-4">
-                <span className="grid h-8 min-w-12 place-items-center rounded-lg bg-night-900 px-2 text-[11px] font-bold tracking-wide text-white">{s.producer}</span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">{s.name}</p>
-                  <p className="text-xs text-slate-500">{s.detail}</p>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
@@ -243,192 +224,177 @@ export default async function Home() {
 
         {/* ------------------------------------------------ Comment ça marche */}
         <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-          <SectionTitle eyebrow="Comment ça marche" title="De la liste brute au rendez-vous, en trois gestes" center>
-            Pro Spectre fait le travail de recherche et de qualification. Vous gardez la main sur le contact.
-          </SectionTitle>
-          <div className="relative mt-14">
-          <div className="pointer-events-none absolute top-[3rem] right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-electric-100 via-electric-400 to-emerald-300 lg:block" />
-          <ol className="relative grid gap-6 lg:grid-cols-3">
+          <SectionHead kicker="méthode" title="De la liste brute" accent="au rendez-vous." center>
+            Pro Spectre fait le travail de recherche et de qualification. <b>Vous gardez la main sur le contact.</b>
+          </SectionHead>
+          <ol className="mt-14 grid gap-5 lg:grid-cols-3">
             {[
               {
-                n: '01', icon: Target, title: 'Ciblez', text: 'Zone, secteur, taille, ancienneté, signaux : Pro Spectre interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
+                n: '1.', title: 'Ciblez.', text: 'Zone, secteur, taille, ancienneté, signaux : Pro Spectre interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
                 visual: (
-                  <div className="flex flex-wrap gap-1.5 text-[11px] font-medium">
+                  <div className="flex flex-wrap gap-1.5 text-[11.5px] font-medium">
                     {['Restauration', 'Lyon 2e + 5 km', 'Créée il y a moins de 2 ans', '6 à 49 salariés'].map((c) => (
-                      <span key={c} className="rounded-full bg-electric-50 px-2.5 py-1 text-electric-700">{c}</span>
+                      <span key={c} className="rounded-full border border-violet-200 bg-white px-2.5 py-1 text-violet-700">{c}</span>
                     ))}
-                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-rose-700"><Ban className="size-3" /> Opposition SIRENE exclue</span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-white px-2.5 py-1 text-rose-700"><Ban className="size-3" /> Opposition SIRENE exclue</span>
                   </div>
                 ),
               },
               {
-                n: '02', icon: Radar, title: 'Qualifiez', text: 'Site web, annonces légales, maturité digitale : le score explicable vous dit qui contacter en premier, et pourquoi.',
+                n: '2.', title: 'Qualifiez.', text: 'Site web, annonces légales, maturité digitale : le score explicable vous dit qui contacter en premier, et pourquoi.',
                 visual: (
-                  <div className="space-y-2">
+                  <div className="space-y-2.5 font-mono text-[11.5px]">
                     {[86, 71, 54].map((v, i) => (
-                      <div key={v} className="flex items-center gap-2.5 text-xs">
-                        <span className="w-16 text-slate-500">Prospect {String.fromCharCode(65 + i)}</span>
-                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-                          <span className={`block h-full rounded-full ${i === 0 ? 'bg-electric-500' : i === 1 ? 'bg-emerald-500' : 'bg-amber-500'}`} style={{ width: `${v}%` }} />
+                      <div key={v} className="flex items-center gap-3">
+                        <span className="w-20 text-slate-500">prospect {String.fromCharCode(97 + i)}</span>
+                        <span className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                          <span className="block h-full rounded-full" style={{ width: `${v}%`, background: i === 0 ? '#7c3aed' : i === 1 ? '#6366f1' : '#94a3b8' }} />
                         </span>
-                        <b className="w-6 text-right tabular-nums">{v}</b>
+                        <b className={`w-6 text-right tabular-nums ${i === 0 ? 'text-brand-violet' : 'text-night-800'}`}>{v}</b>
                       </div>
                     ))}
                   </div>
                 ),
               },
               {
-                n: '03', icon: Send, title: 'Contactez', text: 'Un message qui s’appuie sur un fait réel, puis un suivi dans le CRM jusqu’au rendez-vous.',
+                n: '3.', title: 'Contactez.', text: 'Un message qui s’appuie sur un fait réel, puis un suivi dans le CRM jusqu’au rendez-vous.',
                 visual: (
-                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold whitespace-nowrap">
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11.5px] font-semibold whitespace-nowrap">
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">À contacter</span>
                     <ArrowRight className="size-3 text-slate-300" />
                     <span className="rounded-full bg-sky-50 px-2.5 py-1 text-sky-700">Contacté</span>
                     <ArrowRight className="size-3 text-slate-300" />
-                    <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">Rendez-vous</span>
+                    <span className="rounded-full bg-violet-600 px-2.5 py-1 text-white">Rendez-vous</span>
                   </div>
                 ),
               },
-            ].map(({ n, icon: Icon, title, text, visual }) => (
-              <li key={n} className="reveal relative flex flex-col rounded-3xl border border-line bg-white p-6 shadow-card transition-shadow hover:shadow-lift">
-                <div className="flex items-center gap-3">
-                  <span className="relative grid size-12 place-items-center rounded-2xl bg-night-900 text-white shadow-lift">
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="font-mono text-xs font-semibold text-slate-400">{n}</span>
-                </div>
-                <h3 className="mt-5 text-xl font-semibold tracking-tight">{title}</h3>
-                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-600">{text}</p>
-                <div className="mt-5 rounded-2xl border border-line bg-canvas/70 p-4">{visual}</div>
+            ].map(({ n, title, text, visual }) => (
+              <li key={n} className={`reveal ${card} flex flex-col p-7`}>
+                <div className="flex min-h-28 items-center rounded-2xl border border-line bg-paper/70 p-4">{visual}</div>
+                <span className="mt-7 grid size-14 place-items-center rounded-full bg-violet-50 font-mono text-xl font-medium text-brand-violet ring-1 ring-violet-200">{n}</span>
+                <h3 className="font-display mt-5 text-[1.6rem] leading-tight font-semibold tracking-[-0.04em]">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-slate-600">{text}</p>
               </li>
             ))}
           </ol>
-          </div>
         </section>
 
         {/* ------------------------------------------------ Fonctionnalités */}
-        <section id="fonctionnalites" className="relative border-y border-line bg-white py-24">
-          <div className="bg-dots pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,#000,transparent_40%)]" />
-          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-            <SectionTitle eyebrow="Fonctionnalités" title="Tout le cycle de prospection, au même endroit">
-              De la recherche d’entreprises au rendez-vous obtenu, sans jongler entre un annuaire, un tableur et une messagerie.
-            </SectionTitle>
+        <section id="fonctionnalites" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+          <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr]">
+            <SectionHead kicker="fonctionnalités" title="Tout le cycle de prospection," accent="au même endroit." />
+            <p className="text-[17px] leading-relaxed text-slate-600 lg:pb-2">De la recherche d’entreprises au rendez-vous obtenu, sans jongler entre un annuaire, un tableur et une messagerie.</p>
+          </div>
 
-            <div className="mt-12 grid gap-5 lg:grid-cols-3">
-              <article className="reveal group grid gap-6 rounded-3xl border border-line bg-gradient-to-br from-white to-electric-50/60 p-7 shadow-card sm:grid-cols-[1fr_1fr] lg:col-span-2">
-                <div>
-                  <span className="grid size-11 place-items-center rounded-xl bg-electric-600 text-white shadow-glow">
-                    <Radar className="size-5" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-semibold tracking-tight">Analyse automatique</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">Site web retrouvé et rattaché par le SIREN, audit technique, annonces légales récentes. Les constats alimentent le score et les messages.</p>
-                </div>
-                <ul className="space-y-2 self-center rounded-2xl border border-line bg-white p-4 text-sm shadow-card">
-                  {[
-                    ['Site rattaché par le SIREN', true],
-                    ['Connexion sécurisée (HTTPS)', false],
-                    ['Adapté au mobile', false],
-                    ['Référencement de base', true],
-                    ['Réservation en ligne', false],
-                    ['Contenu récent', true],
-                  ].map(([l, ok]) => (
-                    <li key={l as string} className="flex items-center justify-between gap-3">
-                      <span className="text-slate-700">{l as string}</span>
-                      <span className={`grid size-5 place-items-center rounded-full ${ok ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                        {ok ? <Check className="size-3" strokeWidth={3} /> : <X className="size-3" strokeWidth={3} />}
-                      </span>
-                    </li>
-                  ))}
-                  <li className="pt-1 text-[11px] text-slate-400">Exemple de constats sur une entreprise fictive</li>
-                </ul>
-              </article>
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            <article className={`reveal ${card} card-tint grid gap-6 p-7 sm:grid-cols-[1fr_1fr] lg:col-span-2`}>
+              <div>
+                <MonoTag>Analyse automatique</MonoTag>
+                <h3 className="font-display mt-4 text-[1.6rem] leading-tight font-semibold tracking-[-0.04em]">Le site, les annonces, les faits.</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-slate-600">Site web retrouvé et rattaché par le SIREN, audit technique, annonces légales récentes. Les constats alimentent le score et les messages.</p>
+              </div>
+              <ul className="space-y-2.5 self-center rounded-2xl border border-line bg-white p-4 text-sm shadow-float">
+                {[
+                  ['Site rattaché par le SIREN', true],
+                  ['Connexion sécurisée (HTTPS)', false],
+                  ['Adapté au mobile', false],
+                  ['Référencement de base', true],
+                  ['Réservation en ligne', false],
+                  ['Contenu récent', true],
+                ].map(([l, ok]) => (
+                  <li key={l as string} className="flex items-center justify-between gap-3">
+                    <span className="text-slate-700">{l as string}</span>
+                    <span className={`grid size-5 place-items-center rounded-full ${ok ? 'bg-violet-600 text-white' : 'bg-amber-100 text-amber-700'}`}>
+                      {ok ? <Check className="size-3" strokeWidth={3} /> : <X className="size-3" strokeWidth={3} />}
+                    </span>
+                  </li>
+                ))}
+                <li className="pt-1 text-[11px] text-slate-400">Exemple de constats sur une entreprise fictive</li>
+              </ul>
+            </article>
 
-              <article className="reveal flex flex-col rounded-3xl border border-line bg-night-900 p-7 text-white shadow-lift">
-                <span className="grid size-11 place-items-center rounded-xl bg-white/10 text-electric-300">
-                  <Gauge className="size-5" />
-                </span>
-                <h3 className="mt-5 text-xl font-semibold tracking-tight">Score explicable</h3>
-                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-300">Une note de 0 à 100, détaillée critère par critère, avec ses raisons et un niveau de confiance.</p>
-                <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white p-3 text-night-900">
-                  <ScoreRing value={example.total} category={example.category.id} size={64} stroke={6} />
-                  <div className="text-xs">
-                    <p className="font-semibold">{example.category.label}</p>
-                    <p className="text-slate-500">Confiance {example.confidence}</p>
-                  </div>
+            <article className="reveal island relative flex flex-col overflow-hidden rounded-[28px] p-7 text-white shadow-pop">
+              <MonoTag dark>Score explicable</MonoTag>
+              <h3 className="font-display mt-4 text-[1.6rem] leading-tight font-semibold tracking-[-0.04em]">Une note, et ses raisons.</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-300">De 0 à 100, détaillée critère par critère, avec un niveau de confiance.</p>
+              <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white p-3 text-night-900">
+                <ScoreRing value={example.total} category={example.category.id} size={64} stroke={6} />
+                <div className="text-xs">
+                  <p className="font-semibold">{example.category.label}</p>
+                  <p className="text-slate-500">Confiance {example.confidence}</p>
                 </div>
-              </article>
+              </div>
+            </article>
 
-              <article className="reveal flex flex-col rounded-3xl border border-line bg-white p-7 shadow-card">
-                <span className="grid size-11 place-items-center rounded-xl bg-violet-50 text-violet-600">
-                  <MessageSquareText className="size-5" />
-                </span>
-                <h3 className="mt-5 text-xl font-semibold tracking-tight">Messages personnalisés</h3>
-                <p className="mt-2 flex-1 text-[15px] leading-relaxed text-slate-600">E-mail, LinkedIn, Instagram ou message court, en 5 tons. L’accroche cite une observation réelle, jamais une relation inventée.</p>
-                <div className="mt-5 flex flex-wrap gap-1.5 text-[11px] font-semibold">
-                  {['E-mail', 'LinkedIn', 'Instagram', 'Message court'].map((c) => (
-                    <span key={c} className="rounded-full border border-line px-2.5 py-1 text-slate-600">{c}</span>
-                  ))}
-                </div>
-              </article>
+            <article className={`reveal ${card} flex flex-col p-7`}>
+              <MonoTag>Messages</MonoTag>
+              <h3 className="font-display mt-4 text-[1.4rem] leading-tight font-semibold tracking-[-0.04em]">Une accroche fondée sur un fait.</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-600">E-mail, LinkedIn, Instagram ou message court, en 5 tons. Jamais une relation inventée.</p>
+              <div className="mt-5 flex flex-wrap gap-1.5 text-[11.5px] font-medium">
+                {['E-mail', 'LinkedIn', 'Instagram', 'Message court'].map((c) => (
+                  <span key={c} className="rounded-full border border-line bg-white px-2.5 py-1 text-slate-600">{c}</span>
+                ))}
+              </div>
+            </article>
 
-              <article className="reveal grid gap-6 rounded-3xl border border-line bg-white p-7 shadow-card sm:grid-cols-[0.9fr_1.1fr] lg:col-span-2">
-                <div>
-                  <span className="grid size-11 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
-                    <KanbanSquare className="size-5" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-semibold tracking-tight">Mini-CRM intégré</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">Sept statuts, notes, historique, date de relance, vue tableau et Kanban. Chaque entreprise n’y figure qu’une fois.</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 self-center text-[11px]">
-                  {[
-                    ['À contacter', 'bg-slate-400', 3],
-                    ['Contacté', 'bg-sky-500', 2],
-                    ['Rendez-vous', 'bg-emerald-500', 1],
-                  ].map(([label, dot, count]) => (
-                    <div key={label as string} className="rounded-xl bg-canvas p-2">
-                      <p className="mb-2 flex items-center gap-1.5 font-semibold text-slate-600">
-                        <span className={`size-1.5 rounded-full ${dot}`} />
-                        {label as string}
-                      </p>
-                      <div className="space-y-1.5">
-                        {Array.from({ length: count as number }).map((_, i) => (
-                          <div key={i} className="rounded-lg border border-line bg-white p-2 shadow-sm">
-                            <span className="block h-1.5 w-3/4 rounded-full bg-slate-200" />
-                            <span className="mt-1.5 block h-1.5 w-1/2 rounded-full bg-slate-100" />
-                          </div>
-                        ))}
-                      </div>
+            <article className={`reveal ${card} grid gap-6 p-7 sm:grid-cols-[0.9fr_1.1fr] lg:col-span-2`}>
+              <div>
+                <MonoTag>Mini-CRM</MonoTag>
+                <h3 className="font-display mt-4 text-[1.4rem] leading-tight font-semibold tracking-[-0.04em]">Chaque entreprise, une seule fois.</h3>
+                <p className="mt-3 text-[15px] leading-relaxed text-slate-600">Sept statuts, notes, historique, date de relance, vue tableau et Kanban.</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2 self-center text-[11px]">
+                {[
+                  ['À contacter', 'bg-slate-400', 3],
+                  ['Contacté', 'bg-sky-500', 2],
+                  ['Rendez-vous', 'bg-violet-600', 1],
+                ].map(([label, dot, count]) => (
+                  <div key={label as string} className="rounded-xl bg-paper p-2">
+                    <p className="mb-2 flex items-center gap-1.5 font-semibold text-slate-600">
+                      <span className={`size-1.5 rounded-full ${dot}`} />
+                      {label as string}
+                    </p>
+                    <div className="space-y-1.5">
+                      {Array.from({ length: count as number }).map((_, i) => (
+                        <div key={i} className="rounded-lg border border-line bg-white p-2 shadow-sm">
+                          <span className="block h-1.5 w-3/4 rounded-full bg-slate-200" />
+                          <span className="mt-1.5 block h-1.5 w-1/2 rounded-full bg-slate-100" />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </article>
+                  </div>
+                ))}
+              </div>
+            </article>
 
-              {[
-                { icon: Search, title: 'Recherche avancée', text: 'Région, département, ville, code postal ou rayon ; secteur, mots-clés, taille, ancienneté, signaux. Tous les filtres se combinent.' },
-                { icon: ListChecks, title: 'Listes et recherches sauvegardées', text: 'Relancez une recherche pour voir les nouvelles entreprises, comparez deux recherches, regroupez vos prospects par campagne.' },
-                { icon: Users, title: 'Export et travail en équipe', text: 'Export CSV de votre CRM. Jusqu’à 5 utilisateurs partagent le même portefeuille, les mêmes listes et les mêmes paramètres.' },
-              ].map(({ icon: Icon, title, text }) => (
-                <article key={title} className="reveal rounded-3xl border border-line bg-white p-7 shadow-card transition-shadow hover:shadow-lift">
-                  <span className="grid size-11 place-items-center rounded-xl bg-electric-50 text-electric-600">
-                    <Icon className="size-5" />
+            {[
+              { icon: Search, tag: 'Recherche', title: 'Tous les filtres se combinent.', text: 'Région, département, ville, code postal ou rayon ; secteur, mots-clés, taille, ancienneté, signaux.' },
+              { icon: ListChecks, tag: 'Listes', title: 'Relancez, comparez, regroupez.', text: 'Relancez une recherche pour voir les nouvelles entreprises, comparez deux recherches, classez par campagne.' },
+              { icon: Users, tag: 'Équipe', title: 'Jusqu’à 5 utilisateurs.', text: 'Export CSV de votre CRM. Un même portefeuille, les mêmes listes et les mêmes paramètres pour toute l’équipe.' },
+            ].map(({ icon: Icon, tag, title, text }) => (
+              <article key={title} className={`reveal ${card} p-7`}>
+                <div className="flex items-center justify-between">
+                  <MonoTag>{tag}</MonoTag>
+                  <span className="grid size-9 place-items-center rounded-full bg-violet-50 text-brand-violet ring-1 ring-violet-100">
+                    <Icon className="size-4" />
                   </span>
-                  <h3 className="mt-5 text-lg font-semibold tracking-tight">{title}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-slate-600">{text}</p>
-                </article>
-              ))}
-            </div>
+                </div>
+                <h3 className="font-display mt-4 text-[1.3rem] leading-tight font-semibold tracking-[-0.04em]">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-slate-600">{text}</p>
+              </article>
+            ))}
           </div>
         </section>
 
         {/* ------------------------------------------------------- Score */}
-        <section id="score" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+        <section id="score" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <SectionTitle eyebrow="Score explicable" title="Un score que vous pouvez expliquer, et régler">
-              Cinq critères pondérés (30, 25, 20, 15 et 10 % par défaut), ajustables selon votre activité. Chaque point attribué est justifié et étiqueté « constaté » ou « estimé ».
-            </SectionTitle>
-            <p className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-slate-600 shadow-card">
+            <SectionHead kicker="score" title="Un score que vous pouvez expliquer," accent="et régler.">
+              Cinq critères pondérés (30, 25, 20, 15 et 10 % par défaut), ajustables selon votre activité. <b>Chaque point attribué est justifié</b> et étiqueté « constaté » ou « estimé ».
+            </SectionHead>
+            <p className="flex items-center gap-2 rounded-full border border-white bg-white/85 px-4 py-2 font-mono text-[11px] tracking-[0.08em] text-night-800 uppercase shadow-float">
               <BadgeCheck className="size-4 text-emerald-600" />
-              Calcul identique à celui de l’application
+              Calcul identique à l’application
             </p>
           </div>
           <div className="reveal mt-12">
@@ -437,74 +403,73 @@ export default async function Home() {
         </section>
 
         {/* ---------------------------------------------------- Confiance */}
-        <section id="confiance" className="relative isolate overflow-hidden bg-night-950 py-24 text-white">
-          <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
-          <div className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.3),transparent)]" />
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <SectionTitle eyebrow="Confiance" title={<>La confiance, <span className="text-gradient font-serif font-normal italic">ça se vérifie.</span></>} dark>
-                Ce que Pro Spectre fait des données, ce qu’il s’interdit, et comment le contrôler vous-même.
-              </SectionTitle>
-              <Link href="/confiance" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10">
-                Centre de confiance
-                <ArrowRight className="size-4" />
-              </Link>
-            </div>
+        <section id="confiance" className="px-3 sm:px-4">
+          <div className="island relative isolate mx-auto max-w-[90rem] overflow-hidden rounded-[2.5rem] px-4 py-20 text-white sm:rounded-[3rem] sm:px-6 lg:py-28">
+            <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
+            <div className="mx-auto max-w-6xl">
+              <div className="flex flex-wrap items-end justify-between gap-6">
+                <SectionHead kicker="confiance" title="La confiance," accent="ça se vérifie." dark>
+                  Ce que Pro Spectre fait des données, ce qu’il s’interdit, et comment le contrôler vous-même.
+                </SectionHead>
+                <Link href="/confiance" className={ctaClass('light')}>
+                  Centre de confiance
+                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />
+                </Link>
+              </div>
 
-            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {TRUST.map(({ icon: Icon, title, text, check }) => (
-                <article key={title} className="reveal flex flex-col rounded-3xl border border-white/10 bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.07]">
-                  <span className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-electric-500/30 to-emerald-400/20 text-electric-200 ring-1 ring-white/10">
-                    <Icon className="size-5" />
-                  </span>
-                  <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{text}</p>
-                  <p className="mt-5 flex items-start gap-2 border-t border-white/10 pt-4 text-xs text-emerald-200/90">
-                    <Check className="mt-px size-3.5 shrink-0" strokeWidth={3} />
-                    {check}
-                  </p>
-                </article>
-              ))}
-            </div>
-
-            <div className="reveal mt-6 grid gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
-              <p className="flex items-center gap-3 text-lg font-semibold">
-                <span className="grid size-10 place-items-center rounded-xl bg-rose-500/15 text-rose-300">
-                  <Ban className="size-5" />
-                </span>
-                Ce que Pro Spectre
-                <br className="hidden md:block" /> ne fait pas
-              </p>
-              <ul className="grid gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">
-                {[
-                  'Aucune collecte du contenu des réseaux sociaux',
-                  'Aucun contournement de protection ; robots.txt respecté',
-                  'Aucune entreprise en opposition SIRENE dans les résultats',
-                  'Aucun message prétendant un échange qui n’a pas eu lieu',
-                  'Aucune revente de données à des tiers',
-                  'Aucun envoi automatique de messages en votre nom',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2">
-                    <X className="mt-0.5 size-4 shrink-0 text-rose-300" />
-                    {t}
-                  </li>
+              <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {TRUST.map(({ icon: Icon, title, text, check }) => (
+                  <article key={title} className="reveal flex flex-col rounded-[24px] border border-white/10 bg-white/[0.045] p-6 backdrop-blur transition-colors hover:border-violet-300/30 hover:bg-white/[0.07]">
+                    <span className="grid size-11 place-items-center rounded-full bg-gradient-to-br from-violet-500/40 to-blue-500/30 text-violet-100 ring-1 ring-white/15">
+                      <Icon className="size-5" />
+                    </span>
+                    <h3 className="font-display mt-5 text-lg font-semibold tracking-[-0.03em]">{title}</h3>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{text}</p>
+                    <p className="mt-5 flex items-start gap-2 border-t border-white/10 pt-4 text-xs text-emerald-200/90">
+                      <Check className="mt-px size-3.5 shrink-0" strokeWidth={3} />
+                      {check}
+                    </p>
+                  </article>
                 ))}
-              </ul>
+              </div>
+
+              <div className="reveal mt-5 grid gap-6 rounded-[24px] border border-dashed border-white/20 p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
+                <div>
+                  <MonoTag dark>Interdits</MonoTag>
+                  <p className="font-display mt-3 text-xl font-semibold tracking-[-0.03em]">
+                    Ce que Pro Spectre
+                    <br className="hidden md:block" /> ne fait pas
+                  </p>
+                </div>
+                <ul className="grid gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">
+                  {[
+                    'Aucune collecte du contenu des réseaux sociaux',
+                    'Aucun contournement de protection ; robots.txt respecté',
+                    'Aucune entreprise en opposition SIRENE dans les résultats',
+                    'Aucun message prétendant un échange qui n’a pas eu lieu',
+                    'Aucune revente de données à des tiers',
+                    'Aucun envoi automatique de messages en votre nom',
+                  ].map((t) => (
+                    <li key={t} className="flex items-start gap-2">
+                      <X className="mt-0.5 size-4 shrink-0 text-rose-300" />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>
 
         {/* ------------------------------------------------ Audit gratuit */}
-        <section className="px-4 pt-24 sm:px-6">
-          <div className="reveal relative isolate mx-auto grid max-w-6xl items-center gap-10 overflow-hidden rounded-[2rem] bg-night-900 p-7 text-white sm:p-10 lg:grid-cols-[1fr_1.15fr]">
-            <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
-            <div className="pointer-events-none absolute -right-20 -bottom-24 -z-10 h-72 w-[30rem] rounded-full bg-[radial-gradient(closest-side,rgba(6,182,212,0.35),transparent)]" />
+        <section className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
+          <div className="reveal grid items-center gap-10 rounded-[28px] border border-dashed border-violet-300/80 bg-white/55 p-6 backdrop-blur sm:p-10 lg:grid-cols-[1fr_1.15fr]">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200 ring-1 ring-cyan-300/20">
-                <ScanSearch className="size-3.5" /> Outil gratuit, sans inscription
-              </p>
-              <h2 className="font-display mt-4 text-[1.7rem] leading-[1.15] font-semibold tracking-[-0.02em] sm:text-[2.1rem]">Auditez n’importe quel site en 30 secondes.</h2>
-              <p className="mt-3 text-slate-300">Sécurité, mobile, référencement, réseaux sociaux, fraîcheur : un rapport clair, avec les actions à mener, à envoyer à votre prospect.</p>
+              <MonoTag>Outil gratuit, sans inscription</MonoTag>
+              <h2 className="font-display mt-4 text-[2rem] leading-[1.05] font-semibold tracking-[-0.045em] sm:text-[2.5rem]">
+                Auditez n’importe quel site <span className="text-brand">en 30 secondes.</span>
+              </h2>
+              <p className="mt-4 text-slate-600">Sécurité, mobile, référencement, réseaux sociaux, fraîcheur : un rapport clair, avec les actions à mener, à envoyer à votre prospect.</p>
             </div>
             <AuditForm />
           </div>
@@ -512,39 +477,40 @@ export default async function Home() {
 
         {/* ------------------------------------------------------ Tarifs */}
         <section id="tarifs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-          <SectionTitle eyebrow="Tarifs" title="Des tarifs simples, sans engagement" center>
-            Commencez gratuitement. Passez à une offre payante quand la prospection devient régulière.
-          </SectionTitle>
+          <SectionHead kicker="tarifs" title="Des tarifs simples," accent="sans engagement." center>
+            Commencez gratuitement. <b>Passez à une offre payante quand la prospection devient régulière.</b>
+          </SectionHead>
           <div className="mt-14 grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4">
             {Object.values(PLANS).map((p) => {
               const featured = p.id === 'pro';
               return (
-                <div key={p.id} className={`reveal flex flex-col rounded-3xl p-7 ${featured ? 'ring-gradient text-white shadow-glow lg:-my-3 lg:py-10' : 'border border-line bg-white shadow-card'}`}>
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-lg font-semibold tracking-[-0.03em]">{p.name}</h3>
-                    {featured && <span className="rounded-full bg-electric-500/20 px-2.5 py-0.5 text-xs font-semibold text-electric-200 ring-1 ring-electric-400/40">Recommandé</span>}
+                <div key={p.id} className={`reveal flex flex-col rounded-[24px] p-7 ${featured ? 'island text-white shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] ring-1 ring-violet-400/40' : 'border border-white bg-white shadow-float ring-1 ring-night-900/[0.05]'}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-display text-xl font-semibold tracking-[-0.04em]">{p.name}</h3>
+                    {featured && <span className="rounded-full bg-brand-violet px-2.5 py-1 font-mono text-[10px] font-medium tracking-[0.1em] text-white">RECOMMANDÉ</span>}
                   </div>
-                  <p className="mt-4 flex items-baseline gap-1.5">
-                    <span className="font-display text-[2.5rem] font-semibold tracking-[-0.03em] tabular-nums">{p.price} €</span>
+                  <p className={`mt-1.5 text-sm ${featured ? 'text-slate-300' : 'text-slate-500'}`}>{p.audience}</p>
+                  <p className="mt-6 flex items-baseline gap-1.5">
+                    <span className="font-display text-[2.6rem] leading-none font-semibold tracking-[-0.05em] tabular-nums">{p.price} €</span>
                     <span className={`text-sm ${featured ? 'text-slate-400' : 'text-slate-500'}`}>{p.price ? 'HT / mois' : 'pour toujours'}</span>
                   </p>
-                  <p className={`mt-1 text-sm ${featured ? 'text-slate-300' : 'text-slate-500'}`}>{p.audience}</p>
-                  <ul className={`mt-6 flex-1 space-y-3 border-t pt-6 text-sm ${featured ? 'border-white/10 text-slate-200' : 'border-line text-slate-700'}`}>
+                  <Link href="/inscription" className={`${ctaClass(p.price ? 'brand' : 'outline')} mt-6 w-full px-3`}>
+                    {p.price ? `Choisir ${p.name}` : 'Commencer gratuitement'}
+                    {p.price > 0 && <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />}
+                  </Link>
+                  <ul className={`mt-6 flex-1 space-y-3 rounded-2xl p-4 text-sm ${featured ? 'bg-white/[0.06] text-slate-200' : 'bg-paper/80 text-slate-700'}`}>
                     {p.pitch.map((x) => (
                       <li key={x} className="flex gap-2.5">
-                        <Check className={`mt-0.5 size-4 shrink-0 ${featured ? 'text-emerald-300' : 'text-electric-600'}`} strokeWidth={2.5} />
+                        <Check className={`mt-0.5 size-4 shrink-0 ${featured ? 'text-violet-300' : 'text-brand-violet'}`} strokeWidth={2.5} />
                         {x}
                       </li>
                     ))}
                   </ul>
-                  <Link href="/inscription" className={`${buttonClass(featured ? 'accent' : p.price ? 'primary' : 'secondary', 'md')} mt-7 w-full`}>
-                    {p.price ? `Choisir ${p.name}` : 'Commencer gratuitement'}
-                  </Link>
                 </div>
               );
             })}
           </div>
-          <div className="reveal mt-10 grid gap-3 rounded-3xl border border-line bg-white p-5 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="reveal mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-slate-600">
             {[
               [ShieldCheck, 'Offre gratuite sans carte bancaire'],
               [Lock, 'Paiement sécurisé par Stripe'],
@@ -553,10 +519,8 @@ export default async function Home() {
             ].map(([Icon, t]) => {
               const I = Icon as typeof Lock;
               return (
-                <p key={t as string} className="flex items-center gap-2.5">
-                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-700">
-                    <I className="size-4" />
-                  </span>
+                <p key={t as string} className="flex items-center gap-2">
+                  <I className="size-4 text-brand-violet" />
                   {t as string}
                 </p>
               );
@@ -565,69 +529,71 @@ export default async function Home() {
         </section>
 
         {/* --------------------------------------------------------- FAQ */}
-        <section id="faq" className="border-t border-line bg-white py-24">
-          <div className="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <SectionTitle eyebrow="FAQ" title="Questions fréquentes">
-                Les réponses courtes aux questions qu’on nous pose avant de s’inscrire.
-              </SectionTitle>
-              <div className="mt-8 rounded-2xl bg-canvas p-5 text-sm">
-                <p className="font-semibold">Une autre question ?</p>
-                <p className="mt-1 text-slate-600">
-                  {contactEmail ? (
-                    <>
-                      Écrivez-nous à{' '}
-                      <a href={`mailto:${contactEmail}`} className="font-semibold text-electric-700 hover:underline">
-                        {contactEmail}
-                      </a>
-                      .
-                    </>
-                  ) : (
-                    <>
-                      Le{' '}
-                      <Link href="/confiance" className="font-semibold text-electric-700 hover:underline">
-                        centre de confiance
-                      </Link>{' '}
-                      détaille les sources, la sécurité et le traitement des données.
-                    </>
-                  )}
-                </p>
-              </div>
+        <section id="faq" className="mx-auto grid max-w-6xl gap-12 px-4 pb-24 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHead kicker="faq" title="Vos questions," accent="nos réponses.">
+              La version courte de tout ce qui précède.
+            </SectionHead>
+            <div className="mt-8 rounded-2xl border border-white bg-white/70 p-5 text-sm shadow-float">
+              <p className="font-semibold">Une autre question ?</p>
+              <p className="mt-1 text-slate-600">
+                {contactEmail ? (
+                  <>
+                    Écrivez-nous à{' '}
+                    <a href={`mailto:${contactEmail}`} className="font-semibold text-brand-violet hover:underline">
+                      {contactEmail}
+                    </a>
+                    .
+                  </>
+                ) : (
+                  <>
+                    Le{' '}
+                    <Link href="/confiance" className="font-semibold text-brand-violet hover:underline">
+                      centre de confiance
+                    </Link>{' '}
+                    détaille les sources, la sécurité et le traitement des données.
+                  </>
+                )}
+              </p>
             </div>
-            <div className="space-y-3">
-              {FAQ.map(([q, a]) => (
-                <details key={q} className="group rounded-2xl border border-line bg-white px-5 py-4 transition-colors open:border-electric-200 open:bg-electric-50/40 open:shadow-card [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
-                    {q}
-                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition-transform group-open:rotate-45 group-open:bg-electric-600 group-open:text-white">+</span>
-                  </summary>
-                  <p className="mt-3 text-[15px] leading-relaxed text-slate-600">{a}</p>
-                </details>
-              ))}
-            </div>
+          </div>
+          <div className="space-y-3">
+            {FAQ.map(([q, a]) => (
+              <details key={q} className="group rounded-2xl border border-white bg-white px-5 py-4 shadow-float ring-1 ring-night-900/[0.05] transition-shadow open:ring-violet-200 [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-night-900">
+                  {q}
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border-[1.5px] border-night-900/80 text-night-900 transition-transform duration-200 group-open:rotate-180 group-open:border-brand-violet group-open:bg-brand-violet group-open:text-white" aria-hidden="true">
+                    <ArrowDown className="size-3.5" strokeWidth={2.5} />
+                  </span>
+                </summary>
+                <p className="mt-3 text-[15px] leading-relaxed text-slate-600">{a}</p>
+              </details>
+            ))}
           </div>
         </section>
 
         {/* ------------------------------------------------- Appel final */}
-        <section className="px-4 py-20 sm:px-6">
-          <div className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-night-900 px-6 py-16 text-center text-white sm:px-12">
-            <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
-            <div className="pointer-events-none absolute -bottom-40 left-1/2 -z-10 h-80 w-[50rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.5),transparent)]" />
-            <BrandMark size={60} className="mx-auto mb-7 rounded-[15px] shadow-[0_18px_50px_-16px_rgba(124,58,237,0.6)]" />
-            <h2 className="font-display mx-auto max-w-3xl text-[1.9rem] leading-[1.14] font-semibold tracking-[-0.025em] text-balance sm:text-[2.8rem]">
-              Vos prochains clients sont <span className="text-gradient font-serif font-normal italic">déjà immatriculés.</span>
+        <section className="px-3 pb-16 sm:px-4">
+          <div
+            className="reveal relative isolate mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-6 py-20 text-center text-white sm:px-12 lg:py-24"
+            style={{ background: 'radial-gradient(55% 90% at 0% 15%, rgba(124,58,237,0.7), transparent 70%), radial-gradient(55% 90% at 100% 85%, rgba(37,99,235,0.7), transparent 70%), #0a0d24' }}
+          >
+            <Kicker label="démarrer" dark center />
+            <h2 className="font-display mx-auto mt-6 max-w-4xl text-[2.2rem] leading-[1.04] font-semibold tracking-[-0.045em] text-balance sm:text-[3.4rem]">
+              <span className="block text-white/55">Vos prochains clients sont déjà immatriculés.</span>
+              <span className="block">Pro Spectre les trouve.</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-slate-300">Trouvez-les, comprenez leurs besoins, contactez-les avec un vrai motif.</p>
+            <p className="mx-auto mt-5 max-w-xl text-slate-300">Trouvez-les, comprenez leurs besoins, contactez-les avec un vrai motif.</p>
             <div className="mt-9 flex flex-wrap justify-center gap-3">
-              <Link href="/inscription" className={buttonClass('accent', 'lg')}>
+              <Link href="/inscription" className={ctaClass('light', 'lg')}>
                 Trouver mes prospects
-                <ArrowRight className="size-4" />
+                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />
               </Link>
-              <Link href="/connexion" className="inline-flex h-12 items-center rounded-lg border border-white/20 px-6 text-[15px] font-semibold text-white hover:bg-white/10">
+              <Link href="/connexion" className={ctaClass('outline-dark', 'lg')}>
                 Se connecter
               </Link>
             </div>
-            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-400">
+            <p className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 font-mono text-[11px] tracking-[0.08em] text-slate-400 uppercase">
               <span className="inline-flex items-center gap-1.5"><Database className="size-3.5" /> Données officielles</span>
               <span className="inline-flex items-center gap-1.5"><MapPin className="size-3.5" /> Toute la France</span>
               <span className="inline-flex items-center gap-1.5"><Globe className="size-3.5" /> Aucune installation</span>
@@ -638,6 +604,6 @@ export default async function Home() {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       </main>
       <SiteFooter />
-    </>
+    </PublicPage>
   );
 }

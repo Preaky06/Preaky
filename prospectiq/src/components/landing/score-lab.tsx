@@ -17,7 +17,7 @@ export function ScoreLab({ input }: { input: Input }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-      <div className="flex flex-col rounded-3xl border border-line bg-white p-6 shadow-card">
+      <div className="hairline flex flex-col rounded-[28px] border border-white bg-white p-6 shadow-float ring-1 ring-night-900/[0.05]">
         <div className="flex items-center justify-between gap-3">
           <p className="font-semibold">Vos pondérations</p>
           <button type="button" onClick={() => setWeights(DEFAULT_WEIGHTS)} disabled={!changed} className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-electric-700 hover:bg-electric-50 disabled:opacity-40">
@@ -40,7 +40,7 @@ export function ScoreLab({ input }: { input: Input }) {
                 step={5}
                 value={weights[k]}
                 onChange={(e) => setWeights((w) => ({ ...w, [k]: Number(e.target.value) }))}
-                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-electric-600"
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-brand-violet"
                 aria-label={`Pondération : ${CRITERIA_LABELS[k]}`}
               />
             </label>
@@ -79,7 +79,7 @@ export function ScoreLab({ input }: { input: Input }) {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-line bg-white p-6 shadow-lift" data-testid="score-example">
+      <div className="ring-duo rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]" data-testid="score-example">
         <div className="grid items-start gap-4 sm:grid-cols-[1fr_auto]">
           <div className="min-w-0">
             <Badge tone="warning">Exemple illustratif · entreprise fictive</Badge>

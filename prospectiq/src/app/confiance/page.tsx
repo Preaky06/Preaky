@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Activity, ArrowRight, Check, Database, FileSearch, Fingerprint, KeyRound, Mail, Scale, ServerCog, ShieldCheck, X } from 'lucide-react';
-import { SiteHeader, SiteFooter } from '@/components/site';
+import { Activity, ArrowUpRight, Check, Database, FileSearch, Fingerprint, KeyRound, Mail, Scale, ServerCog, ShieldCheck, X } from 'lucide-react';
+import { SiteHeader, SiteFooter, PublicPage } from '@/components/site';
+import { Kicker, ctaClass } from '@/components/landing/kit';
 import { env, features } from '@/lib/env';
 import { sourcesStatus } from '@/lib/pulse';
 
@@ -26,9 +27,9 @@ const SECTIONS = [
 
 function Section({ id, icon: Icon, title, children }: { id: string; icon: typeof Database; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-24 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
-      <h2 className="flex items-center gap-3 text-xl font-semibold tracking-tight">
-        <span className="grid size-10 place-items-center rounded-xl bg-electric-50 text-electric-600">
+    <section id={id} className="hairline scroll-mt-28 rounded-[28px] border border-white bg-white p-6 shadow-float ring-1 ring-night-900/[0.05] sm:p-8">
+      <h2 className="font-display flex items-center gap-3 text-[1.5rem] font-semibold tracking-[-0.04em]">
+        <span className="grid size-10 place-items-center rounded-full bg-violet-50 text-brand-violet ring-1 ring-violet-100">
           <Icon className="size-5" />
         </span>
         {title}
@@ -72,31 +73,31 @@ export default async function Page() {
   ];
 
   return (
-    <>
+    <PublicPage>
       <SiteHeader />
-      <main id="contenu">
-        <section className="relative isolate overflow-hidden border-b border-line bg-white">
-          <div className="bg-dots pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top,#000_30%,transparent_75%)]" />
+      <main id="contenu" className="overflow-x-clip">
+        <section className="relative isolate">
+          <div className="halo-duo pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[36rem]" aria-hidden="true" />
           <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:py-20">
             <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-electric-600 uppercase">Centre de confiance</p>
-              <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-                Ce que nous faisons des données, <span className="text-gradient-dark font-serif font-normal italic">et comment le vérifier.</span>
+              <Kicker label="centre de confiance" />
+              <h1 className="font-display mt-5 text-[2.4rem] leading-[1.04] font-semibold tracking-[-0.05em] text-balance sm:text-[3.4rem]">
+                Ce que nous faisons des données, <span className="text-brand block">et comment le vérifier.</span>
               </h1>
               <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-slate-600">D’où viennent les informations, comment le score est calculé, ce qui est conservé et pendant combien de temps, qui intervient dans le traitement. Cette page reflète la configuration réelle du service.</p>
               <nav className="mt-7 flex flex-wrap gap-2 text-sm font-medium" aria-label="Sections">
                 {SECTIONS.map(([id, label]) => (
-                  <a key={id} href={`#${id}`} className="rounded-full border border-line bg-white px-3.5 py-1.5 text-slate-700 transition-colors hover:border-electric-300 hover:text-electric-700">
+                  <a key={id} href={`#${id}`} className="rounded-full border border-white bg-white/85 px-3.5 py-1.5 text-night-800 shadow-float transition-colors hover:text-brand-violet">
                     {label}
                   </a>
                 ))}
               </nav>
             </div>
 
-            <div className="rounded-3xl border border-line bg-white p-6 shadow-lift" data-testid="sources-status">
+            <div className="ring-duo rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]" data-testid="sources-status">
               <div className="flex items-center justify-between gap-3">
                 <p className="flex items-center gap-2 font-semibold">
-                  <Activity className="size-4 text-electric-600" />
+                  <Activity className="size-4 text-brand-violet" />
                   État des sources publiques
                 </p>
                 <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${allOk ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'}`}>
@@ -123,7 +124,7 @@ export default async function Page() {
           </div>
         </section>
 
-        <div className="mx-auto max-w-4xl space-y-6 px-4 py-14 sm:px-6">
+        <div className="mx-auto max-w-4xl space-y-6 px-4 pt-4 pb-24 sm:px-6">
           <Section id="sources" icon={Database} title="Sources de données">
             <p>Pro Spectre n’achète aucun fichier et ne revend aucune donnée. Les informations proviennent de sources publiques, consultables par tous :</p>
             <div className="overflow-x-auto rounded-2xl border border-line">
@@ -286,7 +287,7 @@ export default async function Page() {
             <p className="text-sm text-slate-500">Les transferts éventuels hors de l’Union européenne sont encadrés par les clauses contractuelles types de la Commission européenne ou le cadre de protection des données UE–États-Unis.</p>
           </Section>
 
-          <div className="relative isolate overflow-hidden rounded-3xl bg-night-900 p-8 text-white">
+          <div className="island relative isolate overflow-hidden rounded-[2.5rem] p-8 text-white sm:p-10">
             <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div>
@@ -297,13 +298,13 @@ export default async function Page() {
                 <p className="mt-1 max-w-lg text-sm text-slate-300">La recherche de démonstration interroge le vrai registre, sans inscription. L’offre Découverte est gratuite et sans carte bancaire.</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href="/" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/20 px-5 text-sm font-semibold hover:bg-white/10">
+                <Link href="/" className={ctaClass('outline-dark')}>
                   <FileSearch className="size-4" />
                   Tester la démo
                 </Link>
-                <Link href="/inscription" className="inline-flex h-11 items-center gap-2 rounded-xl bg-electric-600 px-5 text-sm font-semibold hover:bg-electric-700">
+                <Link href="/inscription" className={ctaClass('light')}>
                   Créer un compte
-                  <ArrowRight className="size-4" />
+                  <ArrowUpRight className="size-4" />
                 </Link>
               </div>
             </div>
@@ -311,6 +312,6 @@ export default async function Page() {
         </div>
       </main>
       <SiteFooter />
-    </>
+    </PublicPage>
   );
 }
