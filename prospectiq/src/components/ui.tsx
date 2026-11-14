@@ -114,6 +114,25 @@ export function Checkbox({ label, hint, className, ...rest }: React.InputHTMLAtt
   );
 }
 
+const HEADING_TONES = {
+  success: { chip: 'bg-emerald-100 text-emerald-700 ring-emerald-200', count: 'bg-emerald-600 text-white' },
+  danger: { chip: 'bg-rose-100 text-rose-700 ring-rose-200', count: 'bg-rose-600 text-white' },
+  accent: { chip: 'bg-violet-100 text-brand-violet ring-violet-200', count: 'bg-brand-violet text-white' },
+  neutral: { chip: 'bg-slate-100 text-slate-600 ring-slate-200', count: 'bg-night-900 text-white' },
+};
+
+/** Titre de rubrique d'une fiche : icône dans une pastille colorée, intitulé, compteur facultatif. */
+export function SectionHeading({ icon, tone = 'accent', count, children, className }: { icon: React.ReactNode; tone?: keyof typeof HEADING_TONES; count?: number; children: React.ReactNode; className?: string }) {
+  const t = HEADING_TONES[tone];
+  return (
+    <h3 className={cx('mb-3 flex items-center gap-2.5', className)}>
+      <span className={cx('grid size-8 shrink-0 place-items-center rounded-full ring-1 ring-inset [&_svg]:size-4', t.chip)}>{icon}</span>
+      <span className="font-display text-[16px] leading-tight font-semibold tracking-[-0.02em] text-night-900">{children}</span>
+      {!!count && <span className={cx('rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums', t.count)}>{count}</span>}
+    </h3>
+  );
+}
+
 export function Spinner({ className }: { className?: string }) {
   return <Loader2 className={cx('size-5 animate-spin text-electric-600', className)} />;
 }

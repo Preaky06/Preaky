@@ -44,7 +44,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
     <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3" aria-label="Navigation de l’application">
       {['Prospection', 'Compte'].map((group) => (
         <div key={group}>
-          <p className="px-3 pb-2 font-mono text-[10.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ {group} ]</p>
+          <p className="flex items-center gap-2 px-3 pb-2 text-[11px] font-semibold tracking-[0.1em] text-slate-300 uppercase"><span className="tag-dot size-1.5 rounded-full bg-violet-400 text-violet-400" />{group}</p>
           <div className="flex flex-col gap-0.5">
             {items
               .filter((i) => i.group === group)

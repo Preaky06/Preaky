@@ -10,14 +10,27 @@ export function Kicker({ label, dark = false, center = false }: { label: string;
       <BrandMark size={20} className="rounded-[5px]" />
       <span className={cx('font-mono text-[12.5px] font-medium tracking-[0.14em]', dark ? 'text-white' : 'text-night-900')}>pro spectre</span>
       <span className={cx('h-3.5 w-px', dark ? 'bg-white/20' : 'bg-night-900/15')} aria-hidden="true" />
-      <span>{label}</span>
+      <span className={cx('font-semibold', dark ? 'text-violet-300' : 'text-brand-violet')}>{label}</span>
     </p>
   );
 }
 
-/** Repère technique entre crochets : « [ COMMENT ÇA MARCHE ] ». */
-export function MonoTag({ children, dark = false, className }: { children: React.ReactNode; dark?: boolean; className?: string }) {
-  return <p className={cx('font-mono text-[11.5px] font-medium tracking-[0.14em] uppercase', dark ? 'text-slate-400' : 'text-slate-500', className)}>[ {children} ]</p>;
+const TAG_TONES = {
+  violet: 'bg-violet-50 text-violet-700 ring-violet-200/80',
+  emerald: 'bg-emerald-50 text-emerald-700 ring-emerald-200/80',
+  rose: 'bg-rose-50 text-rose-700 ring-rose-200/80',
+  slate: 'bg-white text-night-800 ring-night-900/10',
+  dark: 'bg-white/10 text-violet-100 ring-white/15',
+} as const;
+
+/** Étiquette de rubrique : pastille colorée, point qui émet une onde, icône facultative. */
+export function MonoTag({ children, dark = false, tone = 'violet', icon, className }: { children: React.ReactNode; dark?: boolean; tone?: keyof typeof TAG_TONES; icon?: React.ReactNode; className?: string }) {
+  return (
+    <p className={cx('inline-flex w-fit max-w-full items-center gap-2 self-start rounded-full px-3 py-1 text-[12.5px] leading-snug font-semibold ring-1 ring-inset', TAG_TONES[dark ? 'dark' : tone], className)}>
+      {icon ?? <span className="tag-dot size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true" />}
+      <span>{children}</span>
+    </p>
+  );
 }
 
 /** Pastille mono avec point violet (au-dessus d'un titre principal). */

@@ -3,6 +3,7 @@
 import { ShieldCheck, FileText, Send, Lock, Smartphone, Share2, Check, Search, Building2, Globe, Gauge, PenLine } from 'lucide-react';
 import type { ScoreResult } from '@/lib/scoring';
 import { ScoreRing } from './score-ring';
+import { MonoTag } from './kit';
 import { criterionColor } from '@/lib/brand';
 
 const SHORT: Record<string, string> = { need: 'Besoin détecté', relevance: 'Pertinence', digital: 'Opportunité digitale', signals: 'Signaux récents', data: 'Qualité des données' };
@@ -26,18 +27,15 @@ export function HeroVisual({ score }: { score: ScoreResult }) {
       <div className="pointer-events-none absolute -inset-x-10 -top-10 bottom-0 -z-10 rounded-[48px] bg-[radial-gradient(40%_60%_at_15%_30%,rgba(139,92,246,0.18),transparent),radial-gradient(40%_60%_at_90%_70%,rgba(59,130,246,0.16),transparent)] blur-2xl" />
       <div className="ring-duo overflow-hidden rounded-[28px] shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]">
         {/* Recherche d'exemple */}
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line bg-gradient-to-r from-violet-50/90 via-white to-sky-50/90 px-5 py-3.5 text-[13.5px] text-night-800 sm:px-7">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">
-            <Search className="size-3.5" />
-            Exemple de recherche
-          </span>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-gradient-to-r from-violet-50/90 via-white to-sky-50/90 px-5 py-3.5 text-[13.5px] text-night-800 sm:px-7">
+          <MonoTag icon={<Search className="size-3.5" />}>Exemple de recherche</MonoTag>
           <span>Restauration à Lyon 2e, créée il y a moins d’un an, site à refaire</span>
-        </p>
+        </div>
 
         <div className="grid grid-cols-[minmax(0,1fr)] bg-white lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           {/* Étapes de l'analyse */}
           <div className="border-line p-5 sm:p-7 lg:border-r">
-            <p className="font-mono text-[11px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ Ce que fait l’analyse ]</p>
+            <MonoTag>Ce que fait l’analyse</MonoTag>
             <ol className="stagger mt-4 space-y-3">
               {steps.map(({ icon: Icon, label, at }, i) => (
                 <li key={label} className="flex items-center gap-3 text-[14px]">
@@ -94,7 +92,7 @@ export function HeroVisual({ score }: { score: ScoreResult }) {
               </div>
               <div className="mt-5 grid grid-cols-[minmax(0,1fr)] gap-3 border-t border-line pt-4 sm:grid-cols-[auto_1fr]">
                 <div>
-                  <p className="font-mono text-[10px] font-medium tracking-[0.12em] text-slate-400 uppercase">Sources</p>
+                  <p className="flex items-center gap-1.5 text-[12px] font-semibold text-night-800"><span className="size-1.5 rounded-full bg-emerald-500" />Sources</p>
                   <div className="mt-1.5 flex flex-col items-start gap-1.5 text-[11px] font-medium">
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-emerald-700">
                       <ShieldCheck className="size-3" /> Site vérifié (SIREN)
@@ -105,7 +103,7 @@ export function HeroVisual({ score }: { score: ScoreResult }) {
                   </div>
                 </div>
                 <div>
-                  <p className="font-mono text-[10px] font-medium tracking-[0.12em] text-slate-400 uppercase">Constats sur le site</p>
+                  <p className="flex items-center gap-1.5 text-[12px] font-semibold text-night-800"><span className="size-1.5 rounded-full bg-amber-500" />Constats sur le site</p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5 text-[11px] font-medium">
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-amber-800">
                       <Lock className="size-3" /> Sans HTTPS

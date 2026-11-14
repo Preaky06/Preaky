@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CheckCircle2, XCircle, Info, ArrowRight, ScanSearch, ExternalLink } from 'lucide-react';
 import { SiteHeader, SiteFooter, PublicPage } from '@/components/site';
+import { MonoTag } from '@/components/landing/kit';
 import { ScoreRing } from '@/components/landing/score-ring';
 import { buttonClass } from '@/components/styles';
 import { getReport } from '@/lib/site-audit';
@@ -54,7 +55,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <SiteHeader />
       <main id="contenu" className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:py-14">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-mono text-[11.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ Rapport d’audit de site ]</p>
+          <MonoTag>Rapport d’audit de site</MonoTag>
           <ReportActions />
         </div>
 

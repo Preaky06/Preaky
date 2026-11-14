@@ -193,10 +193,7 @@ export default async function Home() {
             {pulse ? (
               <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[1fr_2.6fr]">
                 <div className="border-b border-line bg-gradient-to-br from-violet-50/80 to-white p-6 lg:border-r lg:border-b-0">
-                  <p className="flex items-center gap-2 font-mono text-[11.5px] font-medium tracking-[0.14em] text-night-900 uppercase">
-                    <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
-                    En direct · BODACC
-                  </p>
+                  <MonoTag tone="emerald">En direct du BODACC</MonoTag>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600">Annonces légales publiées ces 7 derniers jours. Autant d’entreprises qui changent, et d’occasions de les contacter au bon moment.</p>
                   <p className="mt-3 text-xs text-slate-500">
                     Source :{' '}

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ShieldCheck, Lock, Cookie, ArrowUpRight } from 'lucide-react';
 import { Logo, Wordmark } from './logo';
 import { SiteNav } from './site-nav';
-import { Kicker } from './landing/kit';
+import { Kicker, MonoTag } from './landing/kit';
 
 /** En-tête flottant en pilule, commun à toutes les pages publiques. */
 export function SiteHeader() {
@@ -96,7 +96,7 @@ export function LegalPage({ title, updated, kicker = 'informations légales', ch
         <div className="halo-duo pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[28rem]" aria-hidden="true" />
         <Kicker label={kicker} />
         <h1 className="font-display mt-5 text-[2.3rem] leading-[1.05] font-semibold tracking-[-0.045em] text-balance sm:text-[3rem]">{title}</h1>
-        <p className="mt-4 font-mono text-[11.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ Mise à jour : {updated} ]</p>
+        <MonoTag tone="slate" className="mt-4">Mise à jour le {updated}</MonoTag>
         <div className="legal mt-10 rounded-[28px] border border-line bg-white p-6 shadow-float sm:p-10 space-y-4 text-[15px] leading-relaxed text-night-800 [&_a]:font-medium [&_a]:text-electric-700 [&_a]:underline [&_h2]:mt-8 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-night-900 [&_li]:ml-5 [&_li]:list-disc [&_li]:pl-1 [&_ul]:space-y-1.5">{children}</div>
       </main>
       <SiteFooter />

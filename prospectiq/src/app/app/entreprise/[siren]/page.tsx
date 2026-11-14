@@ -2,8 +2,8 @@
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Sparkles, Star, Plus, Download, MessageSquareText, PhoneCall, StickyNote, Globe, Phone, Mail, MapPin, ExternalLink, AlertTriangle, CheckCircle2, XCircle, RefreshCw, Flag, ListPlus, Building2, ShieldAlert, Lock, Share2 } from 'lucide-react';
-import { Badge, Button, Card, CardHeader, EmptyState, Field, Input, Modal, Select, Skeleton, Textarea, cx, buttonClass } from '@/components/ui';
+import { Sparkles, Star, Plus, Download, MessageSquareText, PhoneCall, StickyNote, Globe, Phone, Mail, MapPin, ExternalLink, AlertTriangle, CheckCircle2, XCircle, RefreshCw, Flag, ListPlus, Building2, ShieldAlert, Lock, Share2, ThumbsUp, ThumbsDown, Lightbulb, Target } from 'lucide-react';
+import { Badge, Button, Card, CardHeader, EmptyState, Field, Input, Modal, SectionHeading, Select, Skeleton, Textarea, cx, buttonClass } from '@/components/ui';
 import { CategoryBadge, ConfidenceBadge, ScoreBreakdown } from '@/components/score';
 import { RatioBar } from '@/components/charts';
 import { useToast } from '@/components/toast';
@@ -264,23 +264,54 @@ export default function CompanyPage() {
                   {a.insights.summary}
                 </p>
                 <div className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">
-                  <div>
-                    <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-emerald-700 uppercase">[ Points forts ]</h3>
-                    <ul className="space-y-1.5 text-sm text-night-800">{a.insights.strengths.length ? a.insights.strengths.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucun point fort identifié à partir des données disponibles.</li>}</ul>
+                  <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-white p-4" data-testid="strengths">
+                    <SectionHeading icon={<ThumbsUp />} tone="success" count={a.insights.strengths.length}>
+                      Points forts
+                    </SectionHeading>
+                    <ul className="space-y-2 text-sm text-night-800">
+                      {a.insights.strengths.length ? (
+                        a.insights.strengths.map((s) => (
+                          <li key={s} className="flex gap-2">
+                            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                            {s}
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-slate-500">Aucun point fort identifié à partir des données disponibles.</li>
+                      )}
+                    </ul>
                   </div>
-                  <div>
-                    <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-rose-700 uppercase">[ Points faibles ]</h3>
-                    <ul className="space-y-1.5 text-sm text-night-800">{a.insights.weaknesses.length ? a.insights.weaknesses.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucune faiblesse constatée dans les données disponibles{w?.findings ? '' : ' (site non audité)'}.</li>}</ul>
+                  <div className="rounded-2xl border border-rose-100 bg-gradient-to-br from-rose-50/80 to-white p-4">
+                    <SectionHeading icon={<ThumbsDown />} tone="danger" count={a.insights.weaknesses.length}>
+                      Points faibles
+                    </SectionHeading>
+                    <ul className="space-y-2 text-sm text-night-800">
+                      {a.insights.weaknesses.length ? (
+                        a.insights.weaknesses.map((s) => (
+                          <li key={s} className="flex gap-2">
+                            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-rose-600" />
+                            {s}
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-slate-500">Aucune faiblesse constatée dans les données disponibles{w?.findings ? '' : ' (site non audité)'}.</li>
+                      )}
+                    </ul>
                   </div>
                 </div>
                 <div>
-                  <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-electric-700 uppercase">[ Opportunités et prestations susceptibles de l’intéresser ]</h3>
+                  <SectionHeading icon={<Lightbulb />} tone="accent" count={a.insights.opportunities.length}>
+                    Opportunités et prestations susceptibles de l’intéresser
+                  </SectionHeading>
                   {a.insights.opportunities.length ? (
-                    <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
+                    <ul className="grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2">
                       {a.insights.opportunities.map((o) => (
-                        <li key={o.service} className="rounded-xl border border-line bg-slate-50/60 p-3">
-                          <p className="text-sm font-semibold text-night-900">{o.service}</p>
-                          <p className="mt-0.5 text-xs text-slate-600">{o.reason}</p>
+                        <li key={o.service} className="group rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/70 p-3.5 transition-shadow hover:shadow-float">
+                          <p className="flex items-center gap-2 text-sm font-semibold text-night-900">
+                            <span className="size-2 shrink-0 rounded-full bg-brand-violet" />
+                            {o.service}
+                          </p>
+                          <p className="mt-1 text-xs leading-relaxed text-slate-600">{o.reason}</p>
                         </li>
                       ))}
                     </ul>
@@ -288,9 +319,14 @@ export default function CompanyPage() {
                     <p className="text-sm text-slate-500">Aucune opportunité évidente détectée.</p>
                   )}
                 </div>
-                <div className="rounded-xl bg-electric-50 p-4">
-                  <h3 className="font-mono text-[11px] font-medium tracking-[0.12em] text-electric-700 uppercase">[ Pourquoi prospecter (ou non) ]</h3>
-                  <p className="mt-1 text-sm text-night-800">{a.insights.rationale}</p>
+                <div className="rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 p-4 text-white shadow-brand">
+                  <h3 className="flex items-center gap-2.5">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/15 ring-1 ring-white/25">
+                      <Target className="size-4" />
+                    </span>
+                    <span className="font-display text-[16px] font-semibold tracking-[-0.02em]">Pourquoi prospecter (ou non)</span>
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-violet-50">{a.insights.rationale}</p>
                 </div>
                 {a.insights.caveats.length > 0 && (
                   <ul className="space-y-1 text-xs text-slate-500">
@@ -350,7 +386,9 @@ export default function CompanyPage() {
                   )}
                 </div>
                 <div className="space-y-3 text-sm">
-                  <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">[ Réseaux sociaux reliés au site ]</p>
+                  <SectionHeading icon={<Share2 />} tone="neutral" className="mb-1">
+                    Réseaux sociaux reliés au site
+                  </SectionHeading>
                   {w?.socials && Object.keys(w.socials).length ? (
                     <ul className="space-y-1.5">
                       {Object.entries(w.socials).map(([k, url]) => (
@@ -369,7 +407,7 @@ export default function CompanyPage() {
                   {w?.cms && <p className="text-xs text-slate-500">Technologie détectée : {w.cms}</p>}
                   {places?.matched && (
                     <div className="rounded-lg border border-line p-3">
-                      <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">[ Fiche Google ]</p>
+                      <p className="text-[13px] font-semibold text-night-900">Fiche Google</p>
                       <p className="mt-1">{places.rating != null ? `${String(places.rating).replace('.', ',')}/5 sur ${places.reviews ?? 0} avis` : 'Pas de note'}</p>
                       <p className="text-xs text-slate-500">Correspondance {places.matchConfidence}</p>
                     </div>

@@ -226,7 +226,8 @@ try {
     assert.equal((body.match(/Création d’entreprise publiée au BODACC/g) || []).length >= 1, true);
     const signalsCard = await page.locator('text=Signaux détectés').locator('xpath=ancestor::div[contains(@class,"rounded-[22px]")][1]').innerText();
     assert.equal((signalsCard.match(/Création d’entreprise publiée au BODACC/g) || []).length, 1, 'signal BODACC en double');
-    const strengths = await page.locator('text=Points forts').locator('xpath=..').innerText();
+    const strengths = await page.locator('[data-testid=strengths]').innerText();
+    assert.match(strengths, /Points forts/);
     assert.doesNotMatch(strengths, /Réservation/, 'une mention téléphonique n’est pas une réservation en ligne');
     const score = Number((await page.locator('[data-testid=score]').innerText()).match(/\d+/)[0]);
     assert.ok(score >= 0 && score <= 100);

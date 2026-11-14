@@ -162,6 +162,15 @@
     transform-origin: right;
   }
 }
+@keyframes tag-ping {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 0%, transparent);
+  }
+}
 @keyframes radar-scan {
   from {
     background-position: -90% 0, 0 0;
@@ -269,6 +278,10 @@
       radar-scan 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite,
       kin-line var(--cycle, 10s) cubic-bezier(0.65, 0, 0.35, 1) infinite;
     animation-delay: 0s, calc(var(--d, 0s) + 0.12s);
+  }
+  /* Point des étiquettes de rubrique : émet une onde de la couleur du texte. */
+  .tag-dot {
+    animation: tag-ping 2.2s ease-out infinite;
   }
   /* Halos colorés flous (violet à gauche, bleu à droite) derrière un titre. */
   .halo-duo {
