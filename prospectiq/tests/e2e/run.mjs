@@ -104,7 +104,8 @@ try {
 
   await step('Accueil : titre, sous-titre, CTA, aucune fausse statistique', async () => {
     await page.goto(APP);
-    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Les bons prospects. Au bon moment.');
+    assert.match((await page.locator('h1').innerText()).replace(/\s+/g, ' '), /^Contactez les entreprises au moment où elles /);
+    assert.equal(await page.locator('h1 .sr-only').innerText(), 'ouvrent, sont rachetées, changent de dirigeant ou déménagent.');
     await page.getByText('Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.').waitFor();
     await page.getByRole('button', { name: 'Trouver mes prospects' }).waitFor();
     await page.getByText('Exemple illustratif · entreprise fictive').waitFor();

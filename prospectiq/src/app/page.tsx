@@ -74,6 +74,10 @@ const FAQ = [
   ['Les messages sont-ils envoyés automatiquement ?', 'Non. Pro Spectre rédige, vous relisez et envoyez depuis votre propre messagerie. Vous restez responsable du respect des règles de prospection (droit d’opposition, mention de désinscription en e-mail).'],
 ];
 
+// Titre : l'action, puis les événements des registres officiels que Pro Spectre détecte (BODACC).
+const HEADLINE = 'Contactez les entreprises au moment où elles'.split(' ');
+const HEADLINE_SIGNALS = ['ouvrent.', 'sont rachetées.', 'changent de dirigeant.', 'déménagent.'];
+
 const fmtDay = (iso: string | null) => (iso ? new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null);
 
 const SOURCE_ICONS = [
@@ -130,10 +134,25 @@ export default async function Home() {
                 <DotPill>Données SIRENE, RNE et BODACC</DotPill>
               )}
             </div>
-            <h1 className="font-display mt-8 text-[2.7rem] leading-[1.04] font-semibold tracking-[-0.05em] text-balance text-night-900 sm:text-[4.1rem] lg:text-[5rem]">
-              Les bons prospects.
-              <br />
-              Au bon <span className="signal-word text-brand">moment</span>.
+            <h1 className="font-display mt-8 text-[2.45rem] leading-[1.06] font-semibold tracking-[-0.05em] text-night-900 sm:text-[3.6rem] lg:text-[4.3rem]">
+              <span className="block text-balance">
+                {HEADLINE.map((w, i) => (
+                  <span key={i}>
+                    <span className="word-rise" style={{ animationDelay: `${0.12 + i * 0.07}s` }}>
+                      {w}
+                    </span>{' '}
+                  </span>
+                ))}
+              </span>
+              {/* Les vrais signaux repérés dans les annonces officielles, l'un après l'autre */}
+              <span className="word-cycle mt-1" aria-hidden="true">
+                {HEADLINE_SIGNALS.map((w) => (
+                  <span key={w} className="signal-word text-brand">
+                    {w}
+                  </span>
+                ))}
+              </span>
+              <span className="sr-only">ouvrent, sont rachetées, changent de dirigeant ou déménagent.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
             <div className="mx-auto mt-9 max-w-2xl">
