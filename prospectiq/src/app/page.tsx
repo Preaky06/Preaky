@@ -145,7 +145,7 @@ export default async function Home() {
                 ))}
               </span>
               {/* Les vrais signaux repérés dans les annonces officielles, l'un après l'autre */}
-              <span className="word-cycle mt-1" aria-hidden="true">
+              <span className="word-cycle text-[0.76em] md:text-[1em]" aria-hidden="true">
                 {HEADLINE_SIGNALS.map((w) => (
                   <span key={w} className="signal-word text-brand">
                     {w}

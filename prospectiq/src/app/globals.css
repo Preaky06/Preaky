@@ -196,8 +196,8 @@
     position: absolute;
     left: 0.03em;
     right: 0.03em;
-    bottom: -0.04em;
-    height: max(4px, 0.075em);
+    bottom: -0.17em;
+    height: max(4px, 0.07em);
     border-radius: 999px;
     background:
       linear-gradient(90deg, transparent, #c4b5fd 30%, #7c3aed 50%, #c4b5fd 70%, transparent) -90% 0 / 45% 100% no-repeat,
@@ -212,7 +212,9 @@
   /* Signaux du titre qui défilent : empilés dans la même cellule (hauteur stable), un seul visible à la fois. */
   .word-cycle {
     display: grid;
-    place-items: center;
+    align-items: start;
+    justify-items: center;
+    margin-top: -0.08em;
   }
   .word-cycle > span {
     grid-area: 1 / 1;
