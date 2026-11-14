@@ -1,0 +1,14 @@
+// Uniquement pour un déploiement en "Worker" (alternative à Pages).
+// Commande de build : node scripts/build.mjs — Commande de déploiement : npx wrangler deploy
+{
+  "name": "plico",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
+  }
+}
