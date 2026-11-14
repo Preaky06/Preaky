@@ -121,23 +121,45 @@
     filter: blur(8px);
   }
 }
-@keyframes word-cycle {
+/* Lettre du titre : bascule en 3D depuis le bas, reste, puis repart vers le haut (cycle complet de 10 s). */
+@keyframes kin-letter {
   0% {
     opacity: 0;
-    transform: translateY(0.45em);
-    filter: blur(8px);
+    transform: perspective(420px) translateY(0.5em) rotateX(-95deg);
+    filter: blur(3px);
   }
   4%,
-  21% {
+  20.5% {
     opacity: 1;
-    transform: none;
+    transform: perspective(420px) translateY(0) rotateX(0);
     filter: blur(0);
   }
-  25%,
+  24.5%,
   100% {
     opacity: 0;
-    transform: translateY(-0.45em);
-    filter: blur(8px);
+    transform: perspective(420px) translateY(-0.4em) rotateX(95deg);
+    filter: blur(3px);
+  }
+}
+/* Trait sous le mot : se dessine de gauche à droite, puis se rétracte vers la droite. */
+@keyframes kin-line {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  8%,
+  20% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  20.01% {
+    transform: scaleX(1);
+    transform-origin: right;
+  }
+  24.5%,
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
   }
 }
 @keyframes radar-scan {
@@ -216,22 +238,22 @@
     justify-items: center;
     margin-top: -0.08em;
   }
-  .word-cycle > span {
+  .word-cycle > .kin-word {
     grid-area: 1 / 1;
+  }
+  .kin-letter {
+    display: inline-block;
     opacity: 0;
-    animation: word-cycle 10s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+    backface-visibility: hidden;
+    animation: kin-letter var(--cycle, 10s) cubic-bezier(0.2, 0.75, 0.25, 1) infinite;
+    animation-delay: calc(var(--d, 0s) + var(--i, 0) * 24ms);
   }
-  .word-cycle > span:nth-child(1) {
-    animation-delay: 0.9s;
-  }
-  .word-cycle > span:nth-child(2) {
-    animation-delay: 3.4s;
-  }
-  .word-cycle > span:nth-child(3) {
-    animation-delay: 5.9s;
-  }
-  .word-cycle > span:nth-child(4) {
-    animation-delay: 8.4s;
+  .word-cycle > .kin-word::after {
+    transform: scaleX(0);
+    animation:
+      radar-scan 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite,
+      kin-line var(--cycle, 10s) cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    animation-delay: 0s, calc(var(--d, 0s) + 0.12s);
   }
   /* Halos colorés flous (violet à gauche, bleu à droite) derrière un titre. */
   .halo-duo {
@@ -414,12 +436,16 @@
   .radar-blip {
     animation: none;
   }
-  /* Sans animation : le premier signal reste affiché. */
-  .word-cycle > span {
+  /* Sans animation : le premier signal reste affiché, souligné. */
+  .kin-letter,
+  .word-cycle > .kin-word::after {
     animation: none !important;
   }
-  .word-cycle > span:first-child {
+  .word-cycle > .kin-word:first-child .kin-letter {
     opacity: 1;
+  }
+  .word-cycle > .kin-word:first-child::after {
+    transform: none;
   }
   *,
   *::before,

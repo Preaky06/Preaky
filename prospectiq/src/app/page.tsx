@@ -10,6 +10,7 @@ import { ScoreLab } from '@/components/landing/score-lab';
 import { CountUp } from '@/components/landing/count-up';
 import { Kicker, MonoTag, DotPill, SectionHead, ctaClass } from '@/components/landing/kit';
 import { STATUSES } from '@/lib/status';
+import { KineticSignals } from '@/components/landing/kinetic';
 import { RadarSection } from '@/components/landing/radar-section';
 import { AuditForm } from './outils/audit-site/form';
 import { PLANS } from '@/lib/plans';
@@ -145,13 +146,7 @@ export default async function Home() {
                 ))}
               </span>
               {/* Les vrais signaux repérés dans les annonces officielles, l'un après l'autre */}
-              <span className="word-cycle text-[0.76em] md:text-[1em]" aria-hidden="true">
-                {HEADLINE_SIGNALS.map((w) => (
-                  <span key={w} className="signal-word text-brand">
-                    {w}
-                  </span>
-                ))}
-              </span>
+              <KineticSignals items={HEADLINE_SIGNALS} className="text-[0.76em] md:text-[1em]" />
               <span className="sr-only">ouvrent, sont rachetées, changent de dirigeant ou déménagent.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
