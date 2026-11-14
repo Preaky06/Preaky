@@ -109,6 +109,11 @@
     transform: translateX(250%);
   }
 }
+@keyframes radar-blip {
+  to {
+    box-shadow: 0 0 0 18px rgb(124 58 237 / 0);
+  }
+}
 @keyframes radar-scan {
   from {
     background-position: -90% 0, 0 0;
@@ -271,9 +276,23 @@
   }
   /* Balayage du radar (section Radar de l'accueil) */
   .radar-sweep {
-    background: conic-gradient(from 0deg, rgb(124 58 237 / 0.2), rgb(124 58 237 / 0) 22%, transparent 100%);
+    background: conic-gradient(from 0deg, rgb(124 58 237 / 0.3), rgb(124 58 237 / 0) 24%, transparent 100%);
     animation: spin-slow 6s linear infinite;
     mask-image: radial-gradient(circle, #000 0%, #000 69%, transparent 70%);
+  }
+  /* Point central du radar : émet une onde à chaque tour. */
+  .radar-blip {
+    box-shadow: 0 0 0 0 rgb(124 58 237 / 0.45);
+    animation: radar-blip 2s ease-out infinite;
+  }
+  /* Carte posée sur le radar : translucide, le balayage reste visible au travers. */
+  .ring-duo-glass {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.7)) padding-box,
+      linear-gradient(135deg, rgb(139 92 246 / 0.55), rgb(226 232 240 / 0.9) 40%, rgb(226 232 240 / 0.9) 60%, rgb(59 130 246 / 0.55)) border-box;
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
   }
   .shimmer {
     position: relative;
@@ -336,7 +355,8 @@
   .shimmer::after {
     display: none;
   }
-  .radar-sweep {
+  .radar-sweep,
+  .radar-blip {
     animation: none;
   }
   *,

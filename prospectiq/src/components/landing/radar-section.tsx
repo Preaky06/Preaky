@@ -49,13 +49,17 @@ export function RadarSection() {
 
         <figure className="relative mx-auto w-full max-w-[520px]" aria-label="Illustration du fil du Radar avec des entreprises fictives">
           {/* Balayage radar */}
-          <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 aspect-square w-[130%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
-            <div className="absolute inset-0 rounded-full border border-violet-200/70" />
-            <div className="absolute inset-[16%] rounded-full border border-violet-200/70" />
-            <div className="absolute inset-[32%] rounded-full border border-violet-200/70" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 aspect-square w-[150%] -translate-x-1/2 -translate-y-1/2 sm:w-[130%]" aria-hidden="true">
+            <div className="absolute inset-0 rounded-full border border-violet-300/50 bg-[radial-gradient(closest-side,rgb(124_58_237_/_0.06),transparent)]" />
+            <div className="absolute inset-[16%] rounded-full border border-violet-300/50" />
+            <div className="absolute inset-[32%] rounded-full border border-violet-300/60" />
+            <div className="absolute inset-[44%] rounded-full border border-violet-300/70" />
+            <div className="absolute top-1/2 left-0 h-px w-full bg-violet-300/30" />
+            <div className="absolute top-0 left-1/2 h-full w-px bg-violet-300/30" />
             <div className="radar-sweep absolute inset-0 rounded-full" />
+            <div className="radar-blip absolute top-1/2 left-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-violet" />
           </div>
-          <div className="ring-duo rounded-[28px] p-2 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]">
+          <div className="ring-duo-glass rounded-[28px] p-2 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]">
             <div className="flex items-center justify-between px-3 pt-2 pb-3">
               <p className="flex items-center gap-2 font-mono text-[11.5px] font-medium tracking-[0.12em] uppercase">
                 <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
@@ -65,7 +69,7 @@ export function RadarSection() {
             </div>
             <ul className="stagger space-y-1.5">
               {FEED.map((f) => (
-                <li key={f.title} className="flex items-start gap-3 rounded-2xl bg-paper px-3.5 py-3">
+                <li key={f.title} className="flex items-start gap-3 rounded-2xl bg-white/75 px-3.5 py-3 ring-1 ring-night-900/[0.04]">
                   <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: f.dot }} />
                   <div className="min-w-0 flex-1">
                     <p className="break-words text-sm font-semibold">{f.title}</p>
