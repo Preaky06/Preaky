@@ -10,7 +10,7 @@ import { bodaccSignals } from './connectors/bodacc';
 import { analyzeWebsite } from './connectors/website';
 import { lookupPlace } from './connectors/places';
 import { scoreCompany, type Offer, type ScoreResult, type Weights } from './scoring';
-import { buildInsights, type Insights } from './insights';
+import { buildInsights, tidyInsights, type Insights } from './insights';
 import { chatJson, GROUNDING_RULES } from './ai';
 import type { SessionUser } from './auth';
 import type { Company, Enrichment } from './connectors/types';
@@ -166,7 +166,7 @@ export async function storedAnalysis(orgId: string, siren: string): Promise<Anal
     company: row.data,
     enrichment: { website: await withoutSuppressedEmails(row.website), signals: row.signals || [], places: row.places, analyzedAt: new Date(row.analyzed_at || row.created_at).toISOString() },
     score: row.breakdown,
-    insights: row.insights,
+    insights: tidyInsights(row.insights),
     aiUsed: row.ai_used,
     analyzedAt: new Date(row.analyzed_at || row.created_at).toISOString(),
   };

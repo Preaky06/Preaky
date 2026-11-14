@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildInsights } from '@/lib/insights';
+import { buildInsights, tidyInsights } from '@/lib/insights';
 import { scoreCompany } from '@/lib/scoring';
 import { company, website } from './fixtures';
 
@@ -28,5 +28,20 @@ describe('analyse : aucune supposition présentée comme un fait', () => {
   it('aucun fait : aucune opportunité inventée', () => {
     const score = scoreCompany({ company: company(), website: website(), signals: [] });
     expect(buildInsights(company(), website(), [], null, score, {}).opportunities).toEqual([]);
+  });
+});
+
+describe('ponctuation des analyses', () => {
+  it('aucun tiret cadratin dans une analyse neuve', () => {
+    const score = scoreCompany({ company: company(), website: website(), signals: [] });
+    const ins = buildInsights(company(), website(), [], null, score, { services: ['site_web'] });
+    expect(JSON.stringify(ins)).not.toMatch(/—/);
+  });
+
+  it('analyses déjà enregistrées : tirets cadratins remplacés à la lecture', () => {
+    const old = { summary: 'Résumé', strengths: [], weaknesses: [], opportunities: [{ service: 'site_web', reason: 'Annonce — vente' }], services: [], caveats: [], rationale: 'Point le plus contributif : pertinence — Besoins correspondant à vos services.' };
+    const t = tidyInsights(old);
+    expect(t.rationale).toBe('Point le plus contributif : pertinence. Besoins correspondant à vos services.');
+    expect(t.opportunities[0].reason).toBe('Annonce, vente');
   });
 });

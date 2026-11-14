@@ -92,3 +92,18 @@ export function buildInsights(company: Company, website: WebsiteAudit | null, si
 
   return { summary, strengths, weaknesses, opportunities, services: score.neededServices, rationale, caveats };
 }
+
+/** Analyses enregistrées avant la suppression des tirets cadratins : même texte, ponctuation actuelle. */
+const tidy = (t: string) => t.replace(/\s+—\s+([A-ZÀ-Ý])/g, '. $1').replace(/\s+—\s+/g, ', ');
+export function tidyInsights(i: Insights): Insights {
+  if (!i) return i;
+  return {
+    ...i,
+    summary: tidy(i.summary || ''),
+    rationale: tidy(i.rationale || ''),
+    strengths: (i.strengths || []).map(tidy),
+    weaknesses: (i.weaknesses || []).map(tidy),
+    caveats: (i.caveats || []).map(tidy),
+    opportunities: (i.opportunities || []).map((o) => ({ ...o, reason: tidy(o.reason) })),
+  };
+}
