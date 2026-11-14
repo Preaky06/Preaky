@@ -72,20 +72,29 @@ export default async function BillingPage() {
           const p = PLANS[id];
           const current = user.plan.id === id;
           return (
-            <Card key={id} className={current ? 'ring-2 ring-electric-500' : id === 'pro' ? 'ring-1 ring-night-900/10' : ''} data-testid={`plan-${id}`}>
-              <div className="p-5">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">{p.name}</h3>
-                  {current ? <Badge tone="accent">Votre offre</Badge> : id === 'pro' ? <Badge tone="night">Le plus choisi</Badge> : null}
+            <div
+              key={id}
+              className={current ? 'island flex flex-col rounded-[22px] text-white shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] ring-1 ring-violet-400/40' : 'flex flex-col rounded-[22px] border border-white bg-white shadow-float ring-1 ring-night-900/[0.05]'}
+              data-testid={`plan-${id}`}
+            >
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display text-xl font-semibold tracking-[-0.04em]">{p.name}</h3>
+                  {current ? (
+                    <span className="rounded-full bg-brand-violet px-2.5 py-1 font-mono text-[10px] font-medium tracking-[0.1em] text-white uppercase">Votre offre</span>
+                  ) : id === 'pro' ? (
+                    <span className="rounded-full bg-night-900 px-2.5 py-1 font-mono text-[10px] font-medium tracking-[0.1em] text-white uppercase">Le plus choisi</span>
+                  ) : null}
                 </div>
-                <p className="mt-2">
-                  <span className="text-3xl font-bold tracking-tight">{p.price} €</span>
-                  <span className="text-sm text-slate-500"> HT / mois</span>
+                <p className={`mt-1.5 text-sm ${current ? 'text-slate-300' : 'text-slate-500'}`}>{p.audience}</p>
+                <p className="mt-5 flex items-baseline gap-1.5">
+                  <span className="font-display text-[2.4rem] leading-none font-semibold tracking-[-0.05em] tabular-nums">{p.price} €</span>
+                  <span className={`text-sm ${current ? 'text-slate-400' : 'text-slate-500'}`}>HT / mois</span>
                 </p>
-                <ul className="mt-4 space-y-2 text-sm">
+                <ul className={`mt-5 flex-1 space-y-2.5 rounded-2xl p-4 text-sm ${current ? 'bg-white/[0.06] text-slate-200' : 'bg-paper/80 text-slate-700'}`}>
                   {p.pitch.map((x) => (
                     <li key={x} className="flex gap-2">
-                      <Check className="mt-0.5 size-4 shrink-0 text-electric-600" />
+                      <Check className={`mt-0.5 size-4 shrink-0 ${current ? 'text-violet-300' : 'text-brand-violet'}`} strokeWidth={2.5} />
                       {x}
                     </li>
                   ))}
@@ -94,7 +103,7 @@ export default async function BillingPage() {
                   <PlanButton plan={id} current={current} disabled={!stripeOn || !owner} hasSubscription={hasSub} />
                 </div>
               </div>
-            </Card>
+            </div>
           );
         })}
       </div>

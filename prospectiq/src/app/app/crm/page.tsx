@@ -176,7 +176,7 @@ export default function CrmPage() {
         </ul>
         <Card className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[760px] text-left text-sm" data-testid="crm-table">
-            <thead className="border-b border-line bg-slate-50/70 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <thead className="border-b border-line bg-paper/70 font-mono text-[10.5px] font-medium tracking-[0.12em] text-slate-500 uppercase">
               <tr>
                 <th className="w-10 px-4 py-3" />
                 <th className="px-4 py-3">Entreprise</th>

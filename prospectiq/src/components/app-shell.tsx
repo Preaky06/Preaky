@@ -44,7 +44,7 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
     <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3" aria-label="Navigation de l’application">
       {['Prospection', 'Compte'].map((group) => (
         <div key={group}>
-          <p className="px-3 pb-1.5 text-[10px] font-semibold tracking-[0.14em] text-slate-500 uppercase">{group}</p>
+          <p className="px-3 pb-2 font-mono text-[10.5px] font-medium tracking-[0.14em] text-slate-500 uppercase">[ {group} ]</p>
           <div className="flex flex-col gap-0.5">
             {items
               .filter((i) => i.group === group)
@@ -55,14 +55,14 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
                   onClick={() => setOpen(false)}
                   aria-current={active(href) ? 'page' : undefined}
                   className={cx(
-                    'relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    active(href) ? 'bg-white/[0.08] text-white before:absolute before:inset-y-2 before:-left-3 before:w-1 before:rounded-r-full before:bg-electric-400' : 'text-slate-400 hover:bg-white/5 hover:text-white',
+                    'relative flex items-center gap-3 rounded-full px-3.5 py-2 text-sm font-medium transition-colors',
+                    active(href) ? 'bg-white text-night-900 shadow-float' : 'text-slate-400 hover:bg-white/[0.07] hover:text-white',
                   )}
                 >
-                  <Icon className={cx('size-4', active(href) && 'text-electric-300')} />
+                  <Icon className={cx('size-4', active(href) && 'text-brand-violet')} />
                   {label}
                   {href === '/app/radar' && !!user.unread && (
-                    <span className="ml-auto rounded-full bg-electric-500 px-1.5 py-px text-[11px] font-semibold text-white tabular-nums" data-testid="radar-badge">
+                    <span className="ml-auto rounded-full bg-brand-violet px-1.5 py-px text-[11px] font-semibold text-white tabular-nums" data-testid="radar-badge">
                       {user.unread > 99 ? '99+' : user.unread}
                     </span>
                   )}
@@ -77,16 +77,16 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
   const initials = user.name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase() || '?';
   const footer = (
     <div className="space-y-3 p-3">
-      <div className="space-y-3 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-3.5 text-white [&_span]:text-slate-300">
+      <div className="space-y-3 rounded-[20px] border border-dashed border-white/15 p-3.5 text-white [&_span]:text-slate-300">
         <div className="flex items-center justify-between text-xs">
-          <span>Offre</span>
-          <b className="rounded-full bg-electric-500/20 px-2 py-0.5 text-[11px] text-electric-200">{user.plan.name}</b>
+          <span className="font-mono text-[10.5px] tracking-[0.12em] uppercase">Offre</span>
+          <b className="rounded-full bg-brand-violet px-2 py-0.5 font-mono text-[10.5px] font-medium tracking-[0.08em] text-white uppercase">{user.plan.name}</b>
         </div>
         <Meter label="Prospects analysés" value={user.usage.prospects} max={user.plan.prospects} />
         <Meter label="Messages générés" value={user.usage.aiMessages} max={user.plan.aiMessages} />
         {upgrade && (
-          <Link href="/app/abonnement" onClick={() => setOpen(false)} className="flex items-center justify-center gap-1.5 rounded-lg bg-white/10 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/15">
-            <Sparkles className="size-3.5 text-electric-300" />
+          <Link href="/app/abonnement" onClick={() => setOpen(false)} className="flex items-center justify-center gap-1.5 rounded-full bg-white/10 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/15">
+            <Sparkles className="size-3.5 text-violet-300" />
             Changer d’offre
             <ArrowUpRight className="size-3.5" />
           </Link>
@@ -94,13 +94,13 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
       </div>
       <div className="flex items-center justify-between gap-2 rounded-xl px-1.5 py-1">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-electric-500 to-violet-500 text-xs font-bold text-white">{initials}</span>
+          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white text-xs font-bold text-night-900">{initials}</span>
           <div className="min-w-0">
             <p className="break-words text-sm font-semibold text-white">{user.name}</p>
             <p className="break-words text-xs text-slate-400">{user.orgName}</p>
           </div>
         </div>
-        <button type="button" onClick={logout} className="rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Se déconnecter" title="Se déconnecter" data-testid="logout">
+        <button type="button" onClick={logout} className="rounded-full p-2 text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Se déconnecter" title="Se déconnecter" data-testid="logout">
           <LogOut className="size-4" />
         </button>
       </div>
@@ -111,29 +111,32 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
       <div className="px-3">
         <Logo dark href="/app" />
       </div>
-      <Link href="/app/recherche" onClick={() => setOpen(false)} className="mt-5 flex h-10 items-center justify-center gap-2 rounded-xl bg-electric-600 text-sm font-semibold text-white shadow-glow transition-colors hover:bg-electric-500">
+      <Link href="/app/recherche" onClick={() => setOpen(false)} className="mt-5 flex h-11 items-center justify-center gap-2 rounded-xl bg-brand-violet text-sm font-semibold text-white shadow-brand transition-colors hover:bg-violet-500">
         <Search className="size-4" />
         Nouvelle recherche
       </Link>
     </div>
   );
   return (
-    <div className="min-h-dvh bg-[radial-gradient(70%_320px_at_60%_0%,rgba(124,58,237,0.07),transparent)] lg:pl-64">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/5 bg-night-950 bg-[radial-gradient(120%_50%_at_0%_0%,rgba(124,58,237,0.2),transparent)] lg:flex">
+    <div className="paper-dots relative isolate min-h-dvh lg:pl-[17.5rem]">
+      <div className="halo-duo pointer-events-none absolute inset-x-0 top-0 -z-10 h-[26rem] opacity-60" aria-hidden="true" />
+      <aside className="island fixed top-3 bottom-3 left-3 z-40 hidden w-64 flex-col overflow-hidden rounded-[28px] shadow-pop lg:flex">
         {top}
         {nav}
         {footer}
       </aside>
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-white/85 px-4 backdrop-blur lg:hidden">
-        <Logo href="/app" />
-        <button type="button" onClick={() => setOpen(true)} className="rounded-lg p-2 hover:bg-slate-100" aria-label="Ouvrir le menu">
-          <Menu className="size-5" />
-        </button>
+      <header className="sticky top-0 z-30 px-3 pt-3 lg:hidden">
+        <div className="flex h-14 items-center justify-between rounded-full border border-white bg-white/80 pr-2 pl-5 shadow-float ring-1 ring-night-900/[0.06] backdrop-blur-xl">
+          <Logo href="/app" />
+          <button type="button" onClick={() => setOpen(true)} className="grid size-10 place-items-center rounded-full hover:bg-night-900/5" aria-label="Ouvrir le menu">
+            <Menu className="size-5" />
+          </button>
+        </div>
       </header>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-night-950/50" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 flex w-72 animate-rise flex-col bg-night-950">
+          <div className="absolute inset-0 bg-night-950/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <aside className="island absolute top-3 bottom-3 left-3 flex w-72 max-w-[calc(100%-1.5rem)] animate-rise flex-col overflow-hidden rounded-[28px]">
             <button type="button" onClick={() => setOpen(false)} className="absolute top-4 right-3 rounded-lg p-2 text-white hover:bg-white/10" aria-label="Fermer le menu">
               <X className="size-5" />
             </button>
@@ -143,17 +146,17 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
           </aside>
         </div>
       )}
-      <main id="contenu" className="mx-auto max-w-[1280px] px-4 py-6 sm:px-6 lg:px-10 lg:py-9">{children}</main>
+      <main id="contenu" className="mx-auto max-w-[1240px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">{children}</main>
     </div>
   );
 }
 
 export function PageTitle({ title, subtitle, action }: { title: string; subtitle?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h1 className="font-display text-[1.6rem] leading-tight font-semibold tracking-[-0.02em] text-night-900">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="font-display text-[2rem] leading-[1.05] font-semibold tracking-[-0.045em] text-night-900 sm:text-[2.4rem]">{title}</h1>
+        {subtitle && <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-slate-600">{subtitle}</p>}
       </div>
       {action}
     </div>

@@ -5,7 +5,7 @@ export const metadata = { title: 'Opposition et suppression de données' };
 
 export default function Page() {
   return (
-    <LegalPage title="Opposition et suppression de données" updated="6 novembre 2026">
+    <LegalPage title="Opposition et suppression de données" updated="6 novembre 2026" kicker="vos données">
       <p>
         Vous êtes dirigeant, entrepreneur ou salarié d’une entreprise présente dans Pro Spectre et ne souhaitez plus y figurer ? Indiquez le numéro SIREN de l’entreprise et/ou votre adresse e-mail professionnelle. Après vérification, les données sont effacées et l’entreprise ou l’adresse est exclue durablement des résultats.
       </p>

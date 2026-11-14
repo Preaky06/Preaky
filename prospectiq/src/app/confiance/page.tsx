@@ -146,7 +146,7 @@ export default async function Page() {
             <p>Pro Spectre n’achète aucun fichier et ne revend aucune donnée. Les informations proviennent de sources publiques, consultables par tous :</p>
             <div className="overflow-hidden rounded-2xl border border-line">
               <table className="w-full text-left text-sm max-sm:block">
-                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase max-sm:hidden">
+                <thead className="bg-paper/80 font-mono text-[10.5px] tracking-[0.12em] text-slate-500 uppercase max-sm:hidden">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Source</th>
                     <th className="px-4 py-3 font-semibold">Producteur</th>
@@ -224,7 +224,7 @@ export default async function Page() {
             </div>
             <div className="overflow-hidden rounded-2xl border border-line">
               <table className="w-full text-left text-sm max-sm:block">
-                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase max-sm:hidden">
+                <thead className="bg-paper/80 font-mono text-[10.5px] tracking-[0.12em] text-slate-500 uppercase max-sm:hidden">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Donnée</th>
                     <th className="px-4 py-3 font-semibold">Durée de conservation</th>

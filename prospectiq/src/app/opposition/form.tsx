@@ -12,7 +12,7 @@ export function OppositionForm() {
 
   if (sent)
     return (
-      <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-900" role="status" data-testid="opposition-sent">
+      <div className="flex items-start gap-3 rounded-[22px] border border-emerald-200 bg-emerald-50 p-5 text-emerald-900" role="status" data-testid="opposition-sent">
         <CheckCircle2 className="mt-0.5 size-5" />
         <p>Demande enregistrée. Elle sera traitée dans un délai maximal d’un mois{form.email ? ', et une réponse vous sera adressée par e-mail' : ''}.</p>
       </div>
@@ -20,7 +20,7 @@ export function OppositionForm() {
 
   return (
     <form
-      className="not-prose mt-6 space-y-4 rounded-2xl border border-line bg-white p-5 shadow-card"
+      className="not-prose mt-6 space-y-4 rounded-[22px] border border-dashed border-violet-300/80 bg-paper/60 p-5 sm:p-6"
       onSubmit={async (e) => {
         e.preventDefault();
         setError(null);

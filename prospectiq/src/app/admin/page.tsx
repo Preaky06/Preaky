@@ -238,7 +238,7 @@ export default function AdminPage() {
           ) : (
             <Card className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-sm" data-testid="admin-users">
-                <thead className="border-b border-line bg-slate-50/70 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <thead className="border-b border-line bg-paper/70 font-mono text-[10.5px] font-medium tracking-[0.12em] text-slate-500 uppercase">
                   <tr>
                     <th className="px-4 py-3">Utilisateur</th>
                     <th className="px-4 py-3">Offre</th>
@@ -303,7 +303,7 @@ export default function AdminPage() {
           ) : logs.length ? (
             <Card className="overflow-x-auto">
               <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-b border-line bg-slate-50/70 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <thead className="border-b border-line bg-paper/70 font-mono text-[10.5px] font-medium tracking-[0.12em] text-slate-500 uppercase">
                   <tr>
                     <th className="px-4 py-3">Date</th>
                     <th className="px-4 py-3">Source</th>

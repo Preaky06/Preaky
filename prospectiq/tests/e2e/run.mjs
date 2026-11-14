@@ -224,7 +224,7 @@ try {
     assert.match(body, /BODACC/);
     assert.doesNotMatch(body, /1975/, 'jamais de date de naissance');
     assert.equal((body.match(/Création d’entreprise publiée au BODACC/g) || []).length >= 1, true);
-    const signalsCard = await page.locator('text=Signaux détectés').locator('xpath=ancestor::div[contains(@class,"rounded-2xl")][1]').innerText();
+    const signalsCard = await page.locator('text=Signaux détectés').locator('xpath=ancestor::div[contains(@class,"rounded-[22px]")][1]').innerText();
     assert.equal((signalsCard.match(/Création d’entreprise publiée au BODACC/g) || []).length, 1, 'signal BODACC en double');
     const strengths = await page.locator('text=Points forts').locator('xpath=..').innerText();
     assert.doesNotMatch(strengths, /Réservation/, 'une mention téléphonique n’est pas une réservation en ligne');
@@ -312,6 +312,8 @@ try {
     await page.goto(`${APP}/app/radar`);
     await page.click('[data-testid=radar-run]');
     await page.getByText(/1 nouveauté détectée/).waitFor({ timeout: 30000 });
+    // La liste se recharge après le message : attendre la nouvelle annonce avant de lire le fil.
+    await page.locator('[data-testid=radar-feed]').getByText(/Signal : Brasserie Exemple/).waitFor({ timeout: 15000 });
     const feed = await page.locator('[data-testid=radar-feed]').innerText();
     assert.match(feed, /Nouvelle entreprise : Brasserie Exemple/);
     assert.match(feed, /Cession de fonds de commerce : Societe Quota 77/i);

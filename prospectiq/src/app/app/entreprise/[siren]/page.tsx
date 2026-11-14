@@ -234,15 +234,18 @@ export default function CompanyPage() {
                 Liste
               </Button>
               {a && (
-                <>
-                  <a href={`/api/companies/${c.siren}/export?format=csv`} className={buttonClass('ghost')} onClick={(e) => e.currentTarget.dataset.clicked = '1'} data-testid="export-csv">
-                    <Download className="size-4" />
+                <span className="inline-flex h-10 items-center gap-0.5 rounded-xl border border-night-900/10 bg-white p-1 text-sm font-semibold whitespace-nowrap text-night-900 shadow-sm">
+                  <span className="flex items-center gap-1.5 pr-1 pl-2 font-mono text-[10.5px] font-medium tracking-[0.1em] text-slate-500 uppercase">
+                    <Download className="size-3.5" />
+                    Export
+                  </span>
+                  <a href={`/api/companies/${c.siren}/export?format=csv`} className="rounded-lg px-2.5 py-1.5 hover:bg-violet-50 hover:text-brand-violet" onClick={(e) => e.currentTarget.dataset.clicked = '1'} data-testid="export-csv">
                     CSV
                   </a>
-                  <a href={`/api/companies/${c.siren}/export?format=json`} className={buttonClass('ghost')}>
+                  <a href={`/api/companies/${c.siren}/export?format=json`} className="rounded-lg px-2.5 py-1.5 hover:bg-violet-50 hover:text-brand-violet">
                     JSON
                   </a>
-                </>
+                </span>
               )}
             </>
           )}
@@ -262,16 +265,16 @@ export default function CompanyPage() {
                 </p>
                 <div className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">
                   <div>
-                    <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-700">Points forts</h3>
+                    <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-emerald-700 uppercase">[ Points forts ]</h3>
                     <ul className="space-y-1.5 text-sm text-night-800">{a.insights.strengths.length ? a.insights.strengths.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucun point fort identifié à partir des données disponibles.</li>}</ul>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-rose-700">Points faibles</h3>
+                    <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-rose-700 uppercase">[ Points faibles ]</h3>
                     <ul className="space-y-1.5 text-sm text-night-800">{a.insights.weaknesses.length ? a.insights.weaknesses.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucune faiblesse constatée dans les données disponibles{w?.findings ? '' : ' (site non audité)'}.</li>}</ul>
                   </div>
                 </div>
                 <div>
-                  <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-electric-700">Opportunités et prestations susceptibles de l’intéresser</h3>
+                  <h3 className="mb-2 font-mono text-[11px] font-medium tracking-[0.12em] text-electric-700 uppercase">[ Opportunités et prestations susceptibles de l’intéresser ]</h3>
                   {a.insights.opportunities.length ? (
                     <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
                       {a.insights.opportunities.map((o) => (
@@ -286,7 +289,7 @@ export default function CompanyPage() {
                   )}
                 </div>
                 <div className="rounded-xl bg-electric-50 p-4">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-electric-700">Pourquoi prospecter (ou non)</h3>
+                  <h3 className="font-mono text-[11px] font-medium tracking-[0.12em] text-electric-700 uppercase">[ Pourquoi prospecter (ou non) ]</h3>
                   <p className="mt-1 text-sm text-night-800">{a.insights.rationale}</p>
                 </div>
                 {a.insights.caveats.length > 0 && (
@@ -347,7 +350,7 @@ export default function CompanyPage() {
                   )}
                 </div>
                 <div className="space-y-3 text-sm">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Réseaux sociaux reliés au site</p>
+                  <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">[ Réseaux sociaux reliés au site ]</p>
                   {w?.socials && Object.keys(w.socials).length ? (
                     <ul className="space-y-1.5">
                       {Object.entries(w.socials).map(([k, url]) => (
@@ -366,7 +369,7 @@ export default function CompanyPage() {
                   {w?.cms && <p className="text-xs text-slate-500">Technologie détectée : {w.cms}</p>}
                   {places?.matched && (
                     <div className="rounded-lg border border-line p-3">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Fiche Google</p>
+                      <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-slate-500 uppercase">[ Fiche Google ]</p>
                       <p className="mt-1">{places.rating != null ? `${String(places.rating).replace('.', ',')}/5 sur ${places.reviews ?? 0} avis` : 'Pas de note'}</p>
                       <p className="text-xs text-slate-500">Correspondance {places.matchConfidence}</p>
                     </div>
