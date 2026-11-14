@@ -231,6 +231,21 @@
     display: inline-block;
     animation: word-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
+  /* Titre de l'accueil : une seule taille pour toute la phrase, calculée pour que l'événement le plus long
+     (« changent de dirigeant. », environ 10,6 fois la taille du texte) tienne sur une ligne. */
+  .hero-title {
+    font-size: min(2.45rem, calc((100vw - 2rem) / 10.8));
+  }
+  @media (min-width: 640px) {
+    .hero-title {
+      font-size: min(3.6rem, calc((100vw - 4rem) / 10.8));
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-title {
+      font-size: 4.3rem;
+    }
+  }
   /* Signaux du titre qui défilent : empilés dans la même cellule (hauteur stable), un seul visible à la fois. */
   .word-cycle {
     display: grid;

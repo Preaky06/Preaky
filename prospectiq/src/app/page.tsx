@@ -135,7 +135,7 @@ export default async function Home() {
                 <DotPill>Données SIRENE, RNE et BODACC</DotPill>
               )}
             </div>
-            <h1 className="font-display mt-8 text-[2.45rem] leading-[1.06] font-semibold tracking-[-0.05em] text-night-900 sm:text-[3.6rem] lg:text-[4.3rem]">
+            <h1 className="hero-title font-display mt-8 leading-[1.06] font-semibold tracking-[-0.05em] text-night-900">
               <span className="block text-balance">
                 {HEADLINE.map((w, i) => (
                   <span key={i}>
@@ -146,7 +146,7 @@ export default async function Home() {
                 ))}
               </span>
               {/* Les vrais signaux repérés dans les annonces officielles, l'un après l'autre */}
-              <KineticSignals items={HEADLINE_SIGNALS} className="text-[0.76em] md:text-[1em]" />
+              <KineticSignals items={HEADLINE_SIGNALS} />
               <span className="sr-only">ouvrent, sont rachetées, changent de dirigeant ou déménagent.</span>
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
