@@ -1,0 +1,32 @@
+<!--meta {
+  "title": "Tarifs",
+  "description": "Gratuit pour l’essentiel. Pro et Business pour tous les outils PDF, les gros fichiers et le traitement par lots. Sans engagement, 100 % local.",
+  "page": "pricing",
+  "faqs": [
+    { "q": "Comment vais-je recevoir mon accès ?", "a": "Juste après le paiement, vous recevez une clé de licence (dans l’e-mail de confirmation et dans votre espace client). Collez-la dans la page Compte : l’accès est immédiat, sur chacun de vos appareils." },
+    { "q": "Qui encaisse le paiement ?", "a": "Notre partenaire de paiement agit comme revendeur officiel : il sécurise la transaction, émet la facture et applique la TVA de votre pays. Nous ne voyons jamais vos coordonnées bancaires." },
+    { "q": "Puis-je changer de plan ou annuler ?", "a": "Oui, à tout moment depuis votre espace client. L’annulation prend effet à la fin de la période payée, sans frais." },
+    { "q": "Et si l’outil ne me convient pas ?", "a": "Écrivez-nous dans les 14 jours suivant votre premier paiement : vous êtes remboursé intégralement, sans justification." },
+    { "q": "Proposez-vous une facture pour mon entreprise ?", "a": "Oui. La facture est émise automatiquement et peut inclure votre numéro de TVA intracommunautaire lors du paiement." }
+  ]
+} -->
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Tarifs</span>
+    <h1>Payez pour la puissance, pas pour la confidentialité.</h1>
+    <p>Chaque plan traite vos fichiers 100 % en local. Commencez gratuitement, sans carte bancaire.</p>
+  </div>
+</section>
+<section class="container">
+  <div class="notice warn" data-billing-warning hidden style="max-width:760px;margin:0 auto 24px"></div>
+  {{> pricing-cards}}
+  <p class="checkout-note">Prix TTC. Paiement sécurisé par notre partenaire, qui émet votre facture et gère la TVA. Satisfait ou remboursé pendant 14 jours.<br>Déjà client ? <a href="/compte">Activez votre licence</a>.</p>
+  {{> plans-table}}
+</section>
+<section class="section">
+  <div class="container faq-wrap">
+    <h2 class="section-title">Questions sur l’abonnement</h2>
+    <p class="section-sub">&nbsp;</p>
+    {{faq}}
+  </div>
+</section>

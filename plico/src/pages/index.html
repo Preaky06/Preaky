@@ -1,0 +1,125 @@
+<!--meta {
+  "title": "{{brand.name}} — Outils PDF 100 % locaux : fusionner, compresser, signer",
+  "description": "Fusionnez, divisez, compressez et signez vos PDF directement dans votre navigateur. Aucun fichier n’est téléversé : rapide, gratuit et confidentiel par conception.",
+  "page": "home",
+  "faqs": [
+    { "q": "Est-ce vraiment gratuit ?", "a": "Oui : fusionner, organiser, diviser et convertir des images en PDF sont gratuits, sans inscription et sans filigrane. Les plans payants débloquent les outils avancés et les gros volumes." },
+    { "q": "Comment est-ce possible sans serveur ?", "a": "Les navigateurs modernes sont assez puissants pour lire et écrire des PDF. Toute l’application est téléchargée une fois, puis le traitement se fait sur votre appareil, comme un logiciel installé." },
+    { "q": "Mes documents sont-ils en sécurité ?", "a": "Ils ne quittent jamais votre appareil : il n’y a donc rien à pirater, rien à stocker, rien à supprimer. Vous pouvez le vérifier dans l’onglet Réseau des outils de développement de votre navigateur." },
+    { "q": "Comment fonctionne l’abonnement ?", "a": "Vous payez sur la page sécurisée de notre partenaire de paiement, qui vous remet une clé de licence (e-mail de confirmation et espace client). Collez-la dans « Compte » : c’est activé en quelques secondes. Aucun compte à créer." },
+    { "q": "Puis-je annuler à tout moment ?", "a": "Oui, l’abonnement est sans engagement. Vous l’annulez en un clic depuis votre espace client ; il reste actif jusqu’à la fin de la période payée." },
+    { "q": "Ça marche sur téléphone ?", "a": "Oui, sur iPhone, Android, Mac, Windows et Linux, dans tout navigateur récent. Vous pouvez même l’installer comme une application." }
+  ]
+} -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Outils PDF · 100 % locaux</span>
+      <h1>Vos PDF, <em>sans jamais</em> les envoyer.</h1>
+      <p class="lead">Fusionner, diviser, compresser, signer… 9 outils qui tournent directement dans votre navigateur. Plus rapide qu’un téléversement, et confidentiel par conception.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-accent btn-lg" href="/fusionner-pdf">Fusionner un PDF gratuitement</a>
+        <a class="btn btn-ghost btn-lg" href="/tarifs">Voir les tarifs</a>
+      </div>
+      <ul class="trust-row">
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Aucun fichier téléversé</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sans inscription</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Fonctionne hors ligne</li>
+      </ul>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="doc-stack">
+        <div class="doc d1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="doc d2"><i></i><i></i><div class="doc-img"></div><i></i><i></i></div>
+        <div class="doc d3"><i></i><i></i><i></i><div class="doc-img"></div><i></i><i></i><i></i></div>
+        <div class="lock-badge"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>0 octet envoyé sur Internet</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="outils" style="padding-top:24px">
+  <div class="container">
+    <h2 class="section-title">9 outils, un seul endroit</h2>
+    <p class="section-sub">Tout ce qu’on fait d’un PDF au quotidien, sans logiciel à installer ni compte à créer.</p>
+    {{> tools-grid}}
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2)">
+  <div class="container">
+    <h2 class="section-title">La différence ? Votre fichier ne bouge pas.</h2>
+    <p class="section-sub">Les sites PDF classiques reçoivent vos documents sur leurs serveurs. Ici, c’est votre appareil qui fait le travail.</p>
+    <div class="compare">
+      <div class="compare-col">
+        <h3>Les autres sites PDF</h3>
+        <ol>
+          <li>Vous téléversez votre fichier sur leurs serveurs.</li>
+          <li>Il y est traité, et souvent conservé « quelques heures ».</li>
+          <li>Vous attendez, puis vous le re-téléchargez.</li>
+        </ol>
+      </div>
+      <div class="compare-col us">
+        <h3>{{brand.name}}</h3>
+        <ol>
+          <li>Le fichier reste sur votre appareil.</li>
+          <li>Votre navigateur le traite instantanément.</li>
+          <li>Rien ne transite par Internet. Rien n’est stocké ailleurs.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature">
+        <div class="f-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h3>Confidentiel par conception</h3>
+        <p>Contrats, fiches de paie, pièces d’identité, dossiers clients : rien ne quitte votre ordinateur. Idéal pour les métiers soumis au secret professionnel.</p>
+      </div>
+      <div class="feature">
+        <div class="f-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg></div>
+        <h3>Instantané</h3>
+        <p>Pas d’attente de téléversement : un PDF de 200 Mo se fusionne aussi vite qu’un petit fichier.</p>
+      </div>
+      <div class="feature">
+        <div class="f-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M2 9a15 15 0 0 1 20 0"/><path d="M12 20h.01"/><path d="m3 3 18 18"/></svg></div>
+        <h3>Même hors ligne</h3>
+        <p>Une fois la page chargée, tout fonctionne sans connexion : dans le train, l’avion ou une salle blanche.</p>
+      </div>
+      <div class="feature">
+        <div class="f-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="m3 3 18 18"/></svg></div>
+        <h3>Sans compte</h3>
+        <p>Pas d’inscription, pas d’e-mail à donner pour l’offre gratuite. Les abonnés activent une simple clé.</p>
+      </div>
+    </div>
+    <p class="checkout-note">Vérifiez-le vous-même : ouvrez l’onglet <strong>Réseau</strong> des outils de développement (F12) pendant un traitement. Aucune requête ne contient votre fichier.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg-2)" id="tarifs">
+  <div class="container">
+    <h2 class="section-title">Un prix simple, sans surprise</h2>
+    <p class="section-sub">Commencez gratuitement. Passez à Pro quand vous en avez besoin. Sans engagement.</p>
+    {{> pricing-cards}}
+    <p class="checkout-note">Paiement sécurisé par notre partenaire, qui émet votre facture et gère la TVA. Satisfait ou remboursé pendant 14 jours.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container faq-wrap">
+    <h2 class="section-title">Questions fréquentes</h2>
+    <p class="section-sub">Tout ce qu’il faut savoir avant de commencer.</p>
+    {{faq}}
+  </div>
+</section>
+
+<section class="container">
+  <div class="band">
+    <h2>Votre prochain PDF, en 10 secondes.</h2>
+    <p>Aucune installation, aucun compte, aucun envoi. Essayez maintenant.</p>
+    <a class="btn btn-accent btn-lg" href="/fusionner-pdf">Commencer gratuitement</a>
+  </div>
+</section>
