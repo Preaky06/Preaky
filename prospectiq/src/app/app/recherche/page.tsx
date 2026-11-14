@@ -380,7 +380,7 @@ function SearchPage() {
               <option value="">Tous les départements</option>
               {deps.map((d) => (
                 <option key={d.code} value={d.code}>
-                  {d.code} — {d.nom}
+                  {d.code} · {d.nom}
                 </option>
               ))}
             </Select>
@@ -441,7 +441,7 @@ function SearchPage() {
   return (
     <div className="animate-fade-in">
       <PageTitle title="Recherche de prospects" subtitle="Données officielles SIRENE, RNE et BODACC. Les entreprises opposées à la prospection sont exclues automatiquement." />
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[320px_1fr]">
         <div>
           <Button variant="secondary" className="mb-3 w-full lg:hidden" onClick={() => setShowFilters((s) => !s)}>
             <SlidersHorizontal className="size-4" />

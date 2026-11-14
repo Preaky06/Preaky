@@ -77,17 +77,17 @@ export default function DashboardPage() {
             </div>
             {data ? (
               <p className="font-display mt-2.5 text-[1.7rem] leading-none font-semibold tracking-[-0.02em] tabular-nums text-night-900" data-testid={`stat-${s.label}`}>
-                {s.value === null || s.value === undefined ? '—' : `${s.value.toLocaleString('fr-FR')}${s.unit || ''}`}
+                {s.value === null || s.value === undefined ? 'Aucune donnée' : `${s.value.toLocaleString('fr-FR')}${s.unit || ''}`}
               </p>
             ) : (
               <Skeleton className="mt-2 h-8 w-16" />
             )}
-            <p className="mt-2 truncate text-[11px] text-slate-400">{s.hint}</p>
+            <p className="mt-2 break-words text-[11px] text-slate-400">{s.hint}</p>
           </Card>
         ))}
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_1fr]">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[1.4fr_1fr]">
         <Card>
           <CardHeader icon={<Sparkles className="size-4" />} title="Opportunités recommandées" subtitle="Les entreprises analysées au meilleur potentiel, pas encore contactées." />
           <div className="divide-y divide-line">
@@ -103,8 +103,8 @@ export default function DashboardPage() {
               <Link key={r.siren} href={`/app/entreprise/${r.siren}`} className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-slate-50">
                 <ScorePill score={r.score} />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-night-900">{r.name}</p>
-                  <p className="truncate text-xs text-slate-500">{[r.sector, r.city].filter(Boolean).join(' · ') || 'Non renseigné'}</p>
+                  <p className="break-words font-semibold text-night-900">{r.name}</p>
+                  <p className="break-words text-xs text-slate-500">{[r.sector, r.city].filter(Boolean).join(' · ') || 'Non renseigné'}</p>
                 </div>
                 <div className="hidden flex-col items-end gap-1 sm:flex">
                   <CategoryBadge category={{ id: r.category }} />
@@ -124,7 +124,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_1fr]">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[1.4fr_1fr]">
         <Card>
           <CardHeader title="Évolution de votre prospection" subtitle="30 derniers jours" />
           <div className="p-5">
@@ -151,7 +151,7 @@ export default function DashboardPage() {
               {data?.followups.map((f) => (
                 <li key={f.id}>
                   <Link href={`/app/entreprise/${f.siren}`} className="flex items-center justify-between px-5 py-3 text-sm hover:bg-slate-50">
-                    <span className="truncate font-medium">{f.name}</span>
+                    <span className="break-words font-medium">{f.name}</span>
                     <span className={new Date(f.date) <= new Date() ? 'font-semibold text-rose-700' : 'text-slate-500'}>{new Date(`${f.date}T12:00:00`).toLocaleDateString('fr-FR')}</span>
                   </Link>
                 </li>
@@ -165,7 +165,7 @@ export default function DashboardPage() {
               {data?.recentSearches.map((s) => (
                 <li key={s.id}>
                   <Link href={`/app/recherche?depuis=${s.id}`} className="flex items-center justify-between gap-3 px-5 py-3 text-sm hover:bg-slate-50">
-                    <span className="truncate">{s.name || describeSearch(s.params)}</span>
+                    <span className="break-words">{s.name || describeSearch(s.params)}</span>
                     <span className="shrink-0 text-xs text-slate-500">{s.total.toLocaleString('fr-FR')} résultats</span>
                   </Link>
                 </li>
@@ -209,7 +209,7 @@ function Onboarding({ o }: { o: NonNullable<Dashboard['onboarding']> }) {
           </Link>
         </div>
       </div>
-      <ol className="grid divide-y divide-line sm:grid-cols-5 sm:divide-x sm:divide-y-0">
+      <ol className="grid grid-cols-[minmax(0,1fr)] divide-y divide-line sm:grid-cols-5 sm:divide-x sm:divide-y-0">
         {steps.map((s, i) => (
           <li key={s.label}>
             <Link href={s.href} className="flex h-full gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50">

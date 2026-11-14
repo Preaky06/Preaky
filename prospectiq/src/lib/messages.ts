@@ -100,7 +100,7 @@ export function templateMessages(ctx: MessageContext, channel: Channel, tone: To
     } else if (channel === 'linkedin') {
       text = `${greet}, ${intro.charAt(0).toLowerCase() + intro.slice(1)} ${value} ${cta}`;
     } else if (channel === 'instagram') {
-      text = `${greet} ! ${intro} ${value} ${cta}${me ? ` — ${me}` : ''}`;
+      text = `${greet} ! ${intro} ${value} ${cta}${me ? `\n${me}` : ''}`;
     } else {
       text = `${greet}, ${hook(i) ? `${hook(i)}. ` : ''}${value} ${ctas[tone][i % 3]}`;
     }

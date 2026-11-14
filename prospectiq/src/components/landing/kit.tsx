@@ -67,15 +67,6 @@ export function SectionHead({
   );
 }
 
-/** Mot mis en évidence par un cadre de sélection en pointillés, avec une étiquette dessous (dessinés en CSS, hors du texte). */
-export function Annotated({ children, tag }: { children: React.ReactNode; tag: string }) {
-  return (
-    <span className="annotated" data-tag={tag}>
-      {children}
-    </span>
-  );
-}
-
 /** Boutons des pages publiques (liens). `brand` violet, `light` blanc sur fond sombre, `outline` contour. */
 export function ctaClass(kind: 'brand' | 'light' | 'outline' | 'outline-dark' = 'brand', size: 'md' | 'lg' = 'md') {
   return cx(

@@ -98,8 +98,8 @@ export default function SearchesPage() {
                 checked={selected.includes(s.id)}
                 onChange={(e) => setSelected((sel) => (e.target.checked ? [...sel, s.id].slice(-2) : sel.filter((x) => x !== s.id)))}
               />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-night-900">
+              <div className="min-w-[12rem] flex-1">
+                <p className="break-words font-semibold text-night-900">
                   {s.name || describeSearch(s.params)} {s.saved && <Badge tone="accent">Sauvegardée</Badge>}
                 </p>
                 <p className="text-xs text-slate-500">
@@ -130,7 +130,7 @@ export default function SearchesPage() {
       )}
       <Modal open={!!diff} onClose={() => setDiff(null)} title={diff?.title || ''} wide>
         {diff && (
-          <div className="grid gap-5 sm:grid-cols-2" data-testid="diff">
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2" data-testid="diff">
             <div>
               <h3 className="mb-2 text-sm font-semibold text-emerald-700">Nouvelles entreprises ({diff.added.length})</h3>
               <ul className="space-y-1 text-sm">

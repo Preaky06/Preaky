@@ -11,6 +11,6 @@ export async function sendMail(to: string, subject: string, text: string): Promi
     return { delivered: true };
   }
   await q('insert into outbox (to_email, subject, body) values ($1, $2, $3)', [to, subject, text]);
-  if (!env.isProd) console.info(`[mail non envoyé — SMTP non configuré] À: ${to}\nObjet: ${subject}\n${text}`);
+  if (!env.isProd) console.info(`[mail non envoyé : SMTP non configuré] À: ${to}\nObjet: ${subject}\n${text}`);
   return { delivered: false };
 }

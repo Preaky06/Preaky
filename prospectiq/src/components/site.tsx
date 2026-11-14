@@ -37,7 +37,7 @@ export function PublicPage({ children }: { children: React.ReactNode }) {
 export function SiteFooter() {
   return (
     <footer className="island relative overflow-hidden rounded-t-[2.5rem] text-slate-400 sm:rounded-t-[3.5rem]">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-20 pb-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
+      <div className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-6xl gap-10 px-4 pt-20 pb-14 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
           <Logo dark />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">Prospection B2B à partir des registres publics officiels français. Chaque information affichée cite sa source.</p>

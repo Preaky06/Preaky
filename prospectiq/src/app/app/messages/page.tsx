@@ -105,7 +105,7 @@ function MessagesPage() {
   return (
     <div className="animate-fade-in">
       <PageTitle title="Générateur de messages" subtitle="Des messages personnalisés à partir des faits vérifiés sur chaque entreprise. Aucune relation préalable n’est inventée." />
-      <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[340px_1fr]">
         <Card className="h-fit">
           <CardHeader icon={<Wand2 className="size-4" />} title="Paramètres" />
           <div className="space-y-4 p-5">

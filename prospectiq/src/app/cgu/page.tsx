@@ -16,7 +16,7 @@ export default function Page() {
       <ul>
         {Object.values(PLANS).map((p) => (
           <li key={p.id}>
-            {p.name} : {p.price ? `${p.price} € HT par mois` : 'gratuite'} — {p.prospects.toLocaleString('fr-FR')} prospects analysés et {p.aiMessages.toLocaleString('fr-FR')} messages générés par mois{p.seats > 1 ? `, ${p.seats} utilisateurs` : ''}.
+            {p.name} : {p.price ? `${p.price} € HT par mois` : 'gratuite'}, {p.prospects.toLocaleString('fr-FR')} prospects analysés et {p.aiMessages.toLocaleString('fr-FR')} messages générés par mois{p.seats > 1 ? `, ${p.seats} utilisateurs` : ''}.
           </li>
         ))}
       </ul>

@@ -250,7 +250,7 @@ export default function CompanyPage() {
         {!a && !d.blocked && <p className="mt-3 text-xs text-slate-500">L’analyse recherche le site web, l’audite, consulte le BODACC{places === null ? '' : ' et Google'} puis calcule le score. Elle décompte 1 prospect de votre quota mensuel (une seule fois par mois pour une même entreprise).</p>}
       </Card>
 
-      <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-[1.35fr_1fr]">
         <div className="space-y-6">
           {/* Analyse */}
           <Card>
@@ -260,7 +260,7 @@ export default function CompanyPage() {
                 <p className="text-[15px] leading-relaxed text-night-800" data-testid="summary">
                   {a.insights.summary}
                 </p>
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">
                   <div>
                     <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-700">Points forts</h3>
                     <ul className="space-y-1.5 text-sm text-night-800">{a.insights.strengths.length ? a.insights.strengths.map((s) => <li key={s}>• {s}</li>) : <li className="text-slate-400">Aucun point fort identifié à partir des données disponibles.</li>}</ul>
@@ -273,7 +273,7 @@ export default function CompanyPage() {
                 <div>
                   <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-electric-700">Opportunités et prestations susceptibles de l’intéresser</h3>
                   {a.insights.opportunities.length ? (
-                    <ul className="grid gap-2 sm:grid-cols-2">
+                    <ul className="grid grid-cols-[minmax(0,1fr)] gap-2 sm:grid-cols-2">
                       {a.insights.opportunities.map((o) => (
                         <li key={o.service} className="rounded-xl border border-line bg-slate-50/60 p-3">
                           <p className="text-sm font-semibold text-night-900">{o.service}</p>
@@ -325,7 +325,7 @@ export default function CompanyPage() {
                   ) : undefined
                 }
               />
-              <div className="grid gap-6 p-5 md:grid-cols-2">
+              <div className="grid grid-cols-[minmax(0,1fr)] gap-6 p-5 md:grid-cols-2">
                 <div>
                   <div className="mb-2 flex items-center gap-2">
                     <Badge tone={w?.status === 'verified' ? 'success' : w?.status === 'probable' ? 'warning' : 'neutral'}>{w?.status === 'verified' ? 'Site vérifié' : w?.status === 'probable' ? 'Site probable' : w?.status === 'blocked' ? 'Analyse refusée (robots.txt)' : w?.status === 'unreachable' ? 'Analyse impossible' : 'Aucun site trouvé'}</Badge>
@@ -451,7 +451,7 @@ export default function CompanyPage() {
               {c.tradeNames.length > 0 && <Row label="Enseigne(s)">{c.tradeNames.join(', ')}</Row>}
               <Row label="SIREN / SIRET">{`${c.siren}${c.siret ? ` / ${c.siret}` : ''}`}</Row>
               <Row label="Forme">{c.legalForm}</Row>
-              <Row label="Activité (NAF)">{c.naf ? `${c.naf} — ${c.nafLabel || ''}` : null}</Row>
+              <Row label="Activité (NAF)">{c.naf ? `${c.naf} · ${c.nafLabel || ''}` : null}</Row>
               <Row label="Création">{fmt(c.createdOn)}</Row>
               <Row label="Effectif">{c.employeesLabel ? `${c.employeesLabel}${c.employeesYear ? ` (${c.employeesYear})` : ''}` : null}</Row>
               <Row label="Établissements">{c.establishments}</Row>
@@ -471,7 +471,7 @@ export default function CompanyPage() {
             <CardHeader icon={<StickyNote className="size-4" />} title="Suivi commercial" />
             <div className="space-y-4 p-5">
               {d.prospect ? (
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
                   <Field label="Statut" htmlFor="status">
                     <Select id="status" value={d.prospect.status} onChange={(e) => act(() => api(`/api/prospects/${d.prospect!.id}`, { method: 'PATCH', body: { status: e.target.value } }), 'Statut mis à jour.')} data-testid="status">
                       {Object.entries(STATUS_LABELS).map(([id, label]) => (

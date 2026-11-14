@@ -55,7 +55,7 @@ export function DemoSearch() {
           e.preventDefault();
           search(postalCode);
         }}
-        className="ring-duo grid gap-1.5 rounded-2xl p-1.5 shadow-float sm:grid-cols-[minmax(0,1fr)_9.5rem_auto]"
+        className="ring-duo grid grid-cols-[minmax(0,1fr)] gap-1.5 rounded-2xl p-1.5 shadow-float sm:grid-cols-[minmax(0,1fr)_9.5rem_auto]"
         aria-label="Recherche de démonstration"
       >
         <label className="flex items-center gap-2 rounded-xl px-3 sm:border-r sm:border-line">
@@ -121,8 +121,8 @@ export function DemoSearch() {
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-night-900/5 text-xs font-bold text-night-700">{r.name.replace(/[^\p{L}\d ]/gu, '').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()}</span>
                     <div className="min-w-0">
-                      <p className="truncate font-semibold">{r.name}</p>
-                      <p className="truncate text-xs text-slate-500">{[r.sector, r.city, r.created && `créée en ${r.created.slice(0, 4)}`].filter(Boolean).join(' · ')}</p>
+                      <p className="break-words font-semibold">{r.name}</p>
+                      <p className="break-words text-xs text-slate-500">{[r.sector, r.city, r.created && `créée en ${r.created.slice(0, 4)}`].filter(Boolean).join(' · ')}</p>
                     </div>
                   </div>
                   <div className="text-right">

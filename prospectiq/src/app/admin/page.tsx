@@ -58,7 +58,7 @@ const TABS = [
   { id: 'reports', label: 'Signalements', icon: Flag },
 ] as const;
 const KIND: Record<string, string> = { opposition: 'Opposition RGPD', data_error: 'Erreur de données', abuse: 'Abus' };
-const dt = (d: string | null) => (d ? new Date(d).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '—');
+const dt = (d: string | null) => (d ? new Date(d).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : 'Jamais');
 const eur = (n: number) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: n < 10 ? 4 : 2 });
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
@@ -131,7 +131,7 @@ export default function AdminPage() {
   return (
     <div className="animate-fade-in">
       <PageTitle title="Administration" subtitle="Comptes, abonnements, consommation, erreurs des sources de données et demandes RGPD." />
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-xl border border-line bg-white p-1" role="tablist">
+      <div className="mb-6 flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1" role="tablist">
         {TABS.map(({ id, label, icon: Icon }) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id} onClick={() => setTab(id)} className={cx('flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold whitespace-nowrap', tab === id ? 'bg-night-900 text-white' : 'text-slate-600 hover:bg-slate-100')}>
             <Icon className="size-4" />
@@ -152,7 +152,7 @@ export default function AdminPage() {
               <Stat label="Analyses (30 j)" value={ov.totals.analyses30.toLocaleString('fr-FR')} hint={`${ov.totals.searches30} recherches`} />
               <Stat label="Coût IA (30 j)" value={eur(ov.ai.cost)} hint={`${ov.ai.calls} appels · ${(ov.ai.input + ov.ai.output).toLocaleString('fr-FR')} jetons`} />
             </div>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2">
               <Card>
                 <CardHeader title="Répartition par offre" />
                 <div className="p-5">
@@ -323,7 +323,7 @@ export default function AdminPage() {
                         <Badge tone={l.ok ? 'success' : 'danger'}>{l.status ?? (l.ok ? 'OK' : 'échec')}</Badge>
                       </td>
                       <td className="px-4 py-2 tabular-nums text-slate-600">{l.ms} ms</td>
-                      <td className="max-w-xs truncate px-4 py-2 text-xs text-rose-700" title={l.error || ''}>
+                      <td className="max-w-xs break-words px-4 py-2 text-xs text-rose-700" title={l.error || ''}>
                         {l.error || ''}
                       </td>
                     </tr>

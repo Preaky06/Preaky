@@ -44,7 +44,7 @@ export default async function BillingPage() {
         </p>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[1fr_1fr]">
         <Card>
           <CardHeader icon={<CreditCard className="size-4" />} title={`Offre ${user.plan.name}`} subtitle={user.plan.price ? `${user.plan.price} € HT / mois` : 'Gratuite'} action={org?.subscription_status ? <Badge tone={hasSub ? 'success' : 'warning'}>{STATUS[org.subscription_status] || org.subscription_status}</Badge> : undefined} />
           <div className="space-y-4 p-5">
@@ -67,7 +67,7 @@ export default async function BillingPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3">
         {PAID_PLANS.map((id) => {
           const p = PLANS[id];
           const current = user.plan.id === id;

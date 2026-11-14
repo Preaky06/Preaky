@@ -84,7 +84,7 @@ export default function ListsPage() {
           </Link>
         </p>
       )}
-      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[300px_1fr]">
         <Card className="h-fit p-4">
           <form
             className="mb-4 flex gap-2"
@@ -105,7 +105,7 @@ export default function ListsPage() {
               {lists.map((l) => (
                 <li key={l.id} className="group flex items-center gap-1">
                   <button type="button" onClick={() => setCurrent(l.id)} className={cx('flex flex-1 items-center justify-between rounded-lg px-3 py-2 text-left text-sm', current === l.id ? 'bg-night-900 text-white' : 'hover:bg-slate-100')}>
-                    <span className="truncate">{l.name}</span>
+                    <span className="break-words">{l.name}</span>
                     <span className="text-xs opacity-70">{l.count}</span>
                   </button>
                   <button type="button" onClick={() => remove(l.id)} className="rounded p-1.5 text-slate-400 opacity-0 group-hover:opacity-100 hover:text-rose-600 focus:opacity-100" aria-label={`Supprimer ${l.name}`}>
@@ -134,7 +134,7 @@ export default function ListsPage() {
                       {displayName(m.company)}
                     </Link>
                     <p className="text-xs text-slate-500">
-                      {m.company.city || '—'} · {STATUS_LABELS[m.status]} · {m.score !== null ? `${m.score}/100` : 'non analysé'}
+                      {m.company.city || 'Ville non renseignée'} · {STATUS_LABELS[m.status]} · {m.score !== null ? `${m.score}/100` : 'non analysé'}
                     </p>
                   </div>
                   <Button size="sm" variant="ghost" onClick={() => removeMember(m.siren)}>

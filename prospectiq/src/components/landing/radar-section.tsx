@@ -19,12 +19,12 @@ const FEED = [
 export function RadarSection() {
   return (
     <section id="radar" className="relative isolate overflow-hidden py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr]">
+      <div className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr]">
         <div>
           <SectionHead kicker="radar" title="Chaque matin," accent="les entreprises qui viennent de bouger.">
             Le Radar lit les annonces officielles publiées dans vos zones et sur les entreprises que vous suivez, puis vous signale celles qui comptent. <b>Vous contactez au moment où le besoin apparaît.</b>
           </SectionHead>
-          <ul className="mt-9 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-9 grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
             {TYPES.map(({ icon: Icon, title, text, tone }) => (
               <li key={title} className="flex gap-3 rounded-2xl border border-white bg-white/80 p-4 shadow-float ring-1 ring-night-900/[0.04]">
                 <span className={`grid size-10 shrink-0 place-items-center rounded-full ${tone}`}>
@@ -68,8 +68,8 @@ export function RadarSection() {
                 <li key={f.title} className="flex items-start gap-3 rounded-2xl bg-paper px-3.5 py-3">
                   <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ background: f.dot }} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{f.title}</p>
-                    <p className="truncate text-xs text-slate-500">{f.detail}</p>
+                    <p className="break-words text-sm font-semibold">{f.title}</p>
+                    <p className="break-words text-xs text-slate-500">{f.detail}</p>
                   </div>
                   <span className="shrink-0 font-mono text-[11px] text-slate-400">{f.when}</span>
                 </li>

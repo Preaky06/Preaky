@@ -2,7 +2,7 @@
 // Graphiques légers en SVG/HTML (sans bibliothèque).
 // Palette validée (méthode dataviz) : séries 1-3 bleu / orange / aqua ; série unique : violet (rampe validée).
 // L'aqua est sous 3:1 de contraste : légende + étiquettes directes + vue tableau obligatoires.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { cx } from './ui';
 
 export const SERIES = ['#2a78d6', '#eb6834', '#1baf7a'] as const;
@@ -19,7 +19,7 @@ export function BarList({ items, unit = '' }: { items: { label: string; value: n
       {items.map((it, i) => (
         <li key={it.label} className="group" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)}>
           <div className="mb-1 flex items-baseline justify-between gap-3 text-[13px]">
-            <span className="truncate text-night-800">{it.label}</span>
+            <span className="break-words text-night-800">{it.label}</span>
             <span className="tabular-nums font-semibold text-night-900">
               {it.value.toLocaleString('fr-FR')}
               {unit}
@@ -53,9 +53,20 @@ interface Series {
 export function LineChart({ labels, series, height = 220, formatLabel = (s: string) => s }: { labels: string[]; series: Series[]; height?: number; formatLabel?: (s: string) => string }) {
   const [hover, setHover] = useState<number | null>(null);
   const [table, setTable] = useState(false);
-  const W = 640;
-  const H = height;
-  const pad = { l: 34, r: 92, t: 12, b: 26 };
+  // Le dessin prend la largeur réelle du conteneur : les textes gardent leur taille (lisibles sur mobile).
+  const box = useRef<HTMLDivElement>(null);
+  const [W, setW] = useState(640);
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(([e]) => setW(Math.max(260, Math.round(e.contentRect.width))));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [table]);
+  const narrow = W < 480;
+  const H = narrow ? Math.round(height * 0.8) : height;
+  // Sur petit écran, pas d'étiquettes de fin de courbe : la légende au-dessus nomme déjà les séries.
+  const pad = { l: 34, r: narrow ? 14 : 92, t: 12, b: 26 };
   const max = Math.max(1, ...series.flatMap((s) => s.values));
   const niceMax = useMemo(() => {
     const step = Math.pow(10, Math.floor(Math.log10(max)));
@@ -109,7 +120,7 @@ export function LineChart({ labels, series, height = 220, formatLabel = (s: stri
           </table>
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative" ref={box}>
           <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`Évolution sur ${labels.length} jours : ${series.map((s) => s.name).join(', ')}`}>
             {ticks.map((t) => (
               <g key={t}>
@@ -119,7 +130,7 @@ export function LineChart({ labels, series, height = 220, formatLabel = (s: stri
                 </text>
               </g>
             ))}
-            {[0, Math.floor((labels.length - 1) / 2), labels.length - 1].map((i) => (
+            {(narrow ? [0, labels.length - 1] : [0, Math.floor((labels.length - 1) / 2), labels.length - 1]).map((i) => (
               <text key={i} x={x(i)} y={H - 6} textAnchor={i === 0 ? 'start' : i === labels.length - 1 ? 'end' : 'middle'} fontSize="11" fill="#64748b">
                 {formatLabel(labels[i] || '')}
               </text>
@@ -128,9 +139,11 @@ export function LineChart({ labels, series, height = 220, formatLabel = (s: stri
               <g key={s.name}>
                 <path d={s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')} fill="none" stroke={SERIES[k]} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
                 <circle cx={x(s.values.length - 1)} cy={y(s.values[s.values.length - 1] || 0)} r={4} fill={SERIES[k]} stroke="#fff" strokeWidth={2} />
-                <text x={W - pad.r + 10} y={(endY.get(k) || 0) + 4} fontSize="11" fill="#334155">
-                  {s.name}
-                </text>
+                {!narrow && (
+                  <text x={W - pad.r + 10} y={(endY.get(k) || 0) + 4} fontSize="11" fill="#334155">
+                    {s.name}
+                  </text>
+                )}
               </g>
             ))}
             {hover !== null && (

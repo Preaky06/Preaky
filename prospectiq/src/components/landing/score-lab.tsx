@@ -16,7 +16,7 @@ export function ScoreLab({ input }: { input: Input }) {
   const changed = (Object.keys(weights) as (keyof Weights)[]).some((k) => weights[k] !== DEFAULT_WEIGHTS[k]);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[0.9fr_1.1fr]">
       <div className="hairline flex flex-col rounded-[28px] border border-white bg-white p-6 shadow-float ring-1 ring-night-900/[0.05]">
         <div className="flex items-center justify-between gap-3">
           <p className="font-semibold">Vos pondérations</p>
@@ -48,10 +48,10 @@ export function ScoreLab({ input }: { input: Input }) {
         </div>
         <div className="mt-6 grid grid-cols-2 gap-2 text-xs">
           {[
-            ['80 – 100', 'Priorité élevée', 'bg-electric-500'],
-            ['60 – 79', 'Prospect intéressant', 'bg-emerald-500'],
-            ['40 – 59', 'Potentiel modéré', 'bg-amber-500'],
-            ['0 – 39', 'Faible priorité', 'bg-slate-400'],
+            ['80 à 100', 'Priorité élevée', 'bg-electric-500'],
+            ['60 à 79', 'Prospect intéressant', 'bg-emerald-500'],
+            ['40 à 59', 'Potentiel modéré', 'bg-amber-500'],
+            ['0 à 39', 'Faible priorité', 'bg-slate-400'],
           ].map(([r, l, c]) => (
             <p key={r} className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
               <span className={`size-2 rounded-full ${c}`} />
@@ -80,7 +80,7 @@ export function ScoreLab({ input }: { input: Input }) {
       </div>
 
       <div className="ring-duo rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)]" data-testid="score-example">
-        <div className="grid items-start gap-4 sm:grid-cols-[1fr_auto]">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 sm:grid-cols-[1fr_auto]">
           <div className="min-w-0">
             <Badge tone="warning">Exemple illustratif · entreprise fictive</Badge>
             <p className="mt-3 text-lg font-semibold">Le Bistrot Exemple</p>

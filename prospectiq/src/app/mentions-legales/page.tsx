@@ -3,7 +3,7 @@ import { env } from '@/lib/env';
 
 export const metadata = { title: 'Mentions légales' };
 
-const v = (x: string, label: string) => x || <mark className="rounded bg-amber-100 px-1">[{label} — à compléter]</mark>;
+const v = (x: string, label: string) => x || <mark className="rounded bg-amber-100 px-1">[{label} : à compléter]</mark>;
 
 export default function Page() {
   const l = env.legal;

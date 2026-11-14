@@ -75,7 +75,7 @@ function SettingsPage() {
 
       <Card>
         <CardHeader icon={<Briefcase className="size-4" />} title="Votre offre" subtitle="Ce que vous vendez et à qui : utilisé pour le critère « pertinence » et pour les messages." />
-        <div className="grid gap-6 p-5 lg:grid-cols-3">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 p-5 lg:grid-cols-3">
           <fieldset className="space-y-2">
             <legend className="mb-2 text-[13px] font-semibold">Services que vous proposez</legend>
             {SERVICES.map((s) => (
@@ -114,14 +114,14 @@ function SettingsPage() {
 
       <Card>
         <CardHeader icon={<Gauge className="size-4" />} title="Pondération du score" subtitle="Ajustez l’importance de chaque critère. Le total est ramené automatiquement à 100." />
-        <div className="grid gap-4 p-5 md:grid-cols-5">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-5 md:grid-cols-5">
           {(Object.keys(DEFAULT_WEIGHTS) as (keyof Weights)[]).map((k) => (
             <Field key={k} label={CRITERIA_LABELS[k]} htmlFor={`w-${k}`} hint={sum ? `${Math.round((Number(weights[k]) * 100) / sum)} % du score` : undefined}>
               <Input id={`w-${k}`} type="number" min={0} max={100} value={weights[k]} onChange={(e) => setWeights({ ...weights, [k]: Number(e.target.value) })} />
             </Field>
           ))}
         </div>
-        <div className="flex justify-between gap-2 border-t border-line px-5 py-3">
+        <div className="flex flex-wrap justify-between gap-2 border-t border-line px-5 py-3">
           <Button variant="ghost" onClick={() => setWeights(DEFAULT_WEIGHTS)}>
             Valeurs par défaut
           </Button>
@@ -134,7 +134,7 @@ function SettingsPage() {
 
       <Card>
         <CardHeader icon={<User className="size-4" />} title="Profil" />
-        <div className="grid gap-4 p-5 md:grid-cols-2">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-5 md:grid-cols-2">
           <Field label="Nom" htmlFor="pname">
             <Input id="pname" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
           </Field>

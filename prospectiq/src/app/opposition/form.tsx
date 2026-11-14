@@ -45,7 +45,7 @@ export function OppositionForm() {
           <option value="abuse">Signaler un usage abusif (démarchage trompeur…)</option>
         </Select>
       </Field>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2">
         <Field label="SIREN de l’entreprise" htmlFor="siren" hint="9 chiffres, figurant sur l’avis de situation ou un Kbis." error={error?.field === 'siren' ? error.msg : null}>
           <Input id="siren" inputMode="numeric" value={form.siren} onChange={(e) => setForm({ ...form, siren: e.target.value.replace(/[^\d ]/g, '').slice(0, 11) })} data-testid="opp-siren" />
         </Field>

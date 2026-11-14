@@ -9,7 +9,7 @@ import { api, ApiError } from '@/lib/client';
 
 export function AuthFrame({ title, subtitle, children, footer }: { title: string; subtitle?: React.ReactNode; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
-    <div className="paper-dots grid min-h-dvh lg:grid-cols-[1fr_1.05fr]">
+    <div className="paper-dots grid grid-cols-[minmax(0,1fr)] min-h-dvh lg:grid-cols-[1fr_1.05fr]">
       <div className="flex flex-col px-4 py-8 sm:px-12">
         <Logo />
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">

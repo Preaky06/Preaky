@@ -140,7 +140,7 @@ export default function RadarPage() {
         }
       />
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-3">
         {[
           { label: 'Nouveautés non lues', value: data?.unread, icon: Radar, tone: 'bg-violet-50 text-violet-700' },
           { label: 'Alertes de zone actives', value: data ? `${data.limits.used} / ${data.limits.alerts}` : undefined, icon: MapPin, tone: 'bg-sky-50 text-sky-700' },
@@ -159,7 +159,7 @@ export default function RadarPage() {
       </div>
       <p className="mt-3 text-xs text-slate-500">Dernière vérification : {when(data?.checkedAt || null).replace(/\.$/, '')}. Sources : annonces officielles du BODACC, entreprises vérifiées dans le répertoire SIRENE (oppositions au démarchage exclues).</p>
 
-      <div className="mt-6 grid items-start gap-6 xl:grid-cols-[1.6fr_1fr]">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] items-start gap-6 xl:grid-cols-[1.6fr_1fr]">
         <Card>
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3">
             <div className="flex flex-wrap gap-1" role="tablist" aria-label="Type de nouveauté">
@@ -266,8 +266,8 @@ export default function RadarPage() {
               {data?.alerts.map((a) => (
                 <div key={a.id} className="flex items-start justify-between gap-3 px-5 py-3.5" data-testid="radar-alert">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold">{a.name}</p>
-                    <p className="truncate text-xs text-slate-500">
+                    <p className="break-words text-sm font-semibold">{a.name}</p>
+                    <p className="break-words text-xs text-slate-500">
                       {a.zone ? `Zone : ${a.zone}` : 'Zone non définie'} · vérifiée {when(a.checkedAt)}
                     </p>
                   </div>

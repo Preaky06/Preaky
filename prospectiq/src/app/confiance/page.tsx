@@ -25,6 +25,23 @@ const SECTIONS = [
   ['sous-traitants', 'Sous-traitants'],
 ] as const;
 
+const DATA_SOURCES = [
+  ['API Recherche d’entreprises', 'https://recherche-entreprises.api.gouv.fr', 'DINUM, données Insee (SIRENE) et INPI (RNE)', 'Identité, activité (NAF), effectif, établissements, dirigeants publiés, comptes publiés, mention d’opposition à la prospection'],
+  ['BODACC', 'https://www.bodacc.fr', 'DILA', 'Annonces de création, vente, modification et procédures collectives, avec leur date et un lien vers l’annonce'],
+  ['API Découpage administratif', 'https://geo.api.gouv.fr', 'Etalab', 'Communes, codes postaux et coordonnées pour les recherches par zone'],
+  ['Site web de l’entreprise', null, 'L’entreprise elle-même', 'Pages publiques uniquement, dans le respect du fichier robots.txt ; rattachement au SIREN quand il figure sur le site'],
+] as const;
+
+const RETENTION = [
+  ['Fiches et analyses d’entreprises', '12 mois sans consultation, sauf si suivies dans un CRM'],
+  ['Recherches non sauvegardées', '6 mois'],
+  ['Sessions de connexion', '30 jours'],
+  ['Journaux techniques des sources', '90 jours'],
+  ['Notifications du Radar', '6 mois'],
+  ['Rapports d’audit de site partagés', '12 mois'],
+  ['Compte utilisateur', 'Jusqu’à sa suppression (en libre-service)'],
+] as const;
+
 function Section({ id, icon: Icon, title, children }: { id: string; icon: typeof Database; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="hairline scroll-mt-28 rounded-[28px] border border-white bg-white p-6 shadow-float ring-1 ring-night-900/[0.05] sm:p-8">
@@ -78,7 +95,7 @@ export default async function Page() {
       <main id="contenu" className="overflow-x-clip">
         <section className="relative isolate">
           <div className="halo-duo pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[36rem]" aria-hidden="true" />
-          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:py-20">
+          <div className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:py-20">
             <div>
               <Kicker label="centre de confiance" />
               <h1 className="font-display mt-5 text-[2.4rem] leading-[1.04] font-semibold tracking-[-0.05em] text-balance sm:text-[3.4rem]">
@@ -109,7 +126,7 @@ export default async function Page() {
                 {status.sources.map((s) => (
                   <li key={s.id} className="flex items-center justify-between gap-3 py-3">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{s.name}</p>
+                      <p className="break-words text-sm font-medium">{s.name}</p>
                       <p className="text-xs text-slate-500">{s.producer}</p>
                     </div>
                     <p className={`shrink-0 text-right text-xs font-semibold ${s.ok ? 'text-emerald-700' : 'text-rose-700'}`}>
@@ -127,24 +144,19 @@ export default async function Page() {
         <div className="mx-auto max-w-4xl space-y-6 px-4 pt-4 pb-24 sm:px-6">
           <Section id="sources" icon={Database} title="Sources de données">
             <p>Pro Spectre n’achète aucun fichier et ne revend aucune donnée. Les informations proviennent de sources publiques, consultables par tous :</p>
-            <div className="overflow-x-auto rounded-2xl border border-line">
-              <table className="w-full min-w-[34rem] text-left text-sm">
-                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase">
+            <div className="overflow-hidden rounded-2xl border border-line">
+              <table className="w-full text-left text-sm max-sm:block">
+                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase max-sm:hidden">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Source</th>
                     <th className="px-4 py-3 font-semibold">Producteur</th>
                     <th className="px-4 py-3 font-semibold">Ce qui en est utilisé</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-line">
-                  {[
-                    ['API Recherche d’entreprises', 'https://recherche-entreprises.api.gouv.fr', 'DINUM, données Insee (SIRENE) et INPI (RNE)', 'Identité, activité (NAF), effectif, établissements, dirigeants publiés, comptes publiés, mention d’opposition à la prospection'],
-                    ['BODACC', 'https://www.bodacc.fr', 'DILA', 'Annonces de création, vente, modification et procédures collectives, avec leur date et un lien vers l’annonce'],
-                    ['API Découpage administratif', 'https://geo.api.gouv.fr', 'Etalab', 'Communes, codes postaux et coordonnées pour les recherches par zone'],
-                    ['Site web de l’entreprise', null, 'L’entreprise elle-même', 'Pages publiques uniquement, dans le respect du fichier robots.txt ; rattachement au SIREN quand il figure sur le site'],
-                  ].map(([name, url, prod, use]) => (
-                    <tr key={name as string} className="align-top">
-                      <td className="px-4 py-3 font-medium">
+                <tbody className="divide-y divide-line max-sm:block">
+                  {DATA_SOURCES.map(([name, url, prod, use]) => (
+                    <tr key={name as string} className="align-top max-sm:block max-sm:px-4 max-sm:py-3">
+                      <td className="px-4 py-3 font-medium max-sm:block max-sm:p-0">
                         {url ? (
                           <a href={url} className="text-electric-700 hover:underline" rel="noopener">
                             {name}
@@ -153,8 +165,11 @@ export default async function Page() {
                           name
                         )}
                       </td>
-                      <td className="px-4 py-3 text-slate-600">{prod}</td>
-                      <td className="px-4 py-3 text-slate-600">{use}</td>
+                      <td className="px-4 py-3 text-slate-600 max-sm:block max-sm:p-0 max-sm:pt-0.5 max-sm:text-xs">
+                        <span className="sm:hidden">Producteur : </span>
+                        {prod}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600 max-sm:block max-sm:p-0 max-sm:pt-1.5">{use}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -189,7 +204,7 @@ export default async function Page() {
           </Section>
 
           <Section id="donnees" icon={Fingerprint} title="Données personnelles (RGPD)">
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-2">
               <div>
                 <p className="font-semibold text-night-900">Ce qui est conservé</p>
                 <ul className="mt-3 space-y-2.5 text-sm">
@@ -207,27 +222,19 @@ export default async function Page() {
                 </ul>
               </div>
             </div>
-            <div className="overflow-x-auto rounded-2xl border border-line">
-              <table className="w-full min-w-[28rem] text-left text-sm">
-                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase">
+            <div className="overflow-hidden rounded-2xl border border-line">
+              <table className="w-full text-left text-sm max-sm:block">
+                <thead className="bg-canvas text-xs tracking-wide text-slate-500 uppercase max-sm:hidden">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Donnée</th>
                     <th className="px-4 py-3 font-semibold">Durée de conservation</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-line text-slate-600">
-                  {[
-                    ['Fiches et analyses d’entreprises', '12 mois sans consultation, sauf si suivies dans un CRM'],
-                    ['Recherches non sauvegardées', '6 mois'],
-                    ['Sessions de connexion', '30 jours'],
-                    ['Journaux techniques des sources', '90 jours'],
-                    ['Notifications du Radar', '6 mois'],
-                    ['Rapports d’audit de site partagés', '12 mois'],
-                    ['Compte utilisateur', 'Jusqu’à sa suppression (en libre-service)'],
-                  ].map(([d, t]) => (
-                    <tr key={d}>
-                      <td className="px-4 py-3 font-medium text-night-900">{d}</td>
-                      <td className="px-4 py-3">{t}</td>
+                <tbody className="divide-y divide-line text-slate-600 max-sm:block">
+                  {RETENTION.map(([d, t]) => (
+                    <tr key={d} className="max-sm:block max-sm:px-4 max-sm:py-3">
+                      <td className="px-4 py-3 font-medium text-night-900 max-sm:block max-sm:p-0">{d}</td>
+                      <td className="px-4 py-3 max-sm:block max-sm:p-0 max-sm:pt-0.5">{t}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -247,7 +254,7 @@ export default async function Page() {
           </Section>
 
           <Section id="securite" icon={KeyRound} title="Sécurité">
-            <ul className="grid gap-x-6 gap-y-2.5 text-sm sm:grid-cols-2">
+            <ul className="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-2.5 text-sm sm:grid-cols-2">
               <Yes>Mots de passe hachés avec scrypt, jamais stockés en clair.</Yes>
               <Yes>Sessions opaques, stockées hachées, cookie HttpOnly et SameSite.</Yes>
               <Yes>Contrôle d’origine des requêtes (protection CSRF).</Yes>
@@ -284,7 +291,7 @@ export default async function Page() {
                 </li>
               ))}
             </ul>
-            <p className="text-sm text-slate-500">Les transferts éventuels hors de l’Union européenne sont encadrés par les clauses contractuelles types de la Commission européenne ou le cadre de protection des données UE–États-Unis.</p>
+            <p className="text-sm text-slate-500">Les transferts éventuels hors de l’Union européenne sont encadrés par les clauses contractuelles types de la Commission européenne ou le cadre de protection des données UE-États-Unis.</p>
           </Section>
 
           <div className="island relative isolate overflow-hidden rounded-[2.5rem] p-8 text-white sm:p-10">

@@ -76,7 +76,7 @@ export async function sourcesStatus(): Promise<{ checkedAt: string; sources: Sou
     checkedAt: new Date().toISOString(),
     sources: [
       { id: 'sirene', name: 'API Recherche d’entreprises (SIRENE, RNE)', producer: 'DINUM / Insee / INPI', ...sirene },
-      { id: 'bodacc', name: 'BODACC — annonces commerciales', producer: 'DILA', ...bodacc },
+      { id: 'bodacc', name: 'BODACC, annonces commerciales', producer: 'DILA', ...bodacc },
       { id: 'geo', name: 'API Découpage administratif', producer: 'Etalab', ...geo },
     ],
   };

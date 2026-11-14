@@ -57,7 +57,7 @@ export default function Page() {
 
         <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
           <SectionHead kicker="audit" title="Ce que l’audit" accent="vérifie." center />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {CHECKS.map(([Icon, t, d]) => (
               <div key={t} className="hairline rounded-[24px] border border-white bg-white p-5 shadow-float ring-1 ring-night-900/[0.05]">
                 <span className="grid size-10 place-items-center rounded-full bg-violet-50 text-brand-violet ring-1 ring-violet-100">
@@ -68,7 +68,7 @@ export default function Page() {
               </div>
             ))}
           </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-3">
             {[
               [Gauge, 'Une note sur 100', 'Calculée à partir des constats, du plus important au plus mineur.'],
               [FileText, 'Des recommandations', 'Pour chaque point : pourquoi c’est important et comment le corriger.'],
@@ -89,7 +89,7 @@ export default function Page() {
         </section>
 
         <section className="px-4 pb-20 sm:px-6">
-          <div className="island relative isolate mx-auto grid max-w-6xl items-center gap-8 overflow-hidden rounded-[2.5rem] p-8 text-white sm:p-12 lg:grid-cols-[1.2fr_1fr]">
+          <div className="island relative isolate mx-auto grid grid-cols-[minmax(0,1fr)] max-w-6xl items-center gap-8 overflow-hidden rounded-[2.5rem] p-8 text-white sm:p-12 lg:grid-cols-[1.2fr_1fr]">
             <div className="bg-grid-dark pointer-events-none absolute inset-0 -z-10" />
             <div>
               <MonoTag dark>Agences et indépendants</MonoTag>

@@ -7,10 +7,9 @@ import { SiteHeader, SiteFooter, PublicPage } from '@/components/site';
 import { DemoSearch } from '@/components/demo-search';
 import { HeroVisual } from '@/components/landing/hero-visual';
 import { ScoreLab } from '@/components/landing/score-lab';
-import { ScoreRing } from '@/components/landing/score-ring';
 import { CountUp } from '@/components/landing/count-up';
-import { BrandStory } from '@/components/landing/brand-story';
-import { Kicker, MonoTag, DotPill, SectionHead, Annotated, ctaClass } from '@/components/landing/kit';
+import { Kicker, MonoTag, DotPill, SectionHead, ctaClass } from '@/components/landing/kit';
+import { STATUSES } from '@/lib/status';
 import { RadarSection } from '@/components/landing/radar-section';
 import { AuditForm } from './outils/audit-site/form';
 import { PLANS } from '@/lib/plans';
@@ -118,14 +117,25 @@ export default async function Home() {
           <div className="halo-duo pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[44rem]" aria-hidden="true" />
           <div className="stagger mx-auto max-w-4xl text-center">
             <div className="flex justify-center">
-              <DotPill>Du registre officiel au rendez-vous</DotPill>
+              {pulse ? (
+                <a href="#pouls" className="group inline-flex max-w-full items-center gap-2.5 rounded-2xl border border-white bg-white/85 px-3.5 py-2 text-left text-[12.5px] leading-snug sm:rounded-full sm:py-1.5 sm:text-[13px] text-slate-600 shadow-float ring-1 ring-night-900/[0.05] transition-colors hover:text-night-900">
+                  <span className="animate-pulse-dot size-2 shrink-0 rounded-full bg-emerald-500" aria-hidden="true" />
+                  <span>
+                    <span className="font-mono text-[11px] font-medium tracking-[0.1em] text-night-900 uppercase">BODACC, 7 derniers jours :</span>{' '}
+                    <b className="font-semibold text-night-900 tabular-nums">{pulse.creations.toLocaleString('fr-FR')}</b> créations et immatriculations publiées
+                  </span>
+                  <ArrowDown className="size-3.5 shrink-0 text-brand-violet transition-transform group-hover:translate-y-0.5" aria-hidden="true" />
+                </a>
+              ) : (
+                <DotPill>Données SIRENE, RNE et BODACC</DotPill>
+              )}
             </div>
             <h1 className="font-display mt-8 text-[2.7rem] leading-[1.04] font-semibold tracking-[-0.05em] text-balance text-night-900 sm:text-[4.1rem] lg:text-[5rem]">
               Les bons prospects.
               <br />
-              Au bon <Annotated tag="SIGNAL · BODACC">moment</Annotated>.
+              Au bon <span className="signal-word text-brand">moment</span>.
             </h1>
-            <p className="mx-auto mt-12 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
+            <p className="mx-auto mt-8 max-w-2xl text-[17px] leading-relaxed text-pretty text-slate-600 sm:text-[19px]">Identifiez les entreprises à fort potentiel commercial grâce à l’analyse intelligente de leurs activités et de leur présence digitale.</p>
             <div className="mx-auto mt-9 max-w-2xl">
               <DemoSearch />
             </div>
@@ -164,10 +174,10 @@ export default async function Home() {
         </section>
 
         {/* ------------------------------------------------- Pouls BODACC */}
-        <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+        <section id="pouls" className="mx-auto max-w-6xl scroll-mt-28 px-4 pt-16 sm:px-6">
           <div className="reveal ring-duo overflow-hidden rounded-[28px] shadow-float">
             {pulse ? (
-              <div className="grid lg:grid-cols-[1fr_2.6fr]">
+              <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[1fr_2.6fr]">
                 <div className="border-b border-line bg-gradient-to-br from-violet-50/80 to-white p-6 lg:border-r lg:border-b-0">
                   <p className="flex items-center gap-2 font-mono text-[11.5px] font-medium tracking-[0.14em] text-night-900 uppercase">
                     <span className="animate-pulse-dot size-2 rounded-full bg-emerald-500" />
@@ -205,7 +215,7 @@ export default async function Home() {
             ) : (
               <div className="flex flex-wrap items-center justify-between gap-4 p-6">
                 <p className="flex items-center gap-2 text-sm font-semibold">
-                  <FileText className="size-4 text-brand-violet" />
+                  <FileText className="size-4 shrink-0 text-brand-violet" />
                   Créations, cessions, changements de dirigeant : Pro Spectre suit les annonces légales du BODACC pour vous signaler le bon moment.
                 </p>
                 <a href="https://www.bodacc.fr/" className="text-sm font-semibold text-brand-violet hover:underline" rel="noopener">
@@ -216,9 +226,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ---------------------------------------------- Pourquoi ce nom */}
-        <BrandStory />
-
         {/* ------------------------------------------------------- Radar */}
         <RadarSection />
 
@@ -227,7 +234,7 @@ export default async function Home() {
           <SectionHead kicker="méthode" title="De la liste brute" accent="au rendez-vous." center>
             Pro Spectre fait le travail de recherche et de qualification. <b>Vous gardez la main sur le contact.</b>
           </SectionHead>
-          <ol className="mt-14 grid gap-5 lg:grid-cols-3">
+          <ol className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-3">
             {[
               {
                 n: '1.', title: 'Ciblez.', text: 'Zone, secteur, taille, ancienneté, signaux : Pro Spectre interroge le registre officiel et écarte les entreprises fermées ou opposées à la prospection.',
@@ -281,12 +288,12 @@ export default async function Home() {
 
         {/* ------------------------------------------------ Fonctionnalités */}
         <section id="fonctionnalites" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="grid items-end gap-6 lg:grid-cols-[1.2fr_1fr]">
+          <div className="grid grid-cols-[minmax(0,1fr)] items-end gap-6 lg:grid-cols-[1.2fr_1fr]">
             <SectionHead kicker="fonctionnalités" title="Tout le cycle de prospection," accent="au même endroit." />
             <p className="text-[17px] leading-relaxed text-slate-600 lg:pb-2">De la recherche d’entreprises au rendez-vous obtenu, sans jongler entre un annuaire, un tableur et une messagerie.</p>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-3">
             <article className={`reveal ${card} card-tint grid gap-6 p-7 sm:grid-cols-[1fr_1fr] lg:col-span-2`}>
               <div>
                 <MonoTag>Analyse automatique</MonoTag>
@@ -316,14 +323,11 @@ export default async function Home() {
             <article className="reveal island relative flex flex-col overflow-hidden rounded-[28px] p-7 text-white shadow-pop">
               <MonoTag dark>Score explicable</MonoTag>
               <h3 className="font-display mt-4 text-[1.6rem] leading-tight font-semibold tracking-[-0.04em]">Une note, et ses raisons.</h3>
-              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-300">De 0 à 100, détaillée critère par critère, avec un niveau de confiance.</p>
-              <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white p-3 text-night-900">
-                <ScoreRing value={example.total} category={example.category.id} size={64} stroke={6} />
-                <div className="text-xs">
-                  <p className="font-semibold">{example.category.label}</p>
-                  <p className="text-slate-500">Confiance {example.confidence}</p>
-                </div>
-              </div>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-slate-300">De 0 à 100, détaillée critère par critère, avec un niveau de confiance. Les pondérations se règlent selon votre activité.</p>
+              <a href="#score" className={`${ctaClass('light')} mt-6 self-start`}>
+                Essayer le calcul
+                <ArrowDown className="size-4 transition-transform group-hover:translate-y-0.5" />
+              </a>
             </article>
 
             <article className={`reveal ${card} flex flex-col p-7`}>
@@ -343,27 +347,16 @@ export default async function Home() {
                 <h3 className="font-display mt-4 text-[1.4rem] leading-tight font-semibold tracking-[-0.04em]">Chaque entreprise, une seule fois.</h3>
                 <p className="mt-3 text-[15px] leading-relaxed text-slate-600">Sept statuts, notes, historique, date de relance, vue tableau et Kanban.</p>
               </div>
-              <div className="grid grid-cols-3 gap-2 self-center text-[11px]">
-                {[
-                  ['À contacter', 'bg-slate-400', 3],
-                  ['Contacté', 'bg-sky-500', 2],
-                  ['Rendez-vous', 'bg-violet-600', 1],
-                ].map(([label, dot, count]) => (
-                  <div key={label as string} className="rounded-xl bg-paper p-2">
-                    <p className="mb-2 flex items-center gap-1.5 font-semibold text-slate-600">
-                      <span className={`size-1.5 rounded-full ${dot}`} />
-                      {label as string}
-                    </p>
-                    <div className="space-y-1.5">
-                      {Array.from({ length: count as number }).map((_, i) => (
-                        <div key={i} className="rounded-lg border border-line bg-white p-2 shadow-sm">
-                          <span className="block h-1.5 w-3/4 rounded-full bg-slate-200" />
-                          <span className="mt-1.5 block h-1.5 w-1/2 rounded-full bg-slate-100" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+              <div className="self-center">
+                <p className="text-xs font-medium text-slate-500">Les sept statuts du suivi</p>
+                <ol className="mt-3 flex flex-wrap gap-1.5 text-[12.5px] font-medium">
+                  {STATUSES.map((st, i) => (
+                    <li key={st.id} className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${st.id === 'rdv' || st.id === 'client' ? 'border-violet-200 bg-violet-50 text-violet-700' : st.id === 'non_interesse' ? 'border-line bg-white text-slate-500' : 'border-line bg-white text-night-800'}`}>
+                      <span className="font-mono text-[10.5px] text-slate-400">{i + 1}</span>
+                      {st.label}
+                    </li>
+                  ))}
+                </ol>
               </div>
             </article>
 
@@ -417,7 +410,7 @@ export default async function Home() {
                 </Link>
               </div>
 
-              <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {TRUST.map(({ icon: Icon, title, text, check }) => (
                   <article key={title} className="reveal flex flex-col rounded-[24px] border border-white/10 bg-white/[0.045] p-6 backdrop-blur transition-colors hover:border-violet-300/30 hover:bg-white/[0.07]">
                     <span className="grid size-11 place-items-center rounded-full bg-gradient-to-br from-violet-500/40 to-blue-500/30 text-violet-100 ring-1 ring-white/15">
@@ -433,7 +426,7 @@ export default async function Home() {
                 ))}
               </div>
 
-              <div className="reveal mt-5 grid gap-6 rounded-[24px] border border-dashed border-white/20 p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
+              <div className="reveal mt-5 grid grid-cols-[minmax(0,1fr)] gap-6 rounded-[24px] border border-dashed border-white/20 p-6 md:grid-cols-[auto_1fr] md:items-center md:p-8">
                 <div>
                   <MonoTag dark>Interdits</MonoTag>
                   <p className="font-display mt-3 text-xl font-semibold tracking-[-0.03em]">
@@ -441,7 +434,7 @@ export default async function Home() {
                     <br className="hidden md:block" /> ne fait pas
                   </p>
                 </div>
-                <ul className="grid gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">
+                <ul className="grid grid-cols-[minmax(0,1fr)] gap-x-8 gap-y-2.5 text-sm text-slate-300 sm:grid-cols-2">
                   {[
                     'Aucune collecte du contenu des réseaux sociaux',
                     'Aucun contournement de protection ; robots.txt respecté',
@@ -463,7 +456,7 @@ export default async function Home() {
 
         {/* ------------------------------------------------ Audit gratuit */}
         <section className="mx-auto max-w-6xl px-4 pt-24 sm:px-6">
-          <div className="reveal grid items-center gap-10 rounded-[28px] border border-dashed border-violet-300/80 bg-white/55 p-6 backdrop-blur sm:p-10 lg:grid-cols-[1fr_1.15fr]">
+          <div className="reveal grid grid-cols-[minmax(0,1fr)] items-center gap-10 rounded-[28px] border border-dashed border-violet-300/80 bg-white/55 p-6 backdrop-blur sm:p-10 lg:grid-cols-[1fr_1.15fr]">
             <div>
               <MonoTag>Outil gratuit, sans inscription</MonoTag>
               <h2 className="font-display mt-4 text-[2rem] leading-[1.05] font-semibold tracking-[-0.045em] sm:text-[2.5rem]">
@@ -480,7 +473,7 @@ export default async function Home() {
           <SectionHead kicker="tarifs" title="Des tarifs simples," accent="sans engagement." center>
             Commencez gratuitement. <b>Passez à une offre payante quand la prospection devient régulière.</b>
           </SectionHead>
-          <div className="mt-14 grid items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid grid-cols-[minmax(0,1fr)] items-stretch gap-5 md:grid-cols-2 lg:grid-cols-4">
             {Object.values(PLANS).map((p) => {
               const featured = p.id === 'pro';
               return (
@@ -529,7 +522,7 @@ export default async function Home() {
         </section>
 
         {/* --------------------------------------------------------- FAQ */}
-        <section id="faq" className="mx-auto grid max-w-6xl gap-12 px-4 pb-24 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <section id="faq" className="mx-auto grid grid-cols-[minmax(0,1fr)] max-w-6xl gap-12 px-4 pb-24 sm:px-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <SectionHead kicker="faq" title="Vos questions," accent="nos réponses.">
               La version courte de tout ce qui précède.

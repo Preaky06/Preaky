@@ -96,8 +96,8 @@ export function AppShell({ user, children }: { user: ShellUser; children: React.
         <div className="flex min-w-0 items-center gap-2.5">
           <span className="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-electric-500 to-violet-500 text-xs font-bold text-white">{initials}</span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-white">{user.name}</p>
-            <p className="truncate text-xs text-slate-400">{user.orgName}</p>
+            <p className="break-words text-sm font-semibold text-white">{user.name}</p>
+            <p className="break-words text-xs text-slate-400">{user.orgName}</p>
           </div>
         </div>
         <button type="button" onClick={logout} className="rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Se déconnecter" title="Se déconnecter" data-testid="logout">

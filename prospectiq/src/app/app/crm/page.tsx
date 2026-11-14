@@ -22,7 +22,7 @@ interface P {
   company: { name: string; tradeNames: string[]; city: string | null; nafLabel: string | null };
 }
 
-const fmt = (d: string | null) => (d ? new Date(d.length === 10 ? `${d}T12:00:00` : d).toLocaleDateString('fr-FR') : '—');
+const fmt = (d: string | null) => (d ? new Date(d.length === 10 ? `${d}T12:00:00` : d).toLocaleDateString('fr-FR') : null);
 
 export default function CrmPage() {
   const toast = useToast();
@@ -81,7 +81,7 @@ export default function CrmPage() {
         title="CRM"
         subtitle="Votre portefeuille de prospects, sans doublon. Chaque entreprise n’y figure qu’une fois."
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <div className="flex rounded-lg border border-line bg-white p-0.5">
               <button type="button" onClick={() => setView('table')} className={cx('flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold', view === 'table' ? 'bg-night-900 text-white' : 'text-slate-600')} aria-pressed={view === 'table'}>
                 <Table2 className="size-4" />
@@ -131,7 +131,50 @@ export default function CrmPage() {
       )}
 
       {items && items.length > 0 && view === 'table' && (
-        <Card className="overflow-x-auto">
+        <>
+        {/* Mobile : une carte par prospect, toutes les informations visibles sans défilement horizontal */}
+        <ul className="space-y-3 md:hidden" aria-label="Prospects du CRM">
+          {items.map((p) => (
+            <li key={p.id} className="rounded-2xl border border-line bg-white p-4 shadow-card">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <Link href={`/app/entreprise/${p.siren}`} className="font-semibold break-words text-night-900 hover:text-electric-700">
+                    {displayName(p.company)}
+                  </Link>
+                  <p className="mt-0.5 text-xs break-words text-slate-500">{[p.company.nafLabel, p.company.city].filter(Boolean).join(' · ')}</p>
+                </div>
+                <button type="button" onClick={() => toggleFav(p)} aria-label={p.favorite ? 'Retirer des favoris' : 'Ajouter aux favoris'} className="grid size-9 shrink-0 place-items-center rounded-lg hover:bg-slate-100">
+                  <Star className={cx('size-4', p.favorite ? 'fill-amber-400 text-amber-500' : 'text-slate-300')} />
+                </button>
+              </div>
+              <dl className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                <div>
+                  <dt className="text-slate-400">Score</dt>
+                  <dd className="mt-0.5 font-semibold text-night-900 tabular-nums">{p.score ?? 'Non analysé'}</dd>
+                </div>
+                <div>
+                  <dt className="text-slate-400">Dernier contact</dt>
+                  <dd className="mt-0.5 text-night-800">{fmt(p.lastContactAt) ?? 'Aucun'}</dd>
+                </div>
+                <div>
+                  <dt className="text-slate-400">Relance</dt>
+                  <dd className={cx('mt-0.5', p.nextFollowupAt && new Date(p.nextFollowupAt) <= new Date() ? 'font-semibold text-rose-700' : 'text-night-800')}>{fmt(p.nextFollowupAt) ?? 'Aucune'}</dd>
+                </div>
+              </dl>
+              <div className="mt-3 flex items-center gap-3">
+                <Select value={p.status} onChange={(e) => move(p, e.target.value)} className="h-9 flex-1 text-[13px]" aria-label={`Statut de ${displayName(p.company)}`}>
+                  {STATUSES.map((st) => (
+                    <option key={st.id} value={st.id}>
+                      {st.label}
+                    </option>
+                  ))}
+                </Select>
+                <span className="shrink-0 text-xs text-slate-500">{p.notes} note{p.notes > 1 ? 's' : ''}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <Card className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[760px] text-left text-sm" data-testid="crm-table">
             <thead className="border-b border-line bg-slate-50/70 text-xs font-semibold uppercase tracking-wide text-slate-500">
               <tr>
@@ -158,7 +201,7 @@ export default function CrmPage() {
                     </Link>
                     <p className="text-xs text-slate-500">{[p.company.nafLabel, p.company.city].filter(Boolean).join(' · ')}</p>
                   </td>
-                  <td className="px-4 py-3 tabular-nums">{p.score ?? <span className="text-slate-400">—</span>}</td>
+                  <td className="px-4 py-3 tabular-nums">{p.score ?? <span className="text-xs text-slate-400">Non analysé</span>}</td>
                   <td className="px-4 py-3">
                     <Select value={p.status} onChange={(e) => move(p, e.target.value)} className="h-8 w-44 text-[13px]" aria-label="Statut" data-testid="row-status">
                       {STATUSES.map((s) => (
@@ -168,24 +211,25 @@ export default function CrmPage() {
                       ))}
                     </Select>
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{fmt(p.lastContactAt)}</td>
-                  <td className={cx('px-4 py-3', p.nextFollowupAt && new Date(p.nextFollowupAt) <= new Date() ? 'font-semibold text-rose-700' : 'text-slate-600')}>{fmt(p.nextFollowupAt)}</td>
+                  <td className="px-4 py-3 text-slate-600">{fmt(p.lastContactAt) ?? <span className="text-xs text-slate-400">Aucun</span>}</td>
+                  <td className={cx('px-4 py-3', p.nextFollowupAt && new Date(p.nextFollowupAt) <= new Date() ? 'font-semibold text-rose-700' : 'text-slate-600')}>{fmt(p.nextFollowupAt) ?? <span className="text-xs text-slate-400">Aucune</span>}</td>
                   <td className="px-4 py-3 text-slate-600">{p.notes}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </Card>
+        </>
       )}
 
       {items && items.length > 0 && view === 'kanban' && (
-        <div className="flex gap-3 overflow-x-auto pb-4" data-testid="kanban">
+        <div className="flex flex-col gap-3 pb-4 md:flex-row md:overflow-x-auto" data-testid="kanban">
           {STATUSES.map((s) => {
             const col = items.filter((p) => p.status === s.id);
             return (
               <div
                 key={s.id}
-                className={cx('flex w-64 shrink-0 flex-col rounded-2xl border border-line bg-slate-100/70 p-2', dragging && 'ring-electric-200')}
+                className={cx('flex w-full flex-col rounded-2xl border border-line bg-slate-100/70 p-2 md:w-64 md:shrink-0', dragging && 'ring-electric-200')}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -215,7 +259,7 @@ export default function CrmPage() {
                       <Link href={`/app/entreprise/${p.siren}`} className="text-sm font-semibold text-night-900 hover:text-electric-700">
                         {displayName(p.company)}
                       </Link>
-                      <p className="mt-0.5 truncate text-xs text-slate-500">{p.company.city || '—'}</p>
+                      <p className="mt-0.5 break-words text-xs text-slate-500">{p.company.city || 'Ville non renseignée'}</p>
                       <div className="mt-2 flex items-center justify-between">
                         <span className="text-xs tabular-nums text-slate-600">{p.score !== null ? `${p.score}/100` : 'Non analysé'}</span>
                         <Select value={p.status} onChange={(e) => move(p, e.target.value)} className="h-7 w-auto px-1.5 text-[11px]" aria-label="Déplacer vers">

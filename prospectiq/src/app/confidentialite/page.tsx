@@ -39,7 +39,7 @@ export default function Page() {
         <li>Rédaction assistée par IA, si activée : fournisseur d’IA configuré par l’éditeur. Seules des informations sur l’entreprise (activité, constats sur son site, annonces officielles) lui sont transmises, jamais le nom des dirigeants.</li>
         <li>Note et avis Google, si activés : Google LLC (API Places), interrogée avec le nom et l’adresse de l’établissement.</li>
       </ul>
-      <p>Certains prestataires peuvent être situés hors de l’Union européenne ; les transferts sont alors encadrés par les clauses contractuelles types de la Commission européenne ou le cadre de protection des données UE–États-Unis.</p>
+      <p>Certains prestataires peuvent être situés hors de l’Union européenne ; les transferts sont alors encadrés par les clauses contractuelles types de la Commission européenne ou le cadre de protection des données UE-États-Unis.</p>
 
       <h2>4. Vos droits</h2>
       <p>

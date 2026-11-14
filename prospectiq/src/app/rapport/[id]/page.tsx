@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           <ReportActions />
         </div>
 
-        <section className="ring-duo mt-4 grid items-center gap-6 rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)] sm:grid-cols-[1fr_auto] sm:p-8" data-testid="report">
+        <section className="ring-duo mt-4 grid grid-cols-[minmax(0,1fr)] items-center gap-6 rounded-[28px] p-6 shadow-[0_40px_90px_-40px_rgb(11_18_48_/_0.35)] sm:grid-cols-[1fr_auto] sm:p-8" data-testid="report">
           <div className="min-w-0">
             <h1 className="font-display text-[2.1rem] leading-[1.05] font-semibold tracking-[-0.045em] break-words">{r.host}</h1>
             <p className="mt-2 text-sm text-slate-500">
@@ -81,13 +81,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
         <section className="mt-8">
           <h2 className="font-display text-[1.35rem] font-semibold tracking-[-0.02em]">Points de contrôle</h2>
-          <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+          <ul className="mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 sm:grid-cols-2">
             {checks.map((c) => (
               <li key={c.label} className="flex items-start gap-3 rounded-2xl border border-line bg-white p-4">
                 {c.ok === true ? <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" /> : c.ok === false ? <XCircle className="mt-0.5 size-5 shrink-0 text-rose-600" /> : <Info className="mt-0.5 size-5 shrink-0 text-slate-400" />}
                 <div className="min-w-0">
                   <p className="text-sm font-semibold">{c.label}</p>
-                  <p className="mt-0.5 truncate text-xs text-slate-500" title={c.detail}>
+                  <p className="mt-0.5 break-words text-xs text-slate-500" title={c.detail}>
                     {c.detail}
                   </p>
                 </div>

@@ -81,7 +81,7 @@ export function buildInsights(company: Company, website: WebsiteAudit | null, si
   const rationale =
     score.flags.includes('risk')
       ? 'Prospection déconseillée pour le moment : une procédure ou une cessation a été publiée récemment.'
-      : `${score.category.label} (${score.total}/100, confiance ${score.confidence}). Point le plus contributif : ${top.label.toLowerCase()} — ${top.reasons[0] || ''}`.trim();
+      : `${score.category.label} (${score.total}/100, confiance ${score.confidence}). Point le plus contributif : ${top.label.toLowerCase()}. ${top.reasons[0] || ''}`.trim();
 
   const caveats: string[] = [];
   if (website?.status === 'unreachable' || website?.status === 'blocked') caveats.push(`Site web non analysé : ${website.verification}`);

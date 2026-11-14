@@ -109,6 +109,14 @@
     transform: translateX(250%);
   }
 }
+@keyframes radar-scan {
+  from {
+    background-position: -90% 0, 0 0;
+  }
+  to {
+    background-position: 190% 0, 0 0;
+  }
+}
 @keyframes reveal {
   from {
     opacity: 0;
@@ -146,56 +154,24 @@
     background-image: radial-gradient(rgb(11 18 48 / 0.075) 1px, transparent 1.2px);
     background-size: 22px 22px;
   }
-  /* Mot annoté d'un titre : cadre de sélection en pointillés, poignées aux coins, étiquette dessous.
-     Tout est dessiné en pseudo-éléments : le texte du titre reste exactement le texte lu. */
-  .annotated {
+  /* Mot d'un titre souligné par un balayage de radar (le « bon moment » repéré dans les registres).
+     Dessiné en pseudo-élément : le texte du titre reste exactement le texte lu. */
+  .signal-word {
     position: relative;
-    isolation: isolate;
     display: inline-block;
-    margin: 0 0.04em;
-    padding: 0 0.1em;
   }
-  .annotated::before {
+  .signal-word::after {
     content: '';
     position: absolute;
-    z-index: -1;
-    inset: calc(0.06em - 5px) -5px calc(-0.02em - 5px) -5px;
+    left: 0.03em;
+    right: 0.03em;
+    bottom: -0.04em;
+    height: max(4px, 0.075em);
+    border-radius: 999px;
     background:
-      linear-gradient(#fff, #fff) top 1.5px left 1.5px / 6px 6px no-repeat,
-      linear-gradient(#fff, #fff) top 1.5px right 1.5px / 6px 6px no-repeat,
-      linear-gradient(#fff, #fff) bottom 1.5px left 1.5px / 6px 6px no-repeat,
-      linear-gradient(#fff, #fff) bottom 1.5px right 1.5px / 6px 6px no-repeat,
-      linear-gradient(#7c3aed, #7c3aed) top left / 9px 9px no-repeat,
-      linear-gradient(#7c3aed, #7c3aed) top right / 9px 9px no-repeat,
-      linear-gradient(#7c3aed, #7c3aed) bottom left / 9px 9px no-repeat,
-      linear-gradient(#7c3aed, #7c3aed) bottom right / 9px 9px no-repeat,
-      repeating-linear-gradient(90deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px left 4px / calc(100% - 8px) 1.5px no-repeat,
-      repeating-linear-gradient(90deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) bottom 4px left 4px / calc(100% - 8px) 1.5px no-repeat,
-      repeating-linear-gradient(180deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px left 4px / 1.5px calc(100% - 8px) no-repeat,
-      repeating-linear-gradient(180deg, rgb(124 58 237 / 0.85) 0 4px, transparent 4px 7px) top 4px right 4px / 1.5px calc(100% - 8px) no-repeat,
-      linear-gradient(rgb(255 255 255 / 0.78), rgb(255 255 255 / 0.78)) center / calc(100% - 9px) calc(100% - 9px) no-repeat;
-    filter: drop-shadow(0 12px 18px rgb(124 58 237 / 0.22));
-  }
-  .annotated::after {
-    content: attr(data-tag);
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-top: 14px;
-    transform: translateX(-50%);
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: #7c3aed;
-    box-shadow: var(--shadow-brand);
-    color: #fff;
-    font: 500 11px/1 var(--font-mono);
-    letter-spacing: 0.06em;
-    white-space: nowrap;
-  }
-  @media (min-width: 640px) {
-    .annotated::after {
-      font-size: 12px;
-    }
+      linear-gradient(90deg, transparent, #c4b5fd 30%, #7c3aed 50%, #c4b5fd 70%, transparent) -90% 0 / 45% 100% no-repeat,
+      linear-gradient(90deg, rgb(124 58 237 / 0.22), rgb(37 99 235 / 0.22));
+    animation: radar-scan 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
   }
   /* Halos colorés flous (violet à gauche, bleu à droite) derrière un titre. */
   .halo-duo {

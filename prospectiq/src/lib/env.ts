@@ -52,7 +52,7 @@ export const env = {
     vat: str('LEGAL_VAT'),
     director: str('LEGAL_DIRECTOR'),
     email: str('LEGAL_EMAIL'),
-    host: str('LEGAL_HOST') || 'Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — vercel.com',
+    host: str('LEGAL_HOST') || 'Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis (vercel.com)',
     dbHost: str('LEGAL_DB_HOST'),
   },
   isProd: process.env.NODE_ENV === 'production',
