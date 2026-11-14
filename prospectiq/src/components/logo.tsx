@@ -40,7 +40,7 @@ export function Wordmark({ dark = false, className }: { dark?: boolean; classNam
 export function Logo({ dark = false, href = '/', size = 'md' }: { dark?: boolean; href?: string; size?: 'md' | 'lg' }) {
   return (
     <Link href={href} className="group inline-flex items-center pb-[0.12em] transition-transform duration-300 hover:-translate-y-px" aria-label="Pro Spectre, accueil">
-      <Wordmark dark={dark} className={size === 'lg' ? 'text-[26px]' : 'text-[21px]'} />
+      <Wordmark dark={dark} className={size === 'lg' ? 'text-[26px]' : 'text-[18px] min-[360px]:text-[21px]'} />
     </Link>
   );
 }

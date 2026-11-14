@@ -10,17 +10,17 @@ export function SiteHeader() {
       <a href="#contenu" className="sr-only rounded-lg bg-brand-violet px-3 py-2 text-sm font-semibold text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50">
         Aller au contenu
       </a>
-      <div className="relative mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 rounded-full border border-white bg-white/80 pr-2 pl-5 text-night-900 shadow-float ring-1 ring-night-900/[0.06] backdrop-blur-xl">
+      <div className="relative mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 rounded-full border border-white bg-white/80 pr-1.5 pl-4 text-night-900 min-[360px]:pr-2 min-[360px]:pl-5 shadow-float ring-1 ring-night-900/[0.06] backdrop-blur-xl">
         <Logo />
-        <div className="flex items-center gap-1.5 md:contents">
+        <div className="flex items-center gap-1.5 lg:contents">
           <SiteNav />
-          <div className="flex items-center gap-1.5 max-md:order-first">
-            <Link href="/connexion" className="inline-flex h-10 items-center rounded-full border border-night-900/10 bg-white px-4 text-sm font-medium transition-colors hover:border-night-900/25 max-md:hidden">
+          <div className="flex items-center gap-1.5 max-lg:order-first">
+            <Link href="/connexion" className="inline-flex h-10 items-center rounded-full border border-night-900/10 bg-white px-4 text-sm font-medium whitespace-nowrap transition-colors hover:border-night-900/25 max-sm:hidden">
               Connexion
             </Link>
-            <Link href="/inscription" className="group inline-flex h-10 items-center gap-1.5 rounded-full bg-brand-violet px-4 text-sm font-semibold text-white shadow-brand transition-colors hover:bg-violet-700">
+            <Link href="/inscription" className="group inline-flex h-10 items-center gap-1.5 rounded-full bg-brand-violet px-3.5 text-sm min-[360px]:px-4 font-semibold whitespace-nowrap text-white shadow-brand transition-colors hover:bg-violet-700">
               Essai gratuit
-              <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px" />
+              <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-px group-hover:-translate-y-px max-[359px]:hidden" />
             </Link>
           </div>
         </div>

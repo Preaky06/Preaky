@@ -51,23 +51,23 @@ export function SiteNav() {
 
   return (
     <>
-      <nav className="hidden items-center gap-0.5 text-[14.5px] text-night-900/75 md:flex" aria-label="Navigation principale">
+      <nav className="hidden items-center gap-0.5 text-[14.5px] text-night-900/75 lg:flex" aria-label="Navigation principale">
         {NAV.map((n) => (
           <Link
             key={n.href}
             href={n.href}
             aria-current={isActive(n) ? 'true' : undefined}
-            className={cx('rounded-full px-3 py-1.5 transition-colors', isActive(n) ? 'bg-night-900/[0.06] text-night-900' : 'hover:text-night-900')}
+            className={cx('inline-flex h-9 items-center rounded-full px-3 whitespace-nowrap transition-colors', isActive(n) ? 'bg-night-900/[0.06] text-night-900' : 'hover:text-night-900')}
           >
             {n.label}
           </Link>
         ))}
       </nav>
-      <button type="button" onClick={() => setOpen((o) => !o)} className="grid size-10 place-items-center rounded-full hover:bg-night-900/5 md:hidden" aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={open} aria-controls="menu-mobile">
+      <button type="button" onClick={() => setOpen((o) => !o)} className="grid size-9 place-items-center rounded-full hover:bg-night-900/5 min-[360px]:size-10 lg:hidden" aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'} aria-expanded={open} aria-controls="menu-mobile">
         {open ? <X className="size-5" /> : <Menu className="size-5" />}
       </button>
       {open && (
-        <div id="menu-mobile" className="absolute inset-x-0 top-[calc(100%+8px)] animate-rise rounded-3xl border border-line bg-white p-3 text-night-900 shadow-pop md:hidden">
+        <div id="menu-mobile" className="absolute inset-x-0 top-[calc(100%+8px)] animate-rise rounded-3xl border border-line bg-white p-3 text-night-900 shadow-pop lg:hidden">
           <nav className="grid gap-0.5 text-[15px] font-medium" aria-label="Navigation mobile">
             {NAV.map((n) => (
               <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="rounded-2xl px-3 py-2.5 hover:bg-slate-100">
