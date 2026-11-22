@@ -49,6 +49,8 @@ export interface Price {
   notes: string | null;
 }
 
+export type ImageKind = "illustration" | "cutout" | "photo";
+
 export interface Item {
   id: string;
   slug: string;
@@ -68,8 +70,12 @@ export interface Item {
   is_hero: boolean;
   hero_order: number | null;
   image_url: string | null;
+  /** illustration : visuel 3D générique · cutout : photo détourée · photo : photo encadrée (lieu, œuvre, drapeau) */
+  image_kind: ImageKind | null;
   image_license: string | null;
   image_author: string | null;
+  /** Page de la source (ex. fichier Wikimedia Commons) */
+  image_source_url: string | null;
   popularity: number;
   status: ItemStatus;
   created_at: string;

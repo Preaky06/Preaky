@@ -9,7 +9,7 @@
  * à la date exacte du relevé.
  */
 import { createHash } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { codepoints, DEMO_IMAGES, IMAGE_AUTHOR, IMAGE_LICENSE } from "./images.mjs";
@@ -20,6 +20,14 @@ import { DEMO_CATALOG } from "./source-catalog.mjs";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT = resolve(ROOT, "data/demo/ascension.demo.json");
 const DEMO_DATE = "2026-11-22";
+
+/**
+ * Photos réelles (Wikimedia Commons, licences libres) : scripts/demo/photos.json, produit par
+ * scripts/demo/photos/ (recherche Wikidata, détourage). Une entrée par objet illustré ;
+ * les autres gardent l'illustration 3D générique.
+ */
+const PHOTOS_FILE = resolve(ROOT, "scripts/demo/photos.json");
+const PHOTOS = existsSync(PHOTOS_FILE) ? JSON.parse(readFileSync(PHOTOS_FILE, "utf8")) : {};
 
 /** 1 unité de devise = x EUR. Approximations de démo, à remplacer par la BCE. */
 const DEMO_FX = {
@@ -99,9 +107,21 @@ const items = rows.map(({ r: row, hero, emoji: rowEmoji }) => {
     primary_price_id: priceId,
     is_hero: hero,
     hero_order: null,
-    image_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
-    image_license: emoji ? IMAGE_LICENSE : null,
-    image_author: emoji ? IMAGE_AUTHOR : null,
+    ...(PHOTOS[slug] && existsSync(resolve(ROOT, `public/objets/photos/${slug}.webp`))
+      ? {
+          image_url: `/objets/photos/${slug}.webp`,
+          image_kind: PHOTOS[slug].kind,
+          image_license: PHOTOS[slug].license,
+          image_author: PHOTOS[slug].author,
+          image_source_url: PHOTOS[slug].source_url,
+        }
+      : {
+          image_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
+          image_kind: emoji ? "illustration" : null,
+          image_license: emoji ? IMAGE_LICENSE : null,
+          image_author: emoji ? IMAGE_AUTHOR : null,
+          image_source_url: null,
+        }),
     popularity: 0,
     status: "demo",
     created_at: `${DEMO_DATE}T00:00:00Z`,
@@ -147,3 +167,5 @@ writeFileSync(
 const perTier = [1, 2, 3, 4, 5, 6, 7].map((t) => items.filter((i) => i.tier === t).length);
 console.log(`✓ ${n} objets de démo (${heroOrder} vedettes de l'Ascension) → ${OUT.replace(ROOT + "/", "")}`);
 console.log(`  par palier : ${perTier.map((c, i) => `P${i + 1}=${c}`).join(" · ")}`);
+const kinds = items.reduce((m, i) => ((m[i.image_kind] = (m[i.image_kind] ?? 0) + 1), m), {});
+console.log(`  images : ${Object.entries(kinds).map(([k, c]) => `${k}=${c}`).join(" · ")}`);

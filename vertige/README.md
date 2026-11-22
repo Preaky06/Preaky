@@ -50,7 +50,12 @@ Carte d'objet (`components/ui/PriceCard`) : image, nom, prix. Type de prix, date
 - **Police du logo provisoire : Six Caps** (Google Fonts, OFL). La police de la référence n'a pas été identifiée ; elle se remplace à un seul endroit (`--font-display`, `src/app/layout.tsx`).
 - **Instrument Serif retirée** : titres et interface en Inter Tight, compteurs en JetBrains Mono.
 - **Grain SVG retiré** (incohérent avec le thème clair).
-- **Illustrations** : Fluent Emoji 3D (© Microsoft, MIT) via `@lobehub/fluent-emoji-3d`. Ce sont des visuels génériques (un même avion pour l'A320 et l'A380, une même voiture pour toutes les voitures). Les photos réelles détourées (Wikimedia Commons, licences libres, attribution) restent à faire : `upload.wikimedia.org`, `commons.wikimedia.org` et `www.wikidata.org` sont bloqués dans l'environnement de développement actuel.
+- **Images** : photos réelles de Wikimedia Commons quand elles existent, sinon illustration 3D générique Fluent Emoji (© Microsoft, MIT, via `@lobehub/fluent-emoji-3d`).
+  - `scripts/demo/photo-sources.json` : objet → article Wikipédia dont l'image Wikidata (P18, drapeau P41 ou logo P154) est utilisée.
+  - `scripts/demo/photos.json` : image retenue, auteur, licence (libres uniquement : CC0, CC BY, CC BY-SA, domaine public), page source.
+  - Trois rendus (`image_kind`) : `cutout` objet détouré (rembg, modèle isnet) qui dépasse de la carte ; `photo` image encadrée (lieux, œuvres, drapeaux, logos) ; `illustration` visuel 3D générique.
+  - Pas de photo de personnes (transferts, fortunes) : illustration générique.
+  - Attribution sur chaque fiche (auteur, licence, lien vers la page Commons). Une photo détourée est une œuvre dérivée : elle reste sous la licence d'origine.
 - **Framer Motion** n'est pas chargé en Phase 1 : le ressort du compteur à rouleaux est codé à la main (≈ 35 Ko gzip économisés). La dépendance reste pour les transitions de la Phase 3.
 - Catégorie racine ajoutée : **Économie** (PIB, dette publique).
 

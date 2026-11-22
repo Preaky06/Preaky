@@ -138,12 +138,13 @@ export function BudgetPlanner({
               {[
                 ...references
                   .filter((r) => amount / r.value_eur >= 1)
-                  .map((r) => ({ key: r.id, n: amount / r.value_eur, label: r.plural_fr, image: r.image, tier: 3, unit: r.value_eur, href: null })),
+                  .map((r) => ({ key: r.id, n: amount / r.value_eur, label: r.plural_fr, image: r.image, kind: null, tier: 3, unit: r.value_eur, href: null })),
                 ...multiples.map((m) => ({
                   key: m.slug,
                   n: amount / m.priceEur,
                   label: stripArticle(m.name),
                   image: m.image,
+                  kind: m.imageKind,
                   tier: m.tier,
                   unit: m.priceEur,
                   href: `/objet/${m.slug}`,
@@ -153,7 +154,7 @@ export function BudgetPlanner({
                 .map((row) => {
                   const body = (
                     <>
-                      <Thumb src={row.image} tier={row.tier} size={56} />
+                      <Thumb src={row.image} kind={row.kind} tier={row.tier} size={56} />
                       <span className="flex min-w-0 flex-col">
                         <span className="price text-[24px] font-extrabold leading-tight text-brand-deep">{formatCountWords(Math.floor(row.n))} ×</span>
                         <span className="truncate text-[15px]">{row.label}</span>

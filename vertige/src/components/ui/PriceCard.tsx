@@ -53,7 +53,7 @@ export function PriceCard({
             height={256}
             unoptimized
             priority={priority}
-            className="card-object"
+            className={cn("card-object", item.imageKind === "photo" && "card-photo")}
           />
         )}
         <span

@@ -4,12 +4,16 @@
 - Les 1 000 fiches passent par une seule page, apercu-fiche.html#<slug> (route /apercu/fiche) :
   des fichiers séparés dépasseraient la limite de fichiers d'une version d'artefact.
 - Les chemins absolus deviennent relatifs ; les liens internes sont redirigés vers ces fichiers.
-- Les visuels sont regroupés dans images.js (la limite de fichiers par version l'impose).
+- Les illustrations 3D sont regroupées dans images.js ; les photos (256 px) dans photos-NN.js,
+  chargés à la demande (la limite de fichiers par version l'impose).
 - La page principale (index.html) est enveloppée par l'artefact : son en-tête Next est remonté
   dans <head> avant l'hydratation.
 """
-import base64, json, re, shutil, sys
+import base64, io, json, re, shutil, sys
 from pathlib import Path
+from PIL import Image
+
+BUNDLES = 24  # paquets de photos ; même hachage côté navigateur (bundleOf)
 
 app, out = Path(sys.argv[1]), Path(sys.argv[2])
 if out.exists():
@@ -33,24 +37,40 @@ BOOT = r"""<script>
   if (!root.className) { root.lang = %(lang)s; root.className = %(cls)s; }
   window.TURBOPACK_CHUNK_BASE_PATH = "next/";
 
-  /* Visuels regroupés dans images.js : on traduit "…/objets/x.webp" en données intégrées. */
+  /* Visuels intégrés : "…/objets/x.webp" → données de images.js ; "…/objets/photos/x.webp" →
+     paquet photos-NN.js chargé à la demande, l'image est remplacée à son arrivée. */
+  var PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+  window.__VG_IMG = window.__VG_IMG || {};
   function key(v) { var m = /objets\/([^"'?#]+\.webp)/.exec(v || ""); return m ? m[1] : null; }
-  function img(v) { var k = key(v); return k && window.__VG_IMG ? window.__VG_IMG[k] || null : null; }
+  function bundleOf(k) { var h = 5381; for (var i = 0; i < k.length; i++) h = ((h * 33) ^ k.charCodeAt(i)) >>> 0; return h %% %(bundles)d; }
+  var loading = {}, detached = [];
+  function load(k) {
+    var n = bundleOf(k); if (loading[n]) return; loading[n] = 1;
+    var sc = document.createElement("script");
+    sc.src = "photos-" + (n < 10 ? "0" : "") + n + ".js";
+    sc.onload = function () { scan(document.documentElement); var keep = []; for (var i = 0; i < detached.length; i++) { swap(detached[i]); if (detached[i].hasAttribute("data-vg")) keep.push(detached[i]); } detached = keep; };
+    (document.head || document.documentElement).appendChild(sc);
+  }
   var setAttr = Element.prototype.setAttribute;
+  function resolve(el, v) {
+    var k = key(v); if (!k) return v;
+    if (window.__VG_IMG[k]) return window.__VG_IMG[k];
+    if (k.indexOf("photos/") === 0) { setAttr.call(el, "data-vg", k); if (!el.isConnected) detached.push(el); load(k); return PIXEL; }
+    return v;
+  }
   Element.prototype.setAttribute = function (n, v) {
-    if ((n === "src" || n === "href") && typeof v === "string" && v.indexOf("objets/") !== -1) {
-      var r = img(v); if (r) return setAttr.call(this, n, r);
-    }
+    if ((n === "src" || n === "href") && typeof v === "string" && v.indexOf("objets/") !== -1) return setAttr.call(this, n, resolve(this, v));
     return setAttr.call(this, n, v);
   };
   var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
   Object.defineProperty(HTMLImageElement.prototype, "src", {
     configurable: true, get: d.get,
-    set: function (v) { var r = typeof v === "string" ? img(v) : null; d.set.call(this, r || v); }
+    set: function (v) { d.set.call(this, typeof v === "string" ? resolve(this, v) : v); }
   });
   function swap(el) {
-    var k = el.getAttribute("data-vg"), r = k && window.__VG_IMG && window.__VG_IMG[k];
+    var k = el.getAttribute("data-vg"), r = k && window.__VG_IMG[k];
     if (r) { setAttr.call(el, el.tagName.toLowerCase() === "image" ? "href" : "src", r); el.removeAttribute("data-vg"); }
+    else if (k && k.indexOf("photos/") === 0) load(k);
   }
   function scan(node) {
     if (node.nodeType !== 1) return;
@@ -130,7 +150,7 @@ for name, src in pages.items():
     lang = re.search(r'lang="([^"]*)"', attrs).group(1)
     cls = re.search(r'class="([^"]*)"', attrs).group(1)
     is_home = name in ("index.html", "accueil.html")
-    boot = BOOT % {"lang": json.dumps(lang), "cls": json.dumps(cls), "home": "true" if is_home else "false"}
+    boot = BOOT % {"lang": json.dumps(lang), "cls": json.dumps(cls), "home": "true" if is_home else "false", "bundles": BUNDLES}
     if name == "index.html":
         head = re.search(r"<head>(.*?)</head>", html, re.S).group(1)
         body = re.search(r"<body[^>]*>(.*)</body>", html, re.S).group(1)
@@ -142,9 +162,25 @@ for name, src in pages.items():
         page = rewrite(html).replace("<head>", "<head>" + boot, 1)
     (out / name).write_text(page)
 
-# Visuels regroupés
+# Illustrations 3D regroupées (chargées sur chaque page)
 imgs = {p.name: "data:image/webp;base64," + base64.b64encode(p.read_bytes()).decode() for p in sorted((app / "public/objets").glob("*.webp"))}
-(out / "images.js").write_text("window.__VG_IMG=" + json.dumps(imgs, separators=(",", ":")) + ";\n")
+(out / "images.js").write_text("window.__VG_IMG=Object.assign(window.__VG_IMG||{}," + json.dumps(imgs, separators=(",", ":")) + ");\n")
+
+# Photos : copies 256 px réparties en paquets (même hachage que bundleOf côté navigateur)
+def bundle_of(k):
+    h = 5381
+    for ch in k:
+        h = ((h * 33) ^ ord(ch)) & 0xFFFFFFFF
+    return h % BUNDLES
+packs = [dict() for _ in range(BUNDLES)]
+for p in sorted((app / "public/objets/photos").glob("*.webp")):
+    im = Image.open(p); im.thumbnail((256, 256))
+    buf = io.BytesIO(); im.save(buf, "WEBP", quality=72, method=6, alpha_quality=80)
+    k = "photos/" + p.name
+    packs[bundle_of(k)][k] = "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
+for n, pack in enumerate(packs):
+    (out / f"photos-{n:02d}.js").write_text("Object.assign(window.__VG_IMG," + json.dumps(pack, separators=(",", ":")) + ");\n")
+print("photos :", sum(len(p) for p in packs), "en", BUNDLES, "paquets")
 
 shutil.copytree(app / ".next/static/chunks", out / "next/static/chunks")
 shutil.copytree(app / ".next/static/media", out / "next/static/media")

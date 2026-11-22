@@ -12,6 +12,7 @@ import { altitudeOf } from "@/lib/scale";
 import { categoryName } from "@/lib/taxonomy";
 import { getTier, TIERS } from "@/lib/tiers";
 import type { ItemWithPrice, PriceUnit } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 /** Champs dont la fiche a besoin (sous-ensemble d'ItemWithPrice, pour l'aperçu statique). */
 export type FicheItem = Pick<
@@ -27,8 +28,10 @@ export type FicheItem = Pick<
   | "is_hero"
   | "hero_order"
   | "image_url"
+  | "image_kind"
   | "image_license"
   | "image_author"
+  | "image_source_url"
   | "status"
 > & {
   price: Pick<
@@ -49,8 +52,10 @@ export const toFicheItem = (i: ItemWithPrice): FicheItem => ({
   is_hero: i.is_hero,
   hero_order: i.hero_order,
   image_url: i.image_url,
+  image_kind: i.image_kind,
   image_license: i.image_license,
   image_author: i.image_author,
+  image_source_url: i.image_source_url,
   status: i.status,
   price: {
     value: i.price.value,
@@ -128,6 +133,9 @@ export function ObjetFiche({ item, below, above, count }: FicheProps) {
   const alt = altitudeOf(item.log_price);
   const back = item.is_hero && item.hero_order ? { href: `/#etage-${item.hero_order}`, label: "Retour à l'Ascension" } : { href: "/explorer", label: "Retour à l'Explorer" };
   const otherForDuel = item.slug === "baguette" ? "big-mac" : "baguette";
+  const credit = item.image_author
+    ? `${item.image_kind === "illustration" ? "Illustration générique" : item.image_kind === "cutout" ? "Photo détourée" : "Photo"} : ${item.image_author}, ${item.image_license}${item.image_kind === "illustration" ? "" : ", via Wikimedia Commons"}.`
+    : null;
   // La mention « démo » figure déjà dans la ligne Source.
   const notes = price.notes?.replace("Donnée de démonstration non sourcée.", "").trim();
 
@@ -154,19 +162,28 @@ export function ObjetFiche({ item, below, above, count }: FicheProps) {
 
         {/* Bloc principal : image cadrée + nom + prix */}
         <div className="panel grid gap-8 p-5 sm:p-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center md:gap-10">
-          <div className="price-card mx-auto grid aspect-square w-full max-w-[420px] place-items-center overflow-hidden">
-            {item.image_url && (
-              <Image
-                src={item.image_url}
-                alt=""
-                width={256}
-                height={256}
-                unoptimized
-                priority
-                className="size-[70%] object-contain drop-shadow-[0_24px_20px_rgb(11_18_32/0.3)]"
-              />
-            )}
-          </div>
+          <figure className="mx-auto flex w-full max-w-[420px] flex-col gap-2">
+            <div className="price-card grid aspect-square w-full place-items-center overflow-hidden">
+              {item.image_url &&
+                (item.image_kind === "photo" ? (
+                  <Image src={item.image_url} alt="" width={512} height={512} unoptimized priority className="size-full object-cover" />
+                ) : (
+                  <Image
+                    src={item.image_url}
+                    alt=""
+                    width={512}
+                    height={512}
+                    unoptimized
+                    priority
+                    className={cn(
+                      "object-contain drop-shadow-[0_24px_20px_rgb(11_18_32/0.3)]",
+                      item.image_kind === "cutout" ? "size-[82%]" : "size-[70%]",
+                    )}
+                  />
+                ))}
+            </div>
+            {credit && <figcaption className="text-[12px] leading-snug text-muted">{credit}</figcaption>}
+          </figure>
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -308,9 +325,17 @@ export function ObjetFiche({ item, below, above, count }: FicheProps) {
           ))}
         </dl>
         {notes && <p className="text-small text-muted">{notes}</p>}
-        {item.image_author && (
+        {credit && (
           <p className="text-small text-muted">
-            Illustration générique : {item.image_author}, licence {item.image_license}.
+            {credit}
+            {item.image_source_url && (
+              <>
+                {" "}
+                <a href={item.image_source_url} className="underline underline-offset-2 hover:text-ink" rel="noopener noreferrer" target="_blank">
+                  Voir la source
+                </a>
+              </>
+            )}
           </p>
         )}
       </section>

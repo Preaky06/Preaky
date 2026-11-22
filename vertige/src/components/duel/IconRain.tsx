@@ -23,10 +23,11 @@ export function IconRain({ src, count, label }: { src: string; count: number; la
     let raf = 0;
     let cancelled = false;
     const img = new Image();
-    img.src = src;
 
     const run = () => {
-      if (cancelled) return;
+      // Image pas encore réelle (aperçu statique : pixel d'attente) : on attend le prochain onload.
+      if (cancelled || img.naturalWidth <= 1) return;
+      cancelAnimationFrame(raf);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const width = box.clientWidth;
       const cols = Math.max(1, Math.floor(width / CELL));
@@ -70,8 +71,9 @@ export function IconRain({ src, count, label }: { src: string; count: number; la
       raf = requestAnimationFrame(tick);
     };
 
+    img.onload = run;
+    img.src = src;
     if (img.complete) run();
-    else img.onload = run;
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);

@@ -109,7 +109,19 @@ function GameCard({
       )}
     >
       {item.image && (
-        <Image src={item.image} alt="" width={256} height={256} unoptimized className="-mt-16 size-40 drop-shadow-[0_16px_14px_rgb(11_18_32/0.28)] sm:size-48" />
+        <Image
+          src={item.image}
+          alt=""
+          width={256}
+          height={256}
+          unoptimized
+          className={cn(
+            "-mt-16 size-40 sm:size-48",
+            item.imageKind === "photo"
+              ? "rounded-[22%] border-4 border-white object-cover shadow-[0_14px_28px_-10px_rgb(11_18_32/0.45)]"
+              : "object-contain drop-shadow-[0_16px_14px_rgb(11_18_32/0.28)]",
+          )}
+        />
       )}
       <span className="text-[19px] font-semibold leading-tight">{item.name}</span>
       <span className="card-price min-h-[44px] text-[34px] font-extrabold leading-none">
