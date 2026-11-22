@@ -13,6 +13,8 @@ export interface CardItem {
   status: ItemStatus;
   priceType: PriceType;
   observedAt: string;
+  category: string;
+  country: string | null;
 }
 
 export const toCardItem = (i: ItemWithPrice): CardItem => ({
@@ -26,12 +28,14 @@ export const toCardItem = (i: ItemWithPrice): CardItem => ({
   status: i.status,
   priceType: i.price.price_type,
   observedAt: i.price.observed_at,
+  category: i.category_id,
+  country: i.price.country,
 });
 
 /** Recherche tolérante aux accents et à la casse. */
 export const normalize = (s: string) =>
   s
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();

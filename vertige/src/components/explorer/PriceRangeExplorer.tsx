@@ -219,9 +219,14 @@ export function PriceRangeExplorer({ items }: { items: CardItem[] }) {
       )}
 
       <div className="flex items-center justify-between">
-        <a href="#ascension" className="text-[15px] font-semibold text-ink underline-offset-4 hover:underline">
-          Faire l&apos;Ascension complète ↓
-        </a>
+        <div className="flex flex-wrap gap-x-5 gap-y-1">
+          <a href="/explorer" className="text-[15px] font-semibold text-ink underline-offset-4 hover:underline">
+            Tout voir dans l&apos;Explorer →
+          </a>
+          <a href="#ascension" className="text-[15px] font-semibold text-muted underline-offset-4 hover:text-ink hover:underline">
+            L&apos;Ascension ↓
+          </a>
+        </div>
         <div className="flex gap-2">
           <button
             type="button"

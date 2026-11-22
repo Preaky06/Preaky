@@ -8,6 +8,7 @@ import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { codepoints, DEMO_IMAGES } from "./images.mjs";
+import { DEMO_ROWS_EXTRA } from "./source-extra.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const require = createRequire(import.meta.url);
@@ -17,7 +18,8 @@ mkdirSync(OUT, { recursive: true });
 
 const missing = [];
 const done = new Set();
-for (const [slug, emoji] of Object.entries(DEMO_IMAGES)) {
+const all = [...Object.entries(DEMO_IMAGES), ...DEMO_ROWS_EXTRA.map((r) => [r[0], r[9]])];
+for (const [slug, emoji] of all) {
   const candidates = [codepoints(emoji, true), codepoints(emoji, false)];
   const src = candidates.map((c) => resolve(PKG, "assets", `${c}.webp`)).find(existsSync);
   if (!src) {

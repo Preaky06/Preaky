@@ -4,10 +4,11 @@ import { MobileMenu } from "./MobileMenu";
 
 export const NAV_LINKS = [
   { href: "/", label: "Accueil" },
-  { href: "/#prix", label: "Les prix" },
   { href: "/#ascension", label: "L'Ascension" },
+  { href: "/explorer", label: "Explorer" },
   { href: "/duel", label: "Duel" },
   { href: "/jeu", label: "Jeu" },
+  { href: "/budget", label: "Budget" },
   { href: "/methodologie", label: "Méthodologie" },
 ] as const;
 
@@ -22,8 +23,8 @@ export function SiteNav() {
         <Link href="/" className="flex min-h-11 items-center rounded-full" aria-label="VERTIGE, accueil">
           <Logo className="text-[34px]" />
         </Link>
-        <ul className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.slice(1, 5).map((l) => (
+        <ul className="hidden items-center gap-1 lg:flex">
+          {NAV_LINKS.slice(2).map((l) => (
             <li key={l.href}>
               <Link
                 href={l.href}
@@ -36,10 +37,10 @@ export function SiteNav() {
         </ul>
         <div className="flex items-center gap-1">
           <Link
-            href="/#prix"
+            href="/#ascension"
             className="hidden min-h-10 items-center rounded-full bg-ink px-5 text-[14px] font-semibold text-white transition-colors hover:bg-brand-deep sm:inline-flex"
           >
-            Explorer les prix
+            L&apos;Ascension
           </Link>
           <MobileMenu links={NAV_LINKS} />
         </div>

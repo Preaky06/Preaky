@@ -1,12 +1,26 @@
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/layout/ComingSoon";
+import { CatalogExplorer } from "@/components/explorer/CatalogExplorer";
+import { toCardItem } from "@/lib/card-item";
+import { getAllItems, getCatalogStats } from "@/lib/data/items";
+import { formatInt } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Explorer", robots: { index: false } };
+export const metadata: Metadata = {
+  title: "Explorer",
+  description: "Tous les prix de VERTIGE : recherche, filtres par palier, catégorie et type de prix, histogramme de la répartition.",
+};
 
-export default function Page() {
+export default async function ExplorerPage() {
+  const [items, stats] = await Promise.all([getAllItems(), getCatalogStats()]);
   return (
-    <ComingSoon title="Explorer" phase={2}>
-      <p>Le catalogue complet : recherche instantanée tolérante aux fautes, histogramme des prix, filtres et liste virtualisée.</p>
-    </ComingSoon>
+    <div className="relative z-10 mx-auto flex max-w-[1200px] flex-col gap-6 px-4 pb-24 pt-28 sm:px-5">
+      <header className="flex flex-col gap-2">
+        <h1 className="text-title-2 font-extrabold tracking-tight">Explorer</h1>
+        <p className="text-lg text-muted">
+          <span className="price font-bold text-ink">{formatInt(stats.count)}</span> prix ·{" "}
+          <span className="price font-bold text-ink">{stats.categories}</span> catégories · du moins cher au plus cher.
+        </p>
+      </header>
+      <CatalogExplorer items={items.map(toCardItem)} />
+    </div>
   );
 }

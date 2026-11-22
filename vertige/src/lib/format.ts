@@ -136,3 +136,25 @@ export function formatRatio(r: number): string {
 }
 
 export const formatInt = (n: number) => nf({ maximumFractionDigits: 0 }).format(n);
+
+/** Grand nombre en toutes lettres : 359 millions · 2,6 milliards de milliards · 12 400. */
+export function formatCountWords(n: number): string {
+  if (!(n > 0)) return "0";
+  if (n < 10) return nf({ maximumFractionDigits: 1 }).format(n);
+  if (n < 1e6) return nf({ maximumFractionDigits: 0 }).format(n);
+  const units: [number, string, string][] = [
+    [1e18, "milliard de milliards", "milliards de milliards"],
+    [1e15, "million de milliards", "millions de milliards"],
+    [1e12, "billion", "billions"],
+    [1e9, "milliard", "milliards"],
+    [1e6, "million", "millions"],
+  ];
+  for (const [v, one, many] of units) {
+    if (n >= v) {
+      const x = n / v;
+      const s = nf({ maximumFractionDigits: x < 100 ? 1 : 0 }).format(x);
+      return `${s} ${x < 2 ? one : many}`;
+    }
+  }
+  return nf({ maximumFractionDigits: 0 }).format(n);
+}

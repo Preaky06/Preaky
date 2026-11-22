@@ -20,7 +20,7 @@ export function MobileMenu({ links }: { links: readonly { href: string; label: s
   }, [open]);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         aria-expanded={open}

@@ -5,7 +5,7 @@ import { TierGate } from "@/components/ascension/TierGate";
 import { PriceRangeExplorer } from "@/components/explorer/PriceRangeExplorer";
 import { StairsScene, type StairStep } from "@/components/stairs/StairsScene";
 import { toCardItem } from "@/lib/card-item";
-import { getHeroItems } from "@/lib/data/items";
+import { getAllItems, getHeroItems } from "@/lib/data/items";
 import { TIERS } from "@/lib/tiers";
 
 /** Exemples de l'escalier d'accueil : un objet parlant par palier. */
@@ -20,7 +20,7 @@ const STAIR_EXAMPLES: { slug: string; label: string }[] = [
 ];
 
 export default async function HomePage() {
-  const items = await getHeroItems();
+  const [items, all] = await Promise.all([getHeroItems(), getAllItems()]);
 
   if (!items.length) {
     return (
@@ -45,11 +45,11 @@ export default async function HomePage() {
 
   return (
     <>
-      {steps.length === STAIR_EXAMPLES.length && <StairsScene steps={steps} count={items.length} />}
+      {steps.length === STAIR_EXAMPLES.length && <StairsScene steps={steps} count={all.length} />}
 
       <section id="prix" aria-labelledby="prix-titre" className="relative z-10 px-3 py-16 sm:py-24">
         <div className="mx-auto max-w-[1120px]">
-          <PriceRangeExplorer items={items.map(toCardItem)} />
+          <PriceRangeExplorer items={all.map(toCardItem)} />
         </div>
       </section>
 
@@ -57,7 +57,8 @@ export default async function HomePage() {
         <header className="relative mx-auto flex max-w-2xl flex-col items-center px-5 pb-4 pt-16 text-center lg:pl-[216px]">
           <h2 className="text-title-2 font-extrabold tracking-tight">L&apos;Ascension</h2>
           <p className="mt-3 text-lg text-muted">
-            Les {items.length} objets, un par étage, du moins cher au plus cher. L&apos;altimètre suit ton prix.
+            {items.length} objets vedettes, un par étage, du moins cher au plus cher. L&apos;altimètre suit ton prix. Les{" "}
+            {all.length} prix sont dans l&apos;<a href="/explorer" className="font-semibold text-ink underline underline-offset-4">Explorer</a>.
           </p>
         </header>
         {groups.map(({ tier, items: tierItems }) => (

@@ -14,6 +14,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { codepoints, DEMO_IMAGES, IMAGE_AUTHOR, IMAGE_LICENSE } from "./images.mjs";
 import { DEMO_ROWS } from "./source.mjs";
+import { DEMO_ROWS_EXTRA } from "./source-extra.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const OUT = resolve(ROOT, "data/demo/ascension.demo.json");
@@ -21,8 +22,9 @@ const DEMO_DATE = "2026-11-22";
 
 /** 1 unité de devise = x EUR. Approximations de démo, à remplacer par la BCE. */
 const DEMO_FX = {
-  USD: { 2010: 0.755, 2014: 0.754, 2017: 0.887, 2018: 0.847, 2019: 0.893, 2020: 0.877, 2021: 0.846, 2022: 0.951, 2023: 0.925, 2024: 0.924, 2025: 0.885, 2026: 0.86 },
+  USD: { 2006: 0.797, 2008: 0.683, 2009: 0.72, 2012: 0.778, 2015: 0.902, 2016: 0.904, 2010: 0.755, 2014: 0.754, 2017: 0.887, 2018: 0.847, 2019: 0.893, 2020: 0.877, 2021: 0.846, 2022: 0.951, 2023: 0.925, 2024: 0.924, 2025: 0.885, 2026: 0.86 },
   CHF: { 2019: 0.899 },
+  GBP: { 2023: 1.15 },
 };
 
 const uuidFrom = (seed) => {
@@ -54,10 +56,17 @@ function fxRate(currency, year) {
   return rate;
 }
 
+// Lignes « vedettes » (Ascension) puis lignes supplémentaires (hors Ascension, emoji en 10e colonne).
+const rows = [
+  ...DEMO_ROWS.map((r) => ({ r, hero: true, emoji: null })),
+  ...DEMO_ROWS_EXTRA.map((r) => ({ r: [...r.slice(0, 9), ...r.slice(10)], hero: false, emoji: r[9] })),
+];
+
 const seen = new Set();
-const items = DEMO_ROWS.map((row) => {
+const items = rows.map(({ r: row, hero, emoji: rowEmoji }) => {
   const [name, category, subcategory, value, currency, priceType, unit, month, country, blurb, notes = null] = row;
   const slug = slugify(name);
+  const emoji = rowEmoji ?? DEMO_IMAGES[slug] ?? null;
   if (seen.has(slug)) throw new Error(`Slug en double : ${slug}`);
   seen.add(slug);
   const observedAt = `${month}-01`;
@@ -82,11 +91,11 @@ const items = DEMO_ROWS.map((row) => {
     price_rank: null,
     percentile: null,
     primary_price_id: priceId,
-    is_hero: true,
+    is_hero: hero,
     hero_order: null,
-    image_url: DEMO_IMAGES[slug] ? `/objets/${codepoints(DEMO_IMAGES[slug], false)}.webp` : null,
-    image_license: DEMO_IMAGES[slug] ? IMAGE_LICENSE : null,
-    image_author: DEMO_IMAGES[slug] ? IMAGE_AUTHOR : null,
+    image_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
+    image_license: emoji ? IMAGE_LICENSE : null,
+    image_author: emoji ? IMAGE_AUTHOR : null,
     popularity: 0,
     status: "demo",
     created_at: `${DEMO_DATE}T00:00:00Z`,
@@ -116,8 +125,9 @@ const items = DEMO_ROWS.map((row) => {
 
 items.sort((a, b) => a.price_eur - b.price_eur || a.slug.localeCompare(b.slug));
 const n = items.length;
+let heroOrder = 0;
 items.forEach((item, i) => {
-  item.hero_order = i + 1;
+  item.hero_order = item.is_hero ? ++heroOrder : null;
   item.price_rank = i + 1;
   item.percentile = n > 1 ? Number(((i / (n - 1)) * 100).toFixed(1)) : 100;
 });
@@ -129,5 +139,5 @@ writeFileSync(
 );
 
 const perTier = [1, 2, 3, 4, 5, 6, 7].map((t) => items.filter((i) => i.tier === t).length);
-console.log(`✓ ${n} objets de démo → ${OUT.replace(ROOT + "/", "")}`);
+console.log(`✓ ${n} objets de démo (${heroOrder} vedettes de l'Ascension) → ${OUT.replace(ROOT + "/", "")}`);
 console.log(`  par palier : ${perTier.map((c, i) => `P${i + 1}=${c}`).join(" · ")}`);

@@ -45,9 +45,12 @@ export default async function ObjetPage({ params }: PageProps<"/objet/[slug]">) 
 
   return (
     <article data-tier={item.tier} className="relative z-10 mx-auto max-w-[1120px] px-5 pb-24 pt-28">
-      <Link href={`/#etage-${item.hero_order}`} className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted hover:text-ink">
+      <Link
+        href={item.is_hero && item.hero_order ? `/#etage-${item.hero_order}` : "/explorer"}
+        className="inline-flex min-h-11 items-center gap-2 font-semibold text-muted hover:text-ink"
+      >
         <ArrowLeft aria-hidden="true" strokeWidth={2} className="size-4" />
-        Retour
+        {item.is_hero ? "Retour à l'Ascension" : "Retour à l'Explorer"}
       </Link>
 
       <div className="panel mt-4 grid gap-10 p-6 sm:p-10 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:items-center">
@@ -68,7 +71,9 @@ export default async function ObjetPage({ params }: PageProps<"/objet/[slug]">) 
         <div className="flex flex-col gap-5">
           <div className="flex flex-wrap items-center gap-2">
             <TierPill tier={item.tier} showIndex />
-            <span className="text-small font-medium text-muted">{categoryName(item.category_id)}</span>
+            <Link href={`/categorie/${item.category_id}`} className="text-small font-medium text-muted underline-offset-2 hover:text-ink hover:underline">
+              {categoryName(item.category_id)}
+            </Link>
           </div>
           <h1 className="text-title-3 font-extrabold tracking-tight">{item.name_fr}</h1>
           <p className="price text-[clamp(56px,10vw,120px)] font-extrabold leading-none text-(--tier)">{formatPrice(item.price_eur)}</p>
@@ -81,6 +86,14 @@ export default async function ObjetPage({ params }: PageProps<"/objet/[slug]">) 
           <PriceStamp price={price} status={item.status} />
           {item.short_desc_fr && <p className="text-lg">{item.short_desc_fr}</p>}
           <p className="num text-small text-muted">{formatSci(item.price_eur)}</p>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/duel?a=${item.slug}&b=baguette`} className="inline-flex h-11 items-center rounded-full bg-ink px-5 font-semibold text-white">
+              Ajouter au duel
+            </Link>
+            <Link href={`/budget`} className="inline-flex h-11 items-center rounded-full bg-surface px-5 font-semibold ring-1 ring-line">
+              Comparer à mon budget
+            </Link>
+          </div>
         </div>
       </div>
 
