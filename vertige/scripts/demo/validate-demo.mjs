@@ -32,7 +32,9 @@ for (const it of items) {
   if (!PRICE_TYPES.has(p.price_type)) err(it.slug, `type de prix inconnu ${p.price_type}`);
   if (!UNITS.has(p.unit)) err(it.slug, `unité inconnue ${p.unit}`);
   if (!p.observed_at || p.observed_at > TODAY) err(it.slug, `date de relevé invalide ${p.observed_at}`);
-  if (!it.short_desc_fr) err(it.slug, "phrase de contexte manquante");
+  // Phrase de contexte obligatoire pour les vedettes de l'Ascension seulement.
+  if (it.is_hero && !it.short_desc_fr) err(it.slug, "phrase de contexte manquante");
+  if (!it.image_url) err(it.slug, "image manquante");
   if (Math.abs(Math.log10(it.price_eur) - it.log_price) > 1e-9) err(it.slug, "log_price incohérent");
 }
 
