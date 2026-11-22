@@ -87,7 +87,7 @@ export default async function ObjetPage({ params }: PageProps<"/objet/[slug]">) 
           {item.short_desc_fr && <p className="text-lg">{item.short_desc_fr}</p>}
           <p className="num text-small text-muted">{formatSci(item.price_eur)}</p>
           <div className="flex flex-wrap gap-2">
-            <Link href={`/duel?a=${item.slug}&b=baguette`} className="inline-flex h-11 items-center rounded-full bg-ink px-5 font-semibold text-white">
+            <Link href={`/duel?a=${item.slug}&b=${item.slug === "baguette" ? "big-mac" : "baguette"}`} className="inline-flex h-11 items-center rounded-full bg-ink px-5 font-semibold text-white">
               Ajouter au duel
             </Link>
             <Link href={`/budget`} className="inline-flex h-11 items-center rounded-full bg-surface px-5 font-semibold ring-1 ring-line">

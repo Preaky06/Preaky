@@ -53,6 +53,12 @@ Carte d'objet (`components/ui/PriceCard`) : image, nom, prix. Type de prix, date
 - **Framer Motion** n'est pas chargé en Phase 1 : le ressort du compteur à rouleaux est codé à la main (≈ 35 Ko gzip économisés). La dépendance reste pour les transitions de la Phase 3.
 - Catégorie racine ajoutée : **Économie** (PIB, dette publique).
 
+## Aperçu statique
+
+`python3 scripts/preview/make_site_artifact.py . <dossier>` (après `npm run build`) produit un aperçu
+multi-pages autonome : chemins relatifs, liens internes réécrits vers `objet-<slug>.html`, etc., visuels
+regroupés dans `images.js`. Sert à publier une version consultable sans serveur.
+
 ## Structure
 
 ```
