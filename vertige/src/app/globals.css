@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────────────────────
+   VERTIGE — design tokens
+   Couleurs, typo, rayons, courbes. Toute valeur utilisée dans l'UI vient d'ici.
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-bg: #07070a;
+  --color-surface: #0f0f14;
+  --color-elevated: #16161d;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+  --color-ink: #f4f1ea;
+  --color-muted: #9a9aa6;
+
+  --color-tier-1: #8a8f98; /* Poussière — cendre */
+  --color-tier-2: #c07a45; /* Monnaie — cuivre */
+  --color-tier-3: #5fd4a6; /* Quotidien — menthe */
+  --color-tier-4: #4f7cff; /* Confort — bleu électrique */
+  --color-tier-5: #9b6bff; /* Luxe — améthyste */
+  --color-tier-6: #ff3d6e; /* Démesure — rubis */
+  --color-tier-7: #f5c542; /* Vertige — or */
+
+  --color-conf-a: #5fd4a6;
+  --color-conf-b: #8fb0ff;
+  --color-conf-c: #e8a15a;
+
+  /* Échelle typographique : 96 / 72 / 48 (desktop), réduite proportionnellement sur mobile */
+  --text-title-1: clamp(3.25rem, 8vw, 6rem);
+  --text-title-1--line-height: 0.95;
+  --text-title-2: clamp(2.5rem, 6vw, 4.5rem);
+  --text-title-2--line-height: 1;
+  --text-title-3: clamp(2rem, 4vw, 3rem);
+  --text-title-3--line-height: 1.05;
+  --text-body: 1rem;
+  --text-body--line-height: 1.55;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.4;
+
+  --radius-card: 20px;
+  --radius-pill: 999px;
+
+  --ease-vertige: cubic-bezier(0.22, 1, 0.36, 1);
+  --blur-glass: 16px;
+}
+
+@theme inline {
+  --font-serif: var(--font-instrument-serif), "Times New Roman", serif;
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
+/* Couleur d'accent courante : définie par data-tier sur n'importe quel ancêtre. */
+:root { --tier: var(--color-tier-7); }
+[data-tier="1"] { --tier: var(--color-tier-1); }
+[data-tier="2"] { --tier: var(--color-tier-2); }
+[data-tier="3"] { --tier: var(--color-tier-3); }
+[data-tier="4"] { --tier: var(--color-tier-4); }
+[data-tier="5"] { --tier: var(--color-tier-5); }
+[data-tier="6"] { --tier: var(--color-tier-6); }
+[data-tier="7"] { --tier: var(--color-tier-7); }
+
+@layer base {
+  html {
+    overflow-x: clip;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    min-height: 100svh;
+    background: var(--color-bg);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--tier) 45%, transparent);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--tier);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  /* Tout prix animé : chiffres à chasse fixe */
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Matières
+   ────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Grain SVG fixe, 4 % */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Verre dépoli : navigation et panneaux */
+  .glass {
+    background: rgb(15 15 20 / 0.6);
+    -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(140%);
+    backdrop-filter: blur(var(--blur-glass)) saturate(140%);
+    border: 1px solid var(--color-line);
+  }
+
+  /* Halo de la couleur du palier (radial-gradient, blur 120px, 25 %) */
+  .halo {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, var(--tier), transparent);
+    opacity: 0.25;
+    filter: blur(120px);
+  }
+  /* Variante sans filtre pour les éléments répétés (150 étages) : même rendu, coût de peinture minimal */
+  .halo-soft {
+    position: absolute;
+    pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--tier) 25%, transparent), transparent);
+  }
+
+  /* Surfaces */
+  .card-surface {
+    background: linear-gradient(180deg, rgb(22 22 29 / 0.92), rgb(15 15 20 / 0.92));
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  /* Reflet or irisé du palier Vertige — boucle de 6 s (transform seulement) */
+  .iridescent { position: relative; isolation: isolate; overflow: hidden; }
+  .iridescent::before {
+    content: "";
+    position: absolute;
+    inset: -60%;
+    z-index: -1;
+    background: conic-gradient(from 0deg, #f5c542, #ffe9a8, #c9a0ff, #8fe3ff, #ffd36b, #f5c542);
+    opacity: 0.16;
+    animation: vg-spin 6s linear infinite;
+  }
+  .text-iridescent {
+    background: linear-gradient(100deg, #f5c542 0%, #fff1c1 30%, #f5c542 45%, #e9b8ff 65%, #f5c542 85%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: vg-sheen 6s linear infinite;
+  }
+
+  /* Squelettes de chargement */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-elevated);
+    border-radius: 12px;
+  }
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+    animation: vg-shimmer 1.4s var(--ease-vertige) infinite;
+  }
+
+  /* Apparition des cartes : opacité 0→1, y 24→0, flou 8→0, 600 ms, 40 ms d'écart */
+  @media (scripting: enabled) {
+    .reveal:not([data-in]) {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0);
+      filter: blur(8px);
+    }
+  }
+  .reveal {
+    transition:
+      opacity 600ms var(--ease-vertige),
+      transform 600ms var(--ease-vertige),
+      filter 600ms var(--ease-vertige);
+    transition-delay: calc(var(--i, 0) * 40ms);
+  }
+
+  /* Carte inclinable (desktop) — variables pilotées par TiltCard */
+  .tilt {
+    --rx: 0deg;
+    --ry: 0deg;
+    --lift: 0px;
+    --mx: 50%;
+    --my: 50%;
+    position: relative;
+    transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(0, var(--lift), 0);
+    transition: transform 500ms var(--ease-vertige), border-color 300ms ease;
+  }
+  .tilt[data-hover] {
+    --lift: -4px;
+    will-change: transform;
+    border-color: color-mix(in oklab, var(--tier) 70%, transparent);
+    transition: transform 120ms linear, border-color 300ms ease;
+  }
+  .tilt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(420px circle at var(--mx) var(--my), color-mix(in oklab, var(--tier) 22%, transparent), transparent 60%);
+    transition: opacity 300ms ease;
+  }
+  .tilt[data-hover]::after { opacity: 1; }
+
+  /* Pictogramme sur dégradé du palier */
+  .picto-tile {
+    background:
+      radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, var(--tier) 55%, transparent), transparent 70%),
+      linear-gradient(160deg, color-mix(in oklab, var(--tier) 30%, var(--color-elevated)), var(--color-surface));
+    border: 1px solid color-mix(in oklab, var(--tier) 35%, transparent);
+  }
+}
+
+/* Étages hors écran : ni style, ni layout, ni peinture (150 étages → coût quasi nul). */
+.floor { content-visibility: auto; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Animations
+   ────────────────────────────────────────────────────────────────────────── */
+@keyframes vg-spin { to { transform: rotate(1turn); } }
+@keyframes vg-sheen { to { background-position: -200% 0; } }
+@keyframes vg-shimmer { to { transform: translateX(100%); } }
+@keyframes vg-rise {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); filter: blur(8px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes vg-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vg-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+.rise { animation: vg-rise 600ms var(--ease-vertige) both; animation-delay: calc(var(--d, 0) * 1ms); }
+
+/* Passage de palier : nom révélé ligne par ligne par masque (translate dans un conteneur overflow:hidden) */
+@keyframes vg-flash-veil {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes vg-line-in {
+  0% { transform: translate3d(0, 105%, 0); }
+  45% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+.tier-flash { animation: vg-flash-veil 900ms var(--ease-vertige) both; }
+.tier-flash .line > span { display: block; animation: vg-line-in 900ms var(--ease-vertige) both; }
+.tier-flash .line:nth-child(2) > span { animation-delay: 60ms; }
+
+/* prefers-reduced-motion : tout devient un fondu de 150 ms, sans parallaxe ni particules */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 150ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal:not([data-in]) { transform: none !important; filter: none !important; }
+  .rise { animation-name: vg-fade !important; }
+  .tilt { transform: none !important; }
+  .iridescent::before, .text-iridescent { animation: none !important; }
+  .tier-flash .line > span { animation: none !important; }
+  .tier-flash { animation-name: vg-fade !important; }
+}
