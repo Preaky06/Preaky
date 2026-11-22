@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1050"/>
+      <stop offset="1" stop-color="#120a24"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd23f"/>
+      <stop offset=".55" stop-color="#ff7a45"/>
+      <stop offset="1" stop-color="#ff3d8b"/>
+    </linearGradient>
+    <linearGradient id="six" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffe3f0"/>
+    </linearGradient>
+    <mask id="stripes">
+      <rect width="64" height="64" fill="#fff"/>
+      <rect x="0" y="33" width="64" height="2.2" fill="#000"/>
+      <rect x="0" y="38" width="64" height="2.6" fill="#000"/>
+      <rect x="0" y="43.5" width="64" height="3" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg)"/>
+  <circle cx="32" cy="34" r="19" fill="url(#sun)" mask="url(#stripes)"/>
+  <rect x="0" y="48" width="64" height="16" fill="#1fd1c1" opacity=".9"/>
+  <rect x="0" y="48" width="64" height="16" rx="0" fill="url(#bg)" opacity=".55"/>
+  <path d="M40 13.5C30 13.5 23 23 23 39a9 9 0 1 0 18 0a9 9 0 1 0-18 0" fill="none" stroke="url(#six)" stroke-width="6.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

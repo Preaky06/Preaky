@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Grand Theft News 6</title>
+  <meta name="description" content="Grand Theft News 6 — le guide de GTA 6 : carte de Leonida, codes de triche, voitures rares, easter eggs, argent caché et codes de coffres.">
+  <meta name="theme-color" content="#0b0a12">
+  <link rel="icon" type="image/svg+xml" href="img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    /* Thème appliqué avant le rendu pour éviter le flash */
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("gtn6-theme"); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Grand Theft News 6 — accueil">
+      <img class="brand__logo" src="img/logo.svg" alt="" width="40" height="40">
+      <span class="brand__name"><span class="brand__l1">Grand Theft</span><span class="brand__l2">News <b>6</b></span></span>
+    </a>
+    <div class="topbar__actions">
+      <div class="lang" id="lang">
+        <button class="pill-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false">
+          <span class="ico" data-icon="globe"></span><span id="langCode">FR</span><span class="ico ico--sm" data-icon="chevron"></span>
+        </button>
+        <ul class="lang__menu" id="langMenu" role="listbox"></ul>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Thème">
+        <span class="theme-btn__track"><span class="theme-btn__knob"><span class="ico ico-sun" data-icon="sun"></span><span class="ico ico-moon" data-icon="moon"></span></span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="footer">
+    <p id="footerUpdated"></p>
+    <p id="footerLegal"></p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
