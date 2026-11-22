@@ -10,6 +10,7 @@ Site statique, sans build : ouvrir `index.html` via n'importe quel serveur (GitH
 | --- | --- |
 | `js/data.js` | **Tout le contenu du guide** (FR / EN / ES), avec un niveau de fiabilité par entrée et les sources |
 | `js/geo.js` | Généré : position de chaque élément (coordonnées du jeu), photo associée, calage de la carte |
+| `js/wordart.js` | Généré : titres tracés avec la police de GTA (Pricedown), en dessins vectoriels |
 | `js/i18n.js` | Textes de l'interface dans les 3 langues |
 | `js/icons.js` | Icônes au trait |
 | `js/app.js` | Navigation, animations, carte Leaflet, recherche, filtres, fiches |
@@ -43,11 +44,14 @@ Site statique, sans build : ouvrir `index.html` via n'importe quel serveur (GitH
    python3 tools/build_assets.py gtadb.org --geo-only   # seulement geo.js
    ```
 
+Les titres en police GTA (nom du site, catégories, « trouvé ! ») sont des dessins vectoriels tracés avec Pricedown (Ray Larabie / Typodermic). Sa licence gratuite n'autorise pas l'intégration comme police web, mais autorise les images : le fichier de police n'est donc jamais publié. Pour modifier un titre, change-le dans `tools/wordart.py` puis relance `python3 tools/wordart.py chemin/vers/pricedown.ttf` (dépendances : `pip install fonttools uharfbuzz`).
+
 La carte de fond est calée sur les coordonnées du jeu par `USERMAP` dans `tools/build_assets.py` (`x_pixel = (x − X0) / S`, `y_pixel = (Y0 − y) / S`). Si tu changes l'image de fond, il faut recaler ces trois valeurs.
 
 ## Crédits
 
 - Photos (captures officielles GTA VI), coordonnées des lieux et tuiles des vues rapprochées : [gtadb.org](https://map.gtadb.org), licence [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Les images ont été recadrées et redimensionnées.
+- Titres : police Pricedown © Ray Larabie / Typodermic, convertie en dessins vectoriels.
 - Infos de jeu : sources citées en bas de chaque page du site.
 - Grand Theft Auto VI © Rockstar Games. Site non officiel, non affilié à Rockstar Games ni à Take-Two.
 

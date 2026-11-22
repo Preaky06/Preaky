@@ -49,6 +49,20 @@
   const ISLAND = { x: 80, y: 330, w: 1210, h: 1780 };   // cadrage de l'île dans la carte
   const photoCap = (key) => PHOTOS[key] ? `<span class="photo-cap">${esc(ui("photo"))} : ${esc(PHOTOS[key].cap)}</span>` : "";
 
+  /* Titres tracés avec la police Pricedown (voir tools/wordart.py) */
+  let waId = 0;
+  function wordart(key, cls = "", label) {
+    const w = WORDART[key];
+    if (!w) return `<span class="${cls}">${esc(label || key)}</span>`;
+    const p = w.vb.split(" ").map(Number);
+    return `<svg class="wa ${cls}" viewBox="${w.vb}" style="--ar:${(p[2] / p[3]).toFixed(4)}" role="img" aria-label="${esc(label || w.t)}"><path d="${w.d}"/></svg>`;
+  }
+  function six(cls = "") {
+    const w = WORDART.six, p = w.vb.split(" ").map(Number), id = "vi" + (++waId);
+    return `<svg class="wa wa--six ${cls}" viewBox="${w.vb}" style="--ar:${(p[2] / p[3]).toFixed(4)}" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36e"/><stop offset=".3" stop-color="#ff9a5c"/><stop offset=".58" stop-color="#ff4fa3"/><stop offset=".85" stop-color="#b44cff"/><stop offset="1" stop-color="#5c6bff"/></linearGradient></defs><path d="${w.d}" style="fill:url(#${id})"/></svg>`;
+  }
+  const catWA = (id, cls) => wordart(`cat:${state.lang}:${id}`, cls, catName(id));
+
   function stars(conf, plain) {
     const n = conf === "ok" ? 3 : conf === "mixed" ? 2 : 1;
     const row = [0, 1, 2].map((i) => `<span class="ico${i < n ? " on" : ""}">${ICON.star}</span>`).join("");
@@ -131,7 +145,7 @@
     const { total, done } = progress();
     const el = document.createElement("div");
     el.className = "passed";
-    el.innerHTML = `<div class="passed__band"><div class="passed__title">${esc(ui("missionPassed"))}</div><div class="passed__sub">${esc(name)} · ${done}/${total}</div></div>`;
+    el.innerHTML = `<div class="passed__band"><div class="passed__title">${wordart("passed:" + state.lang, "", ui("missionPassed"))}</div><div class="passed__sub">${esc(name)} · ${done}/${total}</div></div>`;
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 2000);
   }
@@ -167,15 +181,13 @@
         <span class="cat-card__count">${esc(countFor(c.id))}</span>
         <span class="cat-card__badge">${ICON[c.icon]}</span>
         <span class="cat-card__body">
-          <span class="cat-card__title">${esc(catName(c.id))}</span>
+          <span class="cat-card__title">${catWA(c.id)}</span>
           <span class="cat-card__desc">${esc(catDesc(c.id))}</span>
           <span class="cat-card__bar"></span>
         </span>
         <span class="glare"></span>
       </a>`).join("");
 
-    const words = ui("choose").split(" ");
-    const head = words.length > 1 ? `${esc(words.slice(0, -1).join(" "))} <span>${esc(words[words.length - 1])}</span>` : esc(ui("choose"));
 
     app.innerHTML = `
       <section class="hero">
@@ -185,8 +197,8 @@
         <div class="hero__inner">
           <p class="badge hero-in" style="--d:0ms"><span class="badge__dot"></span>${esc(ui("badge"))}</p>
           <h1 class="logo-lockup hero-in" style="--d:120ms" aria-label="Grand Theft News 6">
-            <span class="logo-lockup__top" aria-hidden="true">${esc(ui("heroKicker"))}</span>
-            <span class="logo-lockup__six" aria-hidden="true">6</span>
+            <span class="logo-lockup__stack" aria-hidden="true">${wordart("grand")}${wordart("theft")}${wordart("news")}</span>
+            ${six("logo-lockup__six")}
             <span class="logo-lockup__script" aria-hidden="true">${esc(ui("heroScript"))}</span>
           </h1>
           <p class="hero__text hero-in" style="--d:260ms">${esc(ui("heroText"))}</p>
@@ -198,7 +210,7 @@
         ${photoCap("vice-city-sign")}
       </section>
       <section class="cats" id="cats">
-        <div class="section-head reveal"><h2>${head}</h2><p>${esc(ui("chooseSub"))}</p></div>
+        <div class="section-head reveal"><h2>${wordart("choose:" + state.lang, "", ui("choose"))}</h2><p>${esc(ui("chooseSub"))}</p></div>
         <div class="cat-grid">${cards}</div>
       </section>`;
 
@@ -257,7 +269,7 @@
     const ov = document.createElement("div");
     ov.className = "loader";
     ov.style.cssText = gradVars(c.grad);
-    ov.innerHTML = `<img src="${photoUrl(c.photo)}" alt=""><div class="loader__title">${esc(catName(c.id))}</div><div class="loader__spin">${esc(ui("loading"))}</div>`;
+    ov.innerHTML = `<img src="${photoUrl(c.photo)}" alt=""><div class="loader__title">${catWA(c.id)}</div><div class="loader__spin">${esc(ui("loading"))}</div>`;
     document.body.appendChild(ov);
     const anim = ov.animate([
       { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "24px" },
@@ -301,7 +313,7 @@
           <a class="back-btn" href="#/"><span class="ico">${ICON.back}</span>${esc(ui("back"))}</a>
           <div class="detail__text">
             <p class="kicker d-in" style="--d:60ms">Grand Theft News 6</p>
-            <h1 class="detail__title d-in" style="--d:120ms">${esc(catName(id))}</h1>
+            <h1 class="detail__title d-in" style="--d:120ms">${catWA(id)}</h1>
             <p class="detail__sub d-in" style="--d:180ms">${esc(catDesc(id))}</p>
             <div class="chips d-in" style="--d:240ms">${chips}</div>
           </div>
@@ -842,6 +854,7 @@
     $("#footerLegal").textContent = ui("footer");
     $("#footerCredits").innerHTML = `${esc(ui("credits"))} <a href="https://map.gtadb.org" target="_blank" rel="noopener noreferrer">map.gtadb.org</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>`;
     $$("[data-icon]").forEach((el) => { if (!el.innerHTML) el.innerHTML = ICON[el.dataset.icon]; });
+    $("#brand").innerHTML = `${wordart("brand", "brand__name", "Grand Theft News")}${six("brand__six")}`;
     paintWanted(false);
   }
   function closeLang() { $("#lang").classList.remove("is-open"); langBtn.setAttribute("aria-expanded", "false"); }
