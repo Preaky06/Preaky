@@ -151,6 +151,16 @@ export function hashStr(s) {
   return x >>> 0;
 }
 
+// Clé de semaine (lundi de la semaine, en date locale).
+export function weekKey(d = new Date()) {
+  return dayKey(weekDays(d)[0]);
+}
+
+export const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4);
+export const lerp = (a, b, t) => a + (b - a) * t;
+export const easeOut = t => 1 - Math.pow(1 - t, 3);
+export const easeOutBack = t => { const c = 1.70158; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+
 const NBSP = ' ';
 const NNBSP = ' ';
 export const fmtPct = r => `${Math.round(r * 100)}${NNBSP}%`;

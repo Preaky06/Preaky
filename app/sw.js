@@ -1,5 +1,5 @@
 // Service worker : l'appli fonctionne hors connexion une fois ouverte une première fois.
-const VERSION = 'preaky-mind-v1';
+const VERSION = 'preaky-mind-v2';
 const FONT_CACHE = 'preaky-mind-fonts';
 const SHELL = [
   './',
@@ -9,25 +9,34 @@ const SHELL = [
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/apple-touch-icon.png',
-  './js/main.js',
-  './js/util.js',
-  './js/rng.js',
-  './js/store.js',
   './js/audio.js',
-  './js/icons.js',
-  './js/mascot.js',
+  './js/avatar.js',
   './js/content.js',
-  './js/ui.js',
+  './js/engine.js',
+  './js/fx.js',
+  './js/icons.js',
+  './js/illus.js',
   './js/install.js',
+  './js/main.js',
   './js/player.js',
+  './js/rng.js',
   './js/screens.js',
-  './js/games/index.js',
+  './js/store.js',
+  './js/ui.js',
+  './js/util.js',
   './js/games/arrows.js',
-  './js/games/oddone.js',
-  './js/games/sequence.js',
-  './js/games/digits.js',
-  './js/games/patterns.js',
   './js/games/balance.js',
+  './js/games/bubbles.js',
+  './js/games/constellation.js',
+  './js/games/digits.js',
+  './js/games/dots.js',
+  './js/games/draw.js',
+  './js/games/golf.js',
+  './js/games/index.js',
+  './js/games/oddone.js',
+  './js/games/patterns.js',
+  './js/games/slicer.js',
+  './js/games/tug.js',
 ];
 
 self.addEventListener('install', event => {

@@ -1,15 +1,15 @@
 {
   "name": "Preaky Mind",
   "short_name": "Preaky Mind",
-  "description": "Des mini-jeux de 5 minutes pour la concentration, la mémoire et la logique.",
+  "description": "Des mini-jeux de fou pour garder l’esprit vif, seul ou à plusieurs.",
   "lang": "fr",
   "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#F7F0E6",
+  "theme_color": "#FF5B1F",
   "categories": ["games", "education", "health"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
