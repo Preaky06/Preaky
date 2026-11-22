@@ -12,6 +12,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { codepoints, DEMO_IMAGES, IMAGE_AUTHOR, IMAGE_LICENSE } from "./images.mjs";
 import { DEMO_ROWS } from "./source.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -83,9 +84,9 @@ const items = DEMO_ROWS.map((row) => {
     primary_price_id: priceId,
     is_hero: true,
     hero_order: null,
-    image_url: null,
-    image_license: null,
-    image_author: null,
+    image_url: DEMO_IMAGES[slug] ? `/objets/${codepoints(DEMO_IMAGES[slug], false)}.webp` : null,
+    image_license: DEMO_IMAGES[slug] ? IMAGE_LICENSE : null,
+    image_author: DEMO_IMAGES[slug] ? IMAGE_AUTHOR : null,
     popularity: 0,
     status: "demo",
     created_at: `${DEMO_DATE}T00:00:00Z`,

@@ -16,7 +16,7 @@ export function CounterDemo() {
   const tier = tierOf(eur);
 
   return (
-    <div data-tier={tier} className="card-surface flex flex-col gap-6 p-6">
+    <div data-tier={tier} className="panel flex flex-col gap-6 p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <RollingCounter value={number} suffix={suffix} className="text-[clamp(2.25rem,7vw,4.5rem)] text-(--tier)" />
         <TierPill tier={tier} showIndex />
@@ -36,7 +36,7 @@ export function CounterDemo() {
           />
         ))}
         <span
-          className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_0_3px_rgb(7_7_10),0_0_16px_var(--tier)]"
+          className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_0_3px_#fff,0_0_14px_var(--tier-glow)]"
           style={{ left: `${alt * 100}%` }}
         />
       </div>

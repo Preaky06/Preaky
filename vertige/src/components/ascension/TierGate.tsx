@@ -15,28 +15,25 @@ export function TierGate({ tier, count }: { tier: Tier; count: number }) {
       data-anchor
       data-log={gateLog}
       data-gate={tier.id}
-      className="floor relative flex min-h-[90svh] items-center justify-center px-5 [contain-intrinsic-size:auto_90svh] lg:pl-[216px]"
+      className="floor relative flex min-h-[80svh] items-center justify-center px-5 [contain-intrinsic-size:auto_80svh] lg:pl-[216px]"
     >
       <div className="reveal flex max-w-2xl flex-col items-center text-center">
-        <p className="num text-small uppercase tracking-[0.3em] text-muted">
+        <p className="rounded-full bg-(--tier) px-4 py-1.5 text-[13px] font-semibold uppercase tracking-[0.18em] text-white">
           Palier {tier.id}/{TIER_COUNT}
         </p>
         <h2
           id={`palier-${tier.slug}-titre`}
           className={
             tier.id === 7
-              ? "text-iridescent mt-3 font-serif text-title-1"
-              : "mt-3 font-serif text-title-1 text-(--tier)"
+              ? "text-iridescent mt-4 font-display text-[clamp(6rem,22vw,15rem)] uppercase leading-[0.85]"
+              : "mt-4 font-display text-[clamp(6rem,22vw,15rem)] uppercase leading-[0.85] text-(--tier)"
           }
         >
           {tier.name}
         </h2>
-        <p className="mt-4 text-lg text-ink">{tier.tagline}</p>
-        <p className="mt-6 flex items-center gap-3 text-small text-muted">
-          <span className="h-px w-8 bg-(--tier)" aria-hidden="true" />
-          {tier.range} · {count} objets
-          <span className="h-px w-8 bg-(--tier)" aria-hidden="true" />
-        </p>
+        <p className="mt-4 text-[clamp(1.25rem,2.6vw,1.75rem)] font-bold tracking-tight">{tier.range}</p>
+        <p className="mt-2 text-lg text-muted">{tier.tagline}</p>
+        <p className="mt-5 text-small font-semibold text-muted">{count} objets dans ce palier</p>
       </div>
     </section>
   );

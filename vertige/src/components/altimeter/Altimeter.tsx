@@ -107,7 +107,7 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
         data-active={active || undefined}
         aria-label="Altimètre"
         className={cn(
-          "fixed bottom-0 left-0 top-14 z-30 hidden w-[216px] flex-col gap-4 pb-5 pl-5 pt-6 lg:flex",
+          "fixed bottom-0 left-0 top-20 z-30 hidden w-[216px] flex-col gap-4 pb-5 pl-5 pt-4 lg:flex",
           "transition-[opacity,visibility] duration-500",
           active ? "visible opacity-100" : "invisible opacity-0",
         )}
@@ -141,7 +141,7 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
             />
             {/* Curseur */}
             <span className="absolute inset-0" style={{ transform: "translateY(calc((1 - var(--alt)) * 100%))" }}>
-              <span className="absolute left-1/2 top-0 block size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_0_4px_rgb(7_7_10),0_0_18px_4px_var(--tier)] transition-colors duration-700" />
+              <span className="absolute left-1/2 top-0 block size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_0_4px_#fff,0_0_16px_4px_var(--tier-glow)] transition-colors duration-700" />
             </span>
           </div>
 
@@ -156,7 +156,7 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
                   className={cn(
                     "absolute flex items-center gap-1.5 text-[11px] leading-none transition-colors duration-300",
                     exp % 2 !== 0 && "[@media(max-height:760px)]:hidden",
-                    lit ? "text-ink" : "text-muted/60",
+                    lit ? "font-semibold text-ink" : "text-muted",
                   )}
                   style={{ bottom: pct(exp), transform: "translateY(50%)" }}
                 >
@@ -188,7 +188,7 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
             <span>
               Palier <span className="num text-ink">{tierId}/{TIER_COUNT}</span>
             </span>
-            <span className="font-serif text-lg leading-none text-(--tier)">{tier.name}</span>
+            <span className="font-display text-[26px] uppercase leading-none text-(--tier)">{tier.name}</span>
           </p>
           <RollingCounter value={priceNumber} suffix={priceSuffix} className="text-[26px] text-ink" stagger={0} />
           <p className="num h-4 text-[11px] text-muted">{hover ? sci : ""}</p>
@@ -222,7 +222,7 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
         aria-label="Altimètre"
         role="region"
         className={cn(
-          "glass fixed inset-x-0 top-14 z-30 flex h-11 items-center justify-between gap-3 border-x-0 border-t-0 px-4 lg:hidden",
+          "glass fixed inset-x-3 top-[74px] z-30 flex h-11 items-center justify-between gap-3 overflow-hidden rounded-full px-4 lg:hidden",
           "transition-[opacity,visibility] duration-500",
           active ? "visible opacity-100" : "invisible opacity-0",
         )}
@@ -232,16 +232,16 @@ export function Altimeter({ floors }: { floors: AltimeterFloor[] }) {
           <span className="num shrink-0">
             {tierId}/{TIER_COUNT}
           </span>
-          <span className="truncate font-serif text-lg leading-none text-(--tier)">{tier.name}</span>
+          <span className="truncate font-display text-[22px] uppercase leading-none text-(--tier)">{tier.name}</span>
         </p>
         <RollingCounter value={priceNumber} suffix={priceSuffix} className="text-[17px] text-ink" stagger={0} />
-        <div {...meterProps} className="absolute inset-x-0 bottom-0 h-[2px] overflow-x-clip">
+        <div {...meterProps} className="absolute inset-x-4 bottom-1 h-[3px] overflow-x-clip rounded-full">
           <TierSegments axis="x" />
           <span className="absolute inset-0" style={{ clipPath: "inset(0 calc((1 - var(--alt)) * 100%) 0 0)" }}>
             <TierSegments axis="x" lit />
           </span>
           <span className="absolute inset-0" style={{ transform: "translateX(calc(var(--alt) * 100%))" }}>
-            <span className="absolute left-0 top-1/2 block size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_12px_2px_var(--tier)]" />
+            <span className="absolute left-0 top-1/2 block size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--tier) shadow-[0_0_10px_2px_var(--tier-glow)]" />
           </span>
         </div>
       </div>

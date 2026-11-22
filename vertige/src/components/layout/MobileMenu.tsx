@@ -34,7 +34,7 @@ export function MobileMenu({ links }: { links: readonly { href: string; label: s
       <div
         id={id}
         hidden={!open}
-        className="glass fixed inset-x-3 top-[60px] rounded-[20px] p-2 shadow-2xl"
+        className="glass fixed inset-x-3 top-[76px] rounded-[24px] bg-white/95 p-2"
       >
         <ul className="flex flex-col">
           {links.map((l) => (
@@ -43,7 +43,7 @@ export function MobileMenu({ links }: { links: readonly { href: string; label: s
                 href={l.href}
                 onClick={() => setOpen(false)}
                 aria-current={pathname === l.href ? "page" : undefined}
-                className="flex min-h-12 items-center rounded-xl px-4 text-ink aria-[current=page]:bg-white/5"
+                className="flex min-h-12 items-center rounded-xl px-4 text-ink font-medium aria-[current=page]:bg-brand-soft"
               >
                 {l.label}
               </Link>

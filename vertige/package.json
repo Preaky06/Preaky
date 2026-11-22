@@ -12,7 +12,8 @@
     "demo:check": "node scripts/demo/validate-demo.mjs",
     "demo:purge": "node scripts/demo/purge-demo.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "check": "npm run typecheck && npm run lint && npm run demo:check && npm run check:contrast"
+    "check": "npm run typecheck && npm run lint && npm run demo:check && npm run check:contrast",
+    "demo:images": "node scripts/demo/copy-images.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -25,6 +26,7 @@
     "tailwind-merge": "^3.7.1"
   },
   "devDependencies": {
+    "@lobehub/fluent-emoji-3d": "^1.1.0",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",

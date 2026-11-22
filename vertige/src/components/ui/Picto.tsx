@@ -162,7 +162,7 @@ export function Picto({
     <span
       data-tier={tier}
       aria-hidden="true"
-      className={cn("picto-tile inline-grid shrink-0 place-items-center rounded-2xl text-ink", className)}
+      className={cn("inline-grid shrink-0 place-items-center rounded-2xl bg-(--tier) text-white", className)}
       style={{ width: size, height: size }}
     >
       {icon}

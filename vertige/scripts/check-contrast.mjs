@@ -1,23 +1,26 @@
 #!/usr/bin/env node
 /**
- * Vérifie le contraste WCAG AA (≥ 4,5:1) de toutes les paires texte/fond du design system.
+ * Vérifie le contraste WCAG AA (≥ 4,5:1) de toutes les paires texte/fond du design system (thème clair).
  * Usage : npm run check:contrast  (code de sortie ≠ 0 si une paire échoue)
  */
-const BG = "#07070A";
-const SURFACE = "#0F0F14";
-const ELEVATED = "#16161D";
-const INK = "#F4F1EA";
-const MUTED = "#9A9AA6";
+const BG = "#EEF3FA";
+const WHITE = "#FFFFFF";
+const ELEVATED = "#F6F9FD";
+const INK = "#0B1220";
+const MUTED = "#566079";
+const BRAND = "#0B6BCB";
+const BRAND_DEEP = "#0752A0";
+const NIGHT = "#111827"; // carte du palier Vertige
+const GOLD = "#F5C542";
 const TIERS = {
-  "1 Poussière": "#8A8F98",
-  "2 Monnaie": "#C07A45",
-  "3 Quotidien": "#5FD4A6",
-  "4 Confort": "#4F7CFF",
-  "5 Luxe": "#9B6BFF",
-  "6 Démesure": "#FF3D6E",
-  "7 Vertige": "#F5C542",
+  "1 Poussière": "#5B6472",
+  "2 Monnaie": "#A4552A",
+  "3 Quotidien": "#16784F",
+  "4 Confort": "#2B59E6",
+  "5 Luxe": "#7339DB",
+  "6 Démesure": "#CC1D4B",
+  "7 Vertige": "#8A6100",
 };
-const CONF = { A: "#5FD4A6", B: "#8FB0FF", C: "#E8A15A" };
 
 const rgb = (h) => [0, 2, 4].map((i) => parseInt(h.slice(1 + i, 3 + i), 16));
 const lin = (c) => ((c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
@@ -34,23 +37,26 @@ const mix = (top, bottom, a) =>
 
 const pairs = [
   ["ink / fond", INK, BG],
-  ["ink / surface surélevée", INK, ELEVATED],
   ["muted / fond", MUTED, BG],
-  ["muted / surface surélevée", MUTED, ELEVATED],
+  ["muted / surface", MUTED, WHITE],
+  ["muted / champ de recherche", MUTED, ELEVATED],
+  ["blanc / bleu VERTIGE (accueil)", WHITE, BRAND],
+  ["blanc / bleu profond (bas de l'accueil)", WHITE, BRAND_DEEP],
+  ["ink / bouton blanc", INK, WHITE],
+  ["blanc / bouton noir", WHITE, INK],
+  ["or / carte Vertige", GOLD, NIGHT],
+  ["blanc / carte Vertige", WHITE, NIGHT],
 ];
 for (const [name, c] of Object.entries(TIERS)) {
-  // Fond teinté le plus clair rencontré : calque de palier (22 %) sur le fond.
-  const tinted = mix(c, BG, 0.22);
   pairs.push(
+    [`blanc / carte ${name} (teinte de base)`, WHITE, c],
+    // Le texte est en bas de la carte : le dégradé y va de la teinte de base vers 15 % de noir.
+    [`blanc / carte ${name} (zone de texte, bas)`, WHITE, mix("#000000", c, 0.15)],
     [`palier ${name} / fond`, c, BG],
-    [`palier ${name} / surface surélevée`, c, ELEVATED],
-    [`palier ${name} / pastille (12 %)`, c, mix(c, SURFACE, 0.12)],
-    [`fond sombre / palier ${name} (pastille pleine, bouton)`, BG, c],
-    [`ink / fond teinté ${name}`, INK, tinted],
-    [`muted / fond teinté ${name}`, MUTED, tinted],
+    [`palier ${name} / surface`, c, WHITE],
+    [`palier ${name} / pastille (12 %)`, c, mix(c, WHITE, 0.12)],
   );
 }
-for (const [lvl, c] of Object.entries(CONF)) pairs.push([`badge fiabilité ${lvl} / surface`, c, ELEVATED]);
 
 let fails = 0;
 for (const [name, fg, bg] of pairs) {

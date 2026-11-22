@@ -1,43 +1,51 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────────────────────────────────────────
-   VERTIGE — design tokens
-   Couleurs, typo, rayons, courbes. Toute valeur utilisée dans l'UI vient d'ici.
+   VERTIGE — design tokens (thème clair bleu/blanc)
+   Toute valeur utilisée dans l'UI vient d'ici ou de lib/tiers.ts.
    ────────────────────────────────────────────────────────────────────────── */
 @theme {
-  --color-bg: #07070a;
-  --color-surface: #0f0f14;
-  --color-elevated: #16161d;
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-line-strong: rgb(255 255 255 / 0.16);
-  --color-ink: #f4f1ea;
-  --color-muted: #9a9aa6;
+  --color-bg: #eef3fa;
+  --color-surface: #ffffff;
+  --color-elevated: #f6f9fd;
+  --color-line: rgb(11 18 32 / 0.08);
+  --color-line-strong: rgb(11 18 32 / 0.16);
+  --color-ink: #0b1220;
+  --color-muted: #566079;
 
-  --color-tier-1: #8a8f98; /* Poussière — cendre */
-  --color-tier-2: #c07a45; /* Monnaie — cuivre */
-  --color-tier-3: #5fd4a6; /* Quotidien — menthe */
-  --color-tier-4: #4f7cff; /* Confort — bleu électrique */
-  --color-tier-5: #9b6bff; /* Luxe — améthyste */
-  --color-tier-6: #ff3d6e; /* Démesure — rubis */
-  --color-tier-7: #f5c542; /* Vertige — or */
+  /* Bleu VERTIGE (escalier, section d'accueil) */
+  --color-brand: #0b6bcb;
+  --color-brand-deep: #0752a0;
+  --color-brand-soft: #dcebfb;
+  --color-gold: #f5c542;
 
-  --color-conf-a: #5fd4a6;
-  --color-conf-b: #8fb0ff;
-  --color-conf-c: #e8a15a;
+  /* Paliers : teintes profondes (texte blanc ≥ 4,5:1 dessus, et ≥ 4,5:1 sur fond clair) */
+  --color-tier-1: #5b6472; /* Poussière — ardoise */
+  --color-tier-2: #a4552a; /* Monnaie — cuivre */
+  --color-tier-3: #16784f; /* Quotidien — menthe */
+  --color-tier-4: #2b59e6; /* Confort — bleu électrique */
+  --color-tier-5: #7339db; /* Luxe — améthyste */
+  --color-tier-6: #cc1d4b; /* Démesure — rubis */
+  --color-tier-7: #8a6100; /* Vertige — or (texte) ; carte : nuit + or */
 
-  /* Échelle typographique : 96 / 72 / 48 (desktop), réduite proportionnellement sur mobile */
-  --text-title-1: clamp(3.25rem, 8vw, 6rem);
-  --text-title-1--line-height: 0.95;
-  --text-title-2: clamp(2.5rem, 6vw, 4.5rem);
+  --color-conf-a: #16784f;
+  --color-conf-b: #2b59e6;
+  --color-conf-c: #a4552a;
+
+  /* Échelle typographique : 96 / 72 / 48, réduite sur mobile */
+  --text-title-1: clamp(2.75rem, 7.5vw, 6rem);
+  --text-title-1--line-height: 0.98;
+  --text-title-2: clamp(2.25rem, 5.5vw, 4.5rem);
   --text-title-2--line-height: 1;
-  --text-title-3: clamp(2rem, 4vw, 3rem);
+  --text-title-3: clamp(1.75rem, 3.6vw, 3rem);
   --text-title-3--line-height: 1.05;
   --text-body: 1rem;
   --text-body--line-height: 1.55;
   --text-small: 0.8125rem;
   --text-small--line-height: 1.4;
 
-  --radius-card: 20px;
+  --radius-card: 28px;
+  --radius-panel: 32px;
   --radius-pill: 999px;
 
   --ease-vertige: cubic-bezier(0.22, 1, 0.36, 1);
@@ -45,27 +53,27 @@
 }
 
 @theme inline {
-  --font-serif: var(--font-instrument-serif), "Times New Roman", serif;
+  --font-display: var(--font-six-caps), "Arial Narrow", sans-serif;
   --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
-/* Couleur d'accent courante : définie par data-tier sur n'importe quel ancêtre. */
-:root { --tier: var(--color-tier-7); }
-[data-tier="1"] { --tier: var(--color-tier-1); }
-[data-tier="2"] { --tier: var(--color-tier-2); }
-[data-tier="3"] { --tier: var(--color-tier-3); }
-[data-tier="4"] { --tier: var(--color-tier-4); }
-[data-tier="5"] { --tier: var(--color-tier-5); }
-[data-tier="6"] { --tier: var(--color-tier-6); }
-[data-tier="7"] { --tier: var(--color-tier-7); }
+/* Couleur d'accent courante (data-tier sur n'importe quel ancêtre) + variante lumineuse décorative. */
+:root { --tier: var(--color-brand); --tier-glow: #4f9df0; }
+[data-tier="1"] { --tier: var(--color-tier-1); --tier-glow: #8a8f98; }
+[data-tier="2"] { --tier: var(--color-tier-2); --tier-glow: #e09060; }
+[data-tier="3"] { --tier: var(--color-tier-3); --tier-glow: #5fd4a6; }
+[data-tier="4"] { --tier: var(--color-tier-4); --tier-glow: #6f95ff; }
+[data-tier="5"] { --tier: var(--color-tier-5); --tier-glow: #a982ff; }
+[data-tier="6"] { --tier: var(--color-tier-6); --tier-glow: #ff5c86; }
+[data-tier="7"] { --tier: var(--color-tier-7); --tier-glow: #f5c542; }
 
 @layer base {
   html {
     overflow-x: clip;
     background: var(--color-bg);
     color: var(--color-ink);
-    color-scheme: dark;
+    color-scheme: light;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
   }
@@ -79,62 +87,84 @@
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
   }
-  ::selection {
-    background: color-mix(in oklab, var(--tier) 45%, transparent);
-    color: var(--color-ink);
-  }
+  ::selection { background: color-mix(in oklab, var(--color-brand) 25%, transparent); }
   :focus-visible {
-    outline: 2px solid var(--tier);
+    outline: 2px solid var(--color-brand);
     outline-offset: 3px;
-    border-radius: 6px;
+    border-radius: 8px;
   }
-  /* Tout prix animé : chiffres à chasse fixe */
+  /* Chiffres animés : chasse fixe */
   .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .price { font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
    Matières
    ────────────────────────────────────────────────────────────────────────── */
 @layer components {
-  /* Grain SVG fixe, 4 % */
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    pointer-events: none;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* Verre dépoli : navigation et panneaux */
+  /* Verre clair : navigation, panneaux flottants */
   .glass {
-    background: rgb(15 15 20 / 0.6);
+    background: rgb(255 255 255 / 0.72);
+    -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+    backdrop-filter: blur(var(--blur-glass)) saturate(160%);
+    border: 1px solid rgb(255 255 255 / 0.6);
+    box-shadow: 0 8px 32px -12px rgb(11 18 32 / 0.18);
+  }
+  /* Verre sur fond bleu (pastille de stats de l'accueil) */
+  .glass-dark {
+    background: rgb(4 30 66 / 0.32);
     -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(140%);
     backdrop-filter: blur(var(--blur-glass)) saturate(140%);
-    border: 1px solid var(--color-line);
+    border: 1px solid rgb(255 255 255 / 0.18);
   }
 
-  /* Halo de la couleur du palier (radial-gradient, blur 120px, 25 %) */
-  .halo {
-    position: absolute;
-    pointer-events: none;
-    border-radius: 999px;
-    background: radial-gradient(closest-side, var(--tier), transparent);
-    opacity: 0.25;
-    filter: blur(120px);
+  /* Panneau blanc (référence « Supercell ») */
+  .panel {
+    background: var(--color-surface);
+    border-radius: var(--radius-panel);
+    box-shadow: 0 30px 80px -30px rgb(7 82 160 / 0.35), 0 2px 6px rgb(11 18 32 / 0.04);
   }
-  /* Variante sans filtre pour les éléments répétés (150 étages) : même rendu, coût de peinture minimal */
+
+  /* Halo du palier : dégradé radial seul (pas de filtre : coût de peinture minimal) */
   .halo-soft {
     position: absolute;
     pointer-events: none;
-    background: radial-gradient(closest-side, color-mix(in oklab, var(--tier) 25%, transparent), transparent);
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--tier-glow) 28%, transparent), transparent);
   }
 
-  /* Surfaces */
-  .card-surface {
-    background: linear-gradient(180deg, rgb(22 22 29 / 0.92), rgb(15 15 20 / 0.92));
-    border: 1px solid var(--color-line);
+  /* Carte d'objet : fond plein du palier, l'objet 3D dépasse en haut */
+  .price-card {
+    position: relative;
     border-radius: var(--radius-card);
+    color: #fff;
+    background:
+      radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--tier-glow) 55%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in oklab, var(--tier) 82%, white), var(--tier) 45%, color-mix(in oklab, var(--tier) 85%, black));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.25),
+      0 22px 40px -18px color-mix(in oklab, var(--tier) 70%, transparent);
+  }
+  /* Palier Vertige : carte nuit + or, reflet irisé */
+  [data-tier="7"] .price-card,
+  .price-card[data-tier="7"] {
+    color: #fff;
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgb(245 197 66 / 0.35), transparent 70%),
+      linear-gradient(180deg, #1d2740, #111827 55%, #0b1220);
+    box-shadow: inset 0 1px 0 rgb(245 197 66 / 0.35), 0 22px 40px -18px rgb(138 97 0 / 0.6);
+  }
+  .price-card .card-price { color: #fff; }
+  [data-tier="7"] .price-card .card-price,
+  .price-card[data-tier="7"] .card-price { color: var(--color-gold); }
+
+  /* Objet 3D qui dépasse de la carte */
+  .card-object {
+    position: absolute;
+    left: 50%;
+    pointer-events: none;
+    filter: drop-shadow(0 16px 14px rgb(11 18 32 / 0.28));
+    transform: translate3d(-50%, 0, 0);
+    transition: transform 500ms var(--ease-vertige);
   }
 
   /* Reflet or irisé du palier Vertige — boucle de 6 s (transform seulement) */
@@ -149,7 +179,7 @@
     animation: vg-spin 6s linear infinite;
   }
   .text-iridescent {
-    background: linear-gradient(100deg, #f5c542 0%, #fff1c1 30%, #f5c542 45%, #e9b8ff 65%, #f5c542 85%);
+    background: linear-gradient(100deg, #8a6100 0%, #d4a020 30%, #8a6100 45%, #7339db 65%, #8a6100 85%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -161,7 +191,7 @@
   .skeleton {
     position: relative;
     overflow: hidden;
-    background: var(--color-elevated);
+    background: #e3eaf4;
     border-radius: 12px;
   }
   .skeleton::after {
@@ -169,7 +199,7 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
     animation: vg-shimmer 1.4s var(--ease-vertige) infinite;
   }
 
@@ -189,22 +219,20 @@
     transition-delay: calc(var(--i, 0) * 40ms);
   }
 
-  /* Carte inclinable (desktop) — variables pilotées par TiltCard */
+  /* Carte inclinable (desktop) — variables pilotées par TiltController */
   .tilt {
     --rx: 0deg;
     --ry: 0deg;
     --lift: 0px;
     --mx: 50%;
     --my: 50%;
-    position: relative;
     transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(0, var(--lift), 0);
-    transition: transform 500ms var(--ease-vertige), border-color 300ms ease;
+    transition: transform 500ms var(--ease-vertige), box-shadow 300ms ease;
   }
   .tilt[data-hover] {
     --lift: -4px;
     will-change: transform;
-    border-color: color-mix(in oklab, var(--tier) 70%, transparent);
-    transition: transform 120ms linear, border-color 300ms ease;
+    transition: transform 120ms linear, box-shadow 300ms ease;
   }
   .tilt::after {
     content: "";
@@ -213,22 +241,55 @@
     border-radius: inherit;
     pointer-events: none;
     opacity: 0;
-    background: radial-gradient(420px circle at var(--mx) var(--my), color-mix(in oklab, var(--tier) 22%, transparent), transparent 60%);
+    background: radial-gradient(360px circle at var(--mx) var(--my), rgb(255 255 255 / 0.22), transparent 60%);
     transition: opacity 300ms ease;
   }
   .tilt[data-hover]::after { opacity: 1; }
-
-  /* Pictogramme sur dégradé du palier */
-  .picto-tile {
-    background:
-      radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, var(--tier) 55%, transparent), transparent 70%),
-      linear-gradient(160deg, color-mix(in oklab, var(--tier) 30%, var(--color-elevated)), var(--color-surface));
-    border: 1px solid color-mix(in oklab, var(--tier) 35%, transparent);
-  }
+  .tilt[data-hover] .card-object { transform: translate3d(-50%, -8px, 0) scale(1.04); }
 }
 
-/* Étages hors écran : ni style, ni layout, ni peinture (150 étages → coût quasi nul). */
+/* Escalier d'accueil : chaque marche apparaît quand le ruban l'atteint */
+.stair-step {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.92);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: opacity 450ms ease, transform 650ms var(--ease-vertige);
+}
+.stair-step[data-on] { opacity: 1; transform: none; }
+
+/* Sections longues hors écran : ni style, ni layout, ni peinture. */
 .floor { content-visibility: auto; }
+
+/* Barre de défilement horizontale discrète (carrousel) */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Curseurs doubles de la fourchette : seules les poignées captent le pointeur */
+.range-thumb { pointer-events: none; appearance: none; -webkit-appearance: none; background: transparent; }
+.range-thumb::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 4px 12px rgb(11 18 32 / 0.25);
+  cursor: grab;
+}
+.range-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 4px 12px rgb(11 18 32 / 0.25);
+  cursor: grab;
+}
+.range-thumb::-webkit-slider-runnable-track { background: transparent; }
+.range-thumb::-moz-range-track { background: transparent; }
 
 /* ──────────────────────────────────────────────────────────────────────────
    Animations
@@ -242,6 +303,7 @@
 }
 @keyframes vg-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes vg-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@keyframes vg-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
 .rise { animation: vg-rise 600ms var(--ease-vertige) both; animation-delay: calc(var(--d, 0) * 1ms); }
 

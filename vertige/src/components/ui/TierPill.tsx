@@ -20,14 +20,14 @@ export function TierPill({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-small font-medium leading-none whitespace-nowrap",
         variant === "solid"
-          ? "bg-(--tier) text-bg"
+          ? "bg-(--tier) text-white"
           : "border border-[color-mix(in_oklab,var(--tier)_40%,transparent)] bg-[color-mix(in_oklab,var(--tier)_12%,transparent)] text-(--tier)",
         className,
       )}
     >
       <span
         aria-hidden="true"
-        className={cn("size-1.5 rounded-full", variant === "solid" ? "bg-bg" : "bg-(--tier) shadow-[0_0_8px_var(--tier)]")}
+        className={cn("size-1.5 rounded-full", variant === "solid" ? "bg-white" : "bg-(--tier)")}
       />
       {t.name}
       {showIndex && (

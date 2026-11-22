@@ -63,15 +63,15 @@ export function TierFlash() {
           key={flash.key}
           aria-hidden="true"
           data-tier={flash.tier}
-          className="tier-flash pointer-events-none fixed inset-0 z-40 grid place-items-center bg-bg/85"
+          className="tier-flash pointer-events-none fixed inset-0 z-40 grid place-items-center bg-white/85"
         >
           <div className="flex flex-col items-center text-center">
             <span className="line overflow-hidden">
-              <span className="num text-small uppercase tracking-[0.3em] text-muted">
+              <span className="text-[14px] font-semibold uppercase tracking-[0.24em] text-muted">
                 Palier {flash.tier}/{TIER_COUNT}
               </span>
             </span>
-            <span className="line overflow-hidden px-[0.05em] pb-[0.06em] font-serif text-[20vw] leading-[1.05]">
+            <span className="line overflow-hidden px-[0.05em] font-display text-[26vw] uppercase leading-[0.9]">
               <span
                 className={
                   flash.tier === 7

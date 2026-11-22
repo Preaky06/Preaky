@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VERTIGE
 
-## Getting Started
+L'encyclopédie visuelle de tout ce qui a un prix, classé du moins cher au plus cher, sur une seule échelle logarithmique (10⁻⁵ € → 10¹⁴ €).
 
-First, run the development server:
+État : **Phase 1** (identité, design system, page d'accueil). Les 150 prix affichés sont des **données de démonstration non sourcées** (`status = "demo"`, `confidence = "C"`).
+
+## Démarrer
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Commande | Rôle |
+| --- | --- |
+| `npm run check` | typecheck + lint + validation de la démo + contraste WCAG |
+| `npm run demo:build` | régénère `data/demo/ascension.demo.json` depuis `scripts/demo/source.mjs` |
+| `npm run demo:check` | vérifie la démo (statut, fiabilité, prix > 0, devise ISO, date ≤ aujourd'hui, ≥ 15 objets par palier) |
+| `npm run demo:purge` | **supprime toutes les données de démo** en une commande |
+| `npm run demo:images` | copie les illustrations 3D utilisées dans `public/objets/` |
+| `npm run check:contrast` | contrôle ≥ 4,5:1 de toutes les paires texte/fond |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Page d'accueil
 
-## Learn More
+1. **Escalier** (`components/stairs`) : escalier isométrique blanc à reliefs bleus ; le scroll fait monter la caméra sur 7 marches (une par palier), un objet et son prix apparaissent sur chacune, le compteur grimpe. Le scroll écrit directement dans le SVG (viewBox, tracé), sans rendu React par frame.
+2. **Les prix** (`components/explorer`) : fourchettes en puces (une par palier), double curseur logarithmique, recherche tolérante aux accents, carrousel de cartes.
+3. **L'Ascension** (`components/ascension`) : les 150 objets, un par étage, altimètre (règle verticale sur desktop, pastille horizontale sur mobile), portes et flash de palier.
 
-To learn more about Next.js, take a look at the following resources:
+Carte d'objet (`components/ui/PriceCard`) : image, nom, prix. Type de prix, date et fiabilité sont dans l'infobulle de la pastille « ≈ », lus par les lecteurs d'écran et détaillés sur la fiche.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Choix et écarts par rapport au cahier des charges
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Thème clair bleu/blanc** (demandé après coup) au lieu du fond quasi noir. Les 7 couleurs de palier sont assombries pour porter du texte blanc (≥ 4,5:1).
+- **Police du logo provisoire : Six Caps** (Google Fonts, OFL). La police de la référence n'a pas été identifiée ; elle se remplace à un seul endroit (`--font-display`, `src/app/layout.tsx`).
+- **Instrument Serif retirée** : titres et interface en Inter Tight, compteurs en JetBrains Mono.
+- **Grain SVG retiré** (incohérent avec le thème clair).
+- **Illustrations** : Fluent Emoji 3D (© Microsoft, MIT) via `@lobehub/fluent-emoji-3d`. Ce sont des visuels génériques (un même avion pour l'A320 et l'A380). Les photos Wikimedia Commons détourées restent à faire pour les objets vedettes ; `upload.wikimedia.org` est bloqué dans l'environnement de développement actuel.
+- **Framer Motion** n'est pas chargé en Phase 1 : le ressort du compteur à rouleaux est codé à la main (≈ 35 Ko gzip économisés). La dépendance reste pour les transitions de la Phase 3.
+- Catégorie racine ajoutée : **Économie** (PIB, dette publique).
 
-## Deploy on Vercel
+## Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app            routes (/, /objet/[slug], /design, pages « bientôt »)
+src/components     stairs/ explorer/ ascension/ altimeter/ ui/ layout/ brand/
+src/lib            échelle log, paliers, formats fr-FR, types alignés sur le schéma Postgres
+scripts/demo       données de démo (source, build, validation, purge, images)
+data/demo          JSON généré (lu au build)
+```

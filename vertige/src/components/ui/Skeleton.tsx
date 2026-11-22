@@ -7,7 +7,7 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function CardSkeleton() {
   return (
-    <div role="status" aria-busy="true" aria-label="Chargement" className="card-surface flex flex-col gap-4 p-6">
+    <div role="status" aria-busy="true" aria-label="Chargement" className="panel flex flex-col gap-4 p-6">
       <div className="flex items-center gap-4">
         <Skeleton className="size-16 rounded-2xl" />
         <div className="flex flex-1 flex-col gap-2">

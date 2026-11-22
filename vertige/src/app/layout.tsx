@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono, Six_Caps } from "next/font/google";
 import { RevealObserver } from "@/components/layout/RevealObserver";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteNav } from "@/components/layout/SiteNav";
@@ -7,11 +7,11 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { TiltController } from "@/components/layout/TiltController";
 import "./globals.css";
 
-const serif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+// Police d'affichage provisoire (logo, noms de paliers) en attendant la police définitive.
+const display = Six_Caps({
+  variable: "--font-six-caps",
   subsets: ["latin"],
   weight: "400",
-  style: "normal",
   display: "swap",
 });
 
@@ -48,26 +48,25 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#07070A",
-  colorScheme: "dark",
+  themeColor: "#0B6BCB",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="fr" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body>
         <a
           href="#contenu"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[70] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-bg"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-[70] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
         >
           Aller au contenu
         </a>
         <SiteNav />
         <main id="contenu">{children}</main>
         <SiteFooter />
-        <div className="grain" aria-hidden="true" />
         <SmoothScroll />
         <RevealObserver />
         <TiltController />

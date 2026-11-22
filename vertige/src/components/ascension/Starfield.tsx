@@ -30,7 +30,7 @@ export function Starfield() {
       r: Math.random() * 1.2 + 0.25,
       speed: Math.random() * 0.00012 + 0.00003,
       phase: Math.random() * Math.PI * 2,
-      gold: Math.random() < 0.18,
+      gold: Math.random() < 0.6,
     }));
 
     const resize = () => {
@@ -52,9 +52,9 @@ export function Starfield() {
           s.y -= 1;
           s.x = Math.random();
         }
-        const twinkle = 0.55 + 0.45 * Math.sin(now * 0.0018 + s.phase);
+        const twinkle = 0.35 + 0.35 * Math.sin(now * 0.0018 + s.phase);
         ctx.globalAlpha = twinkle;
-        ctx.fillStyle = s.gold ? "#F5C542" : "#F4F1EA";
+        ctx.fillStyle = s.gold ? "#E0A800" : "#0B6BCB";
         ctx.beginPath();
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
