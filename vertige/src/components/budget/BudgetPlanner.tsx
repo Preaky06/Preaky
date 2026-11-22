@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { PriceCard } from "@/components/ui/PriceCard";
+import { Thumb } from "@/components/ui/Thumb";
 import type { CardItem } from "@/lib/card-item";
 import type { ReferenceUnit } from "@/lib/data/reference-units";
 import { formatCountWords, formatPrice } from "@/lib/format";
@@ -84,7 +85,7 @@ export function BudgetPlanner({
           </p>
         </div>
         <label className="flex flex-col gap-2 text-small font-semibold text-muted">
-          Ou fais glisser (échelle logarithmique)
+          Ou fais glisser le curseur, de 1 centime à 100 000 milliards
           <input
             type="range"
             min={LOG_LO}
@@ -134,21 +135,46 @@ export function BudgetPlanner({
               Avec {formatPrice(amount)}, tu peux acheter…
             </h2>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {[...references
-                .filter((r) => amount / r.value_eur >= 1)
-                .map((r) => ({ key: r.id, n: amount / r.value_eur, label: r.plural_fr })),
-                ...multiples.map((m) => ({ key: m.slug, n: amount / m.priceEur, label: stripArticle(m.name) }))]
+              {[
+                ...references
+                  .filter((r) => amount / r.value_eur >= 1)
+                  .map((r) => ({ key: r.id, n: amount / r.value_eur, label: r.plural_fr, image: r.image, tier: 3, unit: r.value_eur, href: null })),
+                ...multiples.map((m) => ({
+                  key: m.slug,
+                  n: amount / m.priceEur,
+                  label: stripArticle(m.name),
+                  image: m.image,
+                  tier: m.tier,
+                  unit: m.priceEur,
+                  href: `/objet/${m.slug}`,
+                })),
+              ]
                 .slice(0, 8)
-                .map((row) => (
-                  <li key={row.key} className="panel flex items-baseline gap-3 p-4">
-                    <span className="price text-[24px] font-extrabold text-brand-deep">{formatCountWords(Math.floor(row.n))} ×</span>
-                    <span className="text-[15px]">{row.label}</span>
-                  </li>
-                ))}
+                .map((row) => {
+                  const body = (
+                    <>
+                      <Thumb src={row.image} tier={row.tier} size={56} />
+                      <span className="flex min-w-0 flex-col">
+                        <span className="price text-[24px] font-extrabold leading-tight text-brand-deep">{formatCountWords(Math.floor(row.n))} ×</span>
+                        <span className="truncate text-[15px]">{row.label}</span>
+                        <span className="text-[12px] text-muted">à {formatPrice(row.unit)} l&apos;unité</span>
+                      </span>
+                    </>
+                  );
+                  return (
+                    <li key={row.key} className="panel">
+                      {row.href ? (
+                        <a href={row.href} className="flex items-center gap-4 rounded-[inherit] p-3 pr-4 hover:bg-elevated">
+                          {body}
+                        </a>
+                      ) : (
+                        <div className="flex items-center gap-4 p-3 pr-4">{body}</div>
+                      )}
+                    </li>
+                  );
+                })}
             </ul>
-            <p className="text-small text-muted">
-              Unités de référence : valeurs de démonstration (fiabilité C), table <code className="num">reference_units</code>.
-            </p>
+            <p className="text-small text-muted">Prix de référence : valeurs de démonstration (fiabilité C).</p>
           </section>
 
           {below.length > 0 && (

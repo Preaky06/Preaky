@@ -28,6 +28,12 @@ const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h ^ c.charCodeAt(
 /** Écart de prix visé à la manche n : de ×100 au début à ×1,2 ensuite (en log10). */
 const targetGap = (round: number) => Math.max(Math.log10(1.2), 2 * (1 - round / 14));
 
+/** Difficulté affichée, en mots plutôt qu'en « écart ×N ». */
+const difficulty = (round: number) => {
+  const ratio = 10 ** targetGap(round);
+  return ratio >= 20 ? "Facile" : ratio >= 4 ? "Moyen" : ratio >= 1.6 ? "Difficile" : "Expert";
+};
+
 function makePair(items: CardItem[], round: number, rnd: () => number): [CardItem, CardItem] {
   const gap = targetGap(round);
   for (let k = 0; k < 400; k++) {
@@ -195,7 +201,11 @@ export function HigherLower({ items }: { items: CardItem[] }) {
     return (
       <div className="panel mx-auto flex max-w-xl flex-col items-center gap-5 p-8 text-center">
         <p className="text-[22px] font-extrabold">Deux objets. Lequel coûte le plus cher ?</p>
-        <p className="text-muted">L&apos;écart de prix se resserre à chaque bonne réponse : de ×100 au début jusqu&apos;à ×1,2.</p>
+        <ol className="flex flex-col gap-1 text-left text-muted">
+          <li>1. Deux objets s&apos;affichent, sans leur prix.</li>
+          <li>2. Touche celui que tu crois le plus cher.</li>
+          <li>3. Au début, les prix sont très éloignés ; ils se rapprochent à chaque manche.</li>
+        </ol>
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={() => start("daily")} className="h-12 rounded-full bg-ink px-6 font-semibold text-white">
             Défi du jour (10 manches)
@@ -220,13 +230,16 @@ export function HigherLower({ items }: { items: CardItem[] }) {
         <span className="rounded-full bg-surface px-4 py-2 font-semibold ring-1 ring-line">
           {game.mode === "daily" ? `Défi du jour · manche ${Math.min(game.round + 1, DAILY_ROUNDS)}/${DAILY_ROUNDS}` : `Série : ${streak}`}
         </span>
-        <span className="rounded-full bg-surface px-4 py-2 font-semibold ring-1 ring-line">Écart visé : ×{(10 ** targetGap(game.round)).toLocaleString("fr-FR", { maximumFractionDigits: 1 })}</span>
+        <span className="rounded-full bg-surface px-4 py-2 font-semibold ring-1 ring-line">Difficulté : {difficulty(game.round)}</span>
         {game.mode === "free" && <span className="rounded-full bg-surface px-4 py-2 font-semibold ring-1 ring-line">Record : {best}</span>}
       </div>
 
-      <p className="text-[22px] font-extrabold" aria-live="polite">
-        {game.picked === null ? "Lequel est le plus cher ?" : game.results.at(-1) ? "Bien vu." : "Raté."}
-      </p>
+      <div className="flex flex-col items-center gap-1 text-center">
+        <p className="text-[22px] font-extrabold" aria-live="polite">
+          {game.picked === null ? "Lequel est le plus cher ?" : game.results.at(-1) ? "Bien vu." : "Raté."}
+        </p>
+        {game.picked === null && <p className="text-muted">Touche la carte de ton choix.</p>}
+      </div>
 
       <div className="grid w-full max-w-3xl gap-x-6 gap-y-20 pt-16 sm:grid-cols-2">
         {[x, y].map((item, i) => {

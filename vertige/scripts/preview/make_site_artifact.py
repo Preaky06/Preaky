@@ -1,8 +1,10 @@
 """Aperçu complet de VERTIGE (toutes les pages) publiable comme artefact multi-fichiers.
 
-- Chaque page pré-rendue de Next devient un fichier HTML à la racine (objet-<slug>.html, …).
+- Chaque page pré-rendue de Next devient un fichier HTML à la racine (explorer.html, categorie-<slug>.html, …).
+- Les 1 000 fiches passent par une seule page, apercu-fiche.html#<slug> (route /apercu/fiche) :
+  des fichiers séparés dépasseraient la limite de fichiers d'une version d'artefact.
 - Les chemins absolus deviennent relatifs ; les liens internes sont redirigés vers ces fichiers.
-- Les 265 visuels sont regroupés dans images.js (la limite de fichiers par version l'impose).
+- Les visuels sont regroupés dans images.js (la limite de fichiers par version l'impose).
 - La page principale (index.html) est enveloppée par l'artefact : son en-tête Next est remonté
   dans <head> avant l'hydratation.
 """
@@ -19,7 +21,8 @@ PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAA
 pages = {"index.html": srv / "index.html", "accueil.html": srv / "index.html"}
 for name in ["explorer", "duel", "jeu", "budget", "methodologie", "design"]:
     pages[f"{name}.html"] = srv / f"{name}.html"
-for sub in ["objet", "categorie"]:
+pages["apercu-fiche.html"] = srv / "apercu/fiche.html"
+for sub in ["categorie"]:
     for f in sorted((srv / sub).glob("*.html")):
         if not f.name.startswith("["):
             pages[f"{sub}-{f.name}"] = f
@@ -79,8 +82,10 @@ BOOT = r"""<script>
     var s = path.indexOf("?"); if (s !== -1) { q = path.slice(s); path = path.slice(0, s); }
     path = path.replace(/\/$/, "");
     if (path === "") return { home: true, hash: hash };
-    var m = /^\/(objet|categorie)\/([a-z0-9-]+)$/.exec(path);
-    if (m) return { url: m[1] + "-" + m[2] + ".html" + q + hash };
+    var m = /^\/objet\/([a-z0-9-]+)$/.exec(path);
+    if (m) return { url: "apercu-fiche.html#" + m[1] };
+    m = /^\/categorie\/([a-z0-9-]+)$/.exec(path);
+    if (m) return { url: "categorie-" + m[1] + ".html" + q + hash };
     m = /^\/(explorer|duel|jeu|budget|methodologie|design)$/.exec(path);
     if (m) return { url: m[1] + ".html" + q + hash };
     return null;

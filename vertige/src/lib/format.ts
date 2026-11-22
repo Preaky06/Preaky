@@ -158,3 +158,20 @@ export function formatCountWords(n: number): string {
   }
   return nf({ maximumFractionDigits: 0 }).format(n);
 }
+
+/** Durée de travail lisible à partir d'un nombre d'heures (1 an = 1 607 h, base légale à 35 h). */
+export function formatWorkTime(hours: number): string {
+  const n = (x: number, one: string, many: string) => {
+    const v = x < 10 ? Math.round(x * 10) / 10 : Math.round(x);
+    return `${nf({ maximumFractionDigits: 1 }).format(v)} ${v < 2 ? one : many}`;
+  };
+  const sec = hours * 3600;
+  if (sec < 1e-3) return n(sec * 1e6, "microseconde", "microsecondes");
+  if (sec < 1) return n(sec * 1e3, "milliseconde", "millisecondes");
+  if (hours < 1 / 60) return n(sec, "seconde", "secondes");
+  if (hours < 1) return n(hours * 60, "minute", "minutes");
+  if (hours < 1607) return n(hours, "heure", "heures");
+  const years = hours / 1607;
+  if (years < 1e6) return n(years, "année", "années");
+  return `${formatCountWords(years)} d'années`;
+}

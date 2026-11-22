@@ -16,8 +16,8 @@ export default async function ExplorerPage() {
       <header className="flex flex-col gap-2">
         <h1 className="text-title-2 font-extrabold tracking-tight">Explorer</h1>
         <p className="text-lg text-muted">
-          <span className="price font-bold text-ink">{formatInt(stats.count)}</span> prix ·{" "}
-          <span className="price font-bold text-ink">{stats.categories}</span> catégories · du moins cher au plus cher.
+          Les <span className="price font-bold text-ink">{formatInt(stats.count)}</span> objets de VERTIGE. Cherche un nom ou choisis une
+          fourchette de prix.
         </p>
       </header>
       <CatalogExplorer items={items.map(toCardItem)} />

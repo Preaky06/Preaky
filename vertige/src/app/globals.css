@@ -157,6 +157,26 @@
   [data-tier="7"] .price-card .card-price,
   .price-card[data-tier="7"] .card-price { color: var(--color-gold); }
 
+  /* Dimensions de la carte d'objet (variables posées par PriceCard, ou .pc-auto) */
+  .pc { width: var(--pc-w); padding-top: var(--pc-ov); }
+  .pc .price-card { height: var(--pc-h); }
+  .pc .card-object { top: calc(-1 * var(--pc-ov)); width: var(--pc-img); height: var(--pc-img); object-fit: contain; }
+  .pc-auto { --pc-w: 160px; --pc-h: 180px; --pc-img: 112px; --pc-ov: 50px; }
+  @media (min-width: 640px) {
+    .pc-auto { --pc-w: 200px; --pc-h: 216px; --pc-img: 140px; --pc-ov: 62px; }
+  }
+
+  /* Vignette encadrée : l'image tient entière dans un carré arrondi teinté du palier */
+  .thumb {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 30%;
+    background: radial-gradient(circle at 50% 30%, #fff 0%, color-mix(in oklab, var(--tier) 16%, white) 100%);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tier) 22%, transparent);
+  }
+  .thumb > img { width: 80%; height: 80%; object-fit: contain; filter: drop-shadow(0 4px 4px rgb(11 18 32 / 0.18)); }
+
   /* Objet 3D qui dépasse de la carte */
   .card-object {
     position: absolute;

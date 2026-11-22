@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { Thumb } from "@/components/ui/Thumb";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PriceCard } from "@/components/ui/PriceCard";
@@ -66,12 +66,8 @@ export default async function CategoriePage({ params }: PageProps<"/categorie/[s
         <p className="text-muted">Du moins cher au plus cher. La barre situe chaque prix sur l&apos;échelle complète de VERTIGE.</p>
         <ol className="flex flex-col">
           {items.map((item, i) => (
-            <li key={item.slug} data-tier={item.tier} className="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-2.5 sm:grid-cols-[2.5rem_minmax(0,1fr)_12rem_auto]">
-              {item.image_url ? (
-                <Image src={item.image_url} alt="" width={40} height={40} unoptimized className="size-10" />
-              ) : (
-                <span className="size-10" />
-              )}
+            <li key={item.slug} data-tier={item.tier} className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-2.5 sm:grid-cols-[3rem_minmax(0,1fr)_12rem_auto]">
+              <Thumb src={item.image_url} tier={item.tier} size={48} />
               <a href={`/objet/${item.slug}`} className="min-w-0 truncate text-[15px] font-semibold hover:underline">
                 <span className="mr-2 tabular-nums text-muted">{i + 1}.</span>
                 {item.name_fr}

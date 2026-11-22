@@ -30,3 +30,13 @@ export const CONFIDENCE_LABEL: Record<Confidence, string> = {
   B: "Source secondaire fiable",
   C: "Estimation à vérifier",
 };
+
+/** Nom de pays en français à partir du code ISO (EU = Union européenne). */
+export const regionName = (() => {
+  try {
+    const dn = new Intl.DisplayNames(["fr"], { type: "region" });
+    return (code: string) => (code === "EU" ? "Union européenne" : (dn.of(code) ?? code));
+  } catch {
+    return (code: string) => code;
+  }
+})();

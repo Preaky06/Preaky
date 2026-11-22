@@ -1,12 +1,16 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import type { CardItem } from "@/lib/card-item";
 import { formatObservedAt, formatPrice } from "@/lib/format";
 import { CONFIDENCE_LABEL, PRICE_TYPE_LABEL } from "@/lib/labels";
 import { cn } from "@/lib/utils";
 
 const SIZES = {
+  sm: { width: 160, card: 180, image: 112, overlap: 50, name: "text-[14px]", price: "text-[20px]" },
   md: { width: 200, card: 216, image: 140, overlap: 62, name: "text-[16px]", price: "text-[24px]" },
   lg: { width: 320, card: 300, image: 210, overlap: 96, name: "text-[20px]", price: "text-[34px]" },
+  /** « sm » sur mobile, « md » dès 640 px (dimensions en CSS : .pc-auto dans globals.css). */
+  auto: { width: 0, card: 0, image: 0, overlap: 0, name: "text-[14px] sm:text-[16px]", price: "text-[20px] sm:text-[24px]" },
 } as const;
 
 /**
@@ -27,16 +31,20 @@ export function PriceCard({
   priority?: boolean;
 }) {
   const s = SIZES[size];
+  const dims =
+    size === "auto"
+      ? undefined
+      : ({ "--pc-w": `${s.width}px`, "--pc-h": `${s.card}px`, "--pc-img": `${s.image}px`, "--pc-ov": `${s.overlap}px` } as CSSProperties);
   const details = `${PRICE_TYPE_LABEL[item.priceType]} · relevé ${formatObservedAt(item.observedAt)} · fiabilité ${item.confidence} (${CONFIDENCE_LABEL[item.confidence].toLowerCase()})${item.status === "demo" ? " · donnée de démonstration" : ""}`;
 
   return (
     <a
       href={`/objet/${item.slug}`}
       data-tier={item.tier}
-      className={cn("group relative block shrink-0 rounded-[28px] focus-visible:outline-offset-4", className)}
-      style={{ width: s.width, paddingTop: s.overlap }}
+      className={cn("pc group relative block shrink-0 rounded-[28px] focus-visible:outline-offset-4", size === "auto" && "pc-auto", className)}
+      style={dims}
     >
-      <div className="price-card tilt flex flex-col justify-end p-5" style={{ height: s.card }}>
+      <div className={cn("price-card tilt flex flex-col justify-end", size === "sm" || size === "auto" ? "p-4 sm:p-5" : "p-5")}>
         {item.image && (
           <Image
             src={item.image}
@@ -46,7 +54,6 @@ export function PriceCard({
             unoptimized
             priority={priority}
             className="card-object"
-            style={{ top: -s.overlap, width: s.image, height: s.image }}
           />
         )}
         <span

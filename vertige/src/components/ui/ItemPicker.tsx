@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { Search } from "lucide-react";
 import { useId, useMemo, useState } from "react";
 import type { CardItem } from "@/lib/card-item";
 import { formatPrice } from "@/lib/format";
 import { matchScore } from "@/lib/search";
 import { cn } from "@/lib/utils";
+import { Thumb } from "./Thumb";
 
 /** Champ de recherche d'objet (motif ARIA « combobox » avec liste de suggestions). */
 export function ItemPicker({
@@ -99,7 +99,7 @@ export function ItemPicker({
               data-tier={item.tier}
               className={cn("flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2", i === active && "bg-elevated")}
             >
-              {item.image && <Image src={item.image} alt="" width={32} height={32} unoptimized className="size-8" />}
+              <Thumb src={item.image} tier={item.tier} size={40} />
               <span className="min-w-0 flex-1 truncate text-[14px] font-medium">{item.name}</span>
               <span className="price shrink-0 text-[14px] font-bold text-(--tier)">{formatPrice(item.priceEur)}</span>
             </li>

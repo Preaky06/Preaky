@@ -17,7 +17,12 @@ export interface CardItem {
   country: string | null;
 }
 
-export const toCardItem = (i: ItemWithPrice): CardItem => ({
+/** Champs lus par toCardItem (une fiche réduite de l'aperçu suffit). */
+type CardSource = Pick<ItemWithPrice, "slug" | "name_fr" | "price_eur" | "log_price" | "tier" | "image_url" | "status" | "category_id"> & {
+  price: Pick<ItemWithPrice["price"], "confidence" | "price_type" | "observed_at" | "country">;
+};
+
+export const toCardItem = (i: CardSource): CardItem => ({
   slug: i.slug,
   name: i.name_fr,
   priceEur: i.price_eur,

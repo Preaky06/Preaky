@@ -83,6 +83,9 @@ export function DuelArena({ items, initialA, initialB }: { items: CardItem[]; in
 
   return (
     <div className="flex flex-col gap-8">
+      <p className="text-center text-muted">
+        Tape un nom dans chaque case, ou essaie un <strong className="font-semibold text-ink">duel aléatoire</strong>.
+      </p>
       <div className="grid items-start gap-6 md:grid-cols-[1fr_auto_1fr]">
         {([a, null, b] as const).map((item, col) =>
           item === null ? (
@@ -134,9 +137,9 @@ export function DuelArena({ items, initialA, initialB }: { items: CardItem[]; in
               </span>
               <span className="text-[clamp(1.1rem,2.4vw,1.5rem)] font-semibold">{stripArticle(small.name)}</span>
             </h2>
-            <p className="text-small text-muted">
-              Rapport exact : <span className="price font-semibold text-ink">{formatRatio(ratio)}</span> · {formatPrice(big.priceEur)} contre{" "}
-              {formatPrice(small.priceEur)}
+            <p className="text-muted">
+              <span className="price font-semibold text-ink">{formatPrice(big.priceEur)}</span> contre{" "}
+              <span className="price font-semibold text-ink">{formatPrice(small.priceEur)}</span>
             </p>
 
             {/* Barres logarithmiques */}
@@ -156,7 +159,9 @@ export function DuelArena({ items, initialA, initialB }: { items: CardItem[]; in
                   <span className="text-[12px] text-muted">Palier {getTier(it.tier).name}</span>
                 </div>
               ))}
-              <p className="text-[12px] text-muted">Échelle logarithmique : chaque dixième de barre représente environ deux ordres de grandeur.</p>
+              <p className="text-[12px] text-muted">
+                Barres à l&apos;échelle de VERTIGE : de 0,00001 € tout à gauche à 100 000 milliards d&apos;euros tout à droite.
+              </p>
             </div>
 
             {/* Pluie d'icônes */}
@@ -164,8 +169,8 @@ export function DuelArena({ items, initialA, initialB }: { items: CardItem[]; in
               <div className="flex w-full flex-col items-center gap-3">
                 <p className="text-small font-semibold text-muted">
                   {ratio > RAIN_MAX
-                    ? `${RAIN_MAX} × ${stripArticle(small.name)} affichés, sur ${formatRatio(ratio).replace("×", "")}`
-                    : `${rain} × ${stripArticle(small.name)}`}
+                    ? `En voici ${RAIN_MAX}. Il en faudrait ${formatCountWords(ratio)}.`
+                    : `${formatCountWords(Math.max(1, rain))} × ${stripArticle(small.name)}`}
                 </p>
                 <IconRain
                   key={`${big.slug}-${small.slug}`}
