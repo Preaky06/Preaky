@@ -1,6 +1,6 @@
 // Service worker : l'appli fonctionne hors connexion une fois ouverte une première fois.
-const VERSION = 'preaky-mind-v2';
-const FONT_CACHE = 'preaky-mind-fonts';
+const VERSION = 'preaky-casse-tetes-v3';
+const FONT_CACHE = 'preaky-fonts';
 const SHELL = [
   './',
   './index.html',
@@ -10,33 +10,23 @@ const SHELL = [
   './icons/icon-192.png',
   './icons/apple-touch-icon.png',
   './js/audio.js',
-  './js/avatar.js',
-  './js/content.js',
-  './js/engine.js',
-  './js/fx.js',
   './js/icons.js',
-  './js/illus.js',
   './js/install.js',
   './js/main.js',
-  './js/player.js',
+  './js/play.js',
   './js/rng.js',
   './js/screens.js',
   './js/store.js',
   './js/ui.js',
   './js/util.js',
-  './js/games/arrows.js',
-  './js/games/balance.js',
-  './js/games/bubbles.js',
-  './js/games/constellation.js',
-  './js/games/digits.js',
-  './js/games/dots.js',
-  './js/games/draw.js',
-  './js/games/golf.js',
-  './js/games/index.js',
-  './js/games/oddone.js',
-  './js/games/patterns.js',
-  './js/games/slicer.js',
-  './js/games/tug.js',
+  './js/puzzles/code.js',
+  './js/puzzles/hanoi.js',
+  './js/puzzles/index.js',
+  './js/puzzles/interrupteurs.js',
+  './js/puzzles/logimage.js',
+  './js/puzzles/mots.js',
+  './js/puzzles/sudoku.js',
+  './js/puzzles/taquin.js',
 ];
 
 self.addEventListener('install', event => {

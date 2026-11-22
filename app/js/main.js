@@ -1,71 +1,50 @@
-// Démarrage, navigation par onglets, réglages globaux.
+// Démarrage, navigation (par ancre d'URL, pour que le bouton retour du téléphone marche), réglages.
 import { h } from './util.js';
-import { icon } from './icons.js';
 import * as store from './store.js';
 import { configureFeedback, unlockAudio } from './audio.js';
-import { setRerender } from './player.js';
-import { renderHome, renderGames, renderLeaderboard, renderShop, renderMe, renderOnboarding } from './screens.js';
-
-const TABS = [
-  ['accueil', 'Accueil', 'home', renderHome],
-  ['jeux', 'Jeux', 'games', renderGames],
-  ['classement', 'Classement', 'podium', renderLeaderboard],
-  ['boutique', 'Boutique', 'shop', renderShop],
-  ['moi', 'Moi', 'user', renderMe],
-];
+import { renderHome, renderPuzzle, renderSettings } from './screens.js';
+import { renderPlay, leavePlay } from './play.js';
+import { puzzleById } from './puzzles/index.js';
 
 const root = document.getElementById('app');
-let view = null;
-let nav = null;
-let currentTab = null;
+const view = h('main', { class: 'shell', id: 'view' });
+root.replaceChildren(view);
+
+const stack = [];
+let themeSetByApp = false;
 
 const app = {
+  go(target) {
+    if (location.hash.slice(1) === target) route();
+    else location.hash = target;
+  },
+  // Retour : on remonte l'historique si on vient de l'appli, sinon on va à l'écran parent.
+  back(fallback) {
+    if (stack.length > 1) history.back();
+    else app.go(fallback);
+  },
   applySettings() {
     const s = store.settings();
-    document.documentElement.dataset.text = s.text;
+    const el = document.documentElement;
+    el.dataset.text = s.text;
+    if (s.theme === 'auto') { if (themeSetByApp) { delete el.dataset.theme; themeSetByApp = false; } }
+    else { el.dataset.theme = s.theme; themeSetByApp = true; }
     configureFeedback(s);
-  },
-  start() {
-    view = h('main', { class: 'shell', id: 'view' });
-    nav = h('nav', { class: 'nav', 'aria-label': 'Navigation principale' },
-      h('div', { class: 'nav-inner' }, TABS.map(([id, label, ic]) => h('a', { href: `#${id}`, class: 'nav-item', 'data-tab': id },
-        h('span', { class: 'nav-ic' }, icon(ic)),
-        h('span', { class: 'nav-label' }, label)))));
-    root.replaceChildren(view, nav);
-    route({ focus: false });
-  },
-  restart() {
-    app.applySettings();
-    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
-    view = null;
-    renderOnboarding(root, app);
-  },
-  refresh({ keepScroll = false } = {}) {
-    const y = window.scrollY;
-    route({ focus: false, keepScroll });
-    if (keepScroll) window.scrollTo(0, y);
   },
 };
 
-function route({ focus = true, keepScroll = false } = {}) {
-  if (!view || !store.db().onboarded) return;
+function route() {
   const hash = location.hash.slice(1);
-  const tab = TABS.find(t => t[0] === hash) || TABS[0];
-  nav.querySelectorAll('.nav-item').forEach(a => {
-    if (a.dataset.tab === tab[0]) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
-  });
-  document.body.dataset.tab = tab[0];
-  const changed = currentTab !== tab[0];
-  currentTab = tab[0];
-  tab[3](view, app);
-  if (changed && !keepScroll) window.scrollTo(0, 0);
-  if (focus && changed) view.querySelector('[data-focus]')?.focus({ preventScroll: true });
-}
-
-function injectDefs() {
-  document.body.insertAdjacentHTML('beforeend',
-    '<svg class="defs" aria-hidden="true" focusable="false"><defs><pattern id="pm-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" style="fill:#fff"/><rect width="3.2" height="7" style="fill:#1E1A16"/></pattern></defs></svg>');
+  if (stack.length > 1 && stack[stack.length - 2] === hash) stack.pop();
+  else if (stack[stack.length - 1] !== hash) stack.push(hash);
+  leavePlay();
+  document.body.dataset.screen = hash === 'jouer' ? 'play' : 'menu';
+  if (hash === 'jouer') renderPlay(view, app);
+  else if (hash === 'reglages') renderSettings(view, app);
+  else if (puzzleById(hash)) renderPuzzle(view, app, hash);
+  else renderHome(view, app);
+  window.scrollTo(0, 0);
+  view.querySelector('[data-focus]')?.focus({ preventScroll: true });
 }
 
 function registerServiceWorker() {
@@ -74,16 +53,10 @@ function registerServiceWorker() {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
-function boot() {
-  store.load();
-  app.applySettings();
-  injectDefs();
-  setRerender(() => route({ focus: false, keepScroll: true }));
-  addEventListener('hashchange', () => route());
-  document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
-  if (store.db().onboarded) app.start();
-  else renderOnboarding(root, app);
-  registerServiceWorker();
-}
-
-boot();
+store.load();
+app.applySettings();
+addEventListener('hashchange', route);
+document.addEventListener('pointerdown', unlockAudio, { once: true, capture: true });
+if (location.hash === '#jouer') history.replaceState(null, '', location.pathname + location.search);
+route();
+registerServiceWorker();
