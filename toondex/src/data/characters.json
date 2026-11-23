@@ -1,0 +1,242 @@
+{
+  "one-piece": {
+    "name": "Luffy Monkey",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b40-MNypXsxSRb1R.png",
+    "source": "https://anilist.co/character/40",
+    "anilist": "https://anilist.co/anime/21"
+  },
+  "naruto": {
+    "name": "Naruto Uzumaki",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b17-phjcWCkRuIhu.png",
+    "source": "https://anilist.co/character/17",
+    "anilist": "https://anilist.co/anime/20"
+  },
+  "dragon-ball": {
+    "name": "Gokuu Son",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/246-wsRRr6z1kii8.png",
+    "source": "https://anilist.co/character/246",
+    "anilist": "https://anilist.co/anime/223"
+  },
+  "dragon-ball-z": {
+    "name": "Vegeta",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b913-NIFkKazWM8VO.png",
+    "source": "https://anilist.co/character/913",
+    "anilist": "https://anilist.co/anime/813"
+  },
+  "l-attaque-des-titans": {
+    "name": "Eren Yeager",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b40882-dsj7IP943WFF.jpg",
+    "source": "https://anilist.co/character/40882",
+    "anilist": "https://anilist.co/anime/16498"
+  },
+  "death-note": {
+    "name": "L Lawliet",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b71-1W4panC53vfs.png",
+    "source": "https://anilist.co/character/71",
+    "anilist": "https://anilist.co/anime/1535"
+  },
+  "fullmetal-alchemist-brotherhood": {
+    "name": "Edward Elric",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b11-TA5Nuk7EDUZG.jpg",
+    "source": "https://anilist.co/character/11",
+    "anilist": "https://anilist.co/anime/5114"
+  },
+  "demon-slayer": {
+    "name": "Tanjirou Kamado",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b126071-BTNEc1nRIv68.png",
+    "source": "https://anilist.co/character/126071",
+    "anilist": "https://anilist.co/anime/101922"
+  },
+  "jujutsu-kaisen": {
+    "name": "Satoru Gojou",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b127691-9zqh1xpIubn7.png",
+    "source": "https://anilist.co/character/127691",
+    "anilist": "https://anilist.co/anime/113415"
+  },
+  "my-hero-academia": {
+    "name": "Izuku Midoriya",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b89028-8w1I9o1ISHMg.png",
+    "source": "https://anilist.co/character/89028",
+    "anilist": "https://anilist.co/anime/21459"
+  },
+  "hunter-x-hunter": {
+    "name": "Gon Freecss",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b30-lyFExKyDhefc.jpg",
+    "source": "https://anilist.co/character/30",
+    "anilist": "https://anilist.co/anime/11061"
+  },
+  "cowboy-bebop": {
+    "name": "Spike Spiegel",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b1-ChxaldmieFlQ.png",
+    "source": "https://anilist.co/character/1",
+    "anilist": "https://anilist.co/anime/1"
+  },
+  "neon-genesis-evangelion": {
+    "name": "Asuka Langley Souryuu",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b94-d631a3Z2KPvd.png",
+    "source": "https://anilist.co/character/94",
+    "anilist": "https://anilist.co/anime/30"
+  },
+  "one-punch-man": {
+    "name": "Saitama",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b73935-ON5d0mAcrItd.jpg",
+    "source": "https://anilist.co/character/73935",
+    "anilist": "https://anilist.co/anime/21087"
+  },
+  "spy-x-family": {
+    "name": "Anya Forger",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b138100-4Li0tWRCa5bQ.png",
+    "source": "https://anilist.co/character/138100",
+    "anilist": "https://anilist.co/anime/140960"
+  },
+  "chainsaw-man": {
+    "name": "Denji",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b130102-FO1VHNnEnLlB.png",
+    "source": "https://anilist.co/character/130102",
+    "anilist": "https://anilist.co/anime/127230"
+  },
+  "haikyu": {
+    "name": "Shouyou Hinata",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b64769-WoWlCMLLgJ14.png",
+    "source": "https://anilist.co/character/64769",
+    "anilist": "https://anilist.co/anime/20464"
+  },
+  "mob-psycho-100": {
+    "name": "Shigeo Kageyama",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b89616-dXmdOc7L6SDi.png",
+    "source": "https://anilist.co/character/89616",
+    "anilist": "https://anilist.co/anime/21507"
+  },
+  "steins-gate": {
+    "name": "Rintarou Okabe",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b35252-DY9TW6pusqeh.png",
+    "source": "https://anilist.co/character/35252",
+    "anilist": "https://anilist.co/anime/9253"
+  },
+  "code-geass": {
+    "name": "Lelouch Lamperouge",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b417-gVLmIJu9phcK.png",
+    "source": "https://anilist.co/character/417",
+    "anilist": "https://anilist.co/anime/1575"
+  },
+  "tokyo-ghoul": {
+    "name": "Ken Kaneki",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b87275-mb13EWZBdbh3.png",
+    "source": "https://anilist.co/character/87275",
+    "anilist": "https://anilist.co/anime/20605"
+  },
+  "sailor-moon": {
+    "name": "Usagi Tsukino",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2030-GQvVYPEYkXCy.jpg",
+    "source": "https://anilist.co/character/2030",
+    "anilist": "https://anilist.co/anime/530"
+  },
+  "pokemon": {
+    "name": "Pikachu",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b3891-edgrZOgCJ9do.jpg",
+    "source": "https://anilist.co/character/3891",
+    "anilist": "https://anilist.co/anime/527"
+  },
+  "les-chevaliers-du-zodiaque": {
+    "name": "Seiya",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/2285.jpg",
+    "source": "https://anilist.co/character/2285",
+    "anilist": "https://anilist.co/anime/1254"
+  },
+  "olive-et-tom": {
+    "name": "Tsubasa Oozora",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b5620-AATHkO6L6JzX.jpg",
+    "source": "https://anilist.co/character/5620",
+    "anilist": "https://anilist.co/anime/2116"
+  },
+  "vinland-saga": {
+    "name": "Thorfinn Karlsefni",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b10138-zOPrka0ddZOR.png",
+    "source": "https://anilist.co/character/10138",
+    "anilist": "https://anilist.co/anime/101348"
+  },
+  "frieren": {
+    "name": "Frieren",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b176754-PCnpqIOkjhFk.png",
+    "source": "https://anilist.co/character/176754",
+    "anilist": "https://anilist.co/anime/154587"
+  },
+  "bleach": {
+    "name": "Ichigo Kurosaki",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b5-a7bkJgjhhigE.png",
+    "source": "https://anilist.co/character/5",
+    "anilist": "https://anilist.co/anime/269"
+  },
+  "black-clover": {
+    "name": "Asta",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b123285-tKijiuQErDS0.png",
+    "source": "https://anilist.co/character/123285",
+    "anilist": "https://anilist.co/anime/97940"
+  },
+  "blue-lock": {
+    "name": "Yoichi Isagi",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b140856-wVzKSyvU7R5B.png",
+    "source": "https://anilist.co/character/140856",
+    "anilist": "https://anilist.co/anime/137822"
+  },
+  "the-promised-neverland": {
+    "name": "Emma",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b121725-LQciVJOjnMVh.png",
+    "source": "https://anilist.co/character/121725",
+    "anilist": "https://anilist.co/anime/101759"
+  },
+  "assassination-classroom": {
+    "name": "Koro-sensei",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b65643-jimrOw0RGtoB.png",
+    "source": "https://anilist.co/character/65643",
+    "anilist": "https://anilist.co/anime/20755"
+  },
+  "dr-stone": {
+    "name": "Senkuu Ishigami",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b124142-XUO1g7wRqkaT.png",
+    "source": "https://anilist.co/character/124142",
+    "anilist": "https://anilist.co/anime/105333"
+  },
+  "le-voyage-de-chihiro": {
+    "name": "Chihiro Ogino",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b384-AoWCsQyG0WI7.png",
+    "source": "https://anilist.co/character/384",
+    "anilist": "https://anilist.co/anime/199"
+  },
+  "mon-voisin-totoro": {
+    "name": "Totoro",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b269-sbPL4w1ygjSe.jpg",
+    "source": "https://anilist.co/character/269",
+    "anilist": "https://anilist.co/anime/523"
+  },
+  "princesse-mononoke": {
+    "name": "San",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2727-eH2xoFpmfbS4.png",
+    "source": "https://anilist.co/character/2727",
+    "anilist": "https://anilist.co/anime/164"
+  },
+  "your-name": {
+    "name": "Mitsuha Miyamizu",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b121514-MGI7JRluscpz.png",
+    "source": "https://anilist.co/character/121514",
+    "anilist": "https://anilist.co/anime/21519"
+  },
+  "akira": {
+    "name": "Shoutarou Kaneda",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2588-OfACKXYm2lkV.png",
+    "source": "https://anilist.co/character/2588",
+    "anilist": "https://anilist.co/anime/47"
+  },
+  "le-chateau-ambulant": {
+    "name": "Howl",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b507-g9yz1GTLtPla.jpg",
+    "source": "https://anilist.co/character/507",
+    "anilist": "https://anilist.co/anime/431"
+  },
+  "le-tombeau-des-lucioles": {
+    "name": "Setsuko",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b495-vzUTVQ5RMiJN.png",
+    "source": "https://anilist.co/character/495",
+    "anilist": "https://anilist.co/anime/578"
+  }
+}

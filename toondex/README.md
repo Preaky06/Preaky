@@ -41,11 +41,16 @@ Toutes les valeurs sont dans `src/lib/rules.ts`.
 
 Vérification : `npm run check:catalogue`.
 
-Chaque carte montre un personnage 2D original (`src/components/Mascot.tsx`), choisi selon le premier genre de l'œuvre : astronaute, alien ou robot pour la science-fiction, zombie pour l'horreur, détective ou espion pour le policier et le thriller, magicien pour la fantasy, etc. (`archetypeFor` dans `src/lib/catalogue.ts`). Peau, tenue, coiffure et expression varient selon l'identifiant. Aucun personnage, affiche ni image officielle n'est utilisé : les personnages des œuvres sont protégés. Les titres et les informations factuelles (année, pays, genre) sont cités à titre d'information.
+### Personnages
+
+- **Anime et films d'animation japonais (40 cartes)** : image officielle du personnage principal, récupérée sur AniList par `node scripts/fetch-characters.mjs` et enregistrée dans `src/data/characters.json` (nom, URL de l'image, page source). Le personnage voulu peut être imposé dans `PREFER` (sinon : le principal le plus populaire). Les images sont affichées depuis le CDN d'AniList, propriété de leurs ayants droit, usage non commercial, source citée sur la fiche et en pied de page.
+- **Autres cartes** : personnage 2D original (`src/components/Mascot.tsx`) choisi selon le premier genre de l'œuvre (`archetypeFor` dans `src/lib/catalogue.ts`). Aucune source libre ne fournit d'images des personnages des séries animées et films d'animation occidentaux, et les séries ou films en prises de vue réelles n'ont pas de personnages dessinés.
+
+Les titres et les informations factuelles (année, pays, genre) sont cités à titre d'information.
 
 ## Direction artistique
 
-- Titrage : Sigmar (Google Fonts), lettres légèrement penchées et décalées une à une (`src/components/Wobble.tsx`). Texte courant : Rubik.
+- Titrage : Sigmar (Google Fonts), lettres droites ; `src/components/Wobble.tsx` colore les grands titres lettre par lettre. Texte courant : Rubik.
 - Couleurs : bleu électrique `#3B4CFF`, encre `#15161C`, lilas, orange, citron vert, rose.
 - Pages en panneaux arrondis blancs, sombres et lilas, bandeau défilant, gants de dessin animé et mascotte télé « Toono » (`src/components/Cartoon.tsx`).
 - Cartes façon jeu de cartes : fond de la couleur du type, fenêtre avec le personnage, pays et genres, rareté en étoiles. Rare : cadre blanc. Épique : reflet. Légendaire : bordure dorée. Mythique : bordure arc-en-ciel. Version or : carte entièrement dorée.

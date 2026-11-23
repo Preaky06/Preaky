@@ -119,25 +119,13 @@ a {
 .wobble {
   font-family: var(--font-display), sans-serif;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
-.wobble__word {
-  display: inline-flex;
-  align-items: flex-end;
-  white-space: nowrap;
-  padding-top: 0.14em;
-}
-.wobble__l {
-  display: inline-block;
-  margin: 0 -0.015em;
-  transform-origin: 50% 100%;
-  transform: translateY(var(--y)) rotate(var(--r)) scale(0.96, var(--s));
-}
-
 .badge-star {
   position: absolute;
-  right: -0.32em;
-  top: 0.02em;
+  right: -0.36em;
+  top: -0.12em;
   width: 0.52em;
   height: 0.52em;
   border-radius: 0.14em;
@@ -172,9 +160,6 @@ a {
   font-size: 32px;
   text-decoration: none;
   margin-right: 0.3em;
-}
-.logo__word .wobble__word {
-  padding-top: 0.12em;
 }
 
 .nav {
@@ -650,6 +635,42 @@ a {
   width: 84%;
   height: auto;
   margin-bottom: -0.5cqi;
+}
+.card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.card__photo--hidden {
+  filter: grayscale(1) blur(1.6cqi);
+  opacity: 0.35;
+  transform: scale(1.12);
+}
+.card__window--photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1cqi #fff;
+  pointer-events: none;
+}
+.card__character {
+  position: absolute;
+  left: 3cqi;
+  bottom: 3cqi;
+  z-index: 1;
+  max-width: calc(100% - 6cqi);
+  padding: 1.5cqi 3cqi;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font: 700 4.2cqi/1.1 var(--font-sans), sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card__type {
   position: absolute;
@@ -1400,6 +1421,13 @@ a {
 .facts dd {
   margin: 4px 0 0;
   font-weight: 600;
+}
+.credit {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
 }
 .owned-box {
   margin: 0;

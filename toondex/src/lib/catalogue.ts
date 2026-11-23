@@ -1,4 +1,5 @@
 import rows from "@/data/works.json";
+import characterRows from "@/data/characters.json";
 
 export type WorkType = "serie" | "serie-animee" | "anime" | "film" | "film-animation";
 export type Rarity = "commune" | "rare" | "epique" | "legendaire" | "mythique";
@@ -167,4 +168,15 @@ export function archetypeFor(work: Work): Archetype {
     }
   }
   return "party";
+}
+
+/* ---------- Personnages officiels (anime et films d'animation japonais, via AniList) ---------- */
+
+export type OfficialCharacter = { name: string; image: string; source: string; anilist: string };
+
+const CHARACTERS = characterRows as Record<string, OfficialCharacter>;
+
+/** Personnage officiel de l'œuvre, s'il existe dans src/data/characters.json. */
+export function characterFor(workId: string): OfficialCharacter | undefined {
+  return CHARACTERS[workId];
 }

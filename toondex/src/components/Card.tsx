@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { Mascot } from "@/components/Mascot";
 import { Wobble } from "@/components/Wobble";
-import { RARITIES, TYPES, cardNumber, countryNames, type Work } from "@/lib/catalogue";
+import { RARITIES, TYPES, cardNumber, characterFor, countryNames, type Work } from "@/lib/catalogue";
 
 function Stars({ rank }: { rank: number }) {
   return (
@@ -50,9 +50,33 @@ type CardProps = {
   headingLevel?: "h2" | "h3";
 };
 
-/** Carte façon jeu de cartes : fond de couleur du type, personnage 2D, infos, rareté. */
+/** Image officielle du personnage (AniList) ou, à défaut, personnage 2D original. */
+function Portrait({ work, gold, hidden = false }: { work: Work; gold?: boolean; hidden?: boolean }) {
+  const character = characterFor(work.id);
+  if (!character) {
+    return <Mascot work={work} gold={gold} className={`card__mascot${hidden ? " card__mascot--shadow" : ""}`} />;
+  }
+  return (
+    <>
+      {/* Image hébergée par AniList, affichée telle quelle : pas d'optimisation côté serveur. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        className={`card__photo${hidden ? " card__photo--hidden" : ""}`}
+        src={character.image}
+        alt={hidden ? "" : character.name}
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+      />
+      {!hidden && <span className="card__character">{character.name}</span>}
+    </>
+  );
+}
+
+/** Carte façon jeu de cartes : fond de couleur du type, personnage, infos, rareté. */
 export function Card({ work, gold = false, width, className = "", headingLevel = "h3" }: CardProps) {
   const type = TYPES[work.type];
+  const photo = !!characterFor(work.id);
   const Title = headingLevel;
   const style = { "--type": type.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
   return (
@@ -66,10 +90,10 @@ export function Card({ work, gold = false, width, className = "", headingLevel =
           <Title className={`card__title ${titleSize(work.title)}`}>{work.title}</Title>
           <span className="card__year">{work.year}</span>
         </div>
-        <div className="card__window">
+        <div className={`card__window${photo ? " card__window--photo" : ""}`}>
           <span className="card__type">{type.label}</span>
           {gold && <span className="card__gold-badge">Or</span>}
-          <Mascot work={work} gold={gold} className="card__mascot" />
+          <Portrait work={work} gold={gold} />
           <span className="card__holo" aria-hidden="true" />
         </div>
         <ul className="card__moves">
@@ -123,9 +147,9 @@ export function MissingCard({ work }: { work: Work }) {
           <p className={`card__title ${titleSize(work.title)}`}>{work.title}</p>
           <span className="card__year">?</span>
         </div>
-        <div className="card__window">
+        <div className={`card__window${characterFor(work.id) ? " card__window--photo" : ""}`}>
           <span className="card__type">{type.label}</span>
-          <Mascot work={work} className="card__mascot card__mascot--shadow" />
+          <Portrait work={work} hidden />
         </div>
         <div className="card__foot">
           <span className="card__rarity">{RARITIES[work.rarity].label}</span>

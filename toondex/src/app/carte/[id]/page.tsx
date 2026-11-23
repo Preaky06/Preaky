@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Card } from "@/components/Card";
 import { CraftButton } from "@/components/CraftButton";
 import { getCurrentUser } from "@/lib/auth";
-import { RARITIES, TYPES, WORKS, WORKS_BY_RARITY, cardNumber, countryNames, getWork } from "@/lib/catalogue";
+import { RARITIES, TYPES, WORKS, WORKS_BY_RARITY, cardNumber, characterFor, countryNames, getWork } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
 import { CRAFT_COST, GOLD_ODDS, LAST_SLOT_ODDS, PACK_SIZE, SHARDS_PER_DUPLICATE, SLOT_ODDS } from "@/lib/rules";
 import { Wobble } from "@/components/Wobble";
@@ -35,6 +35,7 @@ export default async function CardPage({ params }: Params) {
   const user = await getCurrentUser();
   const owned = user ? (await getOwned(user.id))[work.id] : undefined;
   const p = chancePerPack(work.rarity);
+  const character = characterFor(work.id);
   const prev = WORKS[work.num - 2];
   const next = WORKS[work.num];
 
@@ -88,6 +89,17 @@ export default async function CardPage({ params }: Params) {
               <dt>Doublon</dt>
               <dd>+{SHARDS_PER_DUPLICATE[work.rarity]} éclats</dd>
             </div>
+            {character && (
+              <div>
+                <dt>Personnage</dt>
+                <dd>
+                  <a href={character.source} className="link" target="_blank" rel="noopener noreferrer">
+                    {character.name}
+                  </a>
+                  <span className="credit">Image : AniList, © ayants droit</span>
+                </dd>
+              </div>
+            )}
           </dl>
 
           {user ? (
