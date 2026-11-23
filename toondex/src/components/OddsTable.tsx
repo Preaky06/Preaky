@@ -32,8 +32,8 @@ export function OddsTable() {
         </tbody>
       </table>
       <p className="muted small">
-        Chaque carte a aussi 1 chance sur {GOLD_ODDS} d’être en <span className="gold-text">version or</span>. Un
-        doublon or rapporte 5 fois plus d’éclats. Les versions or ne se fabriquent pas.
+        Chaque carte a aussi 1 chance sur {GOLD_ODDS} de sortir en <span className="gold-text">secrète, entièrement en or</span>.
+        Un doublon secret rapporte 5 fois plus d’éclats. Les secrètes ne se fabriquent pas.
       </p>
     </div>
   );

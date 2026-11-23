@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Rubik, Sigmar } from "next/font/google";
+import { CardFx } from "@/components/CardFx";
 import { Header } from "@/components/Header";
 import { Wobble } from "@/components/Wobble";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#contenu" className="skip-link">
           Aller au contenu
         </a>
+        <CardFx />
         <Header />
         <main id="contenu" className="site-main">
           {children}

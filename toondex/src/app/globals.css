@@ -780,24 +780,108 @@ a {
   font: 700 4.6cqi/1 var(--font-sans), sans-serif;
 }
 
-/* Raretés : cadre blanc, reflets, bordures dorée ou arc-en-ciel. */
+/* ---------- Raretés, façon cartes holographiques ----------
+   Commune : mate. Rare : cadre blanc + reflet sur l'image. Épique : paillettes argentées.
+   Légendaire : bordure dorée, paillettes dorées, reflet sur toute la carte.
+   Mythique : carte irisée arc-en-ciel. Secrète : carte entièrement en or, image comprise. */
+
+.card {
+  --card-shadow: 0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+}
+.card__face {
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.card.is-tilting .card__face {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.03);
+  transition: transform 0.08s linear;
+}
+
+.card__glitter,
+.card__shine {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Paillettes : quatre trames de points de tailles premières entre elles, pour un semis irrégulier. */
+.card__glitter {
+  --go: 0.6;
+  --g1: #ffffff;
+  --g2: #e3e9ff;
+  --g3: #f6dcff;
+  background-image:
+    radial-gradient(circle, var(--g1) 0 0.32cqi, transparent 0.62cqi),
+    radial-gradient(circle, var(--g2) 0 0.26cqi, transparent 0.5cqi),
+    radial-gradient(circle, var(--g3) 0 0.42cqi, transparent 0.72cqi),
+    radial-gradient(circle, var(--g1) 0 0.2cqi, transparent 0.42cqi);
+  background-size:
+    7cqi 9cqi,
+    11cqi 7cqi,
+    13cqi 11cqi,
+    5cqi 6cqi;
+  background-position:
+    0 0,
+    3cqi 4cqi,
+    6cqi 2cqi,
+    2cqi 5cqi;
+  mix-blend-mode: screen;
+  -webkit-mask-image: radial-gradient(circle at var(--mx, 30%) var(--my, 22%), #000 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%);
+  mask-image: radial-gradient(circle at var(--mx, 30%) var(--my, 22%), #000 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.3) 100%);
+  animation: td-twinkle 2.2s ease-in-out infinite alternate;
+}
+
+/* Reflet arc-en-ciel sur toute la carte ; il suit la souris quand la carte est inclinée. */
+.card__shine {
+  --so: 0.38;
+  background: linear-gradient(
+    115deg,
+    transparent 18%,
+    rgba(255, 95, 160, 0.6) 30%,
+    rgba(255, 214, 107, 0.6) 39%,
+    rgba(120, 255, 200, 0.6) 48%,
+    rgba(110, 170, 255, 0.6) 57%,
+    rgba(190, 140, 255, 0.6) 66%,
+    transparent 78%
+  );
+  background-size: 300% 300%;
+  background-position: var(--sx, 50%) var(--sy, 50%);
+  mix-blend-mode: color-dodge;
+  opacity: var(--so);
+  animation: td-shine 7s ease-in-out infinite alternate;
+}
+.card.is-tilting .card__shine {
+  animation: none;
+  opacity: calc(var(--so) * 1.5);
+}
+
 .card--rare .card__face {
   box-shadow:
     inset 0 0 0 1.4cqi #fff,
-    0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+    var(--card-shadow);
 }
+
 .card--epique .card__face {
   box-shadow:
     inset 0 0 0 1.4cqi #fff,
     0 0 5cqi rgba(139, 108, 246, 0.55),
-    0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+    var(--card-shadow);
 }
+.card--epique .card__glitter {
+  display: block;
+  --go: 0.85;
+}
+
 .card--epique .card__holo,
+.card--rare .card__holo,
 .card--legendaire .card__holo,
 .card--mythique .card__holo,
 .card--gold .card__holo {
   display: block;
 }
+
 .card--legendaire .card__face {
   border: 1.6cqi solid transparent;
   background:
@@ -805,41 +889,149 @@ a {
     linear-gradient(135deg, #fff3c4, #e0a82e 30%, #ffe58a 55%, #b9820f 80%, #fff3c4) border-box;
   box-shadow:
     0 0 5cqi rgba(224, 168, 46, 0.55),
-    0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+    var(--card-shadow);
 }
+.card--legendaire .card__glitter {
+  display: block;
+  --go: 0.8;
+  --g1: #fff6cf;
+  --g2: #ffd66b;
+  --g3: #ffffff;
+}
+.card--legendaire .card__shine {
+  display: block;
+  --so: 0.32;
+}
+
 .card--mythique .card__face {
   border: 1.6cqi solid transparent;
   background:
+    linear-gradient(125deg, rgba(255, 122, 162, 0.5), rgba(255, 177, 94, 0.45), rgba(216, 243, 106, 0.45), rgba(127, 240, 224, 0.45), rgba(127, 178, 255, 0.5), rgba(183, 156, 255, 0.5), rgba(255, 122, 162, 0.5))
+      0 0 / 220% 220% padding-box,
     linear-gradient(var(--type), var(--type)) padding-box,
     conic-gradient(from 0deg, #ff7aa2, #ffb15e, #d8f36a, #7ff0e0, #7fb2ff, #b79cff, #ff7aa2) border-box;
   box-shadow:
     0 0 6cqi rgba(255, 122, 162, 0.6),
-    0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+    var(--card-shadow);
+  animation: td-iridescent 8s ease-in-out infinite alternate;
 }
-.card--mythique .card__face::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle, #fff 0.5cqi, transparent 0.9cqi) 0 0 / 13cqi 17cqi;
-  opacity: 0.55;
-  mix-blend-mode: overlay;
+.card--mythique .card__glitter {
+  display: block;
+  --go: 0.9;
+  --g1: #ffffff;
+  --g2: #ffd1ec;
+  --g3: #c9f7ff;
+}
+.card--mythique .card__shine {
+  display: block;
+  --so: 0.5;
 }
 
+/* Secrète : tout en or, image comprise. */
+.card--gold .card__title {
+  color: #2e1f00;
+}
 .card--gold .card__face {
   border: 1.6cqi solid transparent;
   background:
-    linear-gradient(160deg, #ffe9a8, #ecbd4f 45%, #cf9c22) padding-box,
+    linear-gradient(160deg, #fff0b8, #ecbd4f 40%, #fbe08a 62%, #c9971c) padding-box,
     linear-gradient(135deg, #fff6d8, #b9820f 35%, #fff1b8 60%, #8f6410) border-box;
   box-shadow:
-    0 0 6cqi rgba(236, 189, 79, 0.7),
-    0 2cqi 5cqi rgba(21, 22, 28, 0.22);
+    0 0 7cqi rgba(236, 189, 79, 0.75),
+    var(--card-shadow);
+  color: #3a2700;
 }
-.card--gold .card__holo {
-  background: linear-gradient(115deg, transparent 25%, rgba(255, 250, 225, 0.85) 42%, transparent 60%);
-  background-size: 260% 100%;
+.card--gold .card__window {
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.55) 0.9cqi, transparent 1.1cqi) 0 0 / 6cqi 6cqi,
+    linear-gradient(180deg, #fff3c4, #e9b949);
+}
+.card--gold .card__photo {
+  filter: sepia(1) saturate(2.3) hue-rotate(-12deg) brightness(1.04) contrast(1.06);
+}
+.card--gold .card__year,
+.card--gold .card__icon,
+.card--gold .card__gold-badge {
+  background: #5a3c00;
+  color: #ffe7a0;
+}
+.card--gold .card__type {
+  background: #fff3c4;
+}
+.card--gold .card__foot {
+  border-top-color: rgba(90, 60, 0, 0.35);
+}
+.card--gold .card__stars svg {
+  fill: rgba(90, 60, 0, 0.25);
+}
+.card--gold .card__stars svg.is-on {
+  fill: #5a3c00;
+}
+.card--gold .card__glitter {
+  display: block;
+  --go: 0.7;
+  --g1: #fffbe8;
+  --g2: #ffe08a;
+  --g3: #ffffff;
+}
+.card--gold .card__shine {
+  display: block;
+  --so: 0.35;
+  background: linear-gradient(115deg, transparent 24%, rgba(255, 250, 225, 0.75) 42%, rgba(255, 214, 107, 0.5) 50%, transparent 64%);
+  background-size: 300% 300%;
+  background-position: var(--sx, 50%) var(--sy, 50%);
   mix-blend-mode: overlay;
-  animation-duration: 3s;
+}
+
+@keyframes td-twinkle {
+  from {
+    opacity: calc(var(--go) * 0.5);
+    background-position:
+      0 0,
+      3cqi 4cqi,
+      6cqi 2cqi,
+      2cqi 5cqi;
+  }
+  to {
+    opacity: var(--go);
+    background-position:
+      0.6cqi 0.4cqi,
+      2.4cqi 4.6cqi,
+      6.5cqi 1.4cqi,
+      2.6cqi 4.4cqi;
+  }
+}
+@keyframes td-shine {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+@keyframes td-iridescent {
+  from {
+    background-position:
+      0% 0%,
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      100% 100%,
+      0 0,
+      0 0;
+  }
+}
+
+/* Image en attente : initiales du personnage. */
+.card__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 400 26cqi/1 var(--font-display), sans-serif;
+  color: rgba(21, 22, 28, 0.18);
 }
 
 .card--missing .card__face {
@@ -2085,6 +2277,9 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee__track,
+  .card__glitter,
+  .card__shine,
+  .card--mythique .card__face,
   .card__holo,
   .card-link,
   .banner {

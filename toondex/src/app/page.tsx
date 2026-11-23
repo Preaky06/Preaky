@@ -11,7 +11,7 @@ import { CARDS, WORK_COUNT, getCard } from "@/lib/catalogue";
 import { getOwned, getTodayPack } from "@/lib/collection";
 import { POP } from "@/lib/palette";
 
-const SHOWCASE = ["rick-sanchez", "chihiro", "homer-simpson"];
+const SHOWCASE = ["satoru-gojo", "walter-white", "monkey-d-luffy"];
 
 function todayLabel(): string {
   return new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", weekday: "long", day: "numeric", month: "long" }).format(

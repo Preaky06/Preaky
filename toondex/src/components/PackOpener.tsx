@@ -38,7 +38,7 @@ function revealDuration(card: PackCard): number {
 }
 
 function statusLabel(card: PackCard): string {
-  if (card.status === "new-gold") return "Version or !";
+  if (card.status === "new-gold") return "Secrète en or !";
   if (card.status === "new") return "Nouvelle !";
   return `Doublon · +${card.shards} éclats`;
 }

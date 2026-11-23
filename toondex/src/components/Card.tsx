@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { CardImage } from "@/components/CardImage";
 import { Wobble } from "@/components/Wobble";
 import { RARITIES, TYPES, cardNumber, type CardDef } from "@/lib/catalogue";
 
@@ -42,17 +43,7 @@ function titleSize(text: string): string {
 
 /** Image réelle du personnage, hébergée par Wikipédia ou AniList. */
 function Portrait({ card, hidden = false }: { card: CardDef; hidden?: boolean }) {
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      className={`card__photo${hidden ? " card__photo--hidden" : ""}`}
-      src={card.image}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      referrerPolicy="no-referrer"
-    />
-  );
+  return <CardImage name={card.name} image={card.image} wiki={card.wiki} hidden={hidden} />;
 }
 
 type CardProps = {
@@ -71,9 +62,9 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
   const style = { "--type": type.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
   return (
     <article
-      className={`card card--${card.rarity}${gold ? " card--gold" : ""} ${className}`}
+      className={`card card--${card.rarity}${gold ? " card--gold" : ""}${gold || card.rarity !== "commune" ? " card--fx" : ""} ${className}`}
       style={style}
-      aria-label={`${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", version or" : ""}`}
+      aria-label={`${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", carte secrète en or" : ""}`}
     >
       <div className="card__face">
         <div className="card__top">
@@ -82,7 +73,7 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
         </div>
         <div className="card__window">
           <span className="card__type">{type.label}</span>
-          {gold && <span className="card__gold-badge">Or</span>}
+          {gold && <span className="card__gold-badge">Secrète</span>}
           <Portrait card={card} />
           <span className="card__holo" aria-hidden="true" />
         </div>
@@ -107,6 +98,8 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
           </span>
           <span className="card__num">#{cardNumber(card.num)}</span>
         </div>
+        <span className="card__glitter" aria-hidden="true" />
+        <span className="card__shine" aria-hidden="true" />
       </div>
     </article>
   );

@@ -20,7 +20,10 @@ export type CardDef = {
   num: number;
   name: string;
   rarity: Rarity;
-  image: string;
+  /** Image connue à l'avance. Absente : le navigateur la cherche sur Wikipédia (`wiki`). */
+  image?: string;
+  /** Titre de l'article Wikipédia (anglais) du personnage. */
+  wiki?: string;
   /** Page d'où vient l'image (Wikipédia ou AniList). */
   source: string;
   credit: "Wikipédia" | "AniList";
@@ -74,7 +77,16 @@ const WORKS_BY_ID = new Map(
   ]),
 );
 
-type CardRow = { id: string; name: string; work: string; rarity: Rarity; image: string; source: string; credit: CardDef["credit"] };
+type CardRow = {
+  id: string;
+  name: string;
+  work: string;
+  rarity: Rarity;
+  image?: string;
+  wiki?: string;
+  source: string;
+  credit: CardDef["credit"];
+};
 
 /** Toutes les cartes, rangées par type d'œuvre puis dans l'ordre du fichier. Le numéro suit cet ordre. */
 export const CARDS: CardDef[] = (cardRows as CardRow[])

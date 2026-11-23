@@ -1,1 +1,1490 @@
-[]
+[
+  {
+    "id": "walter-white",
+    "name": "Walter White",
+    "work": "breaking-bad",
+    "rarity": "mythique",
+    "image": "https://upload.wikimedia.org/wikipedia/en/0/03/Walter_White_S5B.png",
+    "wiki": "Walter White (Breaking Bad)",
+    "source": "https://en.wikipedia.org/wiki/Walter_White_(Breaking_Bad)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jesse-pinkman",
+    "name": "Jesse Pinkman",
+    "work": "breaking-bad",
+    "rarity": "legendaire",
+    "image": "https://upload.wikimedia.org/wikipedia/en/c/c6/Jesse_Pinkman_S5B.png",
+    "wiki": "Jesse Pinkman",
+    "source": "https://en.wikipedia.org/wiki/Jesse_Pinkman",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jon-snow",
+    "name": "Jon Snow",
+    "work": "game-of-thrones",
+    "rarity": "legendaire",
+    "image": "https://upload.wikimedia.org/wikipedia/en/3/30/Jon_Snow_Season_8.png",
+    "wiki": "Jon Snow (character)",
+    "source": "https://en.wikipedia.org/wiki/Jon_Snow_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "daenerys-targaryen",
+    "name": "Daenerys Targaryen",
+    "work": "game-of-thrones",
+    "rarity": "epique",
+    "wiki": "Daenerys Targaryen",
+    "source": "https://en.wikipedia.org/wiki/Daenerys_Targaryen",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "tyrion-lannister",
+    "name": "Tyrion Lannister",
+    "work": "game-of-thrones",
+    "rarity": "epique",
+    "wiki": "Tyrion Lannister",
+    "source": "https://en.wikipedia.org/wiki/Tyrion_Lannister",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "rick-grimes",
+    "name": "Rick Grimes",
+    "work": "the-walking-dead",
+    "rarity": "epique",
+    "wiki": "Rick Grimes",
+    "source": "https://en.wikipedia.org/wiki/Rick_Grimes",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "daryl-dixon",
+    "name": "Daryl Dixon",
+    "work": "the-walking-dead",
+    "rarity": "rare",
+    "wiki": "Daryl Dixon",
+    "source": "https://en.wikipedia.org/wiki/Daryl_Dixon",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "michael-scofield",
+    "name": "Michael Scofield",
+    "work": "prison-break",
+    "rarity": "rare",
+    "wiki": "Michael Scofield",
+    "source": "https://en.wikipedia.org/wiki/Michael_Scofield",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "lincoln-burrows",
+    "name": "Lincoln Burrows",
+    "work": "prison-break",
+    "rarity": "commune",
+    "wiki": "Lincoln Burrows",
+    "source": "https://en.wikipedia.org/wiki/Lincoln_Burrows",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "eleven",
+    "name": "Eleven",
+    "work": "stranger-things",
+    "rarity": "epique",
+    "wiki": "Eleven (Stranger Things)",
+    "source": "https://en.wikipedia.org/wiki/Eleven_(Stranger_Things)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jim-hopper",
+    "name": "Jim Hopper",
+    "work": "stranger-things",
+    "rarity": "rare",
+    "wiki": "Jim Hopper",
+    "source": "https://en.wikipedia.org/wiki/Jim_Hopper",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "michael-scott",
+    "name": "Michael Scott",
+    "work": "the-office",
+    "rarity": "rare",
+    "wiki": "Michael Scott (The Office)",
+    "source": "https://en.wikipedia.org/wiki/Michael_Scott_(The_Office)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "dwight-schrute",
+    "name": "Dwight Schrute",
+    "work": "the-office",
+    "rarity": "commune",
+    "wiki": "Dwight Schrute",
+    "source": "https://en.wikipedia.org/wiki/Dwight_Schrute",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "rachel-green",
+    "name": "Rachel Green",
+    "work": "friends",
+    "rarity": "epique",
+    "wiki": "Rachel Green",
+    "source": "https://en.wikipedia.org/wiki/Rachel_Green",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "joey-tribbiani",
+    "name": "Joey Tribbiani",
+    "work": "friends",
+    "rarity": "rare",
+    "wiki": "Joey Tribbiani",
+    "source": "https://en.wikipedia.org/wiki/Joey_Tribbiani",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "chandler-bing",
+    "name": "Chandler Bing",
+    "work": "friends",
+    "rarity": "rare",
+    "wiki": "Chandler Bing",
+    "source": "https://en.wikipedia.org/wiki/Chandler_Bing",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jack-shephard",
+    "name": "Jack Shephard",
+    "work": "lost",
+    "rarity": "rare",
+    "wiki": "Jack Shephard",
+    "source": "https://en.wikipedia.org/wiki/Jack_Shephard",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "john-locke",
+    "name": "John Locke",
+    "work": "lost",
+    "rarity": "commune",
+    "wiki": "John Locke (Lost)",
+    "source": "https://en.wikipedia.org/wiki/John_Locke_(Lost)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "thomas-shelby",
+    "name": "Thomas Shelby",
+    "work": "peaky-blinders",
+    "rarity": "epique",
+    "wiki": "Thomas Shelby",
+    "source": "https://en.wikipedia.org/wiki/Thomas_Shelby",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "din-djarin",
+    "name": "Din Djarin",
+    "work": "the-mandalorian",
+    "rarity": "rare",
+    "wiki": "Din Djarin",
+    "source": "https://en.wikipedia.org/wiki/Din_Djarin",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "grogu",
+    "name": "Grogu",
+    "work": "the-mandalorian",
+    "rarity": "commune",
+    "wiki": "Grogu",
+    "source": "https://en.wikipedia.org/wiki/Grogu",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "seong-gi-hun",
+    "name": "Seong Gi-hun",
+    "work": "squid-game",
+    "rarity": "epique",
+    "wiki": "Seong Gi-hun",
+    "source": "https://en.wikipedia.org/wiki/Seong_Gi-hun",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "saul-goodman",
+    "name": "Saul Goodman",
+    "work": "better-call-saul",
+    "rarity": "rare",
+    "wiki": "Saul Goodman",
+    "source": "https://en.wikipedia.org/wiki/Saul_Goodman",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "kim-wexler",
+    "name": "Kim Wexler",
+    "work": "better-call-saul",
+    "rarity": "commune",
+    "wiki": "Kim Wexler",
+    "source": "https://en.wikipedia.org/wiki/Kim_Wexler",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "dexter-morgan",
+    "name": "Dexter Morgan",
+    "work": "dexter",
+    "rarity": "commune",
+    "wiki": "Dexter Morgan",
+    "source": "https://en.wikipedia.org/wiki/Dexter_Morgan",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "tony-soprano",
+    "name": "Tony Soprano",
+    "work": "les-soprano",
+    "rarity": "legendaire",
+    "wiki": "Tony Soprano",
+    "source": "https://en.wikipedia.org/wiki/Tony_Soprano",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "omar-little",
+    "name": "Omar Little",
+    "work": "the-wire",
+    "rarity": "epique",
+    "wiki": "Omar Little",
+    "source": "https://en.wikipedia.org/wiki/Omar_Little",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jimmy-mcnulty",
+    "name": "Jimmy McNulty",
+    "work": "the-wire",
+    "rarity": "rare",
+    "wiki": "Jimmy McNulty",
+    "source": "https://en.wikipedia.org/wiki/Jimmy_McNulty",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "don-draper",
+    "name": "Don Draper",
+    "work": "mad-men",
+    "rarity": "commune",
+    "wiki": "Don Draper",
+    "source": "https://en.wikipedia.org/wiki/Don_Draper",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "le-dixieme-docteur",
+    "name": "Le Dixième Docteur",
+    "work": "doctor-who",
+    "rarity": "epique",
+    "wiki": "Tenth Doctor",
+    "source": "https://en.wikipedia.org/wiki/Tenth_Doctor",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "dale-cooper",
+    "name": "Dale Cooper",
+    "work": "twin-peaks",
+    "rarity": "rare",
+    "wiki": "Dale Cooper",
+    "source": "https://en.wikipedia.org/wiki/Dale_Cooper",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "laura-palmer",
+    "name": "Laura Palmer",
+    "work": "twin-peaks",
+    "rarity": "commune",
+    "wiki": "Laura Palmer",
+    "source": "https://en.wikipedia.org/wiki/Laura_Palmer",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "barney-stinson",
+    "name": "Barney Stinson",
+    "work": "how-i-met-your-mother",
+    "rarity": "commune",
+    "wiki": "Barney Stinson",
+    "source": "https://en.wikipedia.org/wiki/Barney_Stinson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "ted-mosby",
+    "name": "Ted Mosby",
+    "work": "how-i-met-your-mother",
+    "rarity": "commune",
+    "wiki": "Ted Mosby",
+    "source": "https://en.wikipedia.org/wiki/Ted_Mosby",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jake-peralta",
+    "name": "Jake Peralta",
+    "work": "brooklyn-nine-nine",
+    "rarity": "commune",
+    "wiki": "Jake Peralta",
+    "source": "https://en.wikipedia.org/wiki/Jake_Peralta",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "rick-sanchez",
+    "name": "Rick Sanchez",
+    "work": "rick-et-morty",
+    "rarity": "legendaire",
+    "wiki": "Rick Sanchez",
+    "source": "https://en.wikipedia.org/wiki/Rick_Sanchez",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "morty-smith",
+    "name": "Morty Smith",
+    "work": "rick-et-morty",
+    "rarity": "epique",
+    "wiki": "Morty Smith",
+    "source": "https://en.wikipedia.org/wiki/Morty_Smith",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "homer-simpson",
+    "name": "Homer Simpson",
+    "work": "les-simpson",
+    "rarity": "mythique",
+    "wiki": "Homer Simpson",
+    "source": "https://en.wikipedia.org/wiki/Homer_Simpson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "bart-simpson",
+    "name": "Bart Simpson",
+    "work": "les-simpson",
+    "rarity": "legendaire",
+    "wiki": "Bart Simpson",
+    "source": "https://en.wikipedia.org/wiki/Bart_Simpson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "marge-simpson",
+    "name": "Marge Simpson",
+    "work": "les-simpson",
+    "rarity": "legendaire",
+    "wiki": "Marge Simpson",
+    "source": "https://en.wikipedia.org/wiki/Marge_Simpson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "lisa-simpson",
+    "name": "Lisa Simpson",
+    "work": "les-simpson",
+    "rarity": "legendaire",
+    "wiki": "Lisa Simpson",
+    "source": "https://en.wikipedia.org/wiki/Lisa_Simpson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "eric-cartman",
+    "name": "Eric Cartman",
+    "work": "south-park",
+    "rarity": "epique",
+    "wiki": "Eric Cartman",
+    "source": "https://en.wikipedia.org/wiki/Eric_Cartman",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "kenny-mccormick",
+    "name": "Kenny McCormick",
+    "work": "south-park",
+    "rarity": "rare",
+    "wiki": "Kenny McCormick",
+    "source": "https://en.wikipedia.org/wiki/Kenny_McCormick",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "bob-l-eponge",
+    "name": "Bob l’éponge",
+    "work": "bob-l-eponge",
+    "rarity": "epique",
+    "wiki": "SpongeBob SquarePants (character)",
+    "source": "https://en.wikipedia.org/wiki/SpongeBob_SquarePants_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "patrick-l-etoile-de-mer",
+    "name": "Patrick l’étoile de mer",
+    "work": "bob-l-eponge",
+    "rarity": "rare",
+    "wiki": "Patrick Star",
+    "source": "https://en.wikipedia.org/wiki/Patrick_Star",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "finn-l-humain",
+    "name": "Finn l’humain",
+    "work": "adventure-time",
+    "rarity": "epique",
+    "wiki": "Finn the Human",
+    "source": "https://en.wikipedia.org/wiki/Finn_the_Human",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jake-le-chien",
+    "name": "Jake le chien",
+    "work": "adventure-time",
+    "rarity": "rare",
+    "wiki": "Jake the Dog",
+    "source": "https://en.wikipedia.org/wiki/Jake_the_Dog",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "bill-cipher",
+    "name": "Bill Cipher",
+    "work": "gravity-falls",
+    "rarity": "rare",
+    "wiki": "Bill Cipher",
+    "source": "https://en.wikipedia.org/wiki/Bill_Cipher",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "dipper-pines",
+    "name": "Dipper Pines",
+    "work": "gravity-falls",
+    "rarity": "commune",
+    "wiki": "Dipper Pines",
+    "source": "https://en.wikipedia.org/wiki/Dipper_Pines",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "aang",
+    "name": "Aang",
+    "work": "avatar-le-dernier-maitre-de-l-air",
+    "rarity": "legendaire",
+    "wiki": "Aang",
+    "source": "https://en.wikipedia.org/wiki/Aang",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "zuko",
+    "name": "Zuko",
+    "work": "avatar-le-dernier-maitre-de-l-air",
+    "rarity": "epique",
+    "wiki": "Zuko",
+    "source": "https://en.wikipedia.org/wiki/Zuko",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "bender",
+    "name": "Bender",
+    "work": "futurama",
+    "rarity": "rare",
+    "wiki": "Bender (Futurama)",
+    "source": "https://en.wikipedia.org/wiki/Bender_(Futurama)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "fry",
+    "name": "Fry",
+    "work": "futurama",
+    "rarity": "commune",
+    "wiki": "Philip J. Fry",
+    "source": "https://en.wikipedia.org/wiki/Philip_J._Fry",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "steven-universe",
+    "name": "Steven Universe",
+    "work": "steven-universe",
+    "rarity": "commune",
+    "wiki": "Steven Universe (character)",
+    "source": "https://en.wikipedia.org/wiki/Steven_Universe_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "bojack-horseman",
+    "name": "BoJack Horseman",
+    "work": "bojack-horseman",
+    "rarity": "rare",
+    "wiki": "BoJack Horseman (character)",
+    "source": "https://en.wikipedia.org/wiki/BoJack_Horseman_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "peter-griffin",
+    "name": "Peter Griffin",
+    "work": "les-griffin",
+    "rarity": "rare",
+    "wiki": "Peter Griffin",
+    "source": "https://en.wikipedia.org/wiki/Peter_Griffin",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "stewie-griffin",
+    "name": "Stewie Griffin",
+    "work": "les-griffin",
+    "rarity": "commune",
+    "wiki": "Stewie Griffin",
+    "source": "https://en.wikipedia.org/wiki/Stewie_Griffin",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "perry-l-ornithorynque",
+    "name": "Perry l’ornithorynque",
+    "work": "phineas-et-ferb",
+    "rarity": "commune",
+    "wiki": "Perry the Platypus",
+    "source": "https://en.wikipedia.org/wiki/Perry_the_Platypus",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "tommy-pickles",
+    "name": "Tommy Pickles",
+    "work": "les-razmoket",
+    "rarity": "commune",
+    "wiki": "Tommy Pickles",
+    "source": "https://en.wikipedia.org/wiki/Tommy_Pickles",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "belle-bulle-et-rebelle",
+    "name": "Belle, Bulle et Rebelle",
+    "work": "les-supers-nanas",
+    "rarity": "commune",
+    "wiki": "Blossom, Bubbles, and Buttercup",
+    "source": "https://en.wikipedia.org/wiki/Blossom%2C_Bubbles%2C_and_Buttercup",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "sterling-archer",
+    "name": "Sterling Archer",
+    "work": "archer",
+    "rarity": "commune",
+    "wiki": "Sterling Archer",
+    "source": "https://en.wikipedia.org/wiki/Sterling_Archer",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "vito-corleone",
+    "name": "Vito Corleone",
+    "work": "le-parrain",
+    "rarity": "mythique",
+    "wiki": "Vito Corleone",
+    "source": "https://en.wikipedia.org/wiki/Vito_Corleone",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "michael-corleone",
+    "name": "Michael Corleone",
+    "work": "le-parrain",
+    "rarity": "legendaire",
+    "wiki": "Michael Corleone",
+    "source": "https://en.wikipedia.org/wiki/Michael_Corleone",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "dark-vador",
+    "name": "Dark Vador",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "mythique",
+    "wiki": "Darth Vader",
+    "source": "https://en.wikipedia.org/wiki/Darth_Vader",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "luke-skywalker",
+    "name": "Luke Skywalker",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "legendaire",
+    "wiki": "Luke Skywalker",
+    "source": "https://en.wikipedia.org/wiki/Luke_Skywalker",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "princesse-leia",
+    "name": "Princesse Leia",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "legendaire",
+    "wiki": "Princess Leia",
+    "source": "https://en.wikipedia.org/wiki/Princess_Leia",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "han-solo",
+    "name": "Han Solo",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "legendaire",
+    "wiki": "Han Solo",
+    "source": "https://en.wikipedia.org/wiki/Han_Solo",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "chewbacca",
+    "name": "Chewbacca",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "legendaire",
+    "wiki": "Chewbacca",
+    "source": "https://en.wikipedia.org/wiki/Chewbacca",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "r2-d2",
+    "name": "R2-D2",
+    "work": "star-wars-un-nouvel-espoir",
+    "rarity": "legendaire",
+    "wiki": "R2-D2",
+    "source": "https://en.wikipedia.org/wiki/R2-D2",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "vincent-vega",
+    "name": "Vincent Vega",
+    "work": "pulp-fiction",
+    "rarity": "epique",
+    "wiki": "Vincent Vega",
+    "source": "https://en.wikipedia.org/wiki/Vincent_Vega",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "mia-wallace",
+    "name": "Mia Wallace",
+    "work": "pulp-fiction",
+    "rarity": "rare",
+    "wiki": "Mia Wallace",
+    "source": "https://en.wikipedia.org/wiki/Mia_Wallace",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jules-winnfield",
+    "name": "Jules Winnfield",
+    "work": "pulp-fiction",
+    "rarity": "rare",
+    "wiki": "Jules Winnfield",
+    "source": "https://en.wikipedia.org/wiki/Jules_Winnfield",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "le-joker",
+    "name": "Le Joker",
+    "work": "the-dark-knight",
+    "rarity": "legendaire",
+    "wiki": "Joker (The Dark Knight)",
+    "source": "https://en.wikipedia.org/wiki/Joker_(The_Dark_Knight)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "neo",
+    "name": "Neo",
+    "work": "matrix",
+    "rarity": "epique",
+    "wiki": "Neo (The Matrix)",
+    "source": "https://en.wikipedia.org/wiki/Neo_(The_Matrix)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "trinity",
+    "name": "Trinity",
+    "work": "matrix",
+    "rarity": "rare",
+    "wiki": "Trinity (The Matrix)",
+    "source": "https://en.wikipedia.org/wiki/Trinity_(The_Matrix)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "morpheus",
+    "name": "Morpheus",
+    "work": "matrix",
+    "rarity": "rare",
+    "wiki": "Morpheus (The Matrix)",
+    "source": "https://en.wikipedia.org/wiki/Morpheus_(The_Matrix)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "agent-smith",
+    "name": "Agent Smith",
+    "work": "matrix",
+    "rarity": "rare",
+    "wiki": "Agent Smith",
+    "source": "https://en.wikipedia.org/wiki/Agent_Smith",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "jack-dawson",
+    "name": "Jack Dawson",
+    "work": "titanic",
+    "rarity": "rare",
+    "wiki": "Jack Dawson",
+    "source": "https://en.wikipedia.org/wiki/Jack_Dawson",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "rose-dewitt-bukater",
+    "name": "Rose DeWitt Bukater",
+    "work": "titanic",
+    "rarity": "commune",
+    "wiki": "Rose DeWitt Bukater",
+    "source": "https://en.wikipedia.org/wiki/Rose_DeWitt_Bukater",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "gandalf",
+    "name": "Gandalf",
+    "work": "la-communaute-de-l-anneau",
+    "rarity": "legendaire",
+    "wiki": "Gandalf",
+    "source": "https://en.wikipedia.org/wiki/Gandalf",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "frodon-sacquet",
+    "name": "Frodon Sacquet",
+    "work": "la-communaute-de-l-anneau",
+    "rarity": "epique",
+    "wiki": "Frodo Baggins",
+    "source": "https://en.wikipedia.org/wiki/Frodo_Baggins",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "gollum",
+    "name": "Gollum",
+    "work": "la-communaute-de-l-anneau",
+    "rarity": "epique",
+    "wiki": "Gollum",
+    "source": "https://en.wikipedia.org/wiki/Gollum",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "marty-mcfly",
+    "name": "Marty McFly",
+    "work": "retour-vers-le-futur",
+    "rarity": "epique",
+    "wiki": "Marty McFly",
+    "source": "https://en.wikipedia.org/wiki/Marty_McFly",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "doc-brown",
+    "name": "Doc Brown",
+    "work": "retour-vers-le-futur",
+    "rarity": "rare",
+    "wiki": "Emmett Brown",
+    "source": "https://en.wikipedia.org/wiki/Emmett_Brown",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "ian-malcolm",
+    "name": "Ian Malcolm",
+    "work": "jurassic-park",
+    "rarity": "rare",
+    "wiki": "Ian Malcolm (character)",
+    "source": "https://en.wikipedia.org/wiki/Ian_Malcolm_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "alan-grant",
+    "name": "Alan Grant",
+    "work": "jurassic-park",
+    "rarity": "commune",
+    "wiki": "Alan Grant",
+    "source": "https://en.wikipedia.org/wiki/Alan_Grant",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "tyler-durden",
+    "name": "Tyler Durden",
+    "work": "fight-club",
+    "rarity": "rare",
+    "wiki": "Tyler Durden",
+    "source": "https://en.wikipedia.org/wiki/Tyler_Durden",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "forrest-gump",
+    "name": "Forrest Gump",
+    "work": "forrest-gump",
+    "rarity": "rare",
+    "wiki": "Forrest Gump (character)",
+    "source": "https://en.wikipedia.org/wiki/Forrest_Gump_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "harry-potter",
+    "name": "Harry Potter",
+    "work": "harry-potter-a-l-ecole-des-sorciers",
+    "rarity": "rare",
+    "wiki": "Harry Potter (character)",
+    "source": "https://en.wikipedia.org/wiki/Harry_Potter_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "hermione-granger",
+    "name": "Hermione Granger",
+    "work": "harry-potter-a-l-ecole-des-sorciers",
+    "rarity": "commune",
+    "wiki": "Hermione Granger",
+    "source": "https://en.wikipedia.org/wiki/Hermione_Granger",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "ron-weasley",
+    "name": "Ron Weasley",
+    "work": "harry-potter-a-l-ecole-des-sorciers",
+    "rarity": "commune",
+    "wiki": "Ron Weasley",
+    "source": "https://en.wikipedia.org/wiki/Ron_Weasley",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "albus-dumbledore",
+    "name": "Albus Dumbledore",
+    "work": "harry-potter-a-l-ecole-des-sorciers",
+    "rarity": "commune",
+    "wiki": "Albus Dumbledore",
+    "source": "https://en.wikipedia.org/wiki/Albus_Dumbledore",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "iron-man",
+    "name": "Iron Man",
+    "work": "avengers-endgame",
+    "rarity": "rare",
+    "wiki": "Tony Stark (Marvel Cinematic Universe)",
+    "source": "https://en.wikipedia.org/wiki/Tony_Stark_(Marvel_Cinematic_Universe)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "thanos",
+    "name": "Thanos",
+    "work": "avengers-endgame",
+    "rarity": "commune",
+    "wiki": "Thanos (Marvel Cinematic Universe)",
+    "source": "https://en.wikipedia.org/wiki/Thanos_(Marvel_Cinematic_Universe)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "captain-america",
+    "name": "Captain America",
+    "work": "avengers-endgame",
+    "rarity": "commune",
+    "wiki": "Steve Rogers (Marvel Cinematic Universe)",
+    "source": "https://en.wikipedia.org/wiki/Steve_Rogers_(Marvel_Cinematic_Universe)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "hannibal-lecter",
+    "name": "Hannibal Lecter",
+    "work": "le-silence-des-agneaux",
+    "rarity": "commune",
+    "wiki": "Hannibal Lecter",
+    "source": "https://en.wikipedia.org/wiki/Hannibal_Lecter",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "clarice-starling",
+    "name": "Clarice Starling",
+    "work": "le-silence-des-agneaux",
+    "rarity": "commune",
+    "wiki": "Clarice Starling",
+    "source": "https://en.wikipedia.org/wiki/Clarice_Starling",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "ellen-ripley",
+    "name": "Ellen Ripley",
+    "work": "alien",
+    "rarity": "commune",
+    "wiki": "Ellen Ripley",
+    "source": "https://en.wikipedia.org/wiki/Ellen_Ripley",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "le-xenomorphe",
+    "name": "Le Xénomorphe",
+    "work": "alien",
+    "rarity": "commune",
+    "wiki": "Alien (creature in Alien franchise)",
+    "source": "https://en.wikipedia.org/wiki/Alien_(creature_in_Alien_franchise)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "max-rockatansky",
+    "name": "Max Rockatansky",
+    "work": "mad-max-fury-road",
+    "rarity": "commune",
+    "wiki": "Max Rockatansky",
+    "source": "https://en.wikipedia.org/wiki/Max_Rockatansky",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "simba",
+    "name": "Simba",
+    "work": "le-roi-lion",
+    "rarity": "legendaire",
+    "wiki": "Simba",
+    "source": "https://en.wikipedia.org/wiki/Simba",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "mufasa",
+    "name": "Mufasa",
+    "work": "le-roi-lion",
+    "rarity": "epique",
+    "wiki": "Mufasa",
+    "source": "https://en.wikipedia.org/wiki/Mufasa",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "scar",
+    "name": "Scar",
+    "work": "le-roi-lion",
+    "rarity": "epique",
+    "wiki": "Scar (The Lion King)",
+    "source": "https://en.wikipedia.org/wiki/Scar_(The_Lion_King)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "woody",
+    "name": "Woody",
+    "work": "toy-story",
+    "rarity": "epique",
+    "wiki": "Woody (Toy Story)",
+    "source": "https://en.wikipedia.org/wiki/Woody_(Toy_Story)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "buzz-l-eclair",
+    "name": "Buzz l’Éclair",
+    "work": "toy-story",
+    "rarity": "rare",
+    "wiki": "Buzz Lightyear",
+    "source": "https://en.wikipedia.org/wiki/Buzz_Lightyear",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "shrek",
+    "name": "Shrek",
+    "work": "shrek",
+    "rarity": "rare",
+    "wiki": "Shrek (character)",
+    "source": "https://en.wikipedia.org/wiki/Shrek_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "l-ane",
+    "name": "L’Âne",
+    "work": "shrek",
+    "rarity": "commune",
+    "wiki": "Donkey (Shrek)",
+    "source": "https://en.wikipedia.org/wiki/Donkey_(Shrek)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "wall-e",
+    "name": "WALL-E",
+    "work": "wall-e",
+    "rarity": "commune",
+    "wiki": "WALL-E (character)",
+    "source": "https://en.wikipedia.org/wiki/WALL-E_(character)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "edna-mode",
+    "name": "Edna Mode",
+    "work": "les-indestructibles",
+    "rarity": "commune",
+    "wiki": "Edna Mode",
+    "source": "https://en.wikipedia.org/wiki/Edna_Mode",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "elsa",
+    "name": "Elsa",
+    "work": "la-reine-des-neiges",
+    "rarity": "rare",
+    "wiki": "Elsa (Frozen)",
+    "source": "https://en.wikipedia.org/wiki/Elsa_(Frozen)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "anna",
+    "name": "Anna",
+    "work": "la-reine-des-neiges",
+    "rarity": "commune",
+    "wiki": "Anna (Frozen)",
+    "source": "https://en.wikipedia.org/wiki/Anna_(Frozen)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "olaf",
+    "name": "Olaf",
+    "work": "la-reine-des-neiges",
+    "rarity": "commune",
+    "wiki": "Olaf (Frozen)",
+    "source": "https://en.wikipedia.org/wiki/Olaf_(Frozen)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "monkey-d-luffy",
+    "name": "Monkey D. Luffy",
+    "work": "one-piece",
+    "rarity": "mythique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b40-MNypXsxSRb1R.png",
+    "source": "https://anilist.co/character/40",
+    "credit": "AniList"
+  },
+  {
+    "id": "roronoa-zoro",
+    "name": "Roronoa Zoro",
+    "work": "one-piece",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b62-S7oAeA9WInjV.png",
+    "source": "https://anilist.co/character/62",
+    "credit": "AniList"
+  },
+  {
+    "id": "naruto-uzumaki",
+    "name": "Naruto Uzumaki",
+    "work": "naruto",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b17-phjcWCkRuIhu.png",
+    "source": "https://anilist.co/character/17",
+    "credit": "AniList"
+  },
+  {
+    "id": "kakashi-hatake",
+    "name": "Kakashi Hatake",
+    "work": "naruto",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b85-mkVBh2yjxjmx.png",
+    "source": "https://anilist.co/character/85",
+    "credit": "AniList"
+  },
+  {
+    "id": "son-goku",
+    "name": "Son Goku",
+    "work": "dragon-ball",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/246-wsRRr6z1kii8.png",
+    "source": "https://anilist.co/character/246",
+    "credit": "AniList"
+  },
+  {
+    "id": "vegeta",
+    "name": "Vegeta",
+    "work": "dragon-ball-z",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b913-NIFkKazWM8VO.png",
+    "source": "https://anilist.co/character/913",
+    "credit": "AniList"
+  },
+  {
+    "id": "eren-jager",
+    "name": "Eren Jäger",
+    "work": "l-attaque-des-titans",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b40882-dsj7IP943WFF.jpg",
+    "source": "https://anilist.co/character/40882",
+    "credit": "AniList"
+  },
+  {
+    "id": "livai-ackerman",
+    "name": "Livaï Ackerman",
+    "work": "l-attaque-des-titans",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b45627-CR68RyZmddGG.png",
+    "source": "https://anilist.co/character/45627",
+    "credit": "AniList"
+  },
+  {
+    "id": "l",
+    "name": "L",
+    "work": "death-note",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b71-1W4panC53vfs.png",
+    "source": "https://anilist.co/character/71",
+    "credit": "AniList"
+  },
+  {
+    "id": "light-yagami",
+    "name": "Light Yagami",
+    "work": "death-note",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b80-26EhwSsSqQ50.png",
+    "source": "https://anilist.co/character/80",
+    "credit": "AniList"
+  },
+  {
+    "id": "edward-elric",
+    "name": "Edward Elric",
+    "work": "fullmetal-alchemist-brotherhood",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b11-TA5Nuk7EDUZG.jpg",
+    "source": "https://anilist.co/character/11",
+    "credit": "AniList"
+  },
+  {
+    "id": "tanjiro-kamado",
+    "name": "Tanjiro Kamado",
+    "work": "demon-slayer",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b126071-BTNEc1nRIv68.png",
+    "source": "https://anilist.co/character/126071",
+    "credit": "AniList"
+  },
+  {
+    "id": "nezuko-kamado",
+    "name": "Nezuko Kamado",
+    "work": "demon-slayer",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b127518-NRlq1CQ1v1ro.png",
+    "source": "https://anilist.co/character/127518",
+    "credit": "AniList"
+  },
+  {
+    "id": "satoru-gojo",
+    "name": "Satoru Gojo",
+    "work": "jujutsu-kaisen",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b127691-9zqh1xpIubn7.png",
+    "source": "https://anilist.co/character/127691",
+    "credit": "AniList"
+  },
+  {
+    "id": "yuji-itadori",
+    "name": "Yuji Itadori",
+    "work": "jujutsu-kaisen",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b127212-FVm2tD0erQ5B.png",
+    "source": "https://anilist.co/character/127212",
+    "credit": "AniList"
+  },
+  {
+    "id": "izuku-midoriya",
+    "name": "Izuku Midoriya",
+    "work": "my-hero-academia",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b89028-8w1I9o1ISHMg.png",
+    "source": "https://anilist.co/character/89028",
+    "credit": "AniList"
+  },
+  {
+    "id": "gon-freecss",
+    "name": "Gon Freecss",
+    "work": "hunter-x-hunter",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b30-lyFExKyDhefc.jpg",
+    "source": "https://anilist.co/character/30",
+    "credit": "AniList"
+  },
+  {
+    "id": "killua-zoldyck",
+    "name": "Killua Zoldyck",
+    "work": "hunter-x-hunter",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b27-Z5O02kQUydpT.jpg",
+    "source": "https://anilist.co/character/27",
+    "credit": "AniList"
+  },
+  {
+    "id": "spike-spiegel",
+    "name": "Spike Spiegel",
+    "work": "cowboy-bebop",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b1-ChxaldmieFlQ.png",
+    "source": "https://anilist.co/character/1",
+    "credit": "AniList"
+  },
+  {
+    "id": "shinji-ikari",
+    "name": "Shinji Ikari",
+    "work": "neon-genesis-evangelion",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b89-ZtZhXkh1rITn.png",
+    "source": "https://anilist.co/character/89",
+    "credit": "AniList"
+  },
+  {
+    "id": "asuka-langley",
+    "name": "Asuka Langley",
+    "work": "neon-genesis-evangelion",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b94-d631a3Z2KPvd.png",
+    "source": "https://anilist.co/character/94",
+    "credit": "AniList"
+  },
+  {
+    "id": "saitama",
+    "name": "Saitama",
+    "work": "one-punch-man",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b73935-ON5d0mAcrItd.jpg",
+    "source": "https://anilist.co/character/73935",
+    "credit": "AniList"
+  },
+  {
+    "id": "anya-forger",
+    "name": "Anya Forger",
+    "work": "spy-x-family",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b138100-4Li0tWRCa5bQ.png",
+    "source": "https://anilist.co/character/138100",
+    "credit": "AniList"
+  },
+  {
+    "id": "loid-forger",
+    "name": "Loid Forger",
+    "work": "spy-x-family",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b138101-7NCB0Md8zA6G.png",
+    "source": "https://anilist.co/character/138101",
+    "credit": "AniList"
+  },
+  {
+    "id": "denji",
+    "name": "Denji",
+    "work": "chainsaw-man",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b130102-FO1VHNnEnLlB.png",
+    "source": "https://anilist.co/character/130102",
+    "credit": "AniList"
+  },
+  {
+    "id": "shoyo-hinata",
+    "name": "Shoyo Hinata",
+    "work": "haikyu",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b64769-WoWlCMLLgJ14.png",
+    "source": "https://anilist.co/character/64769",
+    "credit": "AniList"
+  },
+  {
+    "id": "mob",
+    "name": "Mob",
+    "work": "mob-psycho-100",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b89616-dXmdOc7L6SDi.png",
+    "source": "https://anilist.co/character/89616",
+    "credit": "AniList"
+  },
+  {
+    "id": "rintaro-okabe",
+    "name": "Rintaro Okabe",
+    "work": "steins-gate",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b35252-DY9TW6pusqeh.png",
+    "source": "https://anilist.co/character/35252",
+    "credit": "AniList"
+  },
+  {
+    "id": "lelouch",
+    "name": "Lelouch",
+    "work": "code-geass",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b417-gVLmIJu9phcK.png",
+    "source": "https://anilist.co/character/417",
+    "credit": "AniList"
+  },
+  {
+    "id": "ken-kaneki",
+    "name": "Ken Kaneki",
+    "work": "tokyo-ghoul",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b87275-mb13EWZBdbh3.png",
+    "source": "https://anilist.co/character/87275",
+    "credit": "AniList"
+  },
+  {
+    "id": "sailor-moon",
+    "name": "Sailor Moon",
+    "work": "sailor-moon",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2030-GQvVYPEYkXCy.jpg",
+    "source": "https://anilist.co/character/2030",
+    "credit": "AniList"
+  },
+  {
+    "id": "pikachu",
+    "name": "Pikachu",
+    "work": "pokemon",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b3891-edgrZOgCJ9do.jpg",
+    "source": "https://anilist.co/character/3891",
+    "credit": "AniList"
+  },
+  {
+    "id": "sacha",
+    "name": "Sacha",
+    "work": "pokemon",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2473-JDoo3I82Km4l.png",
+    "source": "https://anilist.co/character/2473",
+    "credit": "AniList"
+  },
+  {
+    "id": "seiya",
+    "name": "Seiya",
+    "work": "les-chevaliers-du-zodiaque",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/2285.jpg",
+    "source": "https://anilist.co/character/2285",
+    "credit": "AniList"
+  },
+  {
+    "id": "olive",
+    "name": "Olive",
+    "work": "olive-et-tom",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b5620-AATHkO6L6JzX.jpg",
+    "source": "https://anilist.co/character/5620",
+    "credit": "AniList"
+  },
+  {
+    "id": "thorfinn",
+    "name": "Thorfinn",
+    "work": "vinland-saga",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b10138-zOPrka0ddZOR.png",
+    "source": "https://anilist.co/character/10138",
+    "credit": "AniList"
+  },
+  {
+    "id": "frieren",
+    "name": "Frieren",
+    "work": "frieren",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b176754-PCnpqIOkjhFk.png",
+    "source": "https://anilist.co/character/176754",
+    "credit": "AniList"
+  },
+  {
+    "id": "ichigo-kurosaki",
+    "name": "Ichigo Kurosaki",
+    "work": "bleach",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b5-a7bkJgjhhigE.png",
+    "source": "https://anilist.co/character/5",
+    "credit": "AniList"
+  },
+  {
+    "id": "asta",
+    "name": "Asta",
+    "work": "black-clover",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b123285-tKijiuQErDS0.png",
+    "source": "https://anilist.co/character/123285",
+    "credit": "AniList"
+  },
+  {
+    "id": "yoichi-isagi",
+    "name": "Yoichi Isagi",
+    "work": "blue-lock",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b140856-wVzKSyvU7R5B.png",
+    "source": "https://anilist.co/character/140856",
+    "credit": "AniList"
+  },
+  {
+    "id": "emma",
+    "name": "Emma",
+    "work": "the-promised-neverland",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b121725-LQciVJOjnMVh.png",
+    "source": "https://anilist.co/character/121725",
+    "credit": "AniList"
+  },
+  {
+    "id": "koro-sensei",
+    "name": "Koro-sensei",
+    "work": "assassination-classroom",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b65643-jimrOw0RGtoB.png",
+    "source": "https://anilist.co/character/65643",
+    "credit": "AniList"
+  },
+  {
+    "id": "nagisa-shiota",
+    "name": "Nagisa Shiota",
+    "work": "assassination-classroom",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b65645-nWH4mBMW5lYw.png",
+    "source": "https://anilist.co/character/65645",
+    "credit": "AniList"
+  },
+  {
+    "id": "senku-ishigami",
+    "name": "Senku Ishigami",
+    "work": "dr-stone",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b124142-XUO1g7wRqkaT.png",
+    "source": "https://anilist.co/character/124142",
+    "credit": "AniList"
+  },
+  {
+    "id": "chrome",
+    "name": "Chrome",
+    "work": "dr-stone",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b124145-EEvQmsj8jku4.png",
+    "source": "https://anilist.co/character/124145",
+    "credit": "AniList"
+  },
+  {
+    "id": "chihiro",
+    "name": "Chihiro",
+    "work": "le-voyage-de-chihiro",
+    "rarity": "mythique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b384-AoWCsQyG0WI7.png",
+    "source": "https://anilist.co/character/384",
+    "credit": "AniList"
+  },
+  {
+    "id": "sans-visage",
+    "name": "Sans-Visage",
+    "work": "le-voyage-de-chihiro",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b8298-ATUVKng0oyHR.png",
+    "source": "https://anilist.co/character/8298",
+    "credit": "AniList"
+  },
+  {
+    "id": "totoro",
+    "name": "Totoro",
+    "work": "mon-voisin-totoro",
+    "rarity": "legendaire",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b269-sbPL4w1ygjSe.jpg",
+    "source": "https://anilist.co/character/269",
+    "credit": "AniList"
+  },
+  {
+    "id": "san",
+    "name": "San",
+    "work": "princesse-mononoke",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2727-eH2xoFpmfbS4.png",
+    "source": "https://anilist.co/character/2727",
+    "credit": "AniList"
+  },
+  {
+    "id": "mitsuha-miyamizu",
+    "name": "Mitsuha Miyamizu",
+    "work": "your-name",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b121514-MGI7JRluscpz.png",
+    "source": "https://anilist.co/character/121514",
+    "credit": "AniList"
+  },
+  {
+    "id": "kaneda",
+    "name": "Kaneda",
+    "work": "akira",
+    "rarity": "epique",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b2588-OfACKXYm2lkV.png",
+    "source": "https://anilist.co/character/2588",
+    "credit": "AniList"
+  },
+  {
+    "id": "hauru",
+    "name": "Hauru",
+    "work": "le-chateau-ambulant",
+    "rarity": "commune",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b507-g9yz1GTLtPla.jpg",
+    "source": "https://anilist.co/character/507",
+    "credit": "AniList"
+  },
+  {
+    "id": "setsuko",
+    "name": "Setsuko",
+    "work": "le-tombeau-des-lucioles",
+    "rarity": "rare",
+    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b495-vzUTVQ5RMiJN.png",
+    "source": "https://anilist.co/character/495",
+    "credit": "AniList"
+  }
+]

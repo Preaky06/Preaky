@@ -33,7 +33,8 @@ cards.forEach((c, i) => {
   if (!c.name?.trim()) errors.push(`${at} : nom vide`);
   if (!workIds.has(c.work)) errors.push(`${at} : œuvre inconnue ${c.work}`);
   if (!RARITIES.has(c.rarity)) errors.push(`${at} : rareté inconnue ${c.rarity}`);
-  if (!/^https:\/\/(upload\.wikimedia\.org|s4\.anilist\.co)\//.test(c.image)) errors.push(`${at} : image hors Wikipédia ou AniList`);
+  if (c.image ? !/^https:\/\/(upload\.wikimedia\.org|s4\.anilist\.co)\//.test(c.image) : !c.wiki?.trim())
+    errors.push(`${at} : ni image Wikipédia/AniList, ni article Wikipédia à interroger`);
   if (!/^https:\/\//.test(c.source)) errors.push(`${at} : source manquante`);
 });
 for (const r of RARITIES) if (!cards.some((c) => c.rarity === r)) errors.push(`aucune carte ${r}`);

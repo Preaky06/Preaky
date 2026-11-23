@@ -3,7 +3,10 @@
 // - Séries, dessins animés occidentaux, films : image de l'article Wikipédia (anglais) du personnage.
 // Les images restent la propriété de leurs ayants droit ; usage non commercial, source citée.
 // Un personnage sans image est écarté : aucune carte sans son personnage.
-// Usage : node scripts/fetch-cards.mjs   (derrière un proxy : NODE_USE_ENV_PROXY=1)
+// Usage : node scripts/fetch-cards.mjs          construit cards.json (AniList + cache Wikipédia)
+//         node scripts/fetch-cards.mjs --wiki   remplit d'abord le cache Wikipédia (lent : débit limité)
+// Derrière un proxy : NODE_USE_ENV_PROXY=1. Une carte Wikipédia sans image connue garde son titre
+// d'article (`wiki`) : le navigateur du visiteur cherche alors l'image à l'affichage.
 import { readFileSync, writeFileSync } from "node:fs";
 
 const UA = "ToonDex/0.1 (projet personnel non commercial)";
@@ -30,18 +33,10 @@ const CANDIDATES = [
   ["friends", "Chandler Bing", "wiki", "Chandler Bing"],
   ["lost", "Jack Shephard", "wiki", "Jack Shephard", null, true],
   ["lost", "John Locke", "wiki", "John Locke (Lost)"],
-  ["sherlock", "Sherlock Holmes", "wiki", "Sherlock Holmes (Sherlock)", null, true],
   ["peaky-blinders", "Thomas Shelby", "wiki", "Thomas Shelby", null, true],
-  ["la-casa-de-papel", "Le Professeur", "wiki", "The Professor (Money Heist)", null, true],
-  ["la-casa-de-papel", "Tokyo", "wiki", "Tokyo (Money Heist)"],
-  ["dark", "Jonas Kahnwald", "wiki", "Jonas Kahnwald", null, true],
   ["the-mandalorian", "Din Djarin", "wiki", "Din Djarin", null, true],
   ["the-mandalorian", "Grogu", "wiki", "Grogu"],
   ["squid-game", "Seong Gi-hun", "wiki", "Seong Gi-hun", null, true],
-  ["lupin", "Assane Diop", "wiki", "Assane Diop", null, true],
-  ["mercredi", "Mercredi Addams", "wiki", "Wednesday Addams", null, true],
-  ["the-last-of-us", "Joel", "wiki", "Joel (The Last of Us)", null, true],
-  ["the-last-of-us", "Ellie", "wiki", "Ellie (The Last of Us)"],
   ["better-call-saul", "Saul Goodman", "wiki", "Saul Goodman", null, true],
   ["better-call-saul", "Kim Wexler", "wiki", "Kim Wexler"],
   ["dexter", "Dexter Morgan", "wiki", "Dexter Morgan", null, true],
@@ -49,8 +44,6 @@ const CANDIDATES = [
   ["the-wire", "Omar Little", "wiki", "Omar Little", null, true],
   ["the-wire", "Jimmy McNulty", "wiki", "Jimmy McNulty"],
   ["mad-men", "Don Draper", "wiki", "Don Draper", null, true],
-  ["the-boys", "Le Protecteur", "wiki", "Homelander", null, true],
-  ["the-boys", "Billy Butcher", "wiki", "Billy Butcher"],
   ["doctor-who", "Le Dixième Docteur", "wiki", "Tenth Doctor", null, true],
   ["twin-peaks", "Dale Cooper", "wiki", "Dale Cooper", null, true],
   ["twin-peaks", "Laura Palmer", "wiki", "Laura Palmer"],
@@ -61,7 +54,6 @@ const CANDIDATES = [
   // Séries animées
   ["rick-et-morty", "Rick Sanchez", "wiki", "Rick Sanchez", null, true],
   ["rick-et-morty", "Morty Smith", "wiki", "Morty Smith"],
-  ["clarence", "Clarence", "wiki", "Clarence (American TV series)", null, true],
   ["les-simpson", "Homer Simpson", "wiki", "Homer Simpson", null, true],
   ["les-simpson", "Bart Simpson", "wiki", "Bart Simpson"],
   ["les-simpson", "Marge Simpson", "wiki", "Marge Simpson"],
@@ -78,19 +70,13 @@ const CANDIDATES = [
   ["avatar-le-dernier-maitre-de-l-air", "Zuko", "wiki", "Zuko"],
   ["futurama", "Bender", "wiki", "Bender (Futurama)", null, true],
   ["futurama", "Fry", "wiki", "Philip J. Fry"],
-  ["regular-show", "Mordecai", "wiki", "Mordecai (Regular Show)", null, true],
-  ["le-monde-incroyable-de-gumball", "Gumball Watterson", "wiki", "Gumball Watterson", null, true],
   ["steven-universe", "Steven Universe", "wiki", "Steven Universe (character)", null, true],
   ["bojack-horseman", "BoJack Horseman", "wiki", "BoJack Horseman (character)", null, true],
-  ["arcane", "Jinx", "wiki", "Jinx (League of Legends)", null, true],
-  ["arcane", "Vi", "wiki", "Vi (League of Legends)"],
   ["les-griffin", "Peter Griffin", "wiki", "Peter Griffin", null, true],
   ["les-griffin", "Stewie Griffin", "wiki", "Stewie Griffin"],
   ["phineas-et-ferb", "Perry l’ornithorynque", "wiki", "Perry the Platypus", null, true],
   ["les-razmoket", "Tommy Pickles", "wiki", "Tommy Pickles", null, true],
   ["les-supers-nanas", "Belle, Bulle et Rebelle", "wiki", "Blossom, Bubbles, and Buttercup", null, true],
-  ["le-laboratoire-de-dexter", "Dexter", "wiki", "Dexter (Dexter's Laboratory)", null, true],
-  ["bluey", "Bluey", "wiki", "Bluey Heeler", null, true],
   ["archer", "Sterling Archer", "wiki", "Sterling Archer", null, true],
 
   // Films
@@ -114,7 +100,6 @@ const CANDIDATES = [
   ["titanic", "Rose DeWitt Bukater", "wiki", "Rose DeWitt Bukater"],
   ["la-communaute-de-l-anneau", "Gandalf", "wiki", "Gandalf", null, true],
   ["la-communaute-de-l-anneau", "Frodon Sacquet", "wiki", "Frodo Baggins"],
-  ["la-communaute-de-l-anneau", "Aragorn", "wiki", "Aragorn"],
   ["la-communaute-de-l-anneau", "Gollum", "wiki", "Gollum"],
   ["retour-vers-le-futur", "Marty McFly", "wiki", "Marty McFly", null, true],
   ["retour-vers-le-futur", "Doc Brown", "wiki", "Emmett Brown"],
@@ -129,16 +114,11 @@ const CANDIDATES = [
   ["avengers-endgame", "Iron Man", "wiki", "Tony Stark (Marvel Cinematic Universe)", null, true],
   ["avengers-endgame", "Thanos", "wiki", "Thanos (Marvel Cinematic Universe)"],
   ["avengers-endgame", "Captain America", "wiki", "Steve Rogers (Marvel Cinematic Universe)"],
-  ["gladiator", "Maximus", "wiki", "Maximus Decimus Meridius", null, true],
   ["le-silence-des-agneaux", "Hannibal Lecter", "wiki", "Hannibal Lecter", null, true],
   ["le-silence-des-agneaux", "Clarice Starling", "wiki", "Clarice Starling"],
-  ["les-evades", "Andy Dufresne", "wiki", "Andy Dufresne", null, true],
   ["alien", "Ellen Ripley", "wiki", "Ellen Ripley", null, true],
   ["alien", "Le Xénomorphe", "wiki", "Alien (creature in Alien franchise)"],
   ["mad-max-fury-road", "Max Rockatansky", "wiki", "Max Rockatansky", null, true],
-  ["mad-max-fury-road", "Furiosa", "wiki", "Furiosa (character)"],
-  ["dune", "Paul Atreides", "wiki", "Paul Atreides", null, true],
-  ["joker", "Arthur Fleck", "wiki", "Arthur Fleck", null, true],
 
   // Films d'animation occidentaux
   ["le-roi-lion", "Simba", "wiki", "Simba", null, true],
@@ -148,13 +128,8 @@ const CANDIDATES = [
   ["toy-story", "Buzz l’Éclair", "wiki", "Buzz Lightyear"],
   ["shrek", "Shrek", "wiki", "Shrek (character)", null, true],
   ["shrek", "L’Âne", "wiki", "Donkey (Shrek)"],
-  ["spider-man-new-generation", "Miles Morales", "wiki", "Miles Morales", null, true],
-  ["la-haut", "Carl Fredricksen", "wiki", "Carl Fredricksen", null, true],
-  ["coco", "Miguel Rivera", "wiki", "Miguel Rivera (Coco)", null, true],
-  ["ratatouille", "Rémy", "wiki", "Remy (Ratatouille)", null, true],
   ["wall-e", "WALL-E", "wiki", "WALL-E (character)", null, true],
   ["les-indestructibles", "Edna Mode", "wiki", "Edna Mode", null, true],
-  ["vice-versa", "Joie", "wiki", "Joy (Inside Out)", null, true],
   ["la-reine-des-neiges", "Elsa", "wiki", "Elsa (Frozen)", null, true],
   ["la-reine-des-neiges", "Anna", "wiki", "Anna (Frozen)"],
   ["la-reine-des-neiges", "Olaf", "wiki", "Olaf (Frozen)"],
@@ -236,6 +211,13 @@ function slug(text) {
  * refus (429) et on garde les réponses dans un cache pour ne jamais redemander un titre déjà obtenu.
  */
 const CACHE_FILE = new URL("./.wiki-cache.json", import.meta.url);
+function readWikiCache() {
+  try {
+    return Object.fromEntries(Object.entries(JSON.parse(readFileSync(CACHE_FILE, "utf8"))).filter(([, v]) => v));
+  } catch {
+    return {};
+  }
+}
 async function wikiImages(titles) {
   let cache = {};
   try {
@@ -300,7 +282,8 @@ async function anilistMedia(search, year) {
   throw new Error("AniList : trop de requêtes");
 }
 
-const wiki = await wikiImages([...new Set(CANDIDATES.filter((c) => c[2] === "wiki").map((c) => c[3]))]);
+const wikiTitles = [...new Set(CANDIDATES.filter((c) => c[2] === "wiki").map((c) => c[3]))];
+const wiki = process.argv.includes("--wiki") ? await wikiImages(wikiTitles) : readWikiCache();
 const anilistCache = {};
 const cards = [];
 const missing = [];
@@ -311,7 +294,13 @@ for (const [workId, name, source, query, prefer, main] of CANDIDATES) {
   let found = null;
   if (source === "wiki") {
     const hit = wiki[query];
-    if (hit) found = { image: hit.image, source: hit.source, credit: "Wikipédia", file: hit.file };
+    found = {
+      image: hit?.image,
+      source: hit?.source ?? `https://en.wikipedia.org/wiki/${encodeURIComponent(query.replace(/ /g, "_"))}`,
+      credit: "Wikipédia",
+      file: hit?.file ?? "(image cherchée par le navigateur)",
+      wiki: query,
+    };
   } else {
     const key = `${query}|${work.year}`;
     if (!anilistCache[key]) {
@@ -331,7 +320,8 @@ for (const [workId, name, source, query, prefer, main] of CANDIDATES) {
     name,
     work: workId,
     rarity: main ? work.rarity : LOWER[work.rarity],
-    image: found.image,
+    ...(found.image ? { image: found.image } : {}),
+    ...(found.wiki ? { wiki: found.wiki } : {}),
     source: found.source,
     credit: found.credit,
   });

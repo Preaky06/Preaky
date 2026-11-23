@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Aperçu des animations", robots: { i
 
 /** Paquet fixe avec une carte de chaque rareté, pour voir les animations. Désactivé en production sauf TOONDEX_DEMO=1. */
 const DEMO: PackCard[] = RARITY_ORDER.flatMap((r, i) => {
-  const card = CARDS_BY_RARITY[r][0];
+  const card = CARDS_BY_RARITY[r].find((c) => c.image) ?? CARDS_BY_RARITY[r][0];
   return card ? [{ cardId: card.id, gold: false, status: i === 1 ? "dup" : "new", shards: i === 1 ? 10 : 0 } as PackCard] : [];
 });
 
