@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition, type CSSProperties } from "react";
 import { openPack } from "@/app/actions";
 import { Card, CardBack } from "@/components/Card";
-import { RARITIES, getWork, type Rarity } from "@/lib/catalogue";
+import { RARITIES, getCard, type Rarity } from "@/lib/catalogue";
 import type { PackCard } from "@/lib/collection";
 import { Wobble } from "@/components/Wobble";
 import { ArrowIcon } from "@/components/Cartoon";
@@ -33,8 +33,8 @@ function prefersReducedMotion(): boolean {
 
 function revealDuration(card: PackCard): number {
   if (prefersReducedMotion()) return 250;
-  const work = getWork(card.workId)!;
-  return REVEAL_MS[work.rarity] + (card.gold ? GOLD_EXTRA_MS : 0);
+  const def = getCard(card.cardId)!;
+  return REVEAL_MS[def.rarity] + (card.gold ? GOLD_EXTRA_MS : 0);
 }
 
 function statusLabel(card: PackCard): string {
@@ -110,19 +110,19 @@ export function PackOpener({ initialCards, demoCards }: Props) {
     if (!cards || revealed[index] || revealedIds.current.has(index)) return;
     revealedIds.current.add(index);
     const card = cards[index];
-    const work = getWork(card.workId)!;
+    const def = getCard(card.cardId)!;
     setRevealed((prev) => prev.map((v, i) => (i === index ? true : v)));
-    if (work.rarity === "mythique") setStageFx("mythique");
+    if (def.rarity === "mythique") setStageFx("mythique");
     else if (card.gold) setStageFx("gold");
     const ms = revealDuration(card);
     busyUntil.current = Math.max(busyUntil.current, clock() + ms);
     setInFlight((n) => n + 1);
     later(() => setInFlight((n) => n - 1), ms);
-    if (work.rarity === "mythique" || card.gold) later(() => setStageFx(null), ms);
+    if (def.rarity === "mythique" || card.gold) later(() => setStageFx(null), ms);
     later(
       () =>
         setAnnounce(
-          `${work.title}, ${RARITIES[work.rarity].label.toLowerCase()}${card.gold ? ", version or" : ""}. ${statusLabel(card)}`,
+          `${def.name}, ${RARITIES[def.rarity].label.toLowerCase()}${card.gold ? ", version or" : ""}. ${statusLabel(card)}`,
         ),
       Math.min(ms, 1200),
     );
@@ -186,16 +186,16 @@ export function PackOpener({ initialCards, demoCards }: Props) {
       {error && <p className="notice">{error}</p>}
       <ol className="reveal__row">
         {cards.map((card, i) => {
-          const work = getWork(card.workId)!;
+          const def = getCard(card.cardId)!;
           const isOpen = revealed[i];
           return (
-            <li key={`${card.workId}-${i}`} className="reveal__item" style={{ "--i": i } as CSSProperties}>
+            <li key={`${card.cardId}-${i}`} className="reveal__item" style={{ "--i": i } as CSSProperties}>
               <button
                 type="button"
-                className={`slot r-${work.rarity}${card.gold ? " r-gold" : ""}${isOpen ? " is-revealed" : ""}${animated ? "" : " is-static"}`}
+                className={`slot r-${def.rarity}${card.gold ? " r-gold" : ""}${isOpen ? " is-revealed" : ""}${animated ? "" : " is-static"}`}
                 onClick={() => reveal(i)}
                 aria-disabled={isOpen}
-                aria-label={isOpen ? `Carte ${i + 1} : ${work.title}` : `Révéler la carte ${i + 1}`}
+                aria-label={isOpen ? `Carte ${i + 1} : ${def.name}` : `Révéler la carte ${i + 1}`}
               >
                 <span className="slot__fx" aria-hidden="true">
                   <span className="slot__rays" />
@@ -208,7 +208,7 @@ export function PackOpener({ initialCards, demoCards }: Props) {
                 <span className="slot__lift" aria-hidden="true">
                   <span className="flip">
                     <span className="flip__face flip__face--front">
-                      <Card work={work} gold={card.gold} />
+                      <Card card={def} gold={card.gold} />
                     </span>
                     <span className="flip__face flip__face--back">
                       <CardBack />

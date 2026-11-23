@@ -1,18 +1,30 @@
-import rows from "@/data/works.json";
-import characterRows from "@/data/characters.json";
+import workRows from "@/data/works.json";
+import cardRows from "@/data/cards.json";
 
 export type WorkType = "serie" | "serie-animee" | "anime" | "film" | "film-animation";
 export type Rarity = "commune" | "rare" | "epique" | "legendaire" | "mythique";
 
+/** Une œuvre : série, série animée, anime ou film. Sert de contexte aux cartes. */
 export type Work = {
   id: string;
-  num: number;
   title: string;
   type: WorkType;
   year: number;
   countries: string[];
   genres: string;
+};
+
+/** Une carte : un personnage d'une œuvre, avec son image réelle. */
+export type CardDef = {
+  id: string;
+  num: number;
+  name: string;
   rarity: Rarity;
+  image: string;
+  /** Page d'où vient l'image (Wikipédia ou AniList). */
+  source: string;
+  credit: "Wikipédia" | "AniList";
+  work: Work;
 };
 
 /** Couleur de fond des cartes par type. Toutes gardent un contraste d'au moins 4,5:1 avec l'encre. */
@@ -53,130 +65,37 @@ export function countryNames(codes: string[]): string {
   return codes.map((c) => COUNTRIES[c] ?? c).join(", ");
 }
 
-type Row = [string, string, WorkType, number, string, string, Rarity];
+type WorkRow = [string, string, WorkType, number, string, string, Rarity];
 
-export const WORKS: Work[] = (rows as Row[]).map(([id, title, type, year, countries, genres, rarity], i) => ({
-  id,
-  num: i + 1,
-  title,
-  type,
-  year,
-  countries: countries.split(","),
-  genres,
-  rarity,
-}));
+const WORKS_BY_ID = new Map(
+  (workRows as WorkRow[]).map(([id, title, type, year, countries, genres]) => [
+    id,
+    { id, title, type, year, countries: countries.split(","), genres } satisfies Work,
+  ]),
+);
 
-const BY_ID = new Map(WORKS.map((w) => [w.id, w]));
+type CardRow = { id: string; name: string; work: string; rarity: Rarity; image: string; source: string; credit: CardDef["credit"] };
 
-export function getWork(id: string): Work | undefined {
-  return BY_ID.get(id);
+/** Toutes les cartes, rangées par type d'œuvre puis dans l'ordre du fichier. Le numéro suit cet ordre. */
+export const CARDS: CardDef[] = (cardRows as CardRow[])
+  .filter((c) => WORKS_BY_ID.has(c.work))
+  .map((c) => ({ ...c, work: WORKS_BY_ID.get(c.work)! }))
+  .sort((a, b) => TYPE_ORDER.indexOf(a.work.type) - TYPE_ORDER.indexOf(b.work.type))
+  .map((c, i) => ({ ...c, num: i + 1 }));
+
+const CARDS_BY_ID = new Map(CARDS.map((c) => [c.id, c]));
+
+export function getCard(id: string): CardDef | undefined {
+  return CARDS_BY_ID.get(id);
 }
 
-export const WORKS_BY_RARITY: Record<Rarity, Work[]> = Object.fromEntries(
-  RARITY_ORDER.map((r) => [r, WORKS.filter((w) => w.rarity === r)]),
-) as Record<Rarity, Work[]>;
+export const CARDS_BY_RARITY: Record<Rarity, CardDef[]> = Object.fromEntries(
+  RARITY_ORDER.map((r) => [r, CARDS.filter((c) => c.rarity === r)]),
+) as Record<Rarity, CardDef[]>;
+
+/** Nombre d'œuvres représentées par au moins une carte. */
+export const WORK_COUNT = new Set(CARDS.map((c) => c.work.id)).size;
 
 export function cardNumber(num: number): string {
   return String(num).padStart(3, "0");
-}
-
-/* ---------- Personnage original de la carte, choisi selon le genre ---------- */
-
-export function hash(text: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < text.length; i++) {
-    h ^= text.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-export type Archetype =
-  | "astronaut"
-  | "alien"
-  | "robot"
-  | "zombie"
-  | "ghost"
-  | "wizard"
-  | "magical"
-  | "hero"
-  | "detective"
-  | "spy"
-  | "athlete"
-  | "singer"
-  | "romance"
-  | "laurel"
-  | "soldier"
-  | "explorer"
-  | "fighter"
-  | "party"
-  | "drama";
-
-/** Genre (en minuscules) vers personnage. Le premier genre de l'œuvre décide. */
-const GENRE_ARCHETYPES: [string, Archetype | Archetype[]][] = [
-  ["mecha", "robot"],
-  ["cyberpunk", "robot"],
-  ["space opera", "astronaut"],
-  ["science-fiction", ["astronaut", "alien", "robot"]],
-  ["science", "astronaut"],
-  ["horreur", "zombie"],
-  ["post-apocalyptique", "zombie"],
-  ["survie", "zombie"],
-  ["surnaturel", "ghost"],
-  ["mystère", "ghost"],
-  ["psychologique", "ghost"],
-  ["magical girl", "magical"],
-  ["dark fantasy", "wizard"],
-  ["fantasy", "wizard"],
-  ["fantastique", ["wizard", "ghost", "magical"]],
-  ["conte", "wizard"],
-  ["mythologie", "laurel"],
-  ["super-héros", "hero"],
-  ["espionnage", "spy"],
-  ["thriller", ["detective", "spy"]],
-  ["policier", "detective"],
-  ["crime", "detective"],
-  ["néo-noir", "detective"],
-  ["braquage", "spy"],
-  ["sport", "athlete"],
-  ["drame musical", "singer"],
-  ["musical", "singer"],
-  ["comédie romantique", "romance"],
-  ["romance", "romance"],
-  ["drame historique", "laurel"],
-  ["historique", "laurel"],
-  ["péplum", "laurel"],
-  ["guerre", "soldier"],
-  ["biographie", "drama"],
-  ["aventure", "explorer"],
-  ["action", "fighter"],
-  ["comédie dramatique", "drama"],
-  ["comédie", "party"],
-  ["satire", "party"],
-  ["famille", "party"],
-  ["drame", "drama"],
-];
-
-export function archetypeFor(work: Work): Archetype {
-  const genres = work.genres.toLowerCase().split(",").map((g) => g.trim());
-  const h = hash(work.id);
-  for (const genre of genres) {
-    const match = GENRE_ARCHETYPES.find(([key]) => key === genre);
-    if (match) {
-      const value = match[1];
-      return Array.isArray(value) ? value[h % value.length] : value;
-    }
-  }
-  return "party";
-}
-
-/* ---------- Personnages officiels (anime et films d'animation japonais, via AniList) ---------- */
-
-export type OfficialCharacter = { name: string; image: string; source: string; anilist: string };
-
-const CHARACTERS = characterRows as Record<string, OfficialCharacter>;
-
-/** Personnage officiel de l'œuvre, s'il existe dans src/data/characters.json. */
-export function characterFor(workId: string): OfficialCharacter | undefined {
-  return CHARACTERS[workId];
 }

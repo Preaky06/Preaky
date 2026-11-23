@@ -1,4 +1,4 @@
-import { RARITIES, RARITY_ORDER, WORKS_BY_RARITY } from "@/lib/catalogue";
+import { RARITIES, RARITY_ORDER, CARDS_BY_RARITY } from "@/lib/catalogue";
 import { CRAFT_COST, GOLD_ODDS, LAST_SLOT_ODDS, SHARDS_PER_DUPLICATE, SLOT_ODDS, percent } from "@/lib/rules";
 
 export function OddsTable() {
@@ -22,7 +22,7 @@ export function OddsTable() {
               <th scope="row">
                 <span className={`rarity rarity--${r}`}>{RARITIES[r].label}</span>
               </th>
-              <td>{WORKS_BY_RARITY[r].length}</td>
+              <td>{CARDS_BY_RARITY[r].length}</td>
               <td>{percent(SLOT_ODDS[r])}</td>
               <td>{LAST_SLOT_ODDS[r] ? percent(LAST_SLOT_ODDS[r]) : "·"}</td>
               <td>+{SHARDS_PER_DUPLICATE[r]} éclats</td>

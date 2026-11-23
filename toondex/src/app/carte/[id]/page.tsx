@@ -3,22 +3,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/Card";
 import { CraftButton } from "@/components/CraftButton";
+import { Wobble } from "@/components/Wobble";
 import { getCurrentUser } from "@/lib/auth";
-import { RARITIES, TYPES, WORKS, WORKS_BY_RARITY, cardNumber, characterFor, countryNames, getWork } from "@/lib/catalogue";
+import { CARDS, CARDS_BY_RARITY, RARITIES, TYPES, cardNumber, countryNames, getCard, type Rarity } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
 import { CRAFT_COST, GOLD_ODDS, LAST_SLOT_ODDS, PACK_SIZE, SHARDS_PER_DUPLICATE, SLOT_ODDS } from "@/lib/rules";
-import { Wobble } from "@/components/Wobble";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const work = getWork((await params).id);
-  return { title: work ? work.title : "Carte introuvable" };
+  const card = getCard((await params).id);
+  return { title: card ? `${card.name} · ${card.work.title}` : "Carte introuvable" };
 }
 
 /** Chance d'obtenir cette carte précise dans un paquet (approximation : tirages indépendants). */
-function chancePerPack(rarity: keyof typeof SLOT_ODDS): number {
-  const n = WORKS_BY_RARITY[rarity].length;
+function chancePerPack(rarity: Rarity): number {
+  const n = CARDS_BY_RARITY[rarity].length;
   const p = SLOT_ODDS[rarity] / 1000 / n;
   const pLast = LAST_SLOT_ODDS[rarity] / 1000 / n;
   return 1 - Math.pow(1 - p, PACK_SIZE - 1) * (1 - pLast);
@@ -29,15 +29,15 @@ function oneIn(p: number): string {
 }
 
 export default async function CardPage({ params }: Params) {
-  const work = getWork((await params).id);
-  if (!work) notFound();
+  const card = getCard((await params).id);
+  if (!card) notFound();
 
   const user = await getCurrentUser();
-  const owned = user ? (await getOwned(user.id))[work.id] : undefined;
-  const p = chancePerPack(work.rarity);
-  const character = characterFor(work.id);
-  const prev = WORKS[work.num - 2];
-  const next = WORKS[work.num];
+  const owned = user ? (await getOwned(user.id))[card.id] : undefined;
+  const p = chancePerPack(card.rarity);
+  const prev = CARDS[card.num - 2];
+  const next = CARDS[card.num];
+  const work = card.work;
 
   return (
     <>
@@ -46,24 +46,27 @@ export default async function CardPage({ params }: Params) {
           Catalogue
         </Link>
         <span aria-hidden="true"> / </span>
-        <span>#{cardNumber(work.num)}</span>
+        <span>#{cardNumber(card.num)}</span>
       </nav>
 
       <section className="detail">
         <div className="detail__card">
-          <Card work={work} gold={!!owned && owned.gold > 0} headingLevel="h2" className={user && !owned ? "card--locked" : ""} />
+          <Card card={card} gold={!!owned && owned.gold > 0} headingLevel="h2" className={user && !owned ? "card--locked" : ""} />
         </div>
         <div className="detail__info">
           <span className="type-chip" style={{ background: TYPES[work.type].color }}>
-            {TYPES[work.type].label} · #{cardNumber(work.num)}
+            {TYPES[work.type].label} · #{cardNumber(card.num)}
           </span>
           <h1 className="detail__title">
-            <Wobble text={work.title} />
+            <Wobble text={card.name} />
           </h1>
+          <p className="detail__work">{work.title}</p>
           <dl className="facts">
             <div>
-              <dt>Première diffusion ou sortie</dt>
-              <dd>{work.year}</dd>
+              <dt>Œuvre</dt>
+              <dd>
+                {work.title} ({work.year})
+              </dd>
             </div>
             <div>
               <dt>Pays</dt>
@@ -76,7 +79,7 @@ export default async function CardPage({ params }: Params) {
             <div>
               <dt>Rareté</dt>
               <dd>
-                <span className={`rarity rarity--${work.rarity}`}>{RARITIES[work.rarity].label}</span>
+                <span className={`rarity rarity--${card.rarity}`}>{RARITIES[card.rarity].label}</span>
               </dd>
             </div>
             <div>
@@ -87,19 +90,17 @@ export default async function CardPage({ params }: Params) {
             </div>
             <div>
               <dt>Doublon</dt>
-              <dd>+{SHARDS_PER_DUPLICATE[work.rarity]} éclats</dd>
+              <dd>+{SHARDS_PER_DUPLICATE[card.rarity]} éclats</dd>
             </div>
-            {character && (
-              <div>
-                <dt>Personnage</dt>
-                <dd>
-                  <a href={character.source} className="link" target="_blank" rel="noopener noreferrer">
-                    {character.name}
-                  </a>
-                  <span className="credit">Image : AniList, © ayants droit</span>
-                </dd>
-              </div>
-            )}
+            <div>
+              <dt>Image</dt>
+              <dd>
+                <a href={card.source} className="link" target="_blank" rel="noopener noreferrer">
+                  {card.credit}
+                </a>
+                <span className="credit">© ayants droit de l’œuvre</span>
+              </dd>
+            </div>
           </dl>
 
           {user ? (
@@ -117,12 +118,12 @@ export default async function CardPage({ params }: Params) {
             ) : (
               <div className="owned-box">
                 <p>Tu n’as pas encore cette carte. Tu as {user.shards} éclats.</p>
-                <CraftButton workId={work.id} cost={CRAFT_COST[work.rarity]} canAfford={user.shards >= CRAFT_COST[work.rarity]} />
+                <CraftButton cardId={card.id} cost={CRAFT_COST[card.rarity]} canAfford={user.shards >= CRAFT_COST[card.rarity]} />
               </div>
             )
           ) : (
             <p className="owned-box">
-              <Link href={`/connexion?next=/carte/${work.id}`} className="link">
+              <Link href={`/connexion?next=/carte/${card.id}`} className="link">
                 Connecte-toi
               </Link>{" "}
               pour savoir si elle est dans ta collection.

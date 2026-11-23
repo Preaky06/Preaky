@@ -30,15 +30,15 @@ create table if not exists sessions (
   expires_at timestamptz not null
 );
 create index if not exists sessions_user_idx on sessions(user_id);
-create table if not exists collection (
+create table if not exists owned_cards (
   user_id text not null references users(id) on delete cascade,
-  work_id text not null,
+  card_id text not null,
   copies integer not null default 0,
   gold integer not null default 0,
   first_at timestamptz not null default now(),
-  primary key (user_id, work_id)
+  primary key (user_id, card_id)
 );
-create table if not exists packs (
+create table if not exists daily_packs (
   user_id text not null references users(id) on delete cascade,
   day text not null,
   cards jsonb not null,

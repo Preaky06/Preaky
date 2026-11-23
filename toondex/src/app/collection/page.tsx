@@ -5,7 +5,7 @@ import { Card, MissingCard } from "@/components/Card";
 import { CraftButton } from "@/components/CraftButton";
 import { Filters, parseFilters } from "@/components/Filters";
 import { getCurrentUser } from "@/lib/auth";
-import { RARITIES, RARITY_ORDER, WORKS } from "@/lib/catalogue";
+import { CARDS, RARITIES, RARITY_ORDER } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
 import { CRAFT_COST } from "@/lib/rules";
 import { Wobble } from "@/components/Wobble";
@@ -25,10 +25,10 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
   const values = parseFilters(await searchParams);
   const owned = await getOwned(user.id);
   const ownedCount = Object.keys(owned).length;
-  const progress = Math.round((ownedCount / WORKS.length) * 100);
+  const progress = Math.round((ownedCount / CARDS.length) * 100);
 
-  const list = WORKS.filter((w) => {
-    if (values.type && w.type !== values.type) return false;
+  const list = CARDS.filter((w) => {
+    if (values.type && w.work.type !== values.type) return false;
     if (values.rarete && w.rarity !== values.rarete) return false;
     if (values.vue === "possedees" && !owned[w.id]) return false;
     if (values.vue === "manquantes" && owned[w.id]) return false;
@@ -43,7 +43,7 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
             <Wobble text="Ma collection" />
           </h1>
           <p className="muted">
-            {ownedCount} cartes sur {WORKS.length} · {progress} %
+            {ownedCount} cartes sur {CARDS.length} · {progress} %
           </p>
         </div>
         <div className="page-head__side">
@@ -56,8 +56,8 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
 
       <ul className="rarity-progress" aria-label="Progression par rareté">
         {RARITY_ORDER.map((r) => {
-          const total = WORKS.filter((w) => w.rarity === r).length;
-          const have = WORKS.filter((w) => w.rarity === r && owned[w.id]).length;
+          const total = CARDS.filter((w) => w.rarity === r).length;
+          const have = CARDS.filter((w) => w.rarity === r && owned[w.id]).length;
           return (
             <li key={r}>
               <span className={`rarity rarity--${r}`}>{RARITIES[r].label}</span>
@@ -88,7 +88,7 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
               return (
                 <li key={w.id} className="card-grid__item">
                   <Link href={`/carte/${w.id}`} className="card-link">
-                    <Card work={w} gold={mine.gold > 0} />
+                    <Card card={w} gold={mine.gold > 0} />
                   </Link>
                   <span className="card-grid__info">
                     {mine.copies > 0 && <span>×{mine.copies}</span>}
@@ -100,10 +100,10 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
             const cost = CRAFT_COST[w.rarity];
             return (
               <li key={w.id} className="card-grid__item">
-                <Link href={`/carte/${w.id}`} className="card-link" aria-label={`${w.title}, carte manquante`}>
-                  <MissingCard work={w} />
+                <Link href={`/carte/${w.id}`} className="card-link" aria-label={`${w.name}, carte manquante`}>
+                  <MissingCard card={w} />
                 </Link>
-                <CraftButton workId={w.id} cost={cost} canAfford={user.shards >= cost} />
+                <CraftButton cardId={w.id} cost={cost} canAfford={user.shards >= cost} />
               </li>
             );
           })}

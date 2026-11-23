@@ -7,11 +7,11 @@ import { OddsTable } from "@/components/OddsTable";
 import { PackOpener } from "@/components/PackOpener";
 import { Wobble } from "@/components/Wobble";
 import { getCurrentUser } from "@/lib/auth";
-import { WORKS, getWork } from "@/lib/catalogue";
+import { CARDS, WORK_COUNT, getCard } from "@/lib/catalogue";
 import { getOwned, getTodayPack } from "@/lib/collection";
 import { POP } from "@/lib/palette";
 
-const SHOWCASE = ["rick-et-morty", "le-voyage-de-chihiro", "dr-stone"];
+const SHOWCASE = ["rick-sanchez", "chihiro", "homer-simpson"];
 
 function todayLabel(): string {
   return new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", weekday: "long", day: "numeric", month: "long" }).format(
@@ -28,11 +28,11 @@ function Landing() {
           <span className="tag">Paquet du jour · 5 cartes</span>
           <h1 className="hero__title">
             <Wobble text="Collectionne" className="hero__big" />
-            <span className="hero__sub">tes séries et tes films, en cartes.</span>
+            <span className="hero__sub">les personnages de tes séries et de tes films.</span>
           </h1>
           <p className="hero__lead">
-            Chaque jour, un paquet de 5 cartes. Séries, séries animées, anime, films : chaque carte est une œuvre,
-            avec son personnage. Plus c’est rare, plus l’ouverture est folle.
+            Chaque jour, un paquet de 5 cartes. Chaque carte est un personnage de série, d’anime, de dessin animé
+            ou de film. Plus c’est rare, plus l’ouverture est folle.
           </p>
           <div className="hero__actions">
             <Link href="/inscription" className="btn btn--dark btn--lg">
@@ -47,11 +47,13 @@ function Landing() {
           </div>
         </div>
         <div className="hero__cards" aria-label="Exemples de cartes">
-          {SHOWCASE.map((id, i) => (
-            <div key={id} className={`hero__card hero__card--${i}`}>
-              <Card work={getWork(id)!} gold={i === 1} />
-            </div>
-          ))}
+          {SHOWCASE.map((id) => getCard(id) ?? null)
+            .filter((c) => c !== null)
+            .map((card, i) => (
+              <div key={card.id} className={`hero__card hero__card--${i}`}>
+                <Card card={card} gold={i === 1} />
+              </div>
+            ))}
         </div>
       </section>
 
@@ -66,7 +68,7 @@ function Landing() {
           <li className="step step--lilac">
             <span className="step__num">1</span>
             <h3>Un paquet par jour</h3>
-            <p>5 cartes tirées parmi {WORKS.length} œuvres. La cinquième est toujours rare ou mieux.</p>
+            <p>5 cartes tirées parmi {CARDS.length} personnages de {WORK_COUNT} œuvres. La cinquième est toujours rare ou mieux.</p>
           </li>
           <li className="step step--orange">
             <span className="step__num">2</span>
@@ -107,7 +109,7 @@ export default async function Home() {
   const [pack, owned] = await Promise.all([getTodayPack(user.id), getOwned(user.id)]);
   const ownedCount = Object.keys(owned).length;
   const goldCount = Object.values(owned).filter((o) => o.gold > 0).length;
-  const progress = Math.round((ownedCount / WORKS.length) * 100);
+  const progress = Math.round((ownedCount / CARDS.length) * 100);
 
   return (
     <>
@@ -136,7 +138,7 @@ export default async function Home() {
           <span className="stat__label">Ta collection</span>
           <span className="stat__value">
             {ownedCount}
-            <span className="stat__of"> / {WORKS.length}</span>
+            <span className="stat__of"> / {CARDS.length}</span>
           </span>
           <span className="progress" role="img" aria-label={`${progress} % de la collection`}>
             <span style={{ width: `${progress}%` }} />

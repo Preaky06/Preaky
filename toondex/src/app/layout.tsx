@@ -48,9 +48,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="site-footer">
           <Wobble text="ToonDex" className="site-footer__logo" />
           <p>
-            Les titres et les informations des œuvres (année, pays, genre) sont cités à titre d’information. Images des
-            personnages d’anime : AniList, propriété de leurs ayants droit, usage non commercial. Les autres
-            personnages sont des créations originales de ToonDex. Les raretés sont des règles de jeu.
+            Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit. Images : Wikipédia et
+            AniList, source indiquée sur chaque fiche. Site non commercial. Les raretés sont des règles de jeu.
           </p>
         </footer>
       </body>

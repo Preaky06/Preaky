@@ -1,6 +1,6 @@
 # ToonDex
 
-Collection de cartes de séries, séries animées, anime et films. Un paquet de 5 cartes par jour, cinq raretés, des versions or très rares, des doublons transformés en éclats pour fabriquer les cartes manquantes.
+Collection de cartes de personnages de séries, séries animées, anime et films. Un paquet de 5 cartes par jour, cinq raretés, des versions or très rares, des doublons transformés en éclats pour fabriquer les cartes manquantes.
 
 ## Lancer le site
 
@@ -18,7 +18,7 @@ Le site tourne sur http://localhost:3000. Sans configuration, les comptes et les
 | `DATABASE_URL` absente | PGlite, un Postgres embarqué dans `.data/pglite` (ou `PGLITE_DIR`). Un seul processus à la fois : n'ouvre pas ce dossier depuis un autre script pendant que le site tourne. |
 | `DATABASE_URL` définie | N'importe quel Postgres (Neon, Supabase, serveur maison). Obligatoire pour un hébergement serverless comme Vercel, où le disque n'est pas persistant. |
 
-Les tables sont créées au premier accès (`src/lib/db.ts`) : `users`, `sessions`, `collection`, `packs`.
+Les tables sont créées au premier accès (`src/lib/db.ts`) : `users`, `sessions`, `owned_cards`, `daily_packs`.
 
 ## Règles du jeu
 
@@ -33,27 +33,23 @@ Toutes les valeurs sont dans `src/lib/rules.ts`.
 
 ## Catalogue
 
-`src/data/works.json` : une ligne par œuvre, `[identifiant, titre, type, année, pays, genres, rareté]`.
+Chaque carte est un **personnage** d'une œuvre, avec sa vraie image. Une œuvre sans personnage illustré n'a pas de carte.
 
-- Types : `serie`, `serie-animee`, `anime`, `film`, `film-animation`.
-- Pays : codes ISO séparés par des virgules (`US,GB`).
-- L'ordre des lignes donne le numéro de la carte.
+- `src/data/works.json` : les œuvres, `[identifiant, titre, type, année, pays, genres, rareté]`. Types : `serie`, `serie-animee`, `anime`, `film`, `film-animation`. Pays : codes ISO séparés par des virgules (`US,GB`). La rareté de l'œuvre est celle de son personnage principal.
+- `src/data/cards.json` : les cartes, `{ id, name, work, rarity, image, source, credit }`. Généré par `node scripts/fetch-cards.mjs` à partir de la liste `CANDIDATES` du script : personnage principal à la rareté de l'œuvre, personnages secondaires un cran en dessous.
+- Images : article Wikipédia (anglais) du personnage pour les séries, dessins animés et films ; AniList pour les anime et les films d'animation japonais. Wikipédia limite fortement le débit des adresses partagées : le script espace ses requêtes et garde ses réponses dans `scripts/.wiki-cache.json` (ignoré par git), on peut donc le relancer sans tout redemander.
+- Les cartes sont numérotées par type d'œuvre, dans l'ordre du fichier.
 
 Vérification : `npm run check:catalogue`.
 
-### Personnages
-
-- **Anime et films d'animation japonais (40 cartes)** : image officielle du personnage principal, récupérée sur AniList par `node scripts/fetch-characters.mjs` et enregistrée dans `src/data/characters.json` (nom, URL de l'image, page source). Le personnage voulu peut être imposé dans `PREFER` (sinon : le principal le plus populaire). Les images sont affichées depuis le CDN d'AniList, propriété de leurs ayants droit, usage non commercial, source citée sur la fiche et en pied de page.
-- **Autres cartes** : personnage 2D original (`src/components/Mascot.tsx`) choisi selon le premier genre de l'œuvre (`archetypeFor` dans `src/lib/catalogue.ts`). Aucune source libre ne fournit d'images des personnages des séries animées et films d'animation occidentaux, et les séries ou films en prises de vue réelles n'ont pas de personnages dessinés.
-
-Les titres et les informations factuelles (année, pays, genre) sont cités à titre d'information.
+Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit. Les images sont affichées depuis Wikipédia et AniList, la source est citée sur chaque fiche. Usage non commercial.
 
 ## Direction artistique
 
 - Titrage : Sigmar (Google Fonts), lettres droites ; `src/components/Wobble.tsx` colore les grands titres lettre par lettre. Texte courant : Rubik.
 - Couleurs : bleu électrique `#3B4CFF`, encre `#15161C`, lilas, orange, citron vert, rose.
 - Pages en panneaux arrondis blancs, sombres et lilas, bandeau défilant, gants de dessin animé et mascotte télé « Toono » (`src/components/Cartoon.tsx`).
-- Cartes façon jeu de cartes : fond de la couleur du type, fenêtre avec le personnage, pays et genres, rareté en étoiles. Rare : cadre blanc. Épique : reflet. Légendaire : bordure dorée. Mythique : bordure arc-en-ciel. Version or : carte entièrement dorée.
+- Cartes façon jeu de cartes : fond de la couleur du type, nom du personnage, fenêtre avec son image, œuvre et genres, rareté en étoiles. Rare : cadre blanc. Épique : reflet. Légendaire : bordure dorée. Mythique : bordure arc-en-ciel. Version or : carte entièrement dorée.
 
 ## Comptes
 
@@ -67,7 +63,7 @@ Les titres et les informations factuelles (année, pays, genre) sont cités à t
 | --- | --- |
 | `/` | Invité : présentation et chances. Connecté : paquet du jour, puis bilan de la collection. |
 | `/collection` | Cartes possédées et manquantes, filtres, fabrication. |
-| `/catalogue` | Les 142 cartes, recherche, filtres, règles. |
+| `/catalogue` | Toutes les cartes, recherche par personnage ou œuvre, filtres, règles. |
 | `/carte/[id]` | Fiche d'une carte, chance de l'obtenir, exemplaires possédés. |
 | `/connexion`, `/inscription` | Comptes. |
 | `/apercu` | Paquet fixe avec une carte de chaque rareté (`?or=1` pour la version or). Désactivé en production sauf `TOONDEX_DEMO=1`. |

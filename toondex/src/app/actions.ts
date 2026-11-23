@@ -98,8 +98,8 @@ export type CraftState = { ok?: boolean; error?: string } | undefined;
 export async function craft(_prev: CraftState, form: FormData): Promise<CraftState> {
   const user = await getCurrentUser();
   if (!user) return { error: "Connecte-toi pour fabriquer une carte." };
-  const workId = String(form.get("workId") ?? "");
-  const result = await craftCard(user.id, workId);
+  const cardId = String(form.get("cardId") ?? "");
+  const result = await craftCard(user.id, cardId);
   if (!result.ok) return { error: result.error };
   revalidatePath("/", "layout");
   return { ok: true };

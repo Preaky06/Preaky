@@ -4,7 +4,7 @@ import { Card } from "@/components/Card";
 import { Filters, parseFilters } from "@/components/Filters";
 import { OddsTable } from "@/components/OddsTable";
 import { getCurrentUser } from "@/lib/auth";
-import { WORKS } from "@/lib/catalogue";
+import { CARDS, WORK_COUNT } from "@/lib/catalogue";
 import { getOwned, type OwnedMap } from "@/lib/collection";
 import { Wobble } from "@/components/Wobble";
 
@@ -23,10 +23,10 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
   const owned: OwnedMap = user ? await getOwned(user.id) : {};
   const q = values.q ? normalize(values.q) : "";
 
-  const list = WORKS.filter((w) => {
-    if (values.type && w.type !== values.type) return false;
+  const list = CARDS.filter((w) => {
+    if (values.type && w.work.type !== values.type) return false;
     if (values.rarete && w.rarity !== values.rarete) return false;
-    if (q && !normalize(`${w.title} ${w.genres} ${w.year}`).includes(q)) return false;
+    if (q && !normalize(`${w.name} ${w.work.title} ${w.work.genres} ${w.work.year}`).includes(q)) return false;
     return true;
   });
 
@@ -38,16 +38,16 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
             <Wobble text="Catalogue" />
           </h1>
           <p className="muted">
-            Les {WORKS.length} cartes du jeu. {list.length !== WORKS.length && `${list.length} affichées.`}
+            {CARDS.length} personnages de {WORK_COUNT} œuvres. {list.length !== CARDS.length && `${list.length} affichés.`}
           </p>
         </div>
         <form className="search" action="/catalogue" role="search">
           {values.type && <input type="hidden" name="type" value={values.type} />}
           {values.rarete && <input type="hidden" name="rarete" value={values.rarete} />}
           <label htmlFor="q" className="sr-only">
-            Rechercher une œuvre
+            Rechercher un personnage ou une œuvre
           </label>
-          <input id="q" name="q" type="search" defaultValue={values.q} placeholder="Titre, genre, année…" className="input" />
+          <input id="q" name="q" type="search" defaultValue={values.q} placeholder="Personnage, œuvre, genre…" className="input" />
           <button type="submit" className="btn btn--ghost">
             Rechercher
           </button>
@@ -63,7 +63,7 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
           {list.map((w) => (
             <li key={w.id} className="card-grid__item">
               <Link href={`/carte/${w.id}`} className="card-link">
-                <Card work={w} />
+                <Card card={w} />
               </Link>
               {user && (
                 <span className="card-grid__info">
