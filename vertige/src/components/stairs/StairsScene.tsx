@@ -131,7 +131,7 @@ const StairsSvg = memo(function StairsSvg({
           <g key={s.item.slug} className="stair-step" data-step={i} data-on={i <= initial.u + 0.5 ? "" : undefined}>
             <ellipse cx={base.x} cy={base.y + 4} rx={38} ry={11} fill="#0752A0" opacity="0.18" />
             {s.item.image &&
-              (s.item.imageKind === "photo" ? (
+              (s.item.imageKind === "photo" || s.item.imageKind === "emblem" ? (
                 // Photo encadrée : carré blanc arrondi, image recadrée dedans
                 <g>
                   <clipPath id={`marche-${i}`}>
@@ -151,12 +151,20 @@ const StairsSvg = memo(function StairsSvg({
                     y={base.y - OBJECT_SIZE * 0.86}
                     width={OBJECT_SIZE * 0.8}
                     height={OBJECT_SIZE * 0.8}
-                    preserveAspectRatio="xMidYMid slice"
+                    preserveAspectRatio={s.item.imageKind === "emblem" ? "xMidYMid meet" : "xMidYMid slice"}
                     clipPath={`url(#marche-${i})`}
+                    data-fallback={s.item.fallback ?? undefined}
                   />
                 </g>
               ) : (
-                <image href={s.item.image} x={base.x - OBJECT_SIZE / 2} y={base.y - OBJECT_SIZE + 10} width={OBJECT_SIZE} height={OBJECT_SIZE} />
+                <image
+                  href={s.item.image}
+                  x={base.x - OBJECT_SIZE / 2}
+                  y={base.y - OBJECT_SIZE + 10}
+                  width={OBJECT_SIZE}
+                  height={OBJECT_SIZE}
+                  data-fallback={s.item.fallback ?? undefined}
+                />
               ))}
             <g transform={`translate(${labelX.toFixed(1)} ${labelY.toFixed(1)})`}>
               <rect x="3" y="6" width="232" height="68" rx="20" fill="#05468a" opacity="0.18" />
@@ -311,6 +319,7 @@ export function StairsScene({ steps, count }: { steps: StairStep[]; count: numbe
                     alt=""
                     width={28}
                     height={28}
+                    data-fallback={s.item.fallback ?? undefined}
                     className={s.item.imageKind === "photo" ? "size-7 rounded-full bg-white object-cover" : "size-7 rounded-full bg-white object-contain p-0.5"}
                   />
                 ) : null,

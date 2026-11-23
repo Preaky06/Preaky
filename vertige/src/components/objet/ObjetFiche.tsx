@@ -29,6 +29,8 @@ export type FicheItem = Pick<
   | "hero_order"
   | "image_url"
   | "image_kind"
+  | "image_url_large"
+  | "image_fallback_url"
   | "image_license"
   | "image_author"
   | "image_source_url"
@@ -53,6 +55,8 @@ export const toFicheItem = (i: ItemWithPrice): FicheItem => ({
   hero_order: i.hero_order,
   image_url: i.image_url,
   image_kind: i.image_kind,
+  image_url_large: i.image_url_large,
+  image_fallback_url: i.image_fallback_url,
   image_license: i.image_license,
   image_author: i.image_author,
   image_source_url: i.image_source_url,
@@ -166,7 +170,29 @@ export function ObjetFiche({ item, below, above, count }: FicheProps) {
             <div className="price-card grid aspect-square w-full place-items-center overflow-hidden">
               {item.image_url &&
                 (item.image_kind === "photo" ? (
-                  <Image src={item.image_url} alt="" width={512} height={512} unoptimized priority className="size-full object-cover" />
+                  <Image
+                    src={item.image_url_large ?? item.image_url}
+                    alt=""
+                    width={960}
+                    height={960}
+                    unoptimized
+                    priority
+                    data-fallback={item.image_fallback_url ?? undefined}
+                    className="size-full object-cover data-[fell]:size-[70%]"
+                  />
+                ) : item.image_kind === "emblem" ? (
+                  <span className="grid size-[74%] place-items-center rounded-[22%] bg-white p-[9%] shadow-[0_24px_40px_-18px_rgb(11_18_32/0.45)]">
+                    <Image
+                      src={item.image_url_large ?? item.image_url}
+                      alt=""
+                      width={960}
+                      height={960}
+                      unoptimized
+                      priority
+                      data-fallback={item.image_fallback_url ?? undefined}
+                      className="size-full object-contain"
+                    />
+                  </span>
                 ) : (
                   <Image
                     src={item.image_url}
@@ -182,7 +208,14 @@ export function ObjetFiche({ item, below, above, count }: FicheProps) {
                   />
                 ))}
             </div>
-            {credit && <figcaption className="text-[12px] leading-snug text-muted">{credit}</figcaption>}
+            {credit && (
+              <figcaption className="text-[12px] leading-snug text-muted">
+                <span className="credit-photo">{credit}</span>
+                {item.image_fallback_url && item.image_kind !== "illustration" && (
+                  <span className="credit-fallback">Photo indisponible ici : illustration générique (Fluent Emoji 3D, Microsoft, MIT).</span>
+                )}
+              </figcaption>
+            )}
           </figure>
 
           <div className="flex flex-col gap-4">

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter_Tight, JetBrains_Mono, Six_Caps } from "next/font/google";
+import { ImageFallback } from "@/components/layout/ImageFallback";
 import { RevealObserver } from "@/components/layout/RevealObserver";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteNav } from "@/components/layout/SiteNav";
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SmoothScroll />
         <RevealObserver />
         <TiltController />
+        <ImageFallback />
       </body>
     </html>
   );

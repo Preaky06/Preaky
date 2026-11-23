@@ -49,7 +49,7 @@ export interface Price {
   notes: string | null;
 }
 
-export type ImageKind = "illustration" | "cutout" | "photo";
+export type ImageKind = "illustration" | "cutout" | "photo" | "emblem";
 
 export interface Item {
   id: string;
@@ -70,8 +70,12 @@ export interface Item {
   is_hero: boolean;
   hero_order: number | null;
   image_url: string | null;
-  /** illustration : visuel 3D générique · cutout : photo détourée · photo : photo encadrée (lieu, œuvre, drapeau) */
+  /** illustration : visuel 3D générique · cutout : photo détourée · photo : photo encadrée · emblem : logo ou drapeau, entier sur fond blanc */
   image_kind: ImageKind | null;
+  /** Grande version (fiche) quand elle existe */
+  image_url_large: string | null;
+  /** Illustration 3D affichée si la photo ne charge pas */
+  image_fallback_url: string | null;
   image_license: string | null;
   image_author: string | null;
   /** Page de la source (ex. fichier Wikimedia Commons) */

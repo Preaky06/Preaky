@@ -53,13 +53,17 @@ BOOT = r"""<script>
   }
   var setAttr = Element.prototype.setAttribute;
   function resolve(el, v) {
+    if (v.indexOf("https://upload.wikimedia.org/") === 0) {
+      var fb = el.getAttribute("data-fallback");
+      if (fb) { setAttr.call(el, "data-fell", ""); v = fb; }
+    }
     var k = key(v); if (!k) return v;
     if (window.__VG_IMG[k]) return window.__VG_IMG[k];
     if (k.indexOf("photos/") === 0) { setAttr.call(el, "data-vg", k); if (!el.isConnected) detached.push(el); load(k); return PIXEL; }
     return v;
   }
   Element.prototype.setAttribute = function (n, v) {
-    if ((n === "src" || n === "href") && typeof v === "string" && v.indexOf("objets/") !== -1) return setAttr.call(this, n, resolve(this, v));
+    if ((n === "src" || n === "href") && typeof v === "string" && (v.indexOf("objets/") !== -1 || v.indexOf("https://upload.wikimedia.org/") === 0)) return setAttr.call(this, n, resolve(this, v));
     return setAttr.call(this, n, v);
   };
   var d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
@@ -136,7 +140,17 @@ BOOT = r"""<script>
 <script src="images.js"></script>
 """
 
+def use_fallback(m):
+    """L'aperçu claude.ai bloque les images externes : on sert directement l'illustration de repli."""
+    tag = m.group(0)
+    fb = re.search(r'data-fallback="([^"]+)"', tag)
+    if not fb:
+        return tag
+    tag = re.sub(r'\b(src|href)="https://upload\.wikimedia\.org/[^"]*"', lambda a: f'{a.group(1)}="{fb.group(1)}" data-fell=""', tag)
+    return tag.replace('preserveAspectRatio="xMidYMid slice"', 'preserveAspectRatio="xMidYMid meet"')
+
 def rewrite(html: str) -> str:
+    html = re.sub(r"<(?:img|image)\b[^>]*>", use_fallback, html)
     html = re.sub(r'<link rel="preload" as="image" href="/objets/[^"]+"[^>]*/>', "", html)
     html = re.sub(r'(<(?:img|image)\b[^>]*?)\b(src|href)="/objets/([^"]+?\.webp)"', lambda m: f'{m.group(1)}{m.group(2)}="{PIXEL}" data-vg="{m.group(3)}"', html)
     return html.replace("/_next/", "next/").replace('"/icon.svg', '"icon.svg')
@@ -173,12 +187,14 @@ def bundle_of(k):
         h = ((h * 33) ^ ord(ch)) & 0xFFFFFFFF
     return h % BUNDLES
 packs = [dict() for _ in range(BUNDLES)]
-for p in sorted((app / "public/objets/photos").glob("*.webp")):
+photo_dir = app / "public/objets/photos"
+for p in sorted(photo_dir.glob("*.webp")) if photo_dir.exists() else []:
     im = Image.open(p); im.thumbnail((256, 256))
     buf = io.BytesIO(); im.save(buf, "WEBP", quality=72, method=6, alpha_quality=80)
     k = "photos/" + p.name
     packs[bundle_of(k)][k] = "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
 for n, pack in enumerate(packs):
+    if not pack: continue
     (out / f"photos-{n:02d}.js").write_text("Object.assign(window.__VG_IMG," + json.dumps(pack, separators=(",", ":")) + ");\n")
 print("photos :", sum(len(p) for p in packs), "en", BUNDLES, "paquets")
 
@@ -192,5 +208,5 @@ for js in (out / "next").rglob("*.js"):  # le service refuse U+FFFD : échappeme
 
 files = [p for p in out.rglob("*") if p.is_file()]
 print(len(files), "fichiers,", round(sum(p.stat().st_size for p in files) / 1e6, 1), "Mo ;", len(pages), "pages ; images.js", round((out / "images.js").stat().st_size / 1e6, 2), "Mo")
-left = sum(1 for p in out.rglob("*.html") if '="/objets/' in p.read_text() or '="/_next/' in p.read_text())
+left = sum(1 for p in out.rglob("*.html") if re.search(r'(?<!data-fallback)="/(objets|_next)/', p.read_text()))
 print("pages avec chemins absolus restants :", left)

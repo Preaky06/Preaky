@@ -394,7 +394,7 @@ export function CatalogExplorer({ items }: { items: CardItem[] }) {
             {results.slice(0, shown).map((item) => (
               <li key={item.slug} data-tier={item.tier}>
                 <a href={`/objet/${item.slug}`} className="flex items-center gap-3 rounded-2xl px-3 py-2.5 hover:bg-elevated sm:gap-4">
-                  <Thumb src={item.image} kind={item.imageKind} tier={item.tier} size={52} />
+                  <Thumb src={item.image} kind={item.imageKind} fallback={item.fallback} tier={item.tier} size={52} />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-semibold">{item.name}</span>
                     <span className="truncate text-[13px] text-muted">

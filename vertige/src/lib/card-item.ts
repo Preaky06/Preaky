@@ -10,6 +10,8 @@ export interface CardItem {
   tier: TierId;
   image: string | null;
   imageKind: ImageKind | null;
+  /** Illustration de repli si la photo ne charge pas */
+  fallback: string | null;
   confidence: Confidence;
   status: ItemStatus;
   priceType: PriceType;
@@ -19,7 +21,7 @@ export interface CardItem {
 }
 
 /** Champs lus par toCardItem (une fiche réduite de l'aperçu suffit). */
-type CardSource = Pick<ItemWithPrice, "slug" | "name_fr" | "price_eur" | "log_price" | "tier" | "image_url" | "image_kind" | "status" | "category_id"> & {
+type CardSource = Pick<ItemWithPrice, "slug" | "name_fr" | "price_eur" | "log_price" | "tier" | "image_url" | "image_kind" | "image_fallback_url" | "status" | "category_id"> & {
   price: Pick<ItemWithPrice["price"], "confidence" | "price_type" | "observed_at" | "country">;
 };
 
@@ -31,6 +33,7 @@ export const toCardItem = (i: CardSource): CardItem => ({
   tier: i.tier,
   image: i.image_url,
   imageKind: i.image_kind,
+  fallback: i.image_fallback_url,
   confidence: i.price.confidence,
   status: i.status,
   priceType: i.price.price_type,

@@ -23,8 +23,9 @@ const DEMO_DATE = "2026-11-22";
 
 /**
  * Photos réelles (Wikimedia Commons, licences libres) : scripts/demo/photos.json, produit par
- * scripts/demo/photos/ (recherche Wikidata, détourage). Une entrée par objet illustré ;
- * les autres gardent l'illustration 3D générique.
+ * scripts/demo/photos/ (Wikidata -> fichier Commons -> miniature standard, auteur, licence).
+ * Une entrée par objet illustré ; les autres gardent l'illustration 3D générique, qui sert
+ * aussi de repli si la photo ne charge pas.
  */
 const PHOTOS_FILE = resolve(ROOT, "scripts/demo/photos.json");
 const PHOTOS = existsSync(PHOTOS_FILE) ? JSON.parse(readFileSync(PHOTOS_FILE, "utf8")) : {};
@@ -107,9 +108,12 @@ const items = rows.map(({ r: row, hero, emoji: rowEmoji }) => {
     primary_price_id: priceId,
     is_hero: hero,
     hero_order: null,
-    ...(PHOTOS[slug] && existsSync(resolve(ROOT, `public/objets/photos/${slug}.webp`))
+    image_fallback_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
+    ...(PHOTOS[slug]
       ? {
-          image_url: `/objets/photos/${slug}.webp`,
+          // Lien direct vers la miniature Wikimedia : le navigateur du visiteur la charge.
+          image_url: PHOTOS[slug].url,
+          image_url_large: PHOTOS[slug].url_large,
           image_kind: PHOTOS[slug].kind,
           image_license: PHOTOS[slug].license,
           image_author: PHOTOS[slug].author,
@@ -117,6 +121,7 @@ const items = rows.map(({ r: row, hero, emoji: rowEmoji }) => {
         }
       : {
           image_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
+          image_url_large: null,
           image_kind: emoji ? "illustration" : null,
           image_license: emoji ? IMAGE_LICENSE : null,
           image_author: emoji ? IMAGE_AUTHOR : null,

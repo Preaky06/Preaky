@@ -175,6 +175,7 @@ export function DuelArena({ items, initialA, initialB }: { items: CardItem[]; in
                 <IconRain
                   key={`${big.slug}-${small.slug}`}
                   src={small.image}
+                  fallback={small.fallback}
                   count={Math.max(1, rain)}
                   label={`${Math.max(1, rain)} icônes : ${stripArticle(small.name)}`}
                 />

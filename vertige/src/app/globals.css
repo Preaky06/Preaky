@@ -173,6 +173,22 @@
     filter: none;
     box-shadow: 0 14px 28px -10px rgb(11 18 32 / 0.45);
   }
+  /* Logo ou drapeau : image entière sur fond blanc */
+  .pc .card-object.card-photo.card-emblem { object-fit: contain; padding: calc(var(--pc-img) * 0.1); }
+  /* Photo indisponible : illustration 3D de repli, rendue comme un objet détouré */
+  img[data-fell] {
+    object-fit: contain !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    filter: drop-shadow(0 16px 14px rgb(11 18 32 / 0.28)) !important;
+  }
+  /* Crédit de la fiche : suit l'image réellement affichée */
+  .credit-fallback { display: none; }
+  figure:has(img[data-fell]) .credit-photo { display: none; }
+  figure:has(img[data-fell]) .credit-fallback { display: inline; }
   .pc-auto { --pc-w: 160px; --pc-h: 180px; --pc-img: 112px; --pc-ov: 50px; }
   @media (min-width: 640px) {
     .pc-auto { --pc-w: 200px; --pc-h: 216px; --pc-img: 140px; --pc-ov: 62px; }
@@ -188,8 +204,11 @@
     box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tier) 22%, transparent);
   }
   .thumb > img { width: 80%; height: 80%; object-fit: contain; filter: drop-shadow(0 4px 4px rgb(11 18 32 / 0.18)); }
-  .thumb[data-kind="photo"] { overflow: hidden; }
+  .thumb[data-kind="photo"], .thumb[data-kind="emblem"] { overflow: hidden; }
   .thumb[data-kind="photo"] > img { width: 100%; height: 100%; object-fit: cover; filter: none; }
+  .thumb[data-kind="emblem"] { background: #fff; }
+  .thumb[data-kind="emblem"] > img { width: 78%; height: 78%; object-fit: contain; filter: none; }
+  .thumb > img[data-fell] { width: 80% !important; height: 80% !important; }
 
   /* Objet 3D qui dépasse de la carte */
   .card-object {

@@ -67,7 +67,7 @@ export default async function CategoriePage({ params }: PageProps<"/categorie/[s
         <ol className="flex flex-col">
           {items.map((item, i) => (
             <li key={item.slug} data-tier={item.tier} className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-2.5 sm:grid-cols-[3rem_minmax(0,1fr)_12rem_auto]">
-              <Thumb src={item.image_url} kind={item.image_kind} tier={item.tier} size={48} />
+              <Thumb src={item.image_url} kind={item.image_kind} fallback={item.image_fallback_url} tier={item.tier} size={48} />
               <a href={`/objet/${item.slug}`} className="min-w-0 truncate text-[15px] font-semibold hover:underline">
                 <span className="mr-2 tabular-nums text-muted">{i + 1}.</span>
                 {item.name_fr}

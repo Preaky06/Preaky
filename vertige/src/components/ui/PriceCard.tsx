@@ -53,7 +53,12 @@ export function PriceCard({
             height={256}
             unoptimized
             priority={priority}
-            className={cn("card-object", item.imageKind === "photo" && "card-photo")}
+            data-fallback={item.fallback ?? undefined}
+            className={cn(
+              "card-object",
+              (item.imageKind === "photo" || item.imageKind === "emblem") && "card-photo",
+              item.imageKind === "emblem" && "card-emblem",
+            )}
           />
         )}
         <span

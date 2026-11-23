@@ -99,7 +99,7 @@ export function ItemPicker({
               data-tier={item.tier}
               className={cn("flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2", i === active && "bg-elevated")}
             >
-              <Thumb src={item.image} kind={item.imageKind} tier={item.tier} size={40} />
+              <Thumb src={item.image} kind={item.imageKind} fallback={item.fallback} tier={item.tier} size={40} />
               <span className="min-w-0 flex-1 truncate text-[14px] font-medium">{item.name}</span>
               <span className="price shrink-0 text-[14px] font-bold text-(--tier)">{formatPrice(item.priceEur)}</span>
             </li>

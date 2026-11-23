@@ -10,7 +10,7 @@ const SIZE = 22;
  * Pluie d'icônes dessinée sur un seul canvas (500 icônes = 1 élément DOM au lieu de 500).
  * Les icônes tombent et s'empilent en grille ; en mouvement réduit, la grille s'affiche directement.
  */
-export function IconRain({ src, count, label }: { src: string; count: number; label: string }) {
+export function IconRain({ src, fallback, count, label }: { src: string; fallback?: string | null; count: number; label: string }) {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -72,13 +72,16 @@ export function IconRain({ src, count, label }: { src: string; count: number; la
     };
 
     img.onload = run;
+    img.onerror = () => {
+      if (fallback && !img.src.endsWith(fallback)) img.src = fallback;
+    };
     img.src = src;
     if (img.complete) run();
     return () => {
       cancelled = true;
       cancelAnimationFrame(raf);
     };
-  }, [src, count]);
+  }, [src, fallback, count]);
 
   return (
     <div ref={wrap} className="w-full max-w-3xl">
