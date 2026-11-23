@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { RARITIES, TYPES, WORKS, WORKS_BY_RARITY, cardNumber, countryNames, getWork } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
 import { CRAFT_COST, GOLD_ODDS, LAST_SLOT_ODDS, PACK_SIZE, SHARDS_PER_DUPLICATE, SLOT_ODDS } from "@/lib/rules";
+import { Wobble } from "@/components/Wobble";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -52,10 +53,12 @@ export default async function CardPage({ params }: Params) {
           <Card work={work} gold={!!owned && owned.gold > 0} headingLevel="h2" className={user && !owned ? "card--locked" : ""} />
         </div>
         <div className="detail__info">
-          <span className="kicker" style={{ color: TYPES[work.type].color }}>
-            {TYPES[work.type].label.toUpperCase()} · #{cardNumber(work.num)}
+          <span className="type-chip" style={{ background: TYPES[work.type].color }}>
+            {TYPES[work.type].label} · #{cardNumber(work.num)}
           </span>
-          <h1 className="detail__title">{work.title}</h1>
+          <h1 className="detail__title">
+            <Wobble text={work.title} />
+          </h1>
           <dl className="facts">
             <div>
               <dt>Première diffusion ou sortie</dt>

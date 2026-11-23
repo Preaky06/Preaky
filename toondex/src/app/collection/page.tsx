@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { RARITIES, RARITY_ORDER, WORKS } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
 import { CRAFT_COST } from "@/lib/rules";
+import { Wobble } from "@/components/Wobble";
 
 export const metadata: Metadata = { title: "Ma collection" };
 
@@ -38,7 +39,9 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
     <>
       <section className="page-head">
         <div>
-          <h1 className="page-title">Ma collection</h1>
+          <h1 className="page-title">
+            <Wobble text="Ma collection" />
+          </h1>
           <p className="muted">
             {ownedCount} cartes sur {WORKS.length} · {progress} %
           </p>

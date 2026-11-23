@@ -1,56 +1,44 @@
 import type { CSSProperties } from "react";
-import {
-  RARITIES,
-  TYPES,
-  cardArt,
-  cardNumber,
-  countryNames,
-  type Work,
-  type WorkType,
-} from "@/lib/catalogue";
+import { Mascot } from "@/components/Mascot";
+import { Wobble } from "@/components/Wobble";
+import { RARITIES, TYPES, cardNumber, countryNames, type Work } from "@/lib/catalogue";
 
-/** Motif graphique original propre à chaque type d'œuvre. */
-function Motif({ type }: { type: WorkType }) {
-  switch (type) {
-    case "serie":
-      return (
-        <>
-          <rect x="8" y="18" width="62" height="44" rx="7" />
-          <rect x="20" y="30" width="62" height="44" rx="7" />
-          <path d="M40 84h26" />
-        </>
-      );
-    case "serie-animee":
-      return (
-        <>
-          <circle cx="36" cy="42" r="24" />
-          <circle cx="66" cy="62" r="16" />
-          <circle cx="72" cy="26" r="7" />
-        </>
-      );
-    case "anime":
-      return (
-        <>
-          <circle cx="64" cy="40" r="20" />
-          <path d="M4 30h40M10 44h30M2 58h44M16 72h52M30 86h40" />
-        </>
-      );
-    case "film":
-      return (
-        <>
-          <rect x="22" y="4" width="46" height="92" rx="4" />
-          <path d="M30 12v6M30 30v6M30 48v6M30 66v6M30 84v6M60 12v6M60 30v6M60 48v6M60 66v6M60 84v6" />
-        </>
-      );
-    case "film-animation":
-      return (
-        <>
-          <path d="M40 10l6 18 18 6-18 6-6 18-6-18-18-6 18-6z" />
-          <path d="M74 52l4 11 11 4-11 4-4 11-4-11-11-4 11-4z" />
-          <circle cx="22" cy="76" r="5" />
-        </>
-      );
-  }
+function Stars({ rank }: { rank: number }) {
+  return (
+    <span className="card__stars" aria-hidden="true">
+      {Array.from({ length: 5 }, (_, i) => (
+        <svg key={i} viewBox="0 0 10 10" className={i <= rank ? "is-on" : ""}>
+          <path d="M5 0.6l1.3 2.9 3.1.3-2.4 2.1.7 3.1L5 7.4 2.3 9l.7-3.1L.6 3.8l3.1-.3z" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
+function GlobeIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M2 8h12M8 2c2 2 2 10 0 12M8 2c-2 2-2 10 0 12" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+function MasksIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M2 3h7v4.5C9 10 7.5 12 5.5 12S2 10 2 7.5z" fill="currentColor" />
+      <path d="M7.5 6.5h6.5v3c0 2.5-1.5 4.5-3.5 4.5S7 12 7 10" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="4.2" cy="6" r="0.9" fill="#fff" />
+      <circle cx="6.8" cy="6" r="0.9" fill="#fff" />
+    </svg>
+  );
+}
+
+function titleSize(title: string): string {
+  if (title.length > 40) return "card__title--xs";
+  if (title.length > 24) return "card__title--sm";
+  return "";
 }
 
 type CardProps = {
@@ -62,8 +50,8 @@ type CardProps = {
   headingLevel?: "h2" | "h3";
 };
 
+/** Carte façon jeu de cartes : fond de couleur du type, personnage 2D, infos, rareté. */
 export function Card({ work, gold = false, width, className = "", headingLevel = "h3" }: CardProps) {
-  const art = cardArt(work);
   const type = TYPES[work.type];
   const Title = headingLevel;
   const style = { "--type": type.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
@@ -74,29 +62,36 @@ export function Card({ work, gold = false, width, className = "", headingLevel =
       aria-label={`${work.title}, ${type.label.toLowerCase()}, ${RARITIES[work.rarity].label.toLowerCase()}${gold ? ", version or" : ""}`}
     >
       <div className="card__face">
-        <div className="card__art" style={{ background: art.background }} aria-hidden="true">
-          <svg
-            className="card__motif"
-            viewBox="0 0 100 100"
-            style={{ transform: `translate(${art.motifX}%, ${art.motifY}%) rotate(${art.motifRotate}deg)` }}
-          >
-            <Motif type={work.type} />
-          </svg>
-          <span className="card__initials">{art.initials}</span>
-          <span className="card__sheen" />
+        <div className="card__top">
+          <Title className={`card__title ${titleSize(work.title)}`}>{work.title}</Title>
+          <span className="card__year">{work.year}</span>
+        </div>
+        <div className="card__window">
           <span className="card__type">{type.label}</span>
           {gold && <span className="card__gold-badge">Or</span>}
+          <Mascot work={work} gold={gold} className="card__mascot" />
+          <span className="card__holo" aria-hidden="true" />
         </div>
-        <div className="card__body">
-          <Title className="card__title">{work.title}</Title>
-          <p className="card__meta">
-            {work.year} · {countryNames(work.countries)}
-          </p>
-          <p className="card__meta card__genres">{work.genres}</p>
-          <div className="card__foot">
-            <span className="card__num">#{cardNumber(work.num)}</span>
-            <span className={`rarity rarity--${work.rarity}`}>{RARITIES[work.rarity].label}</span>
-          </div>
+        <ul className="card__moves">
+          <li>
+            <span className="card__icon">
+              <GlobeIcon />
+            </span>
+            <span className="card__move">{countryNames(work.countries)}</span>
+          </li>
+          <li>
+            <span className="card__icon">
+              <MasksIcon />
+            </span>
+            <span className="card__move">{work.genres}</span>
+          </li>
+        </ul>
+        <div className="card__foot">
+          <span className="card__rarity">
+            {RARITIES[work.rarity].label}
+            <Stars rank={RARITIES[work.rarity].rank} />
+          </span>
+          <span className="card__num">#{cardNumber(work.num)}</span>
         </div>
       </div>
     </article>
@@ -108,33 +103,33 @@ export function CardBack() {
   return (
     <div className="card card--back" aria-hidden="true">
       <div className="card__face card__back">
-        <span className="logo-mark logo-mark--lg">
-          <span />
-          <span />
-          <span />
+        <span className="card__back-logo">
+          <Wobble text="ToonDex" />
+          <span className="badge-star" />
         </span>
-        <span className="card__back-name">ToonDex</span>
+        <span className="card__back-label">Cartes à collectionner</span>
       </div>
     </div>
   );
 }
 
-/** Emplacement d'une carte pas encore obtenue. */
+/** Emplacement d'une carte pas encore obtenue : silhouette du personnage. */
 export function MissingCard({ work }: { work: Work }) {
   const type = TYPES[work.type];
   return (
     <div className="card card--missing" style={{ "--type": type.color } as CSSProperties}>
       <div className="card__face">
-        <div className="card__missing-art" aria-hidden="true">
-          ?
+        <div className="card__top">
+          <p className={`card__title ${titleSize(work.title)}`}>{work.title}</p>
+          <span className="card__year">?</span>
         </div>
-        <div className="card__body">
-          <p className="card__title">{work.title}</p>
-          <p className="card__meta">{type.label}</p>
-          <div className="card__foot">
-            <span className="card__num">#{cardNumber(work.num)}</span>
-            <span className={`rarity rarity--${work.rarity}`}>{RARITIES[work.rarity].label}</span>
-          </div>
+        <div className="card__window">
+          <span className="card__type">{type.label}</span>
+          <Mascot work={work} className="card__mascot card__mascot--shadow" />
+        </div>
+        <div className="card__foot">
+          <span className="card__rarity">{RARITIES[work.rarity].label}</span>
+          <span className="card__num">#{cardNumber(work.num)}</span>
         </div>
       </div>
     </div>

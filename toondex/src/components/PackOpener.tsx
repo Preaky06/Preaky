@@ -7,6 +7,8 @@ import { openPack } from "@/app/actions";
 import { Card, CardBack } from "@/components/Card";
 import { RARITIES, getWork, type Rarity } from "@/lib/catalogue";
 import type { PackCard } from "@/lib/collection";
+import { Wobble } from "@/components/Wobble";
+import { ArrowIcon } from "@/components/Cartoon";
 
 /** Durée de l'animation d'ouverture selon la rareté (ms). Plus c'est rare, plus c'est long. */
 const REVEAL_MS: Record<Rarity, number> = {
@@ -152,18 +154,19 @@ export function PackOpener({ initialCards, demoCards }: Props) {
         >
           <span className="pack__inner">
             <span className="pack__sheen" aria-hidden="true" />
-            <span className="logo-mark logo-mark--lg" aria-hidden="true">
-              <span />
-              <span />
-              <span />
+            <span className="pack__logo" aria-hidden="true">
+              <Wobble text="ToonDex" />
+              <span className="badge-star" />
             </span>
-            <span className="pack__name">ToonDex</span>
             <span className="pack__label">Paquet du jour</span>
             <span className="pack__count">5 cartes</span>
           </span>
         </button>
-        <button type="button" className="btn btn--primary btn--lg" onClick={open} disabled={pending || phase !== "sealed"}>
+        <button type="button" className="btn btn--lime btn--lg" onClick={open} disabled={pending || phase !== "sealed"}>
           {phase === "sealed" ? "Ouvrir mon paquet" : "Ouverture…"}
+          <span className="btn__arrow">
+            <ArrowIcon />
+          </span>
         </button>
         {error && (
           <p className="form-error" role="alert">
@@ -238,14 +241,17 @@ export function PackOpener({ initialCards, demoCards }: Props) {
               </>
             )}
           </p>
-          <Link href="/collection" className="btn btn--primary">
+          <Link href="/collection" className="btn btn--lime">
             Voir ma collection
+            <span className="btn__arrow">
+              <ArrowIcon />
+            </span>
           </Link>
         </div>
       ) : (
         <div className="reveal__summary">
           <p className="muted">{allRevealed ? "…" : "Touche une carte pour la retourner."}</p>
-          <button type="button" className="btn btn--ghost" onClick={revealAll} disabled={allRevealed}>
+          <button type="button" className="btn btn--ghost-dark" onClick={revealAll} disabled={allRevealed}>
             Tout révéler
           </button>
         </div>

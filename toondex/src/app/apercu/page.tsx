@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PackOpener } from "@/components/PackOpener";
 import type { PackCard } from "@/lib/collection";
+import { Wobble } from "@/components/Wobble";
+import { POP } from "@/lib/palette";
 
 export const metadata: Metadata = { title: "Aperçu des animations", robots: { index: false } };
 
@@ -20,11 +22,13 @@ export default async function PreviewPage({ searchParams }: { searchParams: Prom
   if (process.env.NODE_ENV === "production" && process.env.TOONDEX_DEMO !== "1") notFound();
   const withGold = (await searchParams).or === "1";
   return (
-    <section className="today">
+    <section className="panel panel--dark today">
       <div className="today__head">
-        <span className="kicker">APERÇU</span>
-        <h1 className="today__title">Une carte de chaque rareté</h1>
-        <p className="muted">Commune, rare, épique, légendaire, mythique{withGold ? ", et une version or" : ""}.</p>
+        <span className="tag tag--dark">Aperçu</span>
+        <h1 className="giant">
+          <Wobble text="Une carte par rareté" colors={POP} />
+        </h1>
+        <p className="today__status">Commune, rare, épique, légendaire, mythique{withGold ? ", et une version or" : ""}.</p>
       </div>
       <PackOpener initialCards={null} demoCards={withGold ? GOLD : DEMO} />
     </section>

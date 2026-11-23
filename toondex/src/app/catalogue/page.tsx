@@ -6,6 +6,7 @@ import { OddsTable } from "@/components/OddsTable";
 import { getCurrentUser } from "@/lib/auth";
 import { WORKS } from "@/lib/catalogue";
 import { getOwned, type OwnedMap } from "@/lib/collection";
+import { Wobble } from "@/components/Wobble";
 
 export const metadata: Metadata = { title: "Catalogue" };
 
@@ -33,7 +34,9 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
     <>
       <section className="page-head">
         <div>
-          <h1 className="page-title">Catalogue</h1>
+          <h1 className="page-title">
+            <Wobble text="Catalogue" />
+          </h1>
           <p className="muted">
             Les {WORKS.length} cartes du jeu. {list.length !== WORKS.length && `${list.length} affichées.`}
           </p>
@@ -72,8 +75,10 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
         </ul>
       )}
 
-      <section className="section">
-        <h2 className="section__title">Règles et chances</h2>
+      <section className="panel panel--white">
+        <h2 className="section-title">
+          <Wobble text="Règles et chances" />
+        </h2>
         <OddsTable />
       </section>
     </>

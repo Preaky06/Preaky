@@ -41,7 +41,14 @@ Toutes les valeurs sont dans `src/lib/rules.ts`.
 
 Vérification : `npm run check:catalogue`.
 
-Les visuels des cartes sont générés à partir de l'identifiant (dégradés, motif propre au type, initiales du titre). Aucune affiche ni image officielle n'est utilisée. Les titres et les informations factuelles (année, pays, genre) sont cités à titre d'information.
+Chaque carte montre un personnage 2D original (`src/components/Mascot.tsx`), choisi selon le premier genre de l'œuvre : astronaute, alien ou robot pour la science-fiction, zombie pour l'horreur, détective ou espion pour le policier et le thriller, magicien pour la fantasy, etc. (`archetypeFor` dans `src/lib/catalogue.ts`). Peau, tenue, coiffure et expression varient selon l'identifiant. Aucun personnage, affiche ni image officielle n'est utilisé : les personnages des œuvres sont protégés. Les titres et les informations factuelles (année, pays, genre) sont cités à titre d'information.
+
+## Direction artistique
+
+- Titrage : Gasoek One (Google Fonts), lettres étirées et décalées une à une (`src/components/Wobble.tsx`) pour un effet « découpé à la main ». Texte courant : Rubik.
+- Couleurs : bleu électrique `#3B4CFF`, encre `#15161C`, lilas, orange, citron vert, rose.
+- Pages en panneaux arrondis blancs, sombres et lilas, bandeau défilant, gants de dessin animé et mascotte télé « Toono » (`src/components/Cartoon.tsx`).
+- Cartes façon jeu de cartes : fond de la couleur du type, fenêtre avec le personnage, pays et genres, rareté en étoiles. Rare : cadre blanc. Épique : reflet. Légendaire : bordure dorée. Mythique : bordure arc-en-ciel. Version or : carte entièrement dorée.
 
 ## Comptes
 
