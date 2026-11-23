@@ -5,15 +5,15 @@ import type { CSSProperties, ElementType } from "react";
  * comme un titrage collé à la main. Les valeurs sont fixes pour un rendu identique à chaque affichage.
  */
 const JITTER: [rotate: number, shiftY: number, scaleY: number][] = [
-  [-3, 0.02, 1.2],
-  [2, 0.05, 1.06],
-  [-2, 0, 1.28],
-  [3, 0.04, 1.1],
-  [-2, -0.01, 1.32],
-  [2, 0.03, 1.14],
-  [-3, 0, 1.22],
-  [1.5, 0.05, 1.04],
-  [-1.5, 0.01, 1.26],
+  [-3, 0.02, 1.04],
+  [2, 0.05, 0.98],
+  [-2, 0, 1.08],
+  [3, 0.04, 1],
+  [-2, -0.01, 1.1],
+  [2, 0.03, 1.02],
+  [-3, 0, 1.06],
+  [1.5, 0.05, 0.97],
+  [-1.5, 0.01, 1.08],
 ];
 
 type Props = {

@@ -125,13 +125,13 @@ a {
   display: inline-flex;
   align-items: flex-end;
   white-space: nowrap;
-  padding-top: 0.34em;
+  padding-top: 0.14em;
 }
 .wobble__l {
   display: inline-block;
-  margin: 0 -0.025em;
+  margin: 0 -0.015em;
   transform-origin: 50% 100%;
-  transform: translateY(var(--y)) rotate(var(--r)) scale(0.9, var(--s));
+  transform: translateY(var(--y)) rotate(var(--r)) scale(0.96, var(--s));
 }
 
 .badge-star {
@@ -174,7 +174,7 @@ a {
   margin-right: 0.3em;
 }
 .logo__word .wobble__word {
-  padding-top: 0.28em;
+  padding-top: 0.12em;
 }
 
 .nav {

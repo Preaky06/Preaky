@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Gasoek_One, Rubik } from "next/font/google";
+import { Rubik, Sigmar } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Wobble } from "@/components/Wobble";
 import "./globals.css";
 
-const display = Gasoek_One({
+const display = Sigmar({
   variable: "--font-display",
   subsets: ["latin", "latin-ext"],
   weight: "400",

@@ -45,7 +45,7 @@ Chaque carte montre un personnage 2D original (`src/components/Mascot.tsx`), cho
 
 ## Direction artistique
 
-- Titrage : Gasoek One (Google Fonts), lettres étirées et décalées une à une (`src/components/Wobble.tsx`) pour un effet « découpé à la main ». Texte courant : Rubik.
+- Titrage : Sigmar (Google Fonts), lettres légèrement penchées et décalées une à une (`src/components/Wobble.tsx`). Texte courant : Rubik.
 - Couleurs : bleu électrique `#3B4CFF`, encre `#15161C`, lilas, orange, citron vert, rose.
 - Pages en panneaux arrondis blancs, sombres et lilas, bandeau défilant, gants de dessin animé et mascotte télé « Toono » (`src/components/Cartoon.tsx`).
 - Cartes façon jeu de cartes : fond de la couleur du type, fenêtre avec le personnage, pays et genres, rareté en étoiles. Rare : cadre blanc. Épique : reflet. Légendaire : bordure dorée. Mythique : bordure arc-en-ciel. Version or : carte entièrement dorée.
