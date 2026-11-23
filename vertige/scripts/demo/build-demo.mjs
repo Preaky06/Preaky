@@ -29,6 +29,12 @@ const DEMO_DATE = "2026-11-22";
  */
 const PHOTOS_FILE = resolve(ROOT, "scripts/demo/photos.json");
 const PHOTOS = existsSync(PHOTOS_FILE) ? JSON.parse(readFileSync(PHOTOS_FILE, "utf8")) : {};
+/** Emblèmes locaux (drapeaux, logos) : npm run demo:emblems. Prioritaires, car servis par le site. */
+const EMBLEMS_FILE = resolve(ROOT, "scripts/demo/emblems.json");
+const EMBLEMS = existsSync(EMBLEMS_FILE) ? JSON.parse(readFileSync(EMBLEMS_FILE, "utf8")) : {};
+/** Photos produits locales (Pexels, téléchargées et détourées) : scripts/demo/product-photos.json. */
+const PRODUCTS_FILE = resolve(ROOT, "scripts/demo/product-photos.json");
+const PRODUCTS = existsSync(PRODUCTS_FILE) ? JSON.parse(readFileSync(PRODUCTS_FILE, "utf8")) : {};
 
 /** 1 unité de devise = x EUR. Approximations de démo, à remplacer par la BCE. */
 const DEMO_FX = {
@@ -109,7 +115,25 @@ const items = rows.map(({ r: row, hero, emoji: rowEmoji }) => {
     is_hero: hero,
     hero_order: null,
     image_fallback_url: emoji ? `/objets/${codepoints(emoji, false)}.webp` : null,
-    ...(PHOTOS[slug]
+    ...(PRODUCTS[slug] && existsSync(resolve(ROOT, `public/objets/produits/${slug}.webp`))
+      ? {
+          image_url: `/objets/produits/${slug}.webp`,
+          image_url_large: null,
+          image_kind: PRODUCTS[slug].kind,
+          image_license: PRODUCTS[slug].license,
+          image_author: PRODUCTS[slug].author,
+          image_source_url: PRODUCTS[slug].source_url,
+        }
+      : EMBLEMS[slug] && existsSync(resolve(ROOT, `public/objets/emblemes/${slug}.svg`))
+      ? {
+          image_url: `/objets/emblemes/${slug}.svg`,
+          image_url_large: null,
+          image_kind: "emblem",
+          image_license: EMBLEMS[slug].license,
+          image_author: EMBLEMS[slug].author,
+          image_source_url: EMBLEMS[slug].source_url,
+        }
+      : PHOTOS[slug]
       ? {
           // Lien direct vers la miniature Wikimedia : le navigateur du visiteur la charge.
           image_url: PHOTOS[slug].url,

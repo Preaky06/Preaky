@@ -41,7 +41,7 @@ BOOT = r"""<script>
      paquet photos-NN.js chargé à la demande, l'image est remplacée à son arrivée. */
   var PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
   window.__VG_IMG = window.__VG_IMG || {};
-  function key(v) { var m = /objets\/([^"'?#]+\.webp)/.exec(v || ""); return m ? m[1] : null; }
+  function key(v) { var m = /objets\/([^"'?#]+\.(?:webp|svg|png))/.exec(v || ""); return m ? m[1] : null; }
   function bundleOf(k) { var h = 5381; for (var i = 0; i < k.length; i++) h = ((h * 33) ^ k.charCodeAt(i)) >>> 0; return h %% %(bundles)d; }
   var loading = {}, detached = [];
   function load(k) {
@@ -152,7 +152,7 @@ def use_fallback(m):
 def rewrite(html: str) -> str:
     html = re.sub(r"<(?:img|image)\b[^>]*>", use_fallback, html)
     html = re.sub(r'<link rel="preload" as="image" href="/objets/[^"]+"[^>]*/>', "", html)
-    html = re.sub(r'(<(?:img|image)\b[^>]*?)\b(src|href)="/objets/([^"]+?\.webp)"', lambda m: f'{m.group(1)}{m.group(2)}="{PIXEL}" data-vg="{m.group(3)}"', html)
+    html = re.sub(r'(<(?:img|image)\b[^>]*?)\b(src|href)="/objets/([^"]+?\.(?:webp|svg|png))"', lambda m: f'{m.group(1)}{m.group(2)}="{PIXEL}" data-vg="{m.group(3)}"', html)
     return html.replace("/_next/", "next/").replace('"/icon.svg', '"icon.svg')
 
 MOVER = '<script>(function(){var me=document.currentScript,h=document.head,n;while((n=document.body.firstChild)&&n!==me){h.appendChild(n);}me.remove();})();</script>'
@@ -177,7 +177,12 @@ for name, src in pages.items():
     (out / name).write_text(page)
 
 # Illustrations 3D regroupées (chargées sur chaque page)
-imgs = {p.name: "data:image/webp;base64," + base64.b64encode(p.read_bytes()).decode() for p in sorted((app / "public/objets").glob("*.webp"))}
+MIME = {".webp": "image/webp", ".svg": "image/svg+xml", ".png": "image/png"}
+imgs = {
+    str(p.relative_to(app / "public/objets")): f"data:{MIME[p.suffix]};base64," + base64.b64encode(p.read_bytes()).decode()
+    for p in sorted((app / "public/objets").rglob("*"))
+    if p.suffix in MIME and not p.is_relative_to(app / "public/objets/photos")
+}
 (out / "images.js").write_text("window.__VG_IMG=Object.assign(window.__VG_IMG||{}," + json.dumps(imgs, separators=(",", ":")) + ");\n")
 
 # Photos : copies 256 px réparties en paquets (même hachage que bundleOf côté navigateur)

@@ -13,7 +13,8 @@
     "demo:purge": "node scripts/demo/purge-demo.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check": "npm run typecheck && npm run lint && npm run demo:check && npm run check:contrast",
-    "demo:images": "node scripts/demo/copy-images.mjs"
+    "demo:images": "node scripts/demo/copy-images.mjs",
+    "demo:emblems": "node scripts/demo/build-emblems.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -33,6 +34,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "flag-icons": "^7.6.0",
+    "simple-icons": "^16.38.1",
     "tailwindcss": "4.3.3",
     "typescript": "^5"
   }

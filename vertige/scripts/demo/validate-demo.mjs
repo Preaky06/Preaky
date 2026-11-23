@@ -37,9 +37,10 @@ for (const it of items) {
   if (!it.image_url) err(it.slug, "image manquante");
   if (it.image_kind === "cutout" || it.image_kind === "photo" || it.image_kind === "emblem") {
     if (!it.image_author || !it.image_license || !it.image_source_url) err(it.slug, "photo sans auteur, licence ou source");
-    if (!/^(cc0|cc[- ]by|public domain|pd|gfdl|copyrighted free use|attribution|ogl|fal|free art|apache|bsd|no restrictions)/i.test(it.image_license ?? ""))
+    if (!/^(cc0|cc[- ]by|public domain|pd|gfdl|copyrighted free use|attribution|ogl|fal|free art|apache|bsd|no restrictions|mit|licence pexels)/i.test(it.image_license ?? ""))
       err(it.slug, `licence non libre : ${it.image_license}`);
-    if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\//.test(it.image_url ?? "")) err(it.slug, "photo hors miniature Wikimedia standard");
+    if (!/^(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/|\/objets\/(emblemes|produits)\/)/.test(it.image_url ?? ""))
+      err(it.slug, "photo ni locale ni miniature Wikimedia standard");
     if (!it.image_fallback_url) err(it.slug, "photo sans illustration de repli");
   }
   if (Math.abs(Math.log10(it.price_eur) - it.log_price) > 1e-9) err(it.slug, "log_price incohérent");

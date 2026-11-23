@@ -1,0 +1,20 @@
+{
+  "_doc": "Objet -> emblème local : flag:<code ISO> (flag-icons, MIT) ou icon:<slug> (simple-icons, CC0). Prioritaire sur les photos Wikimedia : servi par le site, visible partout.",
+  "seconde-de-pib-francais": "flag:fr", "pib-de-la-france-sur-un-an": "flag:fr", "dette-publique-francaise": "flag:fr",
+  "budget-de-la-defense-francaise-en-2025": "flag:fr", "pib-des-tuvalu": "flag:tv", "pib-de-monaco": "flag:mc",
+  "pib-du-senegal": "flag:sn", "pib-de-l-islande": "flag:is", "pib-de-la-cote-d-ivoire": "flag:ci", "pib-du-luxembourg": "flag:lu",
+  "pib-du-maroc": "flag:ma", "pib-du-nigeria": "flag:ng", "pib-de-l-algerie": "flag:dz", "pib-de-l-afrique-du-sud": "flag:za",
+  "plan-de-relance-europeen": "flag:eu", "pib-de-la-suisse": "flag:ch", "pib-de-l-indonesie": "flag:id", "pib-de-l-australie": "flag:au",
+  "pib-de-l-espagne": "flag:es", "pib-de-la-coree-du-sud": "flag:kr", "pib-du-mexique": "flag:mx", "pib-de-la-russie": "flag:ru",
+  "pib-du-canada": "flag:ca", "pib-du-bresil": "flag:br", "pib-de-l-italie": "flag:it", "pib-du-royaume-uni": "flag:gb",
+  "pib-de-l-inde": "flag:in", "pib-du-japon": "flag:jp", "pib-de-l-allemagne-sur-un-an": "flag:de", "pib-de-la-chine-sur-un-an": "flag:cn",
+  "pib-des-etats-unis": "flag:us", "dette-publique-des-etats-unis": "flag:us",
+  "tesla": "icon:tesla", "netflix": "icon:netflix", "mois-de-netflix-avec-publicites": "icon:netflix", "mois-de-netflix-premium": "icon:netflix",
+  "spotify": "icon:spotify", "mois-de-spotify-premium": "icon:spotify", "capitalisation-boursiere-d-apple": "icon:apple",
+  "capitalisation-boursiere-de-nvidia": "icon:nvidia", "ferrari": "icon:ferrari", "meta": "icon:meta", "alphabet": "icon:google",
+  "airbus": "icon:airbus", "hermes": "icon:hermes", "renault": "icon:renault", "ubisoft": "icon:ubisoft",
+  "rachat-d-instagram-par-facebook": "icon:instagram", "rachat-de-whatsapp-par-facebook": "icon:whatsapp",
+  "rachat-de-twitter-par-elon-musk": "icon:x", "rachat-abandonne-de-figma-par-adobe": "icon:figma",
+  "valorisation-de-mistral-ai": "icon:mistralai", "bitcoin": "icon:bitcoin", "budget-annuel-de-la-nasa": "icon:nasa",
+  "budget-annuel-du-cnes": "icon:cnes"
+}
