@@ -36,13 +36,18 @@ Toutes les valeurs sont dans `src/lib/rules.ts`.
 Chaque carte est un **personnage** d'une œuvre, avec sa vraie image. Une œuvre sans personnage illustré n'a pas de carte.
 
 - `src/data/works.json` : les œuvres, `[identifiant, titre, type, année, pays, genres, rareté]`. Types : `serie`, `serie-animee`, `anime`, `film`, `film-animation`. Pays : codes ISO séparés par des virgules (`US,GB`). La rareté de l'œuvre est celle de son personnage principal.
-- `src/data/cards.json` : les cartes, `{ id, name, work, rarity, image, source, credit }`. Généré par `node scripts/fetch-cards.mjs` à partir de la liste `CANDIDATES` du script : personnage principal à la rareté de l'œuvre, personnages secondaires un cran en dessous.
-- Images : article Wikipédia (anglais) du personnage pour les séries, dessins animés et films ; AniList pour les anime et les films d'animation japonais. Wikipédia limite fortement le débit des adresses partagées : le script espace ses requêtes et garde ses réponses dans `scripts/.wiki-cache.json` (ignoré par git), on peut donc le relancer sans tout redemander.
+- `src/data/cards.json` : les cartes, `{ id, name, work, rarity, image, source, credit }`. Généré par `node scripts/fetch-cards.mjs` (derrière un proxy : `NODE_USE_ENV_PROXY=1`). Personnage principal à la rareté de l'œuvre, personnages secondaires un cran en dessous.
+- Sources des images, toutes gratuites et sans clé :
+  - **TVMaze** pour les séries et séries animées : image du personnage dans son rôle. Le script choisit les personnages listés dans `SERIES` (avec un article Wikipédia de secours si TVMaze n'a pas d'image).
+  - **Disney API** (images du wiki Disney de Fandom) pour les films Disney.
+  - **Wikipédia** pour les autres films (`WIKI_FILMS`), à partir du cache `scripts/.wiki-cache.json` (ignoré par git). Wikipédia limite fortement le débit des adresses partagées : `--wiki` remplit le cache lentement, on peut relancer sans tout redemander. Les affiches de film sont écartées.
+  - **AniList** pour les anime et les films d'animation japonais (`ANIME`).
+- Un personnage sans image est écarté, et une œuvre sans personnage illustré n'a pas de carte.
 - Les cartes sont numérotées par type d'œuvre, dans l'ordre du fichier.
 
 Vérification : `npm run check:catalogue`.
 
-Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit. Les images sont affichées depuis Wikipédia et AniList, la source est citée sur chaque fiche. Usage non commercial.
+Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit. Les images sont affichées depuis leur source (TVMaze, AniList, Fandom, Wikipédia), citée sur chaque fiche. Usage non commercial.
 
 ## Direction artistique
 

@@ -4,190 +4,259 @@
     "name": "Walter White",
     "work": "breaking-bad",
     "rarity": "mythique",
-    "image": "https://upload.wikimedia.org/wikipedia/en/0/03/Walter_White_S5B.png",
-    "wiki": "Walter White (Breaking Bad)",
-    "source": "https://en.wikipedia.org/wiki/Walter_White_(Breaking_Bad)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2404.jpg",
+    "source": "https://www.tvmaze.com/characters/45529/breaking-bad-walter-white",
+    "credit": "TVMaze"
   },
   {
     "id": "jesse-pinkman",
     "name": "Jesse Pinkman",
     "work": "breaking-bad",
     "rarity": "legendaire",
-    "image": "https://upload.wikimedia.org/wikipedia/en/c/c6/Jesse_Pinkman_S5B.png",
-    "wiki": "Jesse Pinkman",
-    "source": "https://en.wikipedia.org/wiki/Jesse_Pinkman",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2408.jpg",
+    "source": "https://www.tvmaze.com/characters/45531/breaking-bad-jesse-pinkman",
+    "credit": "TVMaze"
   },
   {
     "id": "jon-snow",
     "name": "Jon Snow",
     "work": "game-of-thrones",
     "rarity": "legendaire",
-    "image": "https://upload.wikimedia.org/wikipedia/en/3/30/Jon_Snow_Season_8.png",
-    "wiki": "Jon Snow (character)",
-    "source": "https://en.wikipedia.org/wiki/Jon_Snow_(character)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/63/158800.jpg",
+    "source": "https://www.tvmaze.com/characters/15607/game-of-thrones-jon-snow",
+    "credit": "TVMaze"
   },
   {
     "id": "daenerys-targaryen",
     "name": "Daenerys Targaryen",
     "work": "game-of-thrones",
     "rarity": "epique",
-    "wiki": "Daenerys Targaryen",
-    "source": "https://en.wikipedia.org/wiki/Daenerys_Targaryen",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/567/1418483.jpg",
+    "source": "https://www.tvmaze.com/characters/15611/game-of-thrones-daenerys-targaryen",
+    "credit": "TVMaze"
   },
   {
     "id": "tyrion-lannister",
     "name": "Tyrion Lannister",
     "work": "game-of-thrones",
     "rarity": "epique",
-    "wiki": "Tyrion Lannister",
-    "source": "https://en.wikipedia.org/wiki/Tyrion_Lannister",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/607/1519071.jpg",
+    "source": "https://www.tvmaze.com/characters/15604/game-of-thrones-tyrion-lannister",
+    "credit": "TVMaze"
   },
   {
     "id": "rick-grimes",
     "name": "Rick Grimes",
     "work": "the-walking-dead",
     "rarity": "epique",
-    "wiki": "Rick Grimes",
-    "source": "https://en.wikipedia.org/wiki/Rick_Grimes",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/166/417473.jpg",
+    "source": "https://www.tvmaze.com/characters/10763/the-walking-dead-rick-grimes",
+    "credit": "TVMaze"
   },
   {
     "id": "daryl-dixon",
     "name": "Daryl Dixon",
     "work": "the-walking-dead",
     "rarity": "rare",
-    "wiki": "Daryl Dixon",
-    "source": "https://en.wikipedia.org/wiki/Daryl_Dixon",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/166/417474.jpg",
+    "source": "https://www.tvmaze.com/characters/10764/the-walking-dead-daryl-dixon",
+    "credit": "TVMaze"
   },
   {
     "id": "michael-scofield",
     "name": "Michael Scofield",
     "work": "prison-break",
     "rarity": "rare",
-    "wiki": "Michael Scofield",
-    "source": "https://en.wikipedia.org/wiki/Michael_Scofield",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/4/11419.jpg",
+    "source": "https://www.tvmaze.com/characters/85674/prison-break-michael-scofield",
+    "credit": "TVMaze"
   },
   {
     "id": "lincoln-burrows",
     "name": "Lincoln Burrows",
     "work": "prison-break",
     "rarity": "commune",
-    "wiki": "Lincoln Burrows",
-    "source": "https://en.wikipedia.org/wiki/Lincoln_Burrows",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/4/11420.jpg",
+    "source": "https://www.tvmaze.com/characters/85673/prison-break-lincoln-linc-burrows",
+    "credit": "TVMaze"
   },
   {
     "id": "eleven",
     "name": "Eleven",
     "work": "stranger-things",
     "rarity": "epique",
-    "wiki": "Eleven (Stranger Things)",
-    "source": "https://en.wikipedia.org/wiki/Eleven_(Stranger_Things)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/602/1506071.jpg",
+    "source": "https://www.tvmaze.com/characters/285572/stranger-things-jane-eleven-hopper",
+    "credit": "TVMaze"
   },
   {
-    "id": "jim-hopper",
-    "name": "Jim Hopper",
+    "id": "dustin-henderson",
+    "name": "Dustin Henderson",
     "work": "stranger-things",
     "rarity": "rare",
-    "wiki": "Jim Hopper",
-    "source": "https://en.wikipedia.org/wiki/Jim_Hopper",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/602/1506079.jpg",
+    "source": "https://www.tvmaze.com/characters/165116/stranger-things-dustin-henderson",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "chief-jim-hopper",
+    "name": "Chief Jim Hopper",
+    "work": "stranger-things",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/602/1506096.jpg",
+    "source": "https://www.tvmaze.com/characters/297371/stranger-things-chief-jim-hopper",
+    "credit": "TVMaze"
   },
   {
     "id": "michael-scott",
     "name": "Michael Scott",
     "work": "the-office",
     "rarity": "rare",
-    "wiki": "Michael Scott (The Office)",
-    "source": "https://en.wikipedia.org/wiki/Michael_Scott_(The_Office)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/4/11323.jpg",
+    "source": "https://www.tvmaze.com/characters/85555/the-office-michael-scott",
+    "credit": "TVMaze"
   },
   {
     "id": "dwight-schrute",
     "name": "Dwight Schrute",
     "work": "the-office",
     "rarity": "commune",
-    "wiki": "Dwight Schrute",
-    "source": "https://en.wikipedia.org/wiki/Dwight_Schrute",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/4/11326.jpg",
+    "source": "https://www.tvmaze.com/characters/85556/the-office-dwight-kurt-schrute",
+    "credit": "TVMaze"
   },
   {
     "id": "rachel-green",
     "name": "Rachel Green",
     "work": "friends",
     "rarity": "epique",
-    "wiki": "Rachel Green",
-    "source": "https://en.wikipedia.org/wiki/Rachel_Green",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/3/7875.jpg",
+    "source": "https://www.tvmaze.com/characters/78218/friends-rachel-green",
+    "credit": "TVMaze"
   },
   {
     "id": "joey-tribbiani",
     "name": "Joey Tribbiani",
     "work": "friends",
     "rarity": "rare",
-    "wiki": "Joey Tribbiani",
-    "source": "https://en.wikipedia.org/wiki/Joey_Tribbiani",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/3/7877.jpg",
+    "source": "https://www.tvmaze.com/characters/78221/friends-joey-tribbiani",
+    "credit": "TVMaze"
   },
   {
     "id": "chandler-bing",
     "name": "Chandler Bing",
     "work": "friends",
     "rarity": "rare",
-    "wiki": "Chandler Bing",
-    "source": "https://en.wikipedia.org/wiki/Chandler_Bing",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/3/7878.jpg",
+    "source": "https://www.tvmaze.com/characters/78222/friends-chandler-bing",
+    "credit": "TVMaze"
   },
   {
     "id": "jack-shephard",
     "name": "Jack Shephard",
     "work": "lost",
     "rarity": "rare",
-    "wiki": "Jack Shephard",
-    "source": "https://en.wikipedia.org/wiki/Jack_Shephard",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/1390.jpg",
+    "source": "https://www.tvmaze.com/characters/34808/lost-dr-jack-shephard",
+    "credit": "TVMaze"
   },
   {
-    "id": "john-locke",
-    "name": "John Locke",
+    "id": "kate-austen",
+    "name": "Kate Austen",
     "work": "lost",
     "rarity": "commune",
-    "wiki": "John Locke (Lost)",
-    "source": "https://en.wikipedia.org/wiki/John_Locke_(Lost)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/1392.jpg",
+    "source": "https://www.tvmaze.com/characters/34811/lost-katherine-kate-austen",
+    "credit": "TVMaze"
   },
   {
-    "id": "thomas-shelby",
-    "name": "Thomas Shelby",
+    "id": "sherlock-holmes",
+    "name": "Sherlock Holmes",
+    "work": "sherlock",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/91/228015.jpg",
+    "source": "https://www.tvmaze.com/characters/66736/sherlock-sherlock-holmes",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "john-watson",
+    "name": "John Watson",
+    "work": "sherlock",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/91/228016.jpg",
+    "source": "https://www.tvmaze.com/characters/275135/sherlock-dr-john-watson",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "tommy-shelby",
+    "name": "Tommy Shelby",
     "work": "peaky-blinders",
     "rarity": "epique",
-    "wiki": "Thomas Shelby",
-    "source": "https://en.wikipedia.org/wiki/Thomas_Shelby",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/135/337778.jpg",
+    "source": "https://www.tvmaze.com/characters/60697/peaky-blinders-tommy-shelby",
+    "credit": "TVMaze"
   },
   {
-    "id": "din-djarin",
-    "name": "Din Djarin",
+    "id": "arthur-shelby",
+    "name": "Arthur Shelby",
+    "work": "peaky-blinders",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/135/337769.jpg",
+    "source": "https://www.tvmaze.com/characters/60706/peaky-blinders-arthur-shelby",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "le-professeur",
+    "name": "Le Professeur",
+    "work": "la-casa-de-papel",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/380/951042.jpg",
+    "source": "https://www.tvmaze.com/characters/410928/la-casa-de-papel-el-profesor",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "tokyo",
+    "name": "Tokyo",
+    "work": "la-casa-de-papel",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/380/951053.jpg",
+    "source": "https://www.tvmaze.com/characters/410927/la-casa-de-papel-tokio",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "jonas-kahnwald",
+    "name": "Jonas Kahnwald",
+    "work": "dark",
+    "rarity": "epique",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/137/343960.jpg",
+    "source": "https://www.tvmaze.com/characters/484853/dark-jonas-kahnwald",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "queen-elizabeth-ii",
+    "name": "Queen Elizabeth II",
+    "work": "the-crown",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/83/208640.jpg",
+    "source": "https://www.tvmaze.com/characters/287382/the-crown-queen-elizabeth-ii",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "le-mandalorien",
+    "name": "Le Mandalorien",
     "work": "the-mandalorian",
     "rarity": "rare",
-    "wiki": "Din Djarin",
-    "source": "https://en.wikipedia.org/wiki/Din_Djarin",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/450/1127373.jpg",
+    "source": "https://www.tvmaze.com/characters/572164/the-mandalorian-mandalorian",
+    "credit": "TVMaze"
   },
   {
     "id": "grogu",
     "name": "Grogu",
     "work": "the-mandalorian",
     "rarity": "commune",
-    "wiki": "Grogu",
+    "image": "https://upload.wikimedia.org/wikipedia/en/a/a0/Grogu_%28Star_Wars%29.jpg",
     "source": "https://en.wikipedia.org/wiki/Grogu",
     "credit": "Wikipédia"
   },
@@ -196,367 +265,646 @@
     "name": "Seong Gi-hun",
     "work": "squid-game",
     "rarity": "epique",
-    "wiki": "Seong Gi-hun",
-    "source": "https://en.wikipedia.org/wiki/Seong_Gi-hun",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/572/1431002.jpg",
+    "source": "https://www.tvmaze.com/characters/780866/squid-game-sung-gi-hun",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "assane-diop",
+    "name": "Assane Diop",
+    "work": "lupin",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/478/1195714.jpg",
+    "source": "https://www.tvmaze.com/characters/786201/lupin-assane-diop",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "arthur",
+    "name": "Arthur",
+    "work": "kaamelott",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/26/66288.jpg",
+    "source": "https://www.tvmaze.com/characters/192131/kaamelott-arthur",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "perceval",
+    "name": "Perceval",
+    "work": "kaamelott",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/26/66291.jpg",
+    "source": "https://www.tvmaze.com/characters/192134/kaamelott-perceval",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "malotru",
+    "name": "Malotru",
+    "work": "le-bureau-des-legendes",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/23/59426.jpg",
+    "source": "https://www.tvmaze.com/characters/184490/le-bureau-des-legendes-guillaume-debailly",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "mercredi-addams",
+    "name": "Mercredi Addams",
+    "work": "mercredi",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/432/1082139.jpg",
+    "source": "https://www.tvmaze.com/characters/872055/wednesday-wednesday-addams",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "joel",
+    "name": "Joel",
+    "work": "the-last-of-us",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/564/1412482.jpg",
+    "source": "https://www.tvmaze.com/characters/839139/the-last-of-us-joel-miller",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "ellie",
+    "name": "Ellie",
+    "work": "the-last-of-us",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/564/1412483.jpg",
+    "source": "https://www.tvmaze.com/characters/839140/the-last-of-us-ellie-williams",
+    "credit": "TVMaze"
   },
   {
     "id": "saul-goodman",
     "name": "Saul Goodman",
     "work": "better-call-saul",
     "rarity": "rare",
-    "wiki": "Saul Goodman",
-    "source": "https://en.wikipedia.org/wiki/Saul_Goodman",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/45/113922.jpg",
+    "source": "https://www.tvmaze.com/characters/86444/better-call-saul-jimmy-mcgill",
+    "credit": "TVMaze"
   },
   {
     "id": "kim-wexler",
     "name": "Kim Wexler",
     "work": "better-call-saul",
     "rarity": "commune",
-    "wiki": "Kim Wexler",
-    "source": "https://en.wikipedia.org/wiki/Kim_Wexler",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/45/113923.jpg",
+    "source": "https://www.tvmaze.com/characters/99366/better-call-saul-kim-wexler",
+    "credit": "TVMaze"
   },
   {
     "id": "dexter-morgan",
     "name": "Dexter Morgan",
     "work": "dexter",
     "rarity": "commune",
-    "wiki": "Dexter Morgan",
-    "source": "https://en.wikipedia.org/wiki/Dexter_Morgan",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2226.jpg",
+    "source": "https://www.tvmaze.com/characters/41784/dexter-dexter-morgan",
+    "credit": "TVMaze"
   },
   {
     "id": "tony-soprano",
     "name": "Tony Soprano",
     "work": "les-soprano",
     "rarity": "legendaire",
-    "wiki": "Tony Soprano",
-    "source": "https://en.wikipedia.org/wiki/Tony_Soprano",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "omar-little",
-    "name": "Omar Little",
-    "work": "the-wire",
-    "rarity": "epique",
-    "wiki": "Omar Little",
-    "source": "https://en.wikipedia.org/wiki/Omar_Little",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/4/11342.jpg",
+    "source": "https://www.tvmaze.com/characters/85573/the-sopranos-tony-soprano",
+    "credit": "TVMaze"
   },
   {
     "id": "jimmy-mcnulty",
     "name": "Jimmy McNulty",
     "work": "the-wire",
+    "rarity": "epique",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/94/237208.jpg",
+    "source": "https://www.tvmaze.com/characters/49349/the-wire-off-james-jimmy-mcnulty",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "omar-little",
+    "name": "Omar Little",
+    "work": "the-wire",
     "rarity": "rare",
-    "wiki": "Jimmy McNulty",
-    "source": "https://en.wikipedia.org/wiki/Jimmy_McNulty",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/94/237211.jpg",
+    "source": "https://www.tvmaze.com/characters/48961/the-wire-omar-little",
+    "credit": "TVMaze"
   },
   {
     "id": "don-draper",
     "name": "Don Draper",
     "work": "mad-men",
     "rarity": "commune",
-    "wiki": "Don Draper",
-    "source": "https://en.wikipedia.org/wiki/Don_Draper",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/2/5590.jpg",
+    "source": "https://www.tvmaze.com/characters/71015/mad-men-don-draper",
+    "credit": "TVMaze"
   },
   {
-    "id": "le-dixieme-docteur",
-    "name": "Le Dixième Docteur",
+    "id": "le-protecteur",
+    "name": "Le Protecteur",
+    "work": "the-boys",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/526/1315514.jpg",
+    "source": "https://www.tvmaze.com/characters/498712/the-boys-john-homelander",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "billy-butcher",
+    "name": "Billy Butcher",
+    "work": "the-boys",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/526/1315508.jpg",
+    "source": "https://www.tvmaze.com/characters/521686/the-boys-william-billy-butcher",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "the-fourth-doctor",
+    "name": "The Fourth Doctor",
     "work": "doctor-who",
     "rarity": "epique",
-    "wiki": "Tenth Doctor",
-    "source": "https://en.wikipedia.org/wiki/Tenth_Doctor",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/6/15295.jpg",
+    "source": "https://www.tvmaze.com/characters/87993/doctor-who-the-fourth-doctor",
+    "credit": "TVMaze"
   },
   {
     "id": "dale-cooper",
     "name": "Dale Cooper",
     "work": "twin-peaks",
     "rarity": "rare",
-    "wiki": "Dale Cooper",
-    "source": "https://en.wikipedia.org/wiki/Dale_Cooper",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/378/945612.jpg",
+    "source": "https://www.tvmaze.com/characters/40417/twin-peaks-special-agent-dale-cooper",
+    "credit": "TVMaze"
   },
   {
     "id": "laura-palmer",
     "name": "Laura Palmer",
     "work": "twin-peaks",
     "rarity": "commune",
-    "wiki": "Laura Palmer",
-    "source": "https://en.wikipedia.org/wiki/Laura_Palmer",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/30/75458.jpg",
+    "source": "https://www.tvmaze.com/characters/40470/twin-peaks-laura-palmer",
+    "credit": "TVMaze"
   },
   {
     "id": "barney-stinson",
     "name": "Barney Stinson",
     "work": "how-i-met-your-mother",
     "rarity": "commune",
-    "wiki": "Barney Stinson",
-    "source": "https://en.wikipedia.org/wiki/Barney_Stinson",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2453.jpg",
+    "source": "https://www.tvmaze.com/characters/46417/how-i-met-your-mother-barney-stinson",
+    "credit": "TVMaze"
   },
   {
     "id": "ted-mosby",
     "name": "Ted Mosby",
     "work": "how-i-met-your-mother",
     "rarity": "commune",
-    "wiki": "Ted Mosby",
-    "source": "https://en.wikipedia.org/wiki/Ted_Mosby",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2452.jpg",
+    "source": "https://www.tvmaze.com/characters/46414/how-i-met-your-mother-ted-mosby",
+    "credit": "TVMaze"
   },
   {
     "id": "jake-peralta",
     "name": "Jake Peralta",
     "work": "brooklyn-nine-nine",
     "rarity": "commune",
-    "wiki": "Jake Peralta",
-    "source": "https://en.wikipedia.org/wiki/Jake_Peralta",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/253/633728.jpg",
+    "source": "https://www.tvmaze.com/characters/7160/brooklyn-nine-nine-jake-peralta",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "mark-scout",
+    "name": "Mark Scout",
+    "work": "severance",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/407/1018894.jpg",
+    "source": "https://www.tvmaze.com/characters/673312/severance-mark-scout",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "valery-legasov",
+    "name": "Valery Legasov",
+    "work": "chernobyl",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/200/501796.jpg",
+    "source": "https://www.tvmaze.com/characters/452010/chernobyl-valery-legasov",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "pablo-escobar",
+    "name": "Pablo Escobar",
+    "work": "narcos",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/126/315894.jpg",
+    "source": "https://www.tvmaze.com/characters/160973/narcos-pablo-escobar",
+    "credit": "TVMaze"
   },
   {
     "id": "rick-sanchez",
     "name": "Rick Sanchez",
     "work": "rick-et-morty",
     "rarity": "legendaire",
-    "wiki": "Rick Sanchez",
-    "source": "https://en.wikipedia.org/wiki/Rick_Sanchez",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/105/262781.jpg",
+    "source": "https://www.tvmaze.com/characters/56241/rick-and-morty-rick-sanchez",
+    "credit": "TVMaze"
   },
   {
     "id": "morty-smith",
     "name": "Morty Smith",
     "work": "rick-et-morty",
     "rarity": "epique",
-    "wiki": "Morty Smith",
-    "source": "https://en.wikipedia.org/wiki/Morty_Smith",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/105/262782.jpg",
+    "source": "https://www.tvmaze.com/characters/56245/rick-and-morty-morty-smith",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "clarence",
+    "name": "Clarence",
+    "work": "clarence",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/69/173943.jpg",
+    "source": "https://www.tvmaze.com/characters/181577/clarence-clarence",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "jeff",
+    "name": "Jeff",
+    "work": "clarence",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/69/173940.jpg",
+    "source": "https://www.tvmaze.com/characters/181576/clarence-jeff",
+    "credit": "TVMaze"
   },
   {
     "id": "homer-simpson",
     "name": "Homer Simpson",
     "work": "les-simpson",
     "rarity": "mythique",
-    "wiki": "Homer Simpson",
-    "source": "https://en.wikipedia.org/wiki/Homer_Simpson",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2107.jpg",
+    "source": "https://www.tvmaze.com/characters/16544/the-simpsons-homer-simpson",
+    "credit": "TVMaze"
   },
   {
     "id": "bart-simpson",
     "name": "Bart Simpson",
     "work": "les-simpson",
     "rarity": "legendaire",
-    "wiki": "Bart Simpson",
-    "source": "https://en.wikipedia.org/wiki/Bart_Simpson",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/2193.jpg",
+    "source": "https://www.tvmaze.com/characters/16546/the-simpsons-bart-simpson",
+    "credit": "TVMaze"
   },
   {
     "id": "marge-simpson",
     "name": "Marge Simpson",
     "work": "les-simpson",
     "rarity": "legendaire",
-    "wiki": "Marge Simpson",
-    "source": "https://en.wikipedia.org/wiki/Marge_Simpson",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/497/1243770.jpg",
+    "source": "https://www.tvmaze.com/characters/16545/the-simpsons-marge-simpson",
+    "credit": "TVMaze"
   },
   {
     "id": "lisa-simpson",
     "name": "Lisa Simpson",
     "work": "les-simpson",
     "rarity": "legendaire",
-    "wiki": "Lisa Simpson",
-    "source": "https://en.wikipedia.org/wiki/Lisa_Simpson",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/497/1243772.jpg",
+    "source": "https://www.tvmaze.com/characters/16547/the-simpsons-lisa-simpson",
+    "credit": "TVMaze"
   },
   {
     "id": "eric-cartman",
     "name": "Eric Cartman",
     "work": "south-park",
     "rarity": "epique",
-    "wiki": "Eric Cartman",
-    "source": "https://en.wikipedia.org/wiki/Eric_Cartman",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/21/54631.jpg",
+    "source": "https://www.tvmaze.com/characters/30944/south-park-eric-theodore-cartman",
+    "credit": "TVMaze"
   },
   {
     "id": "kenny-mccormick",
     "name": "Kenny McCormick",
     "work": "south-park",
     "rarity": "rare",
-    "wiki": "Kenny McCormick",
-    "source": "https://en.wikipedia.org/wiki/Kenny_McCormick",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/0/1061.jpg",
+    "source": "https://www.tvmaze.com/characters/30951/south-park-kenny-mckormick",
+    "credit": "TVMaze"
   },
   {
     "id": "bob-l-eponge",
     "name": "Bob l’éponge",
     "work": "bob-l-eponge",
     "rarity": "epique",
-    "wiki": "SpongeBob SquarePants (character)",
-    "source": "https://en.wikipedia.org/wiki/SpongeBob_SquarePants_(character)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/485/1212605.jpg",
+    "source": "https://www.tvmaze.com/characters/87436/spongebob-squarepants-spongebob-squarepants",
+    "credit": "TVMaze"
   },
   {
     "id": "patrick-l-etoile-de-mer",
     "name": "Patrick l’étoile de mer",
     "work": "bob-l-eponge",
     "rarity": "rare",
-    "wiki": "Patrick Star",
-    "source": "https://en.wikipedia.org/wiki/Patrick_Star",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/96/240249.jpg",
+    "source": "https://www.tvmaze.com/characters/87439/spongebob-squarepants-patrick-star",
+    "credit": "TVMaze"
   },
   {
     "id": "finn-l-humain",
     "name": "Finn l’humain",
     "work": "adventure-time",
     "rarity": "epique",
-    "wiki": "Finn the Human",
-    "source": "https://en.wikipedia.org/wiki/Finn_the_Human",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/357/894261.jpg",
+    "source": "https://www.tvmaze.com/characters/62562/adventure-time-finn",
+    "credit": "TVMaze"
   },
   {
     "id": "jake-le-chien",
     "name": "Jake le chien",
     "work": "adventure-time",
     "rarity": "rare",
-    "wiki": "Jake the Dog",
-    "source": "https://en.wikipedia.org/wiki/Jake_the_Dog",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "bill-cipher",
-    "name": "Bill Cipher",
-    "work": "gravity-falls",
-    "rarity": "rare",
-    "wiki": "Bill Cipher",
-    "source": "https://en.wikipedia.org/wiki/Bill_Cipher",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/357/894265.jpg",
+    "source": "https://www.tvmaze.com/characters/62563/adventure-time-jake",
+    "credit": "TVMaze"
   },
   {
     "id": "dipper-pines",
     "name": "Dipper Pines",
     "work": "gravity-falls",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/15/37870.jpg",
+    "source": "https://www.tvmaze.com/characters/72429/gravity-falls-dipper-pines",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "mabel-pines",
+    "name": "Mabel Pines",
+    "work": "gravity-falls",
     "rarity": "commune",
-    "wiki": "Dipper Pines",
-    "source": "https://en.wikipedia.org/wiki/Dipper_Pines",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/15/37868.jpg",
+    "source": "https://www.tvmaze.com/characters/72430/gravity-falls-mabel-pines",
+    "credit": "TVMaze"
   },
   {
     "id": "aang",
     "name": "Aang",
     "work": "avatar-le-dernier-maitre-de-l-air",
     "rarity": "legendaire",
-    "wiki": "Aang",
-    "source": "https://en.wikipedia.org/wiki/Aang",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/541/1354308.jpg",
+    "source": "https://www.tvmaze.com/characters/85926/avatar-the-last-airbender-aang",
+    "credit": "TVMaze"
   },
   {
     "id": "zuko",
     "name": "Zuko",
     "work": "avatar-le-dernier-maitre-de-l-air",
     "rarity": "epique",
-    "wiki": "Zuko",
-    "source": "https://en.wikipedia.org/wiki/Zuko",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "bender",
-    "name": "Bender",
-    "work": "futurama",
-    "rarity": "rare",
-    "wiki": "Bender (Futurama)",
-    "source": "https://en.wikipedia.org/wiki/Bender_(Futurama)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/541/1354311.jpg",
+    "source": "https://www.tvmaze.com/characters/85930/avatar-the-last-airbender-zuko",
+    "credit": "TVMaze"
   },
   {
     "id": "fry",
     "name": "Fry",
     "work": "futurama",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/482/1206192.jpg",
+    "source": "https://www.tvmaze.com/characters/85636/futurama-fry",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "bender",
+    "name": "Bender",
+    "work": "futurama",
     "rarity": "commune",
-    "wiki": "Philip J. Fry",
-    "source": "https://en.wikipedia.org/wiki/Philip_J._Fry",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/482/1206191.jpg",
+    "source": "https://www.tvmaze.com/characters/85638/futurama-bender",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "mordecai",
+    "name": "Mordecai",
+    "work": "regular-show",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/95/237939.jpg",
+    "source": "https://www.tvmaze.com/characters/88854/regular-show-mordecai",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "rigby",
+    "name": "Rigby",
+    "work": "regular-show",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/95/237943.jpg",
+    "source": "https://www.tvmaze.com/characters/88861/regular-show-rigby",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "gumball-watterson",
+    "name": "Gumball Watterson",
+    "work": "le-monde-incroyable-de-gumball",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/147/368655.jpg",
+    "source": "https://www.tvmaze.com/characters/511346/the-amazing-world-of-gumball-gumball-watterson",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "darwin-watterson",
+    "name": "Darwin Watterson",
+    "work": "le-monde-incroyable-de-gumball",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/147/368915.jpg",
+    "source": "https://www.tvmaze.com/characters/511348/the-amazing-world-of-gumball-darwin-watterson",
+    "credit": "TVMaze"
   },
   {
     "id": "steven-universe",
     "name": "Steven Universe",
     "work": "steven-universe",
     "rarity": "commune",
-    "wiki": "Steven Universe (character)",
-    "source": "https://en.wikipedia.org/wiki/Steven_Universe_(character)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/9/23567.jpg",
+    "source": "https://www.tvmaze.com/characters/100768/steven-universe-steven-universe",
+    "credit": "TVMaze"
   },
   {
     "id": "bojack-horseman",
     "name": "BoJack Horseman",
     "work": "bojack-horseman",
     "rarity": "rare",
-    "wiki": "BoJack Horseman (character)",
-    "source": "https://en.wikipedia.org/wiki/BoJack_Horseman_(character)",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/59/149097.jpg",
+    "source": "https://www.tvmaze.com/characters/49614/bojack-horseman-bojack-horseman",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "jinx",
+    "name": "Jinx",
+    "work": "arcane",
+    "rarity": "legendaire",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/549/1374574.jpg",
+    "source": "https://www.tvmaze.com/characters/927603/arcane-league-of-legends-jinx",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "vi",
+    "name": "Vi",
+    "work": "arcane",
+    "rarity": "epique",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/549/1374575.jpg",
+    "source": "https://www.tvmaze.com/characters/925728/arcane-league-of-legends-vi",
+    "credit": "TVMaze"
   },
   {
     "id": "peter-griffin",
     "name": "Peter Griffin",
     "work": "les-griffin",
     "rarity": "rare",
-    "wiki": "Peter Griffin",
-    "source": "https://en.wikipedia.org/wiki/Peter_Griffin",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/34/86852.jpg",
+    "source": "https://www.tvmaze.com/characters/35094/family-guy-peter-griffin",
+    "credit": "TVMaze"
   },
   {
     "id": "stewie-griffin",
     "name": "Stewie Griffin",
     "work": "les-griffin",
     "rarity": "commune",
-    "wiki": "Stewie Griffin",
-    "source": "https://en.wikipedia.org/wiki/Stewie_Griffin",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/34/86855.jpg",
+    "source": "https://www.tvmaze.com/characters/35095/family-guy-stewie-griffin",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "phineas-flynn",
+    "name": "Phineas Flynn",
+    "work": "phineas-et-ferb",
+    "rarity": "commune",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/357/894526.jpg",
+    "source": "https://www.tvmaze.com/characters/87109/phineas-and-ferb-phineas-flynn",
+    "credit": "TVMaze"
   },
   {
     "id": "perry-l-ornithorynque",
     "name": "Perry l’ornithorynque",
     "work": "phineas-et-ferb",
     "rarity": "commune",
-    "wiki": "Perry the Platypus",
-    "source": "https://en.wikipedia.org/wiki/Perry_the_Platypus",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/462/1155549.jpg",
+    "source": "https://www.tvmaze.com/characters/87102/phineas-and-ferb-perry-the-platypus",
+    "credit": "TVMaze"
   },
   {
     "id": "tommy-pickles",
     "name": "Tommy Pickles",
     "work": "les-razmoket",
     "rarity": "commune",
-    "wiki": "Tommy Pickles",
-    "source": "https://en.wikipedia.org/wiki/Tommy_Pickles",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/72/181305.jpg",
+    "source": "https://www.tvmaze.com/characters/74026/rugrats-thomas-tommy-pickles",
+    "credit": "TVMaze"
   },
   {
-    "id": "belle-bulle-et-rebelle",
-    "name": "Belle, Bulle et Rebelle",
-    "work": "les-supers-nanas",
+    "id": "batman",
+    "name": "Batman",
+    "work": "batman-la-serie-animee",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/298/745544.jpg",
+    "source": "https://www.tvmaze.com/characters/87920/batman-the-animated-series-batman",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "wirt",
+    "name": "Wirt",
+    "work": "over-the-garden-wall",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/590/1475570.jpg",
+    "source": "https://www.tvmaze.com/characters/103765/over-the-garden-wall-wirt",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "gregory",
+    "name": "Gregory",
+    "work": "over-the-garden-wall",
     "rarity": "commune",
-    "wiki": "Blossom, Bubbles, and Buttercup",
-    "source": "https://en.wikipedia.org/wiki/Blossom%2C_Bubbles%2C_and_Buttercup",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/590/1475569.jpg",
+    "source": "https://www.tvmaze.com/characters/520640/over-the-garden-wall-gregory",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "invincible",
+    "name": "Invincible",
+    "work": "invincible",
+    "rarity": "rare",
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/301/753505.jpg",
+    "source": "https://www.tvmaze.com/characters/592507/invincible-mark-grayson-invincible",
+    "credit": "TVMaze"
   },
   {
     "id": "sterling-archer",
     "name": "Sterling Archer",
     "work": "archer",
     "rarity": "commune",
-    "wiki": "Sterling Archer",
-    "source": "https://en.wikipedia.org/wiki/Sterling_Archer",
-    "credit": "Wikipédia"
+    "image": "https://static.tvmaze.com/uploads/images/original_untouched/51/128215.jpg",
+    "source": "https://www.tvmaze.com/characters/63860/archer-sterling-archer",
+    "credit": "TVMaze"
+  },
+  {
+    "id": "simba",
+    "name": "Simba",
+    "work": "le-roi-lion",
+    "rarity": "legendaire",
+    "image": "https://static.wikia.nocookie.net/disney/images/3/37/Profile_-_Simba.jpeg",
+    "source": "https://api.disneyapi.dev/characters/6160",
+    "credit": "Disney API"
+  },
+  {
+    "id": "mufasa",
+    "name": "Mufasa",
+    "work": "le-roi-lion",
+    "rarity": "epique",
+    "image": "https://static.wikia.nocookie.net/disney/images/5/5e/Mufasa_Lion_King_.jpg",
+    "source": "https://api.disneyapi.dev/characters/4746",
+    "credit": "Disney API"
+  },
+  {
+    "id": "scar",
+    "name": "Scar",
+    "work": "le-roi-lion",
+    "rarity": "epique",
+    "image": "https://static.wikia.nocookie.net/disney/images/6/66/Profile_-_Scar.jpeg",
+    "source": "https://api.disneyapi.dev/characters/5986",
+    "credit": "Disney API"
+  },
+  {
+    "id": "elsa",
+    "name": "Elsa",
+    "work": "la-reine-des-neiges",
+    "rarity": "rare",
+    "image": "https://static.wikia.nocookie.net/disney/images/9/95/Profile_-_Elsa.jpeg",
+    "source": "https://api.disneyapi.dev/characters/2099",
+    "credit": "Disney API"
+  },
+  {
+    "id": "anna",
+    "name": "Anna",
+    "work": "la-reine-des-neiges",
+    "rarity": "commune",
+    "image": "https://static.wikia.nocookie.net/disney/images/0/0f/Profile_-_Anna.jpeg",
+    "source": "https://api.disneyapi.dev/characters/256",
+    "credit": "Disney API"
+  },
+  {
+    "id": "olaf",
+    "name": "Olaf",
+    "work": "la-reine-des-neiges",
+    "rarity": "commune",
+    "image": "https://static.wikia.nocookie.net/disney/images/5/53/Profile_-_Olaf.jpeg",
+    "source": "https://api.disneyapi.dev/characters/4994",
+    "credit": "Disney API"
+  },
+  {
+    "id": "wall-e",
+    "name": "WALL-E",
+    "work": "wall-e",
+    "rarity": "commune",
+    "image": "https://static.wikia.nocookie.net/disney/images/9/9c/Profile_-_WALL-E.png",
+    "source": "https://api.disneyapi.dev/characters/7169",
+    "credit": "Disney API"
   },
   {
     "id": "vito-corleone",
     "name": "Vito Corleone",
     "work": "le-parrain",
     "rarity": "mythique",
-    "wiki": "Vito Corleone",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Marlon_Brando_as_Vito_Corleone_%28high_quality%29.png/960px-Marlon_Brando_as_Vito_Corleone_%28high_quality%29.png",
     "source": "https://en.wikipedia.org/wiki/Vito_Corleone",
     "credit": "Wikipédia"
   },
@@ -565,7 +913,7 @@
     "name": "Michael Corleone",
     "work": "le-parrain",
     "rarity": "legendaire",
-    "wiki": "Michael Corleone",
+    "image": "https://upload.wikimedia.org/wikipedia/en/d/df/Michaelcoreleone.jpg",
     "source": "https://en.wikipedia.org/wiki/Michael_Corleone",
     "credit": "Wikipédia"
   },
@@ -574,7 +922,7 @@
     "name": "Dark Vador",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "mythique",
-    "wiki": "Darth Vader",
+    "image": "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
     "source": "https://en.wikipedia.org/wiki/Darth_Vader",
     "credit": "Wikipédia"
   },
@@ -583,7 +931,7 @@
     "name": "Luke Skywalker",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "legendaire",
-    "wiki": "Luke Skywalker",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/67/Luke_Skywalker_-_Welcome_Banner_%28Cropped%29.jpg",
     "source": "https://en.wikipedia.org/wiki/Luke_Skywalker",
     "credit": "Wikipédia"
   },
@@ -592,7 +940,7 @@
     "name": "Princesse Leia",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "legendaire",
-    "wiki": "Princess Leia",
+    "image": "https://upload.wikimedia.org/wikipedia/en/1/1b/Princess_Leia%27s_characteristic_hairstyle.jpg",
     "source": "https://en.wikipedia.org/wiki/Princess_Leia",
     "credit": "Wikipédia"
   },
@@ -601,7 +949,7 @@
     "name": "Han Solo",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "legendaire",
-    "wiki": "Han Solo",
+    "image": "https://upload.wikimedia.org/wikipedia/en/c/c9/Han_Solo_with_Blaster.jpg",
     "source": "https://en.wikipedia.org/wiki/Han_Solo",
     "credit": "Wikipédia"
   },
@@ -610,7 +958,7 @@
     "name": "Chewbacca",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "legendaire",
-    "wiki": "Chewbacca",
+    "image": "https://upload.wikimedia.org/wikipedia/en/f/f1/Chewbacca.png",
     "source": "https://en.wikipedia.org/wiki/Chewbacca",
     "credit": "Wikipédia"
   },
@@ -619,35 +967,17 @@
     "name": "R2-D2",
     "work": "star-wars-un-nouvel-espoir",
     "rarity": "legendaire",
-    "wiki": "R2-D2",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/61/Parents_of_Earth%2C_are_your_children_fully_immunized_%284647268251%29_%28cropped%29_auto_color_%28cropped_to_R2-D2%29.jpg",
     "source": "https://en.wikipedia.org/wiki/R2-D2",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "vincent-vega",
-    "name": "Vincent Vega",
-    "work": "pulp-fiction",
-    "rarity": "epique",
-    "wiki": "Vincent Vega",
-    "source": "https://en.wikipedia.org/wiki/Vincent_Vega",
     "credit": "Wikipédia"
   },
   {
     "id": "mia-wallace",
     "name": "Mia Wallace",
     "work": "pulp-fiction",
-    "rarity": "rare",
-    "wiki": "Mia Wallace",
+    "rarity": "epique",
+    "image": "https://upload.wikimedia.org/wikipedia/en/4/42/Mia_Wallace.jpeg",
     "source": "https://en.wikipedia.org/wiki/Mia_Wallace",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "jules-winnfield",
-    "name": "Jules Winnfield",
-    "work": "pulp-fiction",
-    "rarity": "rare",
-    "wiki": "Jules Winnfield",
-    "source": "https://en.wikipedia.org/wiki/Jules_Winnfield",
     "credit": "Wikipédia"
   },
   {
@@ -655,7 +985,7 @@
     "name": "Le Joker",
     "work": "the-dark-knight",
     "rarity": "legendaire",
-    "wiki": "Joker (The Dark Knight)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/2/2b/Heath_Ledger_as_the_Joker_in_The_Dark_Knight.png",
     "source": "https://en.wikipedia.org/wiki/Joker_(The_Dark_Knight)",
     "credit": "Wikipédia"
   },
@@ -664,7 +994,7 @@
     "name": "Neo",
     "work": "matrix",
     "rarity": "epique",
-    "wiki": "Neo (The Matrix)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/c/c6/NeoTheMatrix.jpg",
     "source": "https://en.wikipedia.org/wiki/Neo_(The_Matrix)",
     "credit": "Wikipédia"
   },
@@ -673,7 +1003,7 @@
     "name": "Trinity",
     "work": "matrix",
     "rarity": "rare",
-    "wiki": "Trinity (The Matrix)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/7/7a/MatrixTrinity.jpg",
     "source": "https://en.wikipedia.org/wiki/Trinity_(The_Matrix)",
     "credit": "Wikipédia"
   },
@@ -682,7 +1012,7 @@
     "name": "Morpheus",
     "work": "matrix",
     "rarity": "rare",
-    "wiki": "Morpheus (The Matrix)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/a/ab/Morpheus.jpg",
     "source": "https://en.wikipedia.org/wiki/Morpheus_(The_Matrix)",
     "credit": "Wikipédia"
   },
@@ -691,52 +1021,16 @@
     "name": "Agent Smith",
     "work": "matrix",
     "rarity": "rare",
-    "wiki": "Agent Smith",
+    "image": "https://upload.wikimedia.org/wikipedia/en/1/1f/Agent_Smith_%28The_Matrix_series_character%29.jpg",
     "source": "https://en.wikipedia.org/wiki/Agent_Smith",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "jack-dawson",
-    "name": "Jack Dawson",
-    "work": "titanic",
-    "rarity": "rare",
-    "wiki": "Jack Dawson",
-    "source": "https://en.wikipedia.org/wiki/Jack_Dawson",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "rose-dewitt-bukater",
-    "name": "Rose DeWitt Bukater",
-    "work": "titanic",
-    "rarity": "commune",
-    "wiki": "Rose DeWitt Bukater",
-    "source": "https://en.wikipedia.org/wiki/Rose_DeWitt_Bukater",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "gandalf",
-    "name": "Gandalf",
-    "work": "la-communaute-de-l-anneau",
-    "rarity": "legendaire",
-    "wiki": "Gandalf",
-    "source": "https://en.wikipedia.org/wiki/Gandalf",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "frodon-sacquet",
-    "name": "Frodon Sacquet",
-    "work": "la-communaute-de-l-anneau",
-    "rarity": "epique",
-    "wiki": "Frodo Baggins",
-    "source": "https://en.wikipedia.org/wiki/Frodo_Baggins",
     "credit": "Wikipédia"
   },
   {
     "id": "gollum",
     "name": "Gollum",
     "work": "la-communaute-de-l-anneau",
-    "rarity": "epique",
-    "wiki": "Gollum",
+    "rarity": "legendaire",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Gollum_at_Wellington_Airport.jpg/960px-Gollum_at_Wellington_Airport.jpg",
     "source": "https://en.wikipedia.org/wiki/Gollum",
     "credit": "Wikipédia"
   },
@@ -745,7 +1039,7 @@
     "name": "Marty McFly",
     "work": "retour-vers-le-futur",
     "rarity": "epique",
-    "wiki": "Marty McFly",
+    "image": "https://upload.wikimedia.org/wikipedia/en/d/d8/Michael_J._Fox_as_Marty_McFly_in_Back_to_the_Future%2C_1985.jpg",
     "source": "https://en.wikipedia.org/wiki/Marty_McFly",
     "credit": "Wikipédia"
   },
@@ -754,7 +1048,7 @@
     "name": "Doc Brown",
     "work": "retour-vers-le-futur",
     "rarity": "rare",
-    "wiki": "Emmett Brown",
+    "image": "https://upload.wikimedia.org/wikipedia/en/9/97/Doc_Brown.JPG",
     "source": "https://en.wikipedia.org/wiki/Emmett_Brown",
     "credit": "Wikipédia"
   },
@@ -763,17 +1057,8 @@
     "name": "Ian Malcolm",
     "work": "jurassic-park",
     "rarity": "rare",
-    "wiki": "Ian Malcolm (character)",
-    "source": "https://en.wikipedia.org/wiki/Ian_Malcolm_(character)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "alan-grant",
-    "name": "Alan Grant",
-    "work": "jurassic-park",
-    "rarity": "commune",
-    "wiki": "Alan Grant",
-    "source": "https://en.wikipedia.org/wiki/Alan_Grant",
+    "image": "https://upload.wikimedia.org/wikipedia/en/6/60/Ian_Malcolm_%28Jeff_Goldblum%29.jpg",
+    "source": "https://en.wikipedia.org/wiki/Ian_Malcolm_(Jurassic_Park)",
     "credit": "Wikipédia"
   },
   {
@@ -781,17 +1066,8 @@
     "name": "Tyler Durden",
     "work": "fight-club",
     "rarity": "rare",
-    "wiki": "Tyler Durden",
-    "source": "https://en.wikipedia.org/wiki/Tyler_Durden",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "forrest-gump",
-    "name": "Forrest Gump",
-    "work": "forrest-gump",
-    "rarity": "rare",
-    "wiki": "Forrest Gump (character)",
-    "source": "https://en.wikipedia.org/wiki/Forrest_Gump_(character)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/4/4a/The_Narrator_%28Edward_Norton%2C_left%29_and_Tyler_Durden_%28Brad_Pitt%2C_right%29_from_Fight_Club_%281999%29.jpg",
+    "source": "https://en.wikipedia.org/wiki/The_Narrator_(Fight_Club)",
     "credit": "Wikipédia"
   },
   {
@@ -799,7 +1075,7 @@
     "name": "Harry Potter",
     "work": "harry-potter-a-l-ecole-des-sorciers",
     "rarity": "rare",
-    "wiki": "Harry Potter (character)",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/99/Daniel_Radcliffe_as_Harry_Potter.jpg",
     "source": "https://en.wikipedia.org/wiki/Harry_Potter_(character)",
     "credit": "Wikipédia"
   },
@@ -808,7 +1084,7 @@
     "name": "Hermione Granger",
     "work": "harry-potter-a-l-ecole-des-sorciers",
     "rarity": "commune",
-    "wiki": "Hermione Granger",
+    "image": "https://upload.wikimedia.org/wikipedia/en/d/d3/Hermione_Granger_poster.jpg",
     "source": "https://en.wikipedia.org/wiki/Hermione_Granger",
     "credit": "Wikipédia"
   },
@@ -817,7 +1093,7 @@
     "name": "Ron Weasley",
     "work": "harry-potter-a-l-ecole-des-sorciers",
     "rarity": "commune",
-    "wiki": "Ron Weasley",
+    "image": "https://upload.wikimedia.org/wikipedia/en/5/5e/Ron_Weasley_poster.jpg",
     "source": "https://en.wikipedia.org/wiki/Ron_Weasley",
     "credit": "Wikipédia"
   },
@@ -826,7 +1102,7 @@
     "name": "Albus Dumbledore",
     "work": "harry-potter-a-l-ecole-des-sorciers",
     "rarity": "commune",
-    "wiki": "Albus Dumbledore",
+    "image": "https://upload.wikimedia.org/wikipedia/en/e/e8/Dumbledore_-_Prisoner_of_Azkaban.jpg",
     "source": "https://en.wikipedia.org/wiki/Albus_Dumbledore",
     "credit": "Wikipédia"
   },
@@ -835,7 +1111,7 @@
     "name": "Iron Man",
     "work": "avengers-endgame",
     "rarity": "rare",
-    "wiki": "Tony Stark (Marvel Cinematic Universe)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/f/f2/Robert_Downey_Jr._as_Tony_Stark_in_Avengers_Infinity_War.jpg",
     "source": "https://en.wikipedia.org/wiki/Tony_Stark_(Marvel_Cinematic_Universe)",
     "credit": "Wikipédia"
   },
@@ -844,7 +1120,7 @@
     "name": "Thanos",
     "work": "avengers-endgame",
     "rarity": "commune",
-    "wiki": "Thanos (Marvel Cinematic Universe)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/7/7b/Josh_Brolin_as_Thanos.jpeg",
     "source": "https://en.wikipedia.org/wiki/Thanos_(Marvel_Cinematic_Universe)",
     "credit": "Wikipédia"
   },
@@ -853,7 +1129,7 @@
     "name": "Captain America",
     "work": "avengers-endgame",
     "rarity": "commune",
-    "wiki": "Steve Rogers (Marvel Cinematic Universe)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/6/6b/Chris_Evans_as_Steve_Rogers_Captain_America.jpg",
     "source": "https://en.wikipedia.org/wiki/Steve_Rogers_(Marvel_Cinematic_Universe)",
     "credit": "Wikipédia"
   },
@@ -862,7 +1138,7 @@
     "name": "Hannibal Lecter",
     "work": "le-silence-des-agneaux",
     "rarity": "commune",
-    "wiki": "Hannibal Lecter",
+    "image": "https://upload.wikimedia.org/wikipedia/en/6/6e/Hannibal_Lecter_in_Silence_of_the_Lambs.jpg",
     "source": "https://en.wikipedia.org/wiki/Hannibal_Lecter",
     "credit": "Wikipédia"
   },
@@ -871,7 +1147,7 @@
     "name": "Clarice Starling",
     "work": "le-silence-des-agneaux",
     "rarity": "commune",
-    "wiki": "Clarice Starling",
+    "image": "https://upload.wikimedia.org/wikipedia/en/b/b4/SOTLClariceLecter.jpg",
     "source": "https://en.wikipedia.org/wiki/Clarice_Starling",
     "credit": "Wikipédia"
   },
@@ -880,7 +1156,7 @@
     "name": "Ellen Ripley",
     "work": "alien",
     "rarity": "commune",
-    "wiki": "Ellen Ripley",
+    "image": "https://upload.wikimedia.org/wikipedia/en/1/17/Ellen_ripley.jpg",
     "source": "https://en.wikipedia.org/wiki/Ellen_Ripley",
     "credit": "Wikipédia"
   },
@@ -889,8 +1165,8 @@
     "name": "Le Xénomorphe",
     "work": "alien",
     "rarity": "commune",
-    "wiki": "Alien (creature in Alien franchise)",
-    "source": "https://en.wikipedia.org/wiki/Alien_(creature_in_Alien_franchise)",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Xenomorph.jpg/960px-Xenomorph.jpg",
+    "source": "https://en.wikipedia.org/wiki/Xenomorph",
     "credit": "Wikipédia"
   },
   {
@@ -898,53 +1174,8 @@
     "name": "Max Rockatansky",
     "work": "mad-max-fury-road",
     "rarity": "commune",
-    "wiki": "Max Rockatansky",
+    "image": "https://upload.wikimedia.org/wikipedia/en/c/c0/Mad_max_film_incarnations.jpg",
     "source": "https://en.wikipedia.org/wiki/Max_Rockatansky",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "simba",
-    "name": "Simba",
-    "work": "le-roi-lion",
-    "rarity": "legendaire",
-    "wiki": "Simba",
-    "source": "https://en.wikipedia.org/wiki/Simba",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "mufasa",
-    "name": "Mufasa",
-    "work": "le-roi-lion",
-    "rarity": "epique",
-    "wiki": "Mufasa",
-    "source": "https://en.wikipedia.org/wiki/Mufasa",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "scar",
-    "name": "Scar",
-    "work": "le-roi-lion",
-    "rarity": "epique",
-    "wiki": "Scar (The Lion King)",
-    "source": "https://en.wikipedia.org/wiki/Scar_(The_Lion_King)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "woody",
-    "name": "Woody",
-    "work": "toy-story",
-    "rarity": "epique",
-    "wiki": "Woody (Toy Story)",
-    "source": "https://en.wikipedia.org/wiki/Woody_(Toy_Story)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "buzz-l-eclair",
-    "name": "Buzz l’Éclair",
-    "work": "toy-story",
-    "rarity": "rare",
-    "wiki": "Buzz Lightyear",
-    "source": "https://en.wikipedia.org/wiki/Buzz_Lightyear",
     "credit": "Wikipédia"
   },
   {
@@ -952,7 +1183,7 @@
     "name": "Shrek",
     "work": "shrek",
     "rarity": "rare",
-    "wiki": "Shrek (character)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/4/4d/Shrek_%28character%29.png",
     "source": "https://en.wikipedia.org/wiki/Shrek_(character)",
     "credit": "Wikipédia"
   },
@@ -961,17 +1192,8 @@
     "name": "L’Âne",
     "work": "shrek",
     "rarity": "commune",
-    "wiki": "Donkey (Shrek)",
+    "image": "https://upload.wikimedia.org/wikipedia/en/6/6c/Donkey_%28Shrek%29.png",
     "source": "https://en.wikipedia.org/wiki/Donkey_(Shrek)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "wall-e",
-    "name": "WALL-E",
-    "work": "wall-e",
-    "rarity": "commune",
-    "wiki": "WALL-E (character)",
-    "source": "https://en.wikipedia.org/wiki/WALL-E_(character)",
     "credit": "Wikipédia"
   },
   {
@@ -979,35 +1201,26 @@
     "name": "Edna Mode",
     "work": "les-indestructibles",
     "rarity": "commune",
-    "wiki": "Edna Mode",
+    "image": "https://upload.wikimedia.org/wikipedia/en/f/fc/Edna_Mode_promotional_image.png",
     "source": "https://en.wikipedia.org/wiki/Edna_Mode",
     "credit": "Wikipédia"
   },
   {
-    "id": "elsa",
-    "name": "Elsa",
-    "work": "la-reine-des-neiges",
+    "id": "woody",
+    "name": "Woody",
+    "work": "toy-story",
+    "rarity": "epique",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Woody_at_Toy_Story_Land%2C_Hong_Kong.jpg/960px-Woody_at_Toy_Story_Land%2C_Hong_Kong.jpg",
+    "source": "https://en.wikipedia.org/wiki/Woody_(Toy_Story)",
+    "credit": "Wikipédia"
+  },
+  {
+    "id": "buzz-l-eclair",
+    "name": "Buzz l’Éclair",
+    "work": "toy-story",
     "rarity": "rare",
-    "wiki": "Elsa (Frozen)",
-    "source": "https://en.wikipedia.org/wiki/Elsa_(Frozen)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "anna",
-    "name": "Anna",
-    "work": "la-reine-des-neiges",
-    "rarity": "commune",
-    "wiki": "Anna (Frozen)",
-    "source": "https://en.wikipedia.org/wiki/Anna_(Frozen)",
-    "credit": "Wikipédia"
-  },
-  {
-    "id": "olaf",
-    "name": "Olaf",
-    "work": "la-reine-des-neiges",
-    "rarity": "commune",
-    "wiki": "Olaf (Frozen)",
-    "source": "https://en.wikipedia.org/wiki/Olaf_(Frozen)",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Buzz_Lightyear_sculpture_of_Toy_Story_Hotel_Shanghai_%28cropped%29.jpg/960px-Buzz_Lightyear_sculpture_of_Toy_Story_Hotel_Shanghai_%28cropped%29.jpg",
+    "source": "https://en.wikipedia.org/wiki/Buzz_Lightyear",
     "credit": "Wikipédia"
   },
   {

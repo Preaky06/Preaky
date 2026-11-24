@@ -20,13 +20,11 @@ export type CardDef = {
   num: number;
   name: string;
   rarity: Rarity;
-  /** Image connue à l'avance. Absente : le navigateur la cherche sur Wikipédia (`wiki`). */
-  image?: string;
-  /** Titre de l'article Wikipédia (anglais) du personnage. */
-  wiki?: string;
-  /** Page d'où vient l'image (Wikipédia ou AniList). */
+  /** Image réelle du personnage, hébergée par sa source. */
+  image: string;
+  /** Page d'où vient l'image. */
   source: string;
-  credit: "Wikipédia" | "AniList";
+  credit: "TVMaze" | "Disney API" | "Wikipédia" | "AniList";
   work: Work;
 };
 
@@ -82,8 +80,7 @@ type CardRow = {
   name: string;
   work: string;
   rarity: Rarity;
-  image?: string;
-  wiki?: string;
+  image: string;
   source: string;
   credit: CardDef["credit"];
 };

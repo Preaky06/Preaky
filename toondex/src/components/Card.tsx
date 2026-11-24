@@ -43,7 +43,7 @@ function titleSize(text: string): string {
 
 /** Image réelle du personnage, hébergée par Wikipédia ou AniList. */
 function Portrait({ card, hidden = false }: { card: CardDef; hidden?: boolean }) {
-  return <CardImage name={card.name} image={card.image} wiki={card.wiki} hidden={hidden} />;
+  return <CardImage name={card.name} image={card.image} hidden={hidden} />;
 }
 
 type CardProps = {
