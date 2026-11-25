@@ -968,6 +968,10 @@ for (const c of pending) {
   if (ORDER.indexOf(c.rarity) > cap) c.rarity = ORDER[cap];
 }
 
+/** Images mortes à la source (404 vérifiés) : la carte est retirée plutôt qu'affichée sans son personnage. */
+const DEAD_IMAGES = new Set(["Grand Councilwoman", "Flash McQueen", "Figment", "Meg"]);
+for (let i = pending.length - 1; i >= 0; i--) if (pending[i].credit === "Disney API" && DEAD_IMAGES.has(pending[i].name)) pending.splice(i, 1);
+
 const usedIds = new Set(baseCards.map((c) => c.id));
 const cards = pending.map((c) => {
   let id = slug(c.name);
