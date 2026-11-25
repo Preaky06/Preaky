@@ -849,7 +849,7 @@ async function tvShowById(id) {
     .slice(0, DISCOVER_LIMIT);
   log.push(`TVMaze : index de ${index.length} séries, ${candidates.length} découvertes`);
   let done = 0;
-  for (const [id, name, type, language, weight, year, network, country, genres] of candidates) {
+  for (const [id, name, type, , weight, year, network, country, genres] of candidates) {
     const show = await tvShowById(id);
     if (++done % 200 === 0) console.log(`découverte TVMaze : ${done}/${candidates.length}`);
     if (!show) continue;
