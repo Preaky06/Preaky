@@ -1,157 +1,127 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { BrandHero } from "@/components/BrandHero";
 import { Countdown } from "@/components/Countdown";
 import { ArrowIcon } from "@/components/Icons";
-import { OddsTable } from "@/components/OddsTable";
-import { Pack3D, PackScene } from "@/components/Pack3D";
-import { PackOpener } from "@/components/PackOpener";
 import { RarityTiers } from "@/components/RarityTiers";
 import { getCurrentUser } from "@/lib/auth";
 import { CARDS, RARITY_ORDER, WORK_COUNT, getCard, type CardDef } from "@/lib/catalogue";
-import { getOwned, getPackSets, getTodayPack, withDefs } from "@/lib/collection";
+import { getOwned, getTodayPack } from "@/lib/collection";
 
 /* eslint-disable @next/next/no-img-element */
 
-const DEFAULT_SHOWCASE = ["walter-white", "satoru-gojo"];
 /** Éventail du bandeau : un anime, un dessin animé en secrète or, une série. */
 const HERO_FAN = ["monkey-d-luffy", "homer-simpson", "walter-white"];
 
 function heroCards(ids: string[]) {
-  return showcaseFrom(ids).map((card, i) => ({ card, gold: i === 1 }));
+  return ids
+    .map((id) => getCard(id))
+    .filter((c): c is CardDef => !!c)
+    .map((card, i) => ({ card, gold: i === 1 }));
 }
 
-function todayLabel(): string {
-  const text = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", weekday: "long", day: "numeric", month: "long" }).format(
-    new Date(),
-  );
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
-function showcaseFrom(ids: string[]): CardDef[] {
-  return ids.map((id) => getCard(id)).filter((c): c is CardDef => !!c);
-}
-
-const FEATURES = [
-  { icon: "/3d/gift.webp", title: "Un paquet par jour", text: "5 cartes tirées au hasard, la dernière au moins rare. Nouveau paquet à minuit." },
-  { icon: "/3d/etincelle.webp", title: "Des ouvertures à la hauteur", text: "Chaque rareté a son animation. Plus la carte est rare, plus le moment dure." },
-  { icon: "/3d/trophy.webp", title: "Des séries à compléter", text: "Réunis tous les personnages d’une œuvre et gagne un bonus d’éclats." },
-  { icon: "/3d/gemme.webp", title: "Rien ne se perd", text: "Un doublon devient des éclats. Avec assez d’éclats, tu fabriques la carte qui te manque." },
+const STEPS = [
+  {
+    icon: "/3d/gift.webp",
+    title: "Ouvre ton paquet du jour",
+    text: "Chaque jour, un paquet de 5 cartes. La dernière est toujours rare ou mieux. Nouveau paquet à minuit.",
+  },
+  {
+    icon: "/3d/etincelle.webp",
+    title: "Découvre qui sort",
+    text: "Chaque rareté a son animation, et chaque carte peut sortir en secrète, tout en or.",
+  },
+  {
+    icon: "/3d/trophy.webp",
+    title: "Complète tes séries",
+    text: "Réunis tous les personnages d’une même œuvre pour gagner un bonus d’éclats.",
+  },
+  {
+    icon: "/3d/gemme.webp",
+    title: "Fabrique ce qui manque",
+    text: "Un doublon devient des éclats. Avec assez d’éclats, tu fabriques la carte qui te manque.",
+  },
 ];
 
-function Rules() {
+/** Sous le bandeau : le concept en quatre étapes, puis les raretés en petit. */
+function Concept() {
   return (
     <>
-      <section className="section">
-        <ul className="features">
-          {FEATURES.map((f) => (
-            <li key={f.title} className="feature">
-              <img className="feature__icon" src={f.icon} alt="" />
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
+      <section className="concept" aria-labelledby="concept-title">
+        <div className="concept__intro" data-reveal="">
+          <p className="eyebrow">Le concept</p>
+          <h2 id="concept-title" className="concept__title">
+            Les personnages de tes séries, en cartes à collectionner
+          </h2>
+          <p className="concept__lead">
+            {CARDS.length.toLocaleString("fr-FR")} personnages de {WORK_COUNT} séries, anime, films et dessins animés. Chaque
+            carte a ses PV, sa classe et ses attaques. Le catalogue garde le mystère : une carte reste floue tant que tu ne
+            l’as pas obtenue.
+          </p>
+        </div>
+        <ol className="steps">
+          {STEPS.map((step, i) => (
+            <li key={step.title} className="step" data-reveal="" style={{ "--d": i } as CSSProperties}>
+              <span className="step__num">{i + 1}</span>
+              <img className="step__icon" src={step.icon} alt="" />
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
             </li>
           ))}
-        </ul>
-      </section>
-      <section className="section">
-        <div className="section__head">
-          <div>
-            <h2 className="section-title">Sept niveaux de rareté</h2>
-            <p>
-              Commune sans effet, rare à reflet, épique pailletée, légendaire et mythique en pleine illustration avec reflets
-              arc-en-ciel. Au sommet, la matière noire : cinq cartes seulement, au bord animé. La secrète, tout en or, peut
-              sortir à n’importe quel niveau.
-            </p>
-          </div>
-          <Link href="/catalogue" className="btn btn--ghost">
-            Voir le catalogue
-            <ArrowIcon />
-          </Link>
-        </div>
-        <RarityTiers />
-      </section>
-      <section className="section">
-        <div className="section__head">
-          <div>
-            <h2 className="section-title">Les chances</h2>
-            <p>Les quatre premières cartes suivent ces chances. La cinquième est toujours rare ou mieux.</p>
-          </div>
-        </div>
-        <div className="panel">
-          <OddsTable />
-        </div>
-      </section>
-    </>
-  );
-}
-
-function Landing() {
-  return (
-    <>
-      <BrandHero
-        cards={heroCards(HERO_FAN)}
-        chips={[
-          <>
-            <b>{CARDS.length.toLocaleString("fr-FR")}</b> personnages
-          </>,
-          <>
-            <b>{WORK_COUNT}</b>
-            <span>
-              œuvres<span className="hide-sm"> : séries, anime, films</span>
-            </span>
-          </>,
-        ]}
-      >
-        <p className="brand-hero__lead">Les personnages de tes séries, anime et films, en cartes à collectionner.</p>
-        <Link href="/inscription" className="btn btn--hero">
-          Commencer ma collection
-          <ArrowIcon />
-        </Link>
-      </BrandHero>
-
-      <section className="pack-section" aria-labelledby="pack-title">
-        <div className="hero">
-          <div className="hero__copy">
-            <p className="eyebrow">Paquet du jour</p>
-            <h2 id="pack-title" className="hero__title">
-              5 cartes, chaque jour
-            </h2>
-            <p className="hero__lead">
-              Walter White, Homer Simpson, Luffy, Dark Vador… Ouvre ton paquet, découvre qui sort, et complète les séries
-              de tes œuvres préférées.
-            </p>
-            <div className="hero__actions">
-              <Link href="/inscription" className="btn btn--primary btn--lg">
-                Créer mon compte
-                <ArrowIcon />
-              </Link>
-              <Link href="/connexion" className="btn btn--ghost btn--lg">
-                Se connecter
-              </Link>
-            </div>
-          </div>
-          <PackScene cards={showcaseFrom(DEFAULT_SHOWCASE)} pack={<Pack3D />} />
-        </div>
+        </ol>
       </section>
 
-      <Rules />
+      <section className="rarities" aria-labelledby="rarities-title">
+        <div className="rarities__head" data-reveal="">
+          <h2 id="rarities-title" className="section-title">
+            Sept raretés
+          </h2>
+          <p>
+            Plus une carte est rare, plus son cadre change : de la carte de sport à la matière noire, au bord animé, qui ne
+            compte que cinq cartes.
+          </p>
+        </div>
+        <RarityTiers small />
+      </section>
     </>
   );
 }
 
 export default async function Home() {
   const user = await getCurrentUser();
-  if (!user) return <Landing />;
+
+  if (!user) {
+    return (
+      <>
+        <BrandHero
+          cards={heroCards(HERO_FAN)}
+          chips={[
+            <>
+              <b>{CARDS.length.toLocaleString("fr-FR")}</b> personnages
+            </>,
+            <>
+              Nouveau paquet dans{" "}
+              <b>
+                <Countdown />
+              </b>
+            </>,
+          ]}
+        >
+          <Link href="/inscription?next=/paquet" className="btn btn--hero">
+            Ouvrir mon premier paquet
+            <ArrowIcon />
+          </Link>
+        </BrandHero>
+        <Concept />
+      </>
+    );
+  }
 
   const [pack, owned] = await Promise.all([getTodayPack(user.id), getOwned(user.id)]);
-  const sets = pack ? await getPackSets(user.id, pack) : [];
   const ownedCards = CARDS.filter((c) => owned[c.id]);
-  const golds = Object.values(owned).filter((o) => o.gold > 0).length;
-  // Derrière le paquet : les deux cartes les plus rares de la collection, sinon deux cartes d'exemple.
-  const best = [...ownedCards].sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity)).slice(0, 2);
-  const showcase = best.length === 2 ? best : showcaseFrom(DEFAULT_SHOWCASE);
   // Bandeau : les trois plus belles cartes du joueur (la meilleure au centre), sinon l'éventail par défaut.
   const top3 = [...ownedCards]
-    .sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity) || (owned[b.id].gold - owned[a.id].gold))
+    .sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity) || owned[b.id].gold - owned[a.id].gold)
     .slice(0, 3)
     .map((card) => ({ card, gold: owned[card.id].gold > 0 }));
   const fan = top3.length === 3 ? [top3[1], top3[0], top3[2]] : heroCards(HERO_FAN);
@@ -159,7 +129,6 @@ export default async function Home() {
   return (
     <>
       <BrandHero
-        compact
         cards={fan}
         chips={[
           <>
@@ -176,51 +145,12 @@ export default async function Home() {
           </>,
         ]}
       >
-        <p className="brand-hero__lead">
-          {pack ? "Ton paquet du jour est ouvert. Le prochain arrive à minuit." : `Salut ${user.pseudo}, ton paquet du jour t’attend.`}
-        </p>
-        <a href="#paquet" className="btn btn--hero">
-          {pack ? "Voir mes cartes" : "Ouvrir mon paquet"}
+        <Link href="/paquet" className="btn btn--hero">
+          {pack ? "Revoir mon paquet du jour" : "Ouvrir mon paquet du jour"}
           <ArrowIcon />
-        </a>
+        </Link>
       </BrandHero>
-
-      <section className="pack-section" id="paquet" aria-label="Paquet du jour">
-        <PackOpener
-          initialCards={pack ? withDefs(pack.cards) : null}
-          initialSets={sets}
-          showcase={showcase}
-          intro={
-            <>
-              <p className="eyebrow">{todayLabel()}</p>
-              <h2 className="hero__title">Ton paquet du jour</h2>
-              <p className="hero__lead">
-                5 cartes t’attendent. La cinquième est au moins rare, et chaque carte a une chance sur 250 de sortir en
-                secrète, entièrement en or.
-              </p>
-            </>
-          }
-          footer={
-            <dl className="hero__stats">
-              <div>
-                <dt>Collection</dt>
-                <dd>
-                  {ownedCards.length} <small>/ {CARDS.length}</small>
-                </dd>
-              </div>
-              <div>
-                <dt>Éclats</dt>
-                <dd>{user.shards}</dd>
-              </div>
-              <div>
-                <dt>Secrètes</dt>
-                <dd>{golds}</dd>
-              </div>
-            </dl>
-          }
-        />
-      </section>
-      <Rules />
+      <Concept />
     </>
   );
 }

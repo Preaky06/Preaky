@@ -177,3 +177,23 @@ export const RARITY_SYMBOL: Record<Rarity, string> = {
   mythique: "★★★",
   "matiere-noire": "✦✦✦✦",
 };
+
+/** Grille de puissance (1 à 7), pour les cartes légendaires. */
+export const GRID_LABELS = ["Force", "Vitesse", "Endurance", "Intelligence", "Puissance", "Charisme"] as const;
+
+export function powerGrid(card: CardDef): number[] {
+  const p = combatProfile(card);
+  const h = hash(`${card.id}:grille`);
+  const scale = (v: number, max: number) => Math.max(1, Math.min(7, Math.round((v / max) * 7)));
+  return [scale(p.attack, 200), scale(p.speed, 200), scale(p.hp, 300), 2 + (h % 6), scale((p.attack + p.defense) / 2, 200), 2 + ((h >>> 4) % 6)];
+}
+
+/** Charisme (sur 200), pour les cartes matière noire. */
+export function charisma(card: CardDef): number {
+  return 120 + (hash(`${card.id}:cha`) % 81);
+}
+
+/** Nombre avec espace fine entre les milliers (identique côté serveur et navigateur). */
+export function groupDigits(n: number): string {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u202f");
+}

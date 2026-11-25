@@ -1,24 +1,367 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { CardImage } from "@/components/CardImage";
 import { LogoMark } from "@/components/Icons";
-import { RARITIES, cardNumber, type CardDef } from "@/lib/cards-meta";
-import { ENERGIES, RARITY_SYMBOL, combatProfile, type EnergyClass } from "@/lib/combat";
+import { RARITIES, cardNumber, type CardDef, type Rarity } from "@/lib/cards-meta";
+import {
+  ENERGIES,
+  GRID_LABELS,
+  RARITY_SYMBOL,
+  charisma,
+  combatProfile,
+  groupDigits,
+  powerGrid,
+  type CombatProfile,
+  type EnergyClass,
+} from "@/lib/combat";
 
-function Energy({ kind, className = "card__energy" }: { kind: EnergyClass; className?: string }) {
-  // eslint-disable-next-line @next/next/no-img-element
+/* eslint-disable @next/next/no-img-element */
+
+/**
+ * Une mise en page par rareté, pour qu'on reconnaisse la rareté d'un coup d'œil :
+ * commune « carte de sport », rare « carte de base » argentée, épique « grimoire » à plaques,
+ * légendaire « super-héros » avec grille de puissance, mythique « cadre orné » à lettres verticales,
+ * matière noire « superstar » avec blocs de stats, secrète « commande » en or avec hexagones.
+ */
+type Layout = "classic" | "basic" | "arcane" | "heroes" | "duel" | "superstar" | "command";
+
+const LAYOUT: Record<Rarity, Layout> = {
+  commune: "classic",
+  rare: "basic",
+  epique: "arcane",
+  legendaire: "heroes",
+  mythique: "duel",
+  "matiere-noire": "superstar",
+};
+
+type Heading = "h2" | "h3";
+
+type Parts = {
+  card: CardDef;
+  p: CombatProfile;
+  Title: Heading;
+  gold: boolean;
+};
+
+function Energy({ kind, className }: { kind: EnergyClass; className?: string }) {
   return <img className={className} src={ENERGIES[kind].icon} alt="" aria-hidden="true" />;
 }
 
-function nameSize(name: string): string {
-  if (name.length > 17) return "card__name--xs";
-  if (name.length > 13) return "card__name--sm";
+/** Classe de taille selon la longueur du texte : "is-sm" puis "is-xs". */
+function fit(text: string, sm: number, xs: number): string {
+  if (text.length > xs) return "is-xs";
+  if (text.length > sm) return "is-sm";
   return "";
 }
 
-/** Les cartes les plus rares sont « full art » : l'image remplit toute la carte. */
-export function isFullArt(card: CardDef, gold: boolean): boolean {
-  return gold || card.rarity === "legendaire" || card.rarity === "mythique" || card.rarity === "matiere-noire";
+function Photo({ card }: { card: CardDef }) {
+  return <CardImage name={card.name} image={card.image} />;
 }
+
+function Foot({ card, gold }: { card: CardDef; gold: boolean }) {
+  return (
+    <div className="card__foot">
+      <span>
+        <b className="card__rank">{gold ? "Secrète" : RARITIES[card.rarity].label}</b> · Illus. {card.credit}
+      </span>
+      <span>
+        {cardNumber(card.num, card.total)}/{card.total} <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
+      </span>
+    </div>
+  );
+}
+
+/** Commune : carte de sport. Bandeau au nom de l'œuvre, photo sur rayures, plaque au nom du personnage. */
+function Classic({ card, p, Title, gold }: Parts) {
+  return (
+    <>
+      <div className="cl__team">
+        <span className={`cl__team-name ${fit(card.work.title, 11, 18)}`}>{card.work.title}</span>
+      </div>
+      <div className="cl__photo">
+        <div className="cl__frame">
+          <Photo card={card} />
+        </div>
+      </div>
+      <div className="cl__plate">
+        <span className="cl__badge">
+          <b>{cardNumber(card.num, card.total)}</b>
+          <small>{card.work.year}</small>
+        </span>
+        <span className="cl__id">
+          <Title className={`cl__name ${fit(card.name, 13, 18)}`}>{card.name}</Title>
+          <span className="cl__pos">
+            {ENERGIES[p.energy].label} · {p.hp} PV
+          </span>
+        </span>
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Rare : carte de base argentée. Barre de nom, ruban de l'œuvre, attaques, faiblesse et retraite. */
+function Basic({ card, p, Title, gold }: Parts) {
+  return (
+    <>
+      <div className="bs__head">
+        <span className="bs__tag">Rare</span>
+        <Title className={`bs__name ${fit(card.name, 13, 18)}`}>{card.name}</Title>
+        <span className="bs__hp">
+          <small>PV</small>
+          {p.hp}
+        </span>
+        <Energy kind={p.energy} className="bs__icon" />
+      </div>
+      <div className="bs__ribbon">
+        <span>{card.work.title}</span>
+      </div>
+      <div className="bs__art">
+        <Photo card={card} />
+        <span className="card__holo" aria-hidden="true" />
+      </div>
+      <ul className="bs__attacks">
+        {p.attacks.map((a) => (
+          <li key={a.name}>
+            <span className="bs__cost">
+              {Array.from({ length: a.cost }, (_, i) => (
+                <Energy key={i} kind={p.energy} />
+              ))}
+            </span>
+            <span className="bs__atk">{a.name}</span>
+            <span className="bs__dmg">{a.damage}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="bs__bar">
+        <span>
+          <small>faiblesse</small>
+          <Energy kind={p.weakness} />
+          ×2
+        </span>
+        <span>
+          <small>résistance</small>—
+        </span>
+        <span>
+          <small>retraite</small>
+          {"✦".repeat(p.retreat)}
+        </span>
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Épique : grimoire. Plaque de nom, illustration biseautée, ligne de type, texte de règles, force/endurance. */
+function Arcane({ card, p, Title, gold }: Parts) {
+  return (
+    <>
+      <div className="ar__plate ar__plate--name">
+        <Title className={`ar__name ${fit(card.name, 15, 20)}`}>{card.name}</Title>
+        <span className="ar__cost">
+          <Energy kind={p.energy} />
+          <Energy kind={p.energy} />
+        </span>
+      </div>
+      <div className="ar__art">
+        <Photo card={card} />
+        <span className="card__holo" aria-hidden="true" />
+      </div>
+      <div className="ar__plate ar__plate--type">
+        <span>Créature épique — {ENERGIES[p.energy].label}</span>
+        <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
+      </div>
+      <div className="ar__text">
+        {p.attacks.map((a) => (
+          <p key={a.name}>
+            <b>{a.name}</b> — inflige {a.damage} dégâts.
+          </p>
+        ))}
+        <p className="ar__flavor">
+          Vu dans {card.work.title}, {card.work.year}.
+        </p>
+      </div>
+      <span className="ar__pt">
+        {Math.max(1, Math.round(p.attack / 20))}/{Math.max(1, Math.round(p.defense / 20))}
+      </span>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Légendaire : super-héros. Bandeau de l'œuvre, texte vertical, bannière jaune, grille de puissance. */
+function Heroes({ card, p, Title, gold }: Parts) {
+  const grid = powerGrid(card);
+  return (
+    <>
+      <div className="hr__band">
+        <span>{card.work.title}</span>
+      </div>
+      <div className="hr__art">
+        <span className="hr__side">
+          ToonDex · Légendaire · {card.work.year}
+        </span>
+        <div className="hr__photo">
+          <Photo card={card} />
+        </div>
+      </div>
+      <div className="hr__banner">
+        <Title className={`hr__name ${fit(card.name, 14, 19)}`}>{card.name}</Title>
+        <Energy kind={p.energy} className="hr__icon" />
+      </div>
+      <div className="hr__grid">
+        <div className="hr__grid-head">
+          <span>Puissance</span>
+          <span className="hr__scale">
+            {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+              <i key={n}>{n}</i>
+            ))}
+          </span>
+        </div>
+        {GRID_LABELS.map((label, i) => (
+          <div className="hr__row" key={label}>
+            <span>{label}</span>
+            <span className="hr__track">
+              <i style={{ width: `${(grid[i] / 7) * 100}%` }} />
+            </span>
+          </div>
+        ))}
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Mythique : cadre orné. Nom et œuvre en lettres verticales, médaillon PV, attaques sur l'image. */
+function Duel({ card, p, Title, gold }: Parts) {
+  return (
+    <>
+      <div className="du__side">
+        <Title className={`du__vname ${fit(card.name, 18, 24)}`}>{card.name}</Title>
+      </div>
+      <div className="du__art">
+        <Photo card={card} />
+        <span className="du__medal">
+          <small>PV</small>
+          <b>{p.hp}</b>
+          <Energy kind={p.energy} />
+        </span>
+        <div className="du__moves">
+          {p.attacks.map((a) => (
+            <p key={a.name}>
+              <span>{a.name}</span>
+              <b>{a.damage}</b>
+            </p>
+          ))}
+        </div>
+      </div>
+      <div className="du__side">
+        <span className={`du__vname du__vname--work ${fit(card.work.title, 18, 24)}`}>{card.work.title}</span>
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Matière noire : superstar. Blocs de stats en biais, gros chiffre de puissance, plaque de nom inclinée. */
+function Superstar({ card, p, Title, gold }: Parts) {
+  const stats: [string, number][] = [
+    ["ATQ", p.attack * 40],
+    ["DÉF", p.defense * 40],
+    ["VIT", p.speed * 40],
+    ["CHA", charisma(card) * 40],
+  ];
+  return (
+    <>
+      <div className="ss__bg">
+        <Photo card={card} />
+      </div>
+      <div className="ss__top">
+        <span className="ss__hp">
+          <small>PV</small>
+          {p.hp}
+        </span>
+        <Energy kind={p.energy} />
+      </div>
+      <div className="ss__stats">
+        <span className="ss__tab">Stats</span>
+        <ul>
+          {stats.map(([label, v]) => (
+            <li key={label}>
+              <small>{label}</small>
+              <b>{groupDigits(v)}</b>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="ss__bottom">
+        <span className="ss__power">{groupDigits(p.hp * 100)}</span>
+        <div className="ss__plate">
+          <span className="ss__lvl">
+            <small>NIV.</small>5
+          </span>
+          <span className="ss__id">
+            <small>Matière noire</small>
+            <Title className={`ss__name ${fit(card.name, 13, 18)}`}>{card.name}</Title>
+          </span>
+        </div>
+        <p className="ss__special">
+          Spécial · {p.attacks[1].name} <b>+1 000</b> ATQ et DÉF
+        </p>
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+/** Secrète en or : panneau de commande. Emblème, stats en hexagones, grande fenêtre d'image dorée. */
+function Command({ card, p, Title, gold }: Parts) {
+  const stats: [string, number][] = [
+    ["PV", p.hp],
+    ["Défense", p.defense],
+    ["Attaque", p.attack],
+    ["Dégâts", p.attacks[1].damage],
+  ];
+  return (
+    <>
+      <span className="cm__emblem">
+        <LogoMark className="cm__logo" />
+      </span>
+      <div className="cm__banner">
+        <Title className={`cm__name ${fit(card.name, 13, 18)}`}>{card.name}</Title>
+        <span className="cm__secret">Secrète en or</span>
+      </div>
+      <ul className="cm__stats">
+        {stats.map(([label, v]) => (
+          <li key={label}>
+            <span className="cm__label">{label}</span>
+            <span className="cm__hex">{v}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="cm__art">
+        <Photo card={card} />
+      </div>
+      <div className="cm__work">
+        <Energy kind={p.energy} />
+        <span>
+          {card.work.title} · {card.work.year}
+        </span>
+        <i className="cm__stripes" aria-hidden="true" />
+      </div>
+      <Foot card={card} gold={gold} />
+    </>
+  );
+}
+
+const RENDER: Record<Layout, (parts: Parts) => ReactNode> = {
+  classic: Classic,
+  basic: Basic,
+  arcane: Arcane,
+  heroes: Heroes,
+  duel: Duel,
+  superstar: Superstar,
+  command: Command,
+};
 
 type CardProps = {
   card: CardDef;
@@ -26,28 +369,20 @@ type CardProps = {
   /** Largeur fixe (ex. "220px"). Par défaut, la carte prend la largeur de sa cellule. */
   width?: string;
   className?: string;
-  headingLevel?: "h2" | "h3";
+  headingLevel?: Heading;
   /** Carte pas encore obtenue : floue, comme un mystère. */
   mystery?: boolean;
 };
 
-/**
- * Carte façon jeu de cartes à collectionner : nom, PV et énergie en haut, illustration encadrée,
- * deux attaques, faiblesse et retraite, numéro et symbole de rareté en bas.
- * Commune : aucun effet. Rare : reflet sur l'illustration. Épique : carte texturée et pailletée.
- * Légendaire et mythique : full art en relief, reflets arc-en-ciel. Matière noire (5 cartes) : noir
- * cosmique, bord animé. Secrète : tout en or.
- */
 export function Card({ card, gold = false, width, className = "", headingLevel = "h3", mystery = false }: CardProps) {
-  const Title = headingLevel;
   const p = combatProfile(card);
-  const energy = ENERGIES[p.energy];
-  const full = isFullArt(card, gold);
+  const layout: Layout = gold ? "command" : LAYOUT[card.rarity];
   const fx = gold || card.rarity !== "commune";
-  const style = { "--energy": energy.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
+  const style = { "--energy": ENERGIES[p.energy].color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
+  const Render = RENDER[layout];
   return (
     <article
-      className={`card card--${card.rarity}${full ? " card--full" : ""}${gold ? " card--gold" : ""}${fx ? " card--fx" : ""}${mystery ? " card--mystery" : ""} ${className}`}
+      className={`card card--${card.rarity} card--${layout}${gold ? " card--gold" : ""}${fx ? " card--fx" : ""}${mystery ? " card--mystery" : ""} ${className}`}
       style={style}
       aria-label={
         mystery
@@ -56,70 +391,19 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
       }
     >
       <div className="card__face">
-        {full && (
-          <div className="card__bg">
-            <CardImage name={card.name} image={card.image} />
-          </div>
-        )}
         <div className="card__inner" aria-hidden={mystery || undefined}>
-          <div className="card__top">
-            <Title className={`card__name ${nameSize(card.name)}`}>{card.name}</Title>
-            <span className="card__hp">
-              <small>PV</small>
-              {p.hp}
-            </span>
-            <Energy kind={p.energy} />
-          </div>
-          {!full && (
-            <div className="card__art">
-              <CardImage name={card.name} image={card.image} />
-              <span className="card__holo" aria-hidden="true" />
-            </div>
-          )}
-          <p className="card__meta">
-            N°{cardNumber(card.num, card.total)} · {card.work.title} · {card.work.year}
-          </p>
-          <ul className="card__attacks">
-            {p.attacks.map((a) => (
-              <li key={a.name}>
-                <span className="card__cost">
-                  {Array.from({ length: a.cost }, (_, i) => (
-                    <Energy key={i} kind={p.energy} className="card__cost-icon" />
-                  ))}
-                </span>
-                <span className="card__atk">{a.name}</span>
-                <span className="card__dmg">{a.damage}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="card__flavor">
-            {ENERGIES[p.energy].label} · {card.work.genres}. Vu dans {card.work.title}.
-          </p>
-          <div className="card__rules">
-            <span>
-              Faiblesse <Energy kind={p.weakness} className="card__rule-icon" />×2
-            </span>
-            <span>Retraite {"✦".repeat(p.retreat)}</span>
-          </div>
-          <div className="card__foot">
-            <span>
-              <span className="card__rank">{gold ? "Secrète" : RARITIES[card.rarity].label}</span> · Illus. {card.credit}
-            </span>
-            <span>
-              {cardNumber(card.num, card.total)}/{card.total} <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
-            </span>
-          </div>
+          <Render card={card} p={p} Title={headingLevel} gold={gold} />
         </div>
         <span className="card__texture" aria-hidden="true" />
         <span className="card__glitter" aria-hidden="true" />
         <span className="card__shine" aria-hidden="true" />
+        {card.rarity === "matiere-noire" && !gold && <span className="card__void" aria-hidden="true" />}
         {mystery && (
           <span className="card__mystery" aria-hidden="true">
             <span className="card__mystery-mark">?</span>
             <span className="card__mystery-label">Mystère</span>
           </span>
         )}
-        {card.rarity === "matiere-noire" && !gold && <span className="card__void" aria-hidden="true" />}
         {(gold || card.rarity === "mythique" || card.rarity === "matiere-noire") && (
           <span className="card__sparkles" aria-hidden="true">
             <i />

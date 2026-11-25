@@ -52,7 +52,7 @@ export default async function CollectionPage({ searchParams }: { searchParams: P
           <Pack3D />
           <h2>Ta collection est vide</h2>
           <p>Ouvre ton paquet du jour : chaque carte obtenue s’ajoute ici, et ta collection se construit au fil des jours.</p>
-          <Link href="/" className="btn btn--primary btn--lg">
+          <Link href="/paquet" className="btn btn--primary btn--lg">
             Ouvrir mon paquet
             <ArrowIcon />
           </Link>

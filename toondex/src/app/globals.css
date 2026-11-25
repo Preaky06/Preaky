@@ -524,10 +524,12 @@ body::before {
 }
 
 /* ---------- Carte à collectionner ---------- */
+/* Une mise en page par rareté (voir Card.tsx). Toutes les tailles sont en cqi : 100cqi = largeur de la carte. */
 
 .card {
   --energy: #888;
-  --ink: #17140f;
+  --ink: #16181d;
+  --serif: var(--font-fantasy), "Palatino Linotype", Palatino, Georgia, serif;
   container-type: inline-size;
   position: relative;
   display: block;
@@ -535,14 +537,15 @@ body::before {
   aspect-ratio: 63 / 88;
 }
 .card__face {
+  --frame: linear-gradient(150deg, #eef0f3, #b9bec7 35%, #f6f7f9 55%, #9da3ad);
   position: absolute;
   inset: 0;
   overflow: hidden;
   border-radius: 4.6cqi;
-  border: 3.4cqi solid transparent;
+  border: 3.2cqi solid transparent;
   background:
-    linear-gradient(var(--card-bg, transparent), var(--card-bg, transparent)) padding-box,
-    linear-gradient(150deg, #eef0f3, #b9bec7 35%, #f6f7f9 55%, #9da3ad) border-box;
+    linear-gradient(var(--card-bg, #f4f6f9), var(--card-bg, #f4f6f9)) padding-box,
+    var(--frame) border-box;
   box-shadow: 0 1.6cqi 6cqi rgba(0, 0, 0, 0.55);
   color: var(--ink);
   text-align: left;
@@ -553,191 +556,21 @@ body::before {
   inset: 0;
   display: flex;
   flex-direction: column;
-  padding: 1.8cqi 3cqi 1.6cqi;
-  border-radius: 2cqi;
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.12) 0.35cqi, transparent 0.5cqi) 0 0 / 3cqi 3cqi,
-    radial-gradient(120% 70% at 30% 0%, rgba(255, 255, 255, 0.45), transparent 60%),
-    linear-gradient(170deg, color-mix(in srgb, var(--energy) 62%, white), color-mix(in srgb, var(--energy) 82%, white));
+  overflow: hidden;
+  border-radius: 1.6cqi;
 }
-.card__top {
-  display: flex;
-  align-items: center;
-  gap: 1.6cqi;
-  min-height: 9cqi;
-}
-.card__stage {
-  flex: none;
-  padding: 0.8cqi 2cqi;
-  border-radius: 1cqi;
-  background: linear-gradient(180deg, #f4f5f7, #b8bdc6);
-  color: #3a3d45;
-  font: 800 2.8cqi/1 var(--font-sans), sans-serif;
-  font-style: italic;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.card__name {
-  flex: 1;
-  min-width: 0;
+:where(.card__inner) h2,
+:where(.card__inner) h3 {
   margin: 0;
-  font: 800 7cqi/1.05 var(--font-display), sans-serif;
-  font-stretch: 100%;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card__name--sm {
-  font-size: 5.9cqi;
-}
-.card__name--xs {
-  font-size: 5cqi;
-  letter-spacing: -0.02em;
-}
-.card__rank {
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.card__hp {
-  flex: none;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.6cqi;
-  font: 800 6.6cqi/1 var(--font-display), sans-serif;
-  font-stretch: 100%;
-}
-.card__hp small {
-  font-size: 3cqi;
-  font-weight: 800;
-}
-.card__energy {
-  flex: none;
-  width: 7.4cqi;
-  height: 7.4cqi;
-  object-fit: contain;
-  filter: drop-shadow(0 0.4cqi 0.6cqi rgba(0, 0, 0, 0.35));
-}
-.card__art {
-  position: relative;
-  height: 62cqi;
-  margin-top: 1.2cqi;
-  overflow: hidden;
-  border: 1cqi solid transparent;
-  background:
-    linear-gradient(#222, #222) padding-box,
-    linear-gradient(150deg, #f5e7b0, #b9963f 40%, #fff3c4 60%, #a07c2a) border-box;
-  box-shadow: 0 0.8cqi 1.6cqi rgba(0, 0, 0, 0.3);
+  letter-spacing: normal;
+  text-wrap: nowrap;
 }
 .card__photo {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 18%;
-}
-.card__meta {
-  margin: 0.8cqi auto 0;
-  max-width: 94%;
-  padding: 0.6cqi 2.4cqi;
-  border-radius: 99px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.25));
-  font: italic 600 2.8cqi/1.2 var(--font-sans), sans-serif;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card__attacks {
-  list-style: none;
-  margin: 1.4cqi 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2cqi;
-  flex: 1;
-  justify-content: center;
-}
-.card__attacks li + li {
-  padding-top: 1.2cqi;
-  border-top: 0.25cqi solid rgba(0, 0, 0, 0.12);
-}
-.card--full .card__attacks li + li {
-  border-top-color: rgba(255, 255, 255, 0.18);
-}
-.card__flavor {
-  margin: 1cqi 0 0;
-  font: italic 500 2.8cqi/1.3 var(--font-sans), sans-serif;
-  opacity: 0.8;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.card--commune .card__art {
-  background:
-    linear-gradient(#222, #222) padding-box,
-    linear-gradient(150deg, #eef0f3, #a3a9b3 40%, #f6f7f9 60%, #8d939d) border-box;
-}
-.card__attacks li {
-  display: grid;
-  grid-template-columns: 14cqi 1fr auto;
-  align-items: center;
-  gap: 1.6cqi;
-}
-.card__cost {
-  display: flex;
-  gap: 0.4cqi;
-}
-.card__cost-icon {
-  width: 4.6cqi;
-  height: 4.6cqi;
-  object-fit: contain;
-}
-.card__atk {
-  min-width: 0;
-  font: 800 4.6cqi/1.1 var(--font-sans), sans-serif;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.card__dmg {
-  font: 800 6cqi/1 var(--font-display), sans-serif;
-  font-stretch: 100%;
-  font-variant-numeric: tabular-nums;
-}
-.card__rules {
-  display: flex;
-  justify-content: space-between;
-  gap: 2cqi;
-  margin-top: 1.2cqi;
-  padding-top: 1.2cqi;
-  border-top: 0.3cqi solid rgba(0, 0, 0, 0.25);
-  font: 600 2.9cqi/1 var(--font-sans), sans-serif;
-}
-.card__rules span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8cqi;
-}
-.card__rule-icon {
-  width: 3.6cqi;
-  height: 3.6cqi;
-  object-fit: contain;
-}
-.card__foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.2cqi;
-  font: 600 2.6cqi/1 var(--font-sans), sans-serif;
-  opacity: 0.85;
-  font-variant-numeric: tabular-nums;
-}
-.card__symbol {
-  margin-left: 0.6cqi;
-  font-size: 3.2cqi;
+  object-position: 50% 24%;
 }
 .card__placeholder {
   position: absolute;
@@ -748,8 +581,1042 @@ body::before {
   color: rgba(255, 255, 255, 0.25);
   background: #2a2c33;
 }
+.card__foot {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2cqi;
+  height: 4.6cqi;
+  padding: 0 2.2cqi;
+  font: 600 2.4cqi/1 var(--font-sans), sans-serif;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+.card__foot > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__rank {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.card__symbol {
+  margin-left: 0.6cqi;
+  font-size: 3cqi;
+}
 
-/* Effets : texture en relief, paillettes, reflet arc-en-ciel, étincelles. */
+/* Commune : carte de sport. */
+.card--classic {
+  --ink: #16181d;
+}
+.card--classic .card__face {
+  --frame: linear-gradient(#fdfbf6, #ece5d6);
+  --card-bg: #fdfbf6;
+}
+.card--classic .card__inner {
+  padding: 1.6cqi 1.6cqi 0;
+  gap: 1.2cqi;
+}
+.cl__team {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15cqi;
+  padding: 0 1.6cqi;
+}
+.cl__team-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: italic 900 12cqi/1.15 var(--font-display), sans-serif;
+  font-stretch: 72%;
+  text-transform: uppercase;
+  color: var(--energy);
+  -webkit-text-stroke: 0.5cqi #16181d;
+  paint-order: stroke fill;
+  text-shadow: 0.5cqi 0.7cqi 0 #16181d;
+}
+.cl__team-name.is-sm {
+  font-size: 9cqi;
+}
+.cl__team-name.is-xs {
+  font-size: 6.6cqi;
+}
+.cl__photo {
+  flex: 1;
+  min-height: 0;
+  padding: 0 4.4cqi;
+  background: linear-gradient(
+    180deg,
+    var(--energy) 0 28%,
+    #fff 28% 34%,
+    color-mix(in srgb, var(--energy) 50%, #16181d) 34% 64%,
+    #fff 64% 70%,
+    var(--energy) 70%
+  );
+}
+.cl__frame {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border: 0.8cqi solid #fff;
+  background: #222;
+  box-shadow: 0 0.6cqi 1.6cqi rgba(0, 0, 0, 0.25);
+}
+.cl__plate {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  min-height: 17cqi;
+  margin: -10cqi 3cqi 0;
+  overflow: hidden;
+  border-radius: 1.2cqi;
+  background: #fff;
+  box-shadow: 0 1cqi 2.4cqi rgba(0, 0, 0, 0.28);
+}
+.cl__badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.8cqi;
+  width: 17cqi;
+  background: var(--energy);
+  color: #fff;
+}
+.cl__badge b {
+  font: 900 4.2cqi/1 var(--font-display), sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.cl__badge small {
+  font: 700 2.5cqi/1 var(--font-sans), sans-serif;
+  opacity: 0.9;
+}
+.cl__id {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2cqi;
+  padding: 1.6cqi 2.4cqi;
+}
+.cl__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 6.2cqi/1.05 var(--font-display), sans-serif;
+  font-stretch: 85%;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--energy) 65%, #16181d);
+}
+.cl__name.is-sm {
+  font-size: 5.1cqi;
+}
+.cl__name.is-xs {
+  font-size: 4.3cqi;
+}
+.cl__pos {
+  font: 700 2.6cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #5b6070;
+}
+.card--classic .card__foot {
+  color: #5b6070;
+}
+
+/* Rare : carte de base argentée. */
+.card--basic .card__face {
+  --card-bg: color-mix(in srgb, var(--energy) 22%, #f4f6f9);
+}
+.card--basic .card__inner {
+  padding: 1.4cqi 1.8cqi 0;
+  gap: 1.2cqi;
+  background: radial-gradient(rgba(255, 255, 255, 0.35) 0.35cqi, transparent 0.5cqi) 0 0 / 3cqi 3cqi;
+}
+.bs__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqi;
+  height: 10cqi;
+  padding: 0 1.8cqi;
+  border-radius: 1.4cqi 1.4cqi 0.6cqi 0.6cqi;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--energy) 80%, #fff), color-mix(in srgb, var(--energy) 80%, #16181d));
+  box-shadow: inset 0 -0.4cqi 0 rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+.bs__tag {
+  flex: none;
+  padding: 0.8cqi 1.6cqi;
+  border-radius: 99px;
+  background: linear-gradient(#fff, #d6dae2);
+  color: #3a3d45;
+  font: italic 800 2.4cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.bs__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 5.4cqi/1.1 var(--font-display), sans-serif;
+  text-shadow: 0 0.3cqi 0.8cqi rgba(0, 0, 0, 0.35);
+}
+.bs__name.is-sm {
+  font-size: 4.6cqi;
+}
+.bs__name.is-xs {
+  font-size: 3.9cqi;
+}
+.bs__hp {
+  flex: none;
+  font: 800 5.2cqi/1 var(--font-display), sans-serif;
+}
+.bs__hp small {
+  margin-right: 0.4cqi;
+  font-size: 2.5cqi;
+}
+.bs__icon {
+  flex: none;
+  width: 6cqi;
+  height: 6cqi;
+  object-fit: contain;
+}
+.bs__ribbon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 6cqi;
+  margin: -0.2cqi 8cqi 0 0;
+  padding: 0 3cqi;
+  background: linear-gradient(90deg, #b91c3a, #ef4444);
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+}
+.bs__ribbon span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: italic 900 3.4cqi/1.2 var(--font-display), sans-serif;
+  font-stretch: 80%;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffd84d;
+}
+.bs__art {
+  position: relative;
+  flex: none;
+  height: 50cqi;
+  overflow: hidden;
+  border: 0.9cqi solid transparent;
+  background:
+    linear-gradient(#222, #222) padding-box,
+    linear-gradient(150deg, #f5f7fa, #9aa1ad 45%, #fff 60%, #8a919c) border-box;
+  box-shadow: 0 0.8cqi 1.6cqi rgba(0, 0, 0, 0.25);
+}
+.bs__attacks {
+  list-style: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2cqi;
+  margin: 0;
+  padding: 0 1cqi;
+}
+.bs__attacks li {
+  display: grid;
+  grid-template-columns: 13cqi 1fr auto;
+  align-items: center;
+  gap: 1.4cqi;
+}
+.bs__attacks li + li {
+  padding-top: 1.2cqi;
+  border-top: 0.25cqi solid rgba(0, 0, 0, 0.12);
+}
+.bs__cost {
+  display: flex;
+  gap: 0.4cqi;
+}
+.bs__cost img {
+  width: 4.2cqi;
+  height: 4.2cqi;
+  object-fit: contain;
+}
+.bs__atk {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 800 4cqi/1.1 var(--font-sans), sans-serif;
+}
+.bs__dmg {
+  font: 800 5.4cqi/1 var(--font-display), sans-serif;
+}
+.bs__bar {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 7cqi;
+  overflow: hidden;
+  border-radius: 0.8cqi;
+  background: linear-gradient(#fff, #e5e8ee);
+  box-shadow: inset 0 0 0 0.3cqi rgba(0, 0, 0, 0.12);
+}
+.bs__bar span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8cqi;
+  font: 700 2.6cqi/1 var(--font-sans), sans-serif;
+}
+.bs__bar span + span {
+  border-left: 0.25cqi solid rgba(0, 0, 0, 0.12);
+}
+.bs__bar small {
+  font: 600 2.1cqi/1 var(--font-sans), sans-serif;
+  color: #6b7280;
+}
+.bs__bar img {
+  width: 3.4cqi;
+  height: 3.4cqi;
+  object-fit: contain;
+}
+
+/* Épique : grimoire à plaques. */
+.card--arcane {
+  --ink: #1b1610;
+}
+.card--arcane .card__face {
+  --frame: linear-gradient(150deg, #6b7180, #191b21 35%, #7a8090 55%, #0e0f13);
+  --card-bg: color-mix(in srgb, var(--energy) 38%, #14151a);
+}
+.card--arcane .card__inner {
+  padding: 2cqi 2cqi 0;
+  gap: 1.4cqi;
+  background: radial-gradient(80% 60% at 50% 30%, rgba(255, 255, 255, 0.12), transparent 70%);
+}
+.ar__plate {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1.6cqi;
+  padding: 0 2.4cqi;
+  border-radius: 1.6cqi;
+  background: linear-gradient(180deg, #f6eed8, #d6c391);
+  box-shadow:
+    0 0 0 0.5cqi #2a2318,
+    0 0.6cqi 1.2cqi rgba(0, 0, 0, 0.45),
+    inset 0 0.3cqi 0 rgba(255, 255, 255, 0.7);
+}
+.ar__plate--name {
+  height: 9cqi;
+}
+.ar__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 5.2cqi/1.1 var(--serif);
+}
+.ar__name.is-sm {
+  font-size: 4.4cqi;
+}
+.ar__name.is-xs {
+  font-size: 3.8cqi;
+}
+.ar__cost {
+  flex: none;
+  display: flex;
+  gap: 0.6cqi;
+}
+.ar__cost img {
+  width: 4.6cqi;
+  height: 4.6cqi;
+  padding: 0.3cqi;
+  border-radius: 50%;
+  background: rgba(42, 35, 24, 0.15);
+  object-fit: contain;
+}
+.ar__art {
+  position: relative;
+  flex: none;
+  height: 52cqi;
+  margin: 0 1.4cqi;
+  overflow: hidden;
+  border: 0.8cqi solid #2a2318;
+  box-shadow: 0 0 0 0.4cqi rgba(255, 255, 255, 0.22);
+}
+.ar__plate--type {
+  justify-content: space-between;
+  height: 7cqi;
+  font: 700 3.3cqi/1 var(--serif);
+}
+.ar__plate--type span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ar__text {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2cqi;
+  margin: 0 1.4cqi;
+  padding: 2cqi 2.4cqi;
+  overflow: hidden;
+  border: 0.5cqi solid #2a2318;
+  border-radius: 0.6cqi;
+  background: linear-gradient(180deg, #f3ead2, #e3d4ad);
+  color: #1b1610;
+  font: 500 3.1cqi/1.3 Georgia, "Times New Roman", serif;
+}
+.ar__text p {
+  margin: 0;
+}
+.ar__flavor {
+  padding-top: 1cqi;
+  border-top: 0.25cqi solid rgba(42, 35, 24, 0.3);
+  font-style: italic;
+  color: #4a3f2e;
+}
+.ar__pt {
+  position: absolute;
+  right: 2.6cqi;
+  bottom: 5.4cqi;
+  z-index: 2;
+  padding: 1cqi 2.6cqi;
+  border-radius: 1.4cqi;
+  background: linear-gradient(#f6eed8, #d6c391);
+  box-shadow:
+    0 0 0 0.5cqi #2a2318,
+    0 0.6cqi 1.2cqi rgba(0, 0, 0, 0.45);
+  font: 800 4.4cqi/1 var(--serif);
+}
+.card--arcane .card__foot {
+  color: #e8e2d2;
+}
+
+/* Légendaire : super-héros. */
+.card--heroes {
+  --ink: #0b1a4a;
+}
+.card--heroes .card__face {
+  --frame: linear-gradient(160deg, #ffe14d, #ffc300);
+  --card-bg: #1e3fae;
+}
+.card--heroes .card__inner {
+  padding: 1.4cqi 1.4cqi 0;
+}
+.hr__band {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 9cqi;
+  padding: 0 2.4cqi;
+  background: linear-gradient(90deg, #16a34a, #15803d 35%, #1e3a8a);
+}
+.hr__band span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: italic 900 5cqi/1.1 var(--font-display), sans-serif;
+  font-stretch: 90%;
+  color: #fff;
+  text-shadow: 0 0.4cqi 0 rgba(0, 0, 0, 0.4);
+}
+.hr__art {
+  flex: none;
+  display: flex;
+  height: 62cqi;
+  background: #0b1a4a;
+}
+.hr__side {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 6cqw;
+  overflow: hidden;
+  color: #ffd60a;
+  font: 800 2.5cqw/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.hr__photo {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-left: 0.6cqi solid #ffd60a;
+}
+.hr__banner {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqi;
+  height: 8.4cqi;
+  margin: -5cqi 4cqi 0 8cqi;
+  padding: 0 2.4cqi;
+  border: 0.5cqi solid #0b1a4a;
+  background: linear-gradient(#ffe14d, #facc15);
+  box-shadow: 0.8cqi 0.8cqi 0 #0b1a4a;
+}
+.hr__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 900 5.2cqi/1.1 var(--font-display), sans-serif;
+  font-stretch: 90%;
+  color: #0b1a4a;
+}
+.hr__name.is-sm {
+  font-size: 4.4cqi;
+}
+.hr__name.is-xs {
+  font-size: 3.8cqi;
+}
+.hr__icon {
+  flex: none;
+  width: 5cqi;
+  height: 5cqi;
+}
+.hr__grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 1.8cqi 0.8cqi 0.6cqi;
+  padding: 1.4cqi 2cqi;
+  border: 0.5cqi solid #dc2626;
+  background: #0b1a4a;
+}
+.hr__grid-head,
+.hr__row {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  align-items: center;
+  gap: 1.2cqi;
+}
+.hr__grid-head {
+  font: italic 900 2.5cqi/1 var(--font-sans), sans-serif;
+  color: #f87171;
+  text-transform: uppercase;
+}
+.hr__scale {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+}
+.hr__scale i {
+  font-style: italic;
+}
+.hr__row > span:first-child {
+  overflow: hidden;
+  text-align: right;
+  white-space: nowrap;
+  font: 900 2.4cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #facc15;
+}
+.hr__track {
+  height: 2.6cqi;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0 0.25cqi, transparent 0.25cqi calc(100% / 7));
+}
+.hr__track i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #facc15, #fde047);
+  box-shadow: 0 0 1.4cqi rgba(250, 204, 21, 0.6);
+}
+.card--heroes .card__foot {
+  color: #fff;
+}
+
+/* Mythique : cadre orné, lettres verticales. */
+.card--duel {
+  --ink: #e9f1ff;
+}
+.card--duel .card__face {
+  --card-bg: #0d2440;
+  --frame: conic-gradient(from var(--hue, 0deg), #ff7aa2, #ffb15e, #d8f36a, #7ff0e0, #7fb2ff, #b79cff, #ff7aa2);
+  box-shadow:
+    0 1.6cqi 6cqi rgba(0, 0, 0, 0.55),
+    0 0 7cqi rgba(255, 122, 182, 0.45);
+}
+.card--duel .card__inner {
+  display: grid;
+  grid-template-columns: 8cqi 1fr 8cqi;
+  grid-template-rows: 1fr auto;
+  gap: 1.2cqi;
+  padding: 1.4cqi 1.4cqi 0;
+  background: linear-gradient(160deg, #143f6c, #0a1a30);
+}
+.du__side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 1cqi;
+  background: linear-gradient(90deg, #0a2a4d, #1d4f84, #0a2a4d);
+  box-shadow:
+    inset 0 0 0 0.4cqi #d7b46a,
+    inset 0 0 0 0.9cqi #0a1a30;
+}
+.du__vname {
+  max-height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: -0.12em;
+  font: 700 4.4cqw/1 var(--serif);
+  color: #f3d58a;
+  text-shadow: 0 0.3cqw 0.6cqw rgba(0, 0, 0, 0.6);
+}
+.du__vname.is-sm {
+  font-size: 3.6cqw;
+}
+.du__vname.is-xs {
+  font-size: 2.9cqw;
+}
+.du__vname--work {
+  color: #cfe0ff;
+}
+.du__art {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.4cqi;
+  box-shadow: inset 0 0 0 0.5cqi #d7b46a;
+}
+.du__art .card__photo {
+  object-position: 50% 20%;
+}
+.du__medal {
+  position: absolute;
+  top: 2cqi;
+  right: 2cqi;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.4cqi;
+  width: 15cqi;
+  aspect-ratio: 1;
+  border: 0.6cqi solid #d7b46a;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #2a5c94, #0a1a30);
+  color: #fff;
+}
+.du__medal small {
+  font: 800 2.2cqi/1 var(--font-sans), sans-serif;
+}
+.du__medal b {
+  font: 800 4.6cqi/1 var(--font-display), sans-serif;
+}
+.du__medal img {
+  width: 3.6cqi;
+  height: 3.6cqi;
+}
+.du__moves {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqi;
+  padding: 8cqi 2.6cqi 2.2cqi;
+  background: linear-gradient(transparent, rgba(5, 12, 24, 0.92));
+}
+.du__moves p {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqi;
+  margin: 0;
+  font: 700 3.2cqi/1.1 var(--font-sans), sans-serif;
+  color: #fff;
+}
+.du__moves span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.du__moves b {
+  font: 800 4cqi/1 var(--font-display), sans-serif;
+  color: #f3d58a;
+}
+.card--duel .card__foot {
+  grid-column: 1 / -1;
+  color: #cfe0ff;
+}
+
+/* Matière noire : superstar. */
+.card--superstar {
+  --ink: #fff;
+}
+.card--superstar .card__face {
+  --card-bg: #07050c;
+}
+.card--superstar .card__inner {
+  background: #07050c;
+}
+.ss__bg {
+  position: absolute;
+  inset: 0;
+}
+.ss__bg .card__photo {
+  filter: saturate(0.85) contrast(1.1) brightness(0.92);
+  object-position: 62% 18%;
+}
+.ss__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 60% at 85% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
+    linear-gradient(90deg, rgba(5, 3, 8, 0.75), rgba(5, 3, 8, 0) 45%),
+    linear-gradient(180deg, rgba(5, 3, 8, 0) 45%, rgba(5, 3, 8, 0.85) 68%, rgba(5, 3, 8, 0.97));
+}
+.ss__top {
+  position: absolute;
+  top: 2cqi;
+  right: 2.4cqi;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1cqi;
+  text-shadow: 0 0 2cqi rgba(168, 85, 247, 0.9);
+}
+.ss__hp {
+  font: 800 5.4cqi/1 var(--font-display), sans-serif;
+}
+.ss__hp small {
+  margin-right: 0.4cqi;
+  font-size: 2.5cqi;
+}
+.ss__top img {
+  width: 5.6cqi;
+  height: 5.6cqi;
+}
+.ss__stats {
+  position: absolute;
+  top: 3cqi;
+  left: 2cqi;
+  z-index: 2;
+  display: flex;
+  gap: 1cqi;
+}
+.ss__tab {
+  display: grid;
+  place-items: center;
+  padding: 1cqw 0.9cqw;
+  border-radius: 0.6cqw;
+  background: linear-gradient(#a855f7, #4c1d95);
+  font: 900 2.4cqw/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.ss__stats ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2cqi;
+  margin: 0;
+  padding: 0;
+}
+.ss__stats li {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 27cqi;
+  height: 9cqi;
+  padding: 0 3cqi 1cqi 0;
+  background: linear-gradient(90deg, rgba(12, 6, 22, 0.94), rgba(46, 16, 82, 0.94));
+  box-shadow: inset 0 0 0 0.4cqi #a855f7;
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+}
+.ss__stats small {
+  position: absolute;
+  top: 1.1cqi;
+  left: 1.8cqi;
+  font: 800 2.1cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.12em;
+  color: #c4a7ff;
+}
+.ss__stats b {
+  font: italic 900 4.6cqi/1 var(--font-display), sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #fde68a;
+}
+.ss__bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5cqi;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2cqi;
+  padding: 0 2.4cqi;
+}
+.ss__power {
+  font: italic 900 11cqi/0.9 var(--font-display), sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  -webkit-text-stroke: 0.5cqi #4c1d95;
+  paint-order: stroke fill;
+  text-shadow: 0 0 3cqi rgba(168, 85, 247, 0.85);
+}
+.ss__plate {
+  display: flex;
+  border: 0.4cqi solid #a855f7;
+  background: linear-gradient(90deg, #0b0614, #1d0b33);
+  box-shadow: 0 0 3cqi rgba(124, 58, 237, 0.5);
+  transform: skewX(-8deg);
+}
+.ss__plate > * {
+  transform: skewX(8deg);
+}
+.ss__lvl {
+  flex: none;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 11cqi;
+  background: linear-gradient(#a855f7, #6d28d9);
+  font: 900 5cqi/1 var(--font-display), sans-serif;
+}
+.ss__lvl small {
+  font-size: 2cqi;
+  letter-spacing: 0.1em;
+}
+.ss__id {
+  flex: 1;
+  min-width: 0;
+  padding: 1.2cqi 2.4cqi;
+}
+.ss__id small {
+  font: 800 2.3cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c4a7ff;
+}
+.ss__name {
+  margin-top: 0.6cqi;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: italic 900 5.8cqi/1.1 var(--font-display), sans-serif;
+  text-transform: uppercase;
+}
+.ss__name.is-sm {
+  font-size: 4.8cqi;
+}
+.ss__name.is-xs {
+  font-size: 4cqi;
+}
+.ss__special {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: italic 800 2.7cqi/1.2 var(--font-sans), sans-serif;
+  text-transform: uppercase;
+  color: #f0abfc;
+}
+.ss__special b {
+  color: #fde68a;
+}
+.card--superstar .card__foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  color: #d8c7ff;
+}
+
+/* Secrète en or : panneau de commande. */
+.card--command {
+  --ink: #2b1d00;
+}
+.card--command .card__face {
+  --frame: linear-gradient(150deg, #fff6d8, #e3b23c 30%, #fff1b8 52%, #b8862b 78%, #fff6d8);
+  --card-bg: #e9c25a;
+  box-shadow:
+    0 1.6cqi 6cqi rgba(0, 0, 0, 0.55),
+    0 0 8cqi rgba(241, 199, 91, 0.6);
+}
+.card--command .card__inner {
+  display: grid;
+  grid-template-columns: 30cqi 1fr;
+  grid-template-rows: 14cqi 1fr auto auto;
+  gap: 1.6cqi;
+  padding: 2cqi 2cqi 0;
+  background:
+    radial-gradient(80% 50% at 30% 10%, rgba(255, 255, 255, 0.55), transparent 60%),
+    linear-gradient(160deg, #fff0bd, #e8b440 45%, #b8841f);
+}
+.cm__emblem {
+  display: grid;
+  place-items: center;
+  width: 14cqi;
+  height: 14cqi;
+  background: #2b1d00;
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+}
+.cm__logo {
+  width: 8cqi;
+  height: 8cqi;
+}
+.cm__banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.8cqi;
+  min-width: 0;
+  padding: 0 2.6cqi;
+  border-radius: 1.6cqi;
+  background: linear-gradient(90deg, #2b1d00, #4a3300);
+  color: #ffe9a8;
+}
+.cm__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 900 5.2cqi/1.1 var(--font-display), sans-serif;
+  font-stretch: 92%;
+  color: #fff3c4;
+}
+.cm__name.is-sm {
+  font-size: 4.4cqi;
+}
+.cm__name.is-xs {
+  font-size: 3.8cqi;
+}
+.cm__secret {
+  font: 800 2.4cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #f1c75b;
+}
+.cm__stats {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 0;
+  padding: 0;
+}
+.cm__stats li {
+  display: flex;
+  align-items: center;
+  gap: 0.6cqi;
+}
+.cm__label {
+  flex: 1;
+  min-width: 0;
+  padding: 1.3cqi 1.4cqi;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: linear-gradient(#3b2a05, #1f1500);
+  color: #ffe9a8;
+  font: 800 2.3cqi/1 var(--font-sans), sans-serif;
+  text-transform: uppercase;
+  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+}
+.cm__hex {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 10.4cqi;
+  height: 9cqi;
+  background: #fff8dc;
+  color: #2b1d00;
+  font: 900 3.6cqi/1 var(--font-display), sans-serif;
+  font-variant-numeric: tabular-nums;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+.cm__art {
+  position: relative;
+  overflow: hidden;
+  border: 0.8cqi solid #fff8dc;
+  border-radius: 2cqi;
+  background: linear-gradient(160deg, #fff0bd, #e8b440 45%, #b8841f);
+}
+.cm__art .card__photo {
+  filter: grayscale(1) contrast(1.3) brightness(0.98);
+}
+.cm__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #fff0bd, #e8b440 45%, #b8841f);
+  mix-blend-mode: multiply;
+}
+.cm__work {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqi;
+  min-width: 0;
+  height: 7cqi;
+  padding: 0 2cqi;
+  border-radius: 1.2cqi;
+  background: #2b1d00;
+  color: #ffe9a8;
+  font: 800 2.8cqi/1 var(--font-sans), sans-serif;
+  text-transform: uppercase;
+}
+.cm__work img {
+  width: 4.4cqi;
+  height: 4.4cqi;
+}
+.cm__work span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cm__stripes {
+  flex: none;
+  width: 9cqi;
+  height: 3cqi;
+  background: repeating-linear-gradient(90deg, #f1c75b 0 1cqi, transparent 1cqi 2cqi);
+  transform: skewX(-20deg);
+}
+.card--command .card__foot {
+  grid-column: 1 / -1;
+  color: #2b1d00;
+}
+
+/* Effets : reflet sur l'image, relief, paillettes, reflet arc-en-ciel, étincelles. */
 .card__holo,
 .card__texture,
 .card__glitter,
@@ -766,7 +1633,7 @@ body::before {
   background-size: 280% 100%;
   background-position: var(--sx, 50%) 0;
   mix-blend-mode: color-dodge;
-  opacity: 0.3;
+  opacity: 0.32;
   animation: td-foil 6s linear infinite;
 }
 .card__texture {
@@ -775,14 +1642,7 @@ body::before {
   background:
     repeating-linear-gradient(55deg, rgba(255, 255, 255, 0.12) 0 0.5cqi, transparent 0.5cqi 2.2cqi),
     repeating-linear-gradient(-55deg, rgba(255, 255, 255, 0.08) 0 0.5cqi, transparent 0.5cqi 2.2cqi),
-    linear-gradient(
-      125deg,
-      rgba(255, 90, 160, 0.35),
-      rgba(255, 210, 90, 0.35),
-      rgba(110, 255, 190, 0.35),
-      rgba(90, 170, 255, 0.35),
-      rgba(190, 120, 255, 0.35)
-    );
+    linear-gradient(125deg, rgba(255, 90, 160, 0.35), rgba(255, 210, 90, 0.35), rgba(110, 255, 190, 0.35), rgba(90, 170, 255, 0.35), rgba(190, 120, 255, 0.35));
   background-size:
     auto,
     auto,
@@ -792,15 +1652,15 @@ body::before {
     0 0,
     var(--mx, 30%) var(--my, 30%);
   mix-blend-mode: overlay;
-  opacity: 0.7;
+  opacity: 0.3;
 }
 .card__glitter {
   z-index: 3;
-  border-radius: inherit;
   --go: 0.38;
   --g1: #ffffff;
   --g2: #e3e9ff;
   --g3: #f6dcff;
+  border-radius: inherit;
   background-image:
     radial-gradient(circle, var(--g1) 0 0.32cqi, transparent 0.62cqi),
     radial-gradient(circle, var(--g2) 0 0.26cqi, transparent 0.5cqi),
@@ -818,18 +1678,9 @@ body::before {
 }
 .card__shine {
   z-index: 4;
-  border-radius: inherit;
   --so: 0.24;
-  background: linear-gradient(
-    115deg,
-    transparent 18%,
-    rgba(255, 95, 160, 0.6) 30%,
-    rgba(255, 214, 107, 0.6) 39%,
-    rgba(120, 255, 200, 0.6) 48%,
-    rgba(110, 170, 255, 0.6) 57%,
-    rgba(190, 140, 255, 0.6) 66%,
-    transparent 78%
-  );
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 18%, rgba(255, 95, 160, 0.6) 30%, rgba(255, 214, 107, 0.6) 39%, rgba(120, 255, 200, 0.6) 48%, rgba(110, 170, 255, 0.6) 57%, rgba(190, 140, 255, 0.6) 66%, transparent 78%);
   background-size: 300% 300%;
   background-position: var(--sx, 50%) var(--sy, 50%);
   mix-blend-mode: color-dodge;
@@ -875,110 +1726,44 @@ body::before {
   animation: none;
 }
 
-/* Rare : reflet sur l'illustration. */
-.card--rare .card__holo {
-  display: block;
-}
-/* Épique : carte texturée et pailletée autour de l'illustration. */
+/* Effets par rareté : de rien (commune) à tout (matière noire). */
+.card--rare .card__holo,
 .card--epique .card__holo,
-.card--epique .card__texture,
 .card--epique .card__glitter {
   display: block;
 }
-.card--epique .card__texture {
-  opacity: 0.28;
+.card--epique .card__glitter {
+  --go: 0.3;
 }
-/* Full art (légendaire, mythique, secrète) : l'image remplit la carte. */
-.card--full {
-  --ink: #fff;
-}
-.card__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: 2cqi;
-  overflow: hidden;
-  background: #222;
-}
-.card__bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background:
-    linear-gradient(180deg, rgba(8, 9, 12, 0.7) 0%, rgba(8, 9, 12, 0) 18%),
-    linear-gradient(180deg, rgba(8, 9, 12, 0) 40%, rgba(8, 9, 12, 0.72) 62%, rgba(8, 9, 12, 0.92) 100%);
-}
-.card--full .card__inner {
-  background: none;
-}
-.card--full .card__name,
-.card--full .card__hp {
-  text-shadow: 0 0.4cqi 1.4cqi rgba(0, 0, 0, 0.6);
-}
-.card--full .card__meta {
-  margin-top: auto;
-  background: rgba(255, 255, 255, 0.14);
-}
-.card--full .card__attacks {
-  flex: none;
-  margin-top: 1.6cqi;
-}
-.card--full .card__rules {
-  border-top-color: rgba(255, 255, 255, 0.3);
-}
-.card--legendaire .card__face,
-.card--mythique .card__face {
-  background:
-    linear-gradient(var(--card-bg, transparent), var(--card-bg, transparent)) padding-box,
-    linear-gradient(150deg, #fff3c4, #d9b04a 30%, #fff8dc 50%, #b98a2b 75%, #fff3c4) border-box;
-}
-.card--legendaire .card__texture,
 .card--legendaire .card__glitter,
-.card--legendaire .card__shine,
+.card--legendaire .card__shine {
+  display: block;
+}
+.card--legendaire .card__glitter {
+  --go: 0.35;
+  --g1: #fff6cf;
+  --g2: #ffd66b;
+}
 .card--mythique .card__texture,
 .card--mythique .card__glitter,
 .card--mythique .card__shine,
 .card--mythique .card__sparkles {
   display: block;
 }
-.card--legendaire .card__texture {
-  opacity: 0.38;
-}
-.card--legendaire .card__glitter {
-  --go: 0.45;
-  --g1: #fff6cf;
-  --g2: #ffd66b;
-}
-/* Mythique : cadre arc-en-ciel, relief et étincelles. */
-.card--mythique .card__face {
-  background:
-    linear-gradient(var(--card-bg, transparent), var(--card-bg, transparent)) padding-box,
-    conic-gradient(from var(--hue, 0deg), #ff7aa2, #ffb15e, #d8f36a, #7ff0e0, #7fb2ff, #b79cff, #ff7aa2) border-box;
-  box-shadow:
-    0 1.6cqi 6cqi rgba(0, 0, 0, 0.55),
-    0 0 7cqi rgba(255, 122, 182, 0.5);
-}
-.card--mythique .card__texture {
-  opacity: 0.45;
-}
 .card--mythique .card__glitter {
-  --go: 0.5;
+  --go: 0.45;
   --g2: #ffd1ec;
   --g3: #c9f7ff;
 }
 .card--mythique .card__shine {
   --so: 0.3;
 }
-/* Matière noire : cinq cartes seulement. Noir cosmique, nébuleuse violette, bord animé :
-   une traînée de lumière fait le tour du cadre, et un halo pulse autour de la carte. */
+
+/* Matière noire : bord animé (traînée de lumière qui fait le tour) et halo qui pulse. */
 @property --void {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
-}
-.card--matiere-noire {
-  --ink: #f3ecff;
 }
 .card--matiere-noire .card__face {
   background:
@@ -992,53 +1777,20 @@ body::before {
     td-void 4s linear infinite,
     td-void-glow 2.6s ease-in-out infinite alternate;
 }
-.card--matiere-noire .card__bg {
-  background: #07050c;
-}
-.card--matiere-noire .card__bg .card__photo {
-  filter: saturate(0.85) contrast(1.1) brightness(0.92);
-}
-.card--matiere-noire .card__bg::after {
-  background:
-    radial-gradient(90% 60% at 80% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
-    radial-gradient(70% 50% at 10% 90%, rgba(14, 116, 144, 0.3), transparent 60%),
-    linear-gradient(180deg, rgba(5, 3, 8, 0.75) 0%, rgba(5, 3, 8, 0) 20%),
-    linear-gradient(180deg, rgba(5, 3, 8, 0) 40%, rgba(5, 3, 8, 0.8) 62%, rgba(5, 3, 8, 0.96) 100%);
-}
-.card--matiere-noire .card__name,
-.card--matiere-noire .card__hp {
-  text-shadow:
-    0 0 2cqi rgba(168, 85, 247, 0.8),
-    0 0.4cqi 1.4cqi rgba(0, 0, 0, 0.7);
-}
-.card--matiere-noire .card__meta {
-  background: rgba(168, 85, 247, 0.22);
-}
-.card--matiere-noire .card__rules {
-  border-top-color: rgba(196, 167, 255, 0.35);
-}
-.card--matiere-noire .card__rank {
-  color: #d8c7ff;
-}
-.card--matiere-noire .card__texture,
 .card--matiere-noire .card__glitter,
 .card--matiere-noire .card__shine,
 .card--matiere-noire .card__sparkles {
   display: block;
 }
-.card--matiere-noire .card__texture {
-  opacity: 0.25;
-}
 .card--matiere-noire .card__glitter {
-  --go: 0.55;
+  --go: 0.5;
   --g1: #ffffff;
   --g2: #c4a7ff;
   --g3: #7dd3fc;
 }
 .card--matiere-noire .card__shine {
-  --so: 0.22;
+  --so: 0.2;
 }
-/* Tourbillon de matière noire, lent, par-dessus l'image. */
 .card__void {
   position: absolute;
   inset: -40%;
@@ -1078,64 +1830,11 @@ body::before {
     0 0 24px rgba(124, 58, 237, 0.4);
 }
 
-/* Secrète : tout en or, image comprise. */
-.card--gold {
-  --ink: #2b1d00;
-}
-.card--gold .card__face {
-  background:
-    linear-gradient(var(--card-bg, transparent), var(--card-bg, transparent)) padding-box,
-    linear-gradient(150deg, #fff6d8, #e3b23c 30%, #fff1b8 52%, #b8862b 78%, #fff6d8) border-box;
-  box-shadow:
-    0 1.6cqi 6cqi rgba(0, 0, 0, 0.55),
-    0 0 8cqi rgba(241, 199, 91, 0.6);
-}
-.card--gold .card__bg {
-  background: linear-gradient(160deg, #ffe9a8, #e9b949 45%, #c9971c);
-}
-/* L'image passe en niveaux de gris, puis une couche d'or la teinte : les traits restent lisibles,
-   même sur un dessin clair (Homer Simpson, Bob l'éponge…). */
-.card--gold .card__bg .card__photo {
-  filter: grayscale(1) contrast(1.3) brightness(0.98);
-}
-.card--gold .card__bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(160deg, #fff0bd, #e8b440 45%, #b8841f);
-  mix-blend-mode: multiply;
-}
-.card--gold .card__bg::after {
-  background:
-    linear-gradient(180deg, rgba(255, 236, 170, 0.75) 0%, rgba(255, 236, 170, 0) 20%),
-    linear-gradient(180deg, rgba(255, 228, 150, 0) 42%, rgba(255, 228, 150, 0.75) 64%, rgba(240, 200, 100, 0.95) 100%);
-}
-.card--gold .card__name,
-.card--gold .card__hp {
-  text-shadow: 0 0.3cqi 0.8cqi rgba(255, 255, 255, 0.5);
-}
-.card--gold .card__meta {
-  background: rgba(255, 255, 255, 0.4);
-}
-.card--gold .card__rules {
-  border-top-color: rgba(60, 40, 0, 0.3);
-}
-.card--gold .card__stage {
-  background: linear-gradient(180deg, #fff6d8, #d9a83a);
-  color: #4a3200;
-}
-.card--gold .card__texture,
+/* Secrète : or (le cadre « commande » s'applique, quelle que soit la rareté). */
 .card--gold .card__glitter,
 .card--gold .card__shine,
 .card--gold .card__sparkles {
   display: block;
-}
-.card--gold .card__texture {
-  background:
-    repeating-linear-gradient(55deg, rgba(255, 255, 255, 0.2) 0 0.5cqi, transparent 0.5cqi 2.2cqi),
-    repeating-linear-gradient(-55deg, rgba(255, 255, 255, 0.14) 0 0.5cqi, transparent 0.5cqi 2.2cqi);
-  opacity: 0.6;
 }
 .card--gold .card__glitter {
   --go: 0.5;
@@ -1149,6 +1848,12 @@ body::before {
   background-size: 300% 300%;
   background-position: var(--sx, 50%) var(--sy, 50%);
   mix-blend-mode: overlay;
+}
+.card--gold.card--matiere-noire .card__face {
+  animation: none;
+  background:
+    linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+    var(--frame) border-box;
 }
 
 /* Dos de carte : emblème ToonDex sur fond rayonnant, cadre argent comme la face. */
@@ -1348,9 +2053,7 @@ body::before {
 .card--mystery .card__face {
   --card-bg: color-mix(in srgb, var(--energy) 55%, #2a2c33);
 }
-.card--mystery .card__bg,
-.card--mystery .card__inner,
-.card--mystery .card__holo {
+.card--mystery .card__inner {
   /* Flou proportionnel à la carte : on ne devine rien, même en grand. */
   filter: blur(7cqi) saturate(1.3);
 }
@@ -1783,6 +2486,7 @@ body::before {
 /* ---------- Paquet du jour ---------- */
 
 .pack-section {
+  animation: td-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   position: relative;
   margin-top: 28px;
   padding: clamp(20px, 3.5vw, 44px);
@@ -3515,7 +4219,7 @@ button.pack3d:disabled {
   inherits: false;
   initial-value: 0deg;
 }
-.card--mythique .card__face {
+.card--duel .card__face {
   animation: td-hue 6s linear infinite;
 }
 @keyframes td-hue {
@@ -3529,7 +4233,7 @@ button.pack3d:disabled {
   .card__glitter,
   .card__shine,
   .card__sparkles i,
-  .card--mythique .card__face,
+  .card--duel .card__face,
   .card--matiere-noire .card__face,
   .card__void,
   .pack3d__body,
@@ -3538,5 +4242,195 @@ button.pack3d:disabled {
   .set__slot,
   .set__slot.is-new .set__thumb {
     animation: none !important;
+  }
+}
+
+/* ---------- Accueil : concept et raretés ---------- */
+
+.concept {
+  margin-top: clamp(56px, 8vw, 96px);
+}
+.concept__intro {
+  max-width: 760px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+.concept__title {
+  margin-top: 10px;
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.05;
+}
+.concept__lead {
+  margin: 16px auto 0;
+  max-width: 62ch;
+  font-size: 17px;
+  color: var(--muted);
+}
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  counter-reset: step;
+}
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px 22px 24px;
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(255, 197, 49, 0.1), transparent 60%),
+    var(--surface);
+  border: 1px solid var(--line);
+}
+.step__num {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  font: 900 44px/1 var(--font-display), sans-serif;
+  font-stretch: 120%;
+  color: rgba(255, 255, 255, 0.07);
+}
+.step__icon {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
+}
+.step h3 {
+  margin-top: 8px;
+  font-size: 19px;
+}
+.step p {
+  margin: 0;
+  color: var(--muted);
+}
+@media (max-width: 980px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 540px) {
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+.rarities {
+  margin-top: clamp(56px, 8vw, 96px);
+}
+.rarities__head {
+  margin-bottom: 22px;
+}
+.rarities__head p {
+  margin: 8px 0 0;
+  max-width: 64ch;
+  color: var(--muted);
+}
+/* Raretés en petit : une rangée de miniatures, qui défile au doigt sur mobile. */
+.tiers--small {
+  grid-template-columns: repeat(7, minmax(112px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 2px 14px;
+  scroll-snap-type: x proximity;
+}
+.tiers--small li {
+  scroll-snap-align: start;
+}
+.tiers--small .card {
+  max-width: 170px;
+}
+.tiers--small .tiers__label {
+  font-size: 12px;
+}
+.tiers--small .tiers__label strong {
+  font-size: 14px;
+}
+@media (max-width: 1000px) {
+  .tiers--small {
+    grid-template-columns: repeat(7, 128px);
+  }
+}
+
+/* ---------- Défilement : apparitions et parallaxe ---------- */
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+.js [data-reveal="zoom"] {
+  transform: translateY(24px) scale(0.9) rotate(-3deg);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* Navigateurs qui savent lier une animation au défilement : l'éventail monte, le mot s'écarte,
+   et une barre de progression suit la lecture sous l'en-tête. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-hero__fan {
+      animation: fan-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+    .brand-hero__word {
+      animation: word-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70vh;
+    }
+    .site-header::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--brand), #ff8a3c);
+      transform-origin: 0 50%;
+      animation: read-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes fan-parallax {
+  to {
+    transform: translateY(-14%) scale(1.08);
+  }
+}
+@keyframes word-parallax {
+  to {
+    transform: translateY(10%) scale(0.96);
+    opacity: 0.85;
+  }
+}
+@keyframes read-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes td-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
 }

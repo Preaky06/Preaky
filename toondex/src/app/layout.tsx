@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Inter } from "next/font/google";
+import { Archivo, Cinzel, Inter } from "next/font/google";
 import { CardFx } from "@/components/CardFx";
 import { Header } from "@/components/Header";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import "./globals.css";
 
 // Archivo variable : graisse et largeur réglables (titres élargis façon affiche).
@@ -9,6 +10,14 @@ const display = Archivo({
   variable: "--font-display",
   subsets: ["latin", "latin-ext"],
   axes: ["wdth"],
+  display: "swap",
+});
+
+// Cinzel : capitales à empattements des cartes « grimoire » (épique) et « cadre orné » (mythique).
+const fantasy = Cinzel({
+  variable: "--font-fantasy",
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
@@ -38,12 +47,17 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${display.variable} ${sans.variable}`}>
+    <html lang="fr" className={`${display.variable} ${fantasy.variable} ${sans.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Avant le premier affichage : les éléments à faire apparaître au défilement partent cachés. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body>
         <a href="#contenu" className="skip-link">
           Aller au contenu
         </a>
         <CardFx />
+        <ScrollReveal />
         <Header />
         <main id="contenu" className="site-main">
           {children}
