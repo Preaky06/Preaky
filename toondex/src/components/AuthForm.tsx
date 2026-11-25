@@ -54,7 +54,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "signup"; next: strin
           {state.error}
         </p>
       )}
-      <button type="submit" className="btn btn--dark btn--lg" disabled={pending}>
+      <button type="submit" className="btn btn--primary btn--lg" disabled={pending}>
         {pending ? "Un instant…" : isLogin ? "Se connecter" : "Créer mon compte"}
       </button>
       <p className="muted small">

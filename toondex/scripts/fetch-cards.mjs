@@ -388,6 +388,17 @@ for (const [work, name, search, prefer, main] of ANIME) {
   else missing.push(`${work} · ${name}`);
 }
 
+/**
+ * Corrections de données des sources. TVMaze a interverti les images de Clarence et de Jeff
+ * (vérifié : le personnage « Clarence » y porte le dessin de Jeff, et inversement).
+ */
+const SWAP_IMAGES = [["clarence", "jeff"]];
+for (const [a, b] of SWAP_IMAGES) {
+  const ca = cards.find((c) => c.id === a);
+  const cb = cards.find((c) => c.id === b);
+  if (ca && cb) [ca.image, cb.image] = [cb.image, ca.image];
+}
+
 const ids = new Set();
 for (const c of cards) {
   if (ids.has(c.id)) c.id = `${c.id}-${c.work}`;

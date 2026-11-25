@@ -1,8 +1,9 @@
 import "server-only";
 import { getDb, type Queryable } from "@/lib/db";
 import { getCard } from "@/lib/catalogue";
+import { buildSets, cardsOfWork, type PackSet } from "@/lib/sets";
 import { drawPack, parisDay } from "@/lib/game";
-import { CRAFT_COST, GOLD_SHARD_MULTIPLIER, SHARDS_PER_DUPLICATE } from "@/lib/rules";
+import { CRAFT_COST, GOLD_SHARD_MULTIPLIER, SHARDS_PER_DUPLICATE, setBonus } from "@/lib/rules";
 
 export type Owned = { copies: number; gold: number };
 export type OwnedMap = Record<string, Owned>;
@@ -39,10 +40,44 @@ export async function getTodayPack(userId: string): Promise<Pack | null> {
   return { day, cards };
 }
 
+/**
+ * Verse le bonus des séries que l'on vient de compléter parmi `workIds`.
+ * La clé primaire de completed_sets garantit qu'un bonus n'est versé qu'une fois.
+ */
+async function awardCompletedSets(tx: Queryable, userId: string, workIds: string[]): Promise<{ done: Set<string>; bonus: number }> {
+  const done = new Set<string>();
+  let bonus = 0;
+  for (const workId of new Set(workIds)) {
+    const ids = cardsOfWork(workId).map((c) => c.id);
+    const amount = setBonus(ids.length);
+    if (amount === 0) continue;
+    const have = await tx.query<{ n: number }>(
+      "select count(*)::int as n from owned_cards where user_id = $1 and card_id = any($2::text[]) and copies + gold > 0",
+      [userId, ids],
+    );
+    if (Number(have[0].n) < ids.length) continue;
+    const inserted = await tx.query(
+      "insert into completed_sets (user_id, work_id, bonus) values ($1, $2, $3) on conflict do nothing returning work_id",
+      [userId, workId, amount],
+    );
+    if (inserted.length === 0) continue;
+    done.add(workId);
+    bonus += amount;
+  }
+  if (bonus > 0) await tx.query("update users set shards = shards + $2 where id = $1", [userId, bonus]);
+  return { done, bonus };
+}
+
+/** Séries du paquet du jour, d'après la collection actuelle (paquet déjà ouvert). */
+export async function getPackSets(userId: string, pack: Pack): Promise<PackSet[]> {
+  const owned = await getOwned(userId);
+  return buildSets(pack.cards, new Set(Object.keys(owned)));
+}
+
 export class AlreadyOpenedError extends Error {}
 
 /** Ouvre le paquet du jour. Une seule fois par jour et par compte, garanti par la clé primaire. */
-export async function openTodayPack(userId: string): Promise<{ pack: Pack; shards: number }> {
+export async function openTodayPack(userId: string): Promise<{ pack: Pack; shards: number; sets: PackSet[]; setBonus: number }> {
   const db = await getDb();
   const day = parisDay();
   const drawn = drawPack();
@@ -96,15 +131,22 @@ export async function openTodayPack(userId: string): Promise<{ pack: Pack; shard
       day,
       JSON.stringify(cards),
     ]);
-    const updated = await tx.query<{ shards: number }>(
-      "update users set shards = shards + $2 where id = $1 returning shards",
-      [userId, gained],
+    await tx.query("update users set shards = shards + $2 where id = $1", [userId, gained]);
+
+    const workIds = ids.map((id) => getCard(id)!.work.id);
+    const { done, bonus } = await awardCompletedSets(tx, userId, workIds);
+    const workCards = [...new Set(workIds)].flatMap((w) => cardsOfWork(w).map((c) => c.id));
+    const ownedRows = await tx.query<{ card_id: string }>(
+      "select card_id from owned_cards where user_id = $1 and card_id = any($2::text[]) and copies + gold > 0",
+      [userId, workCards],
     );
-    return { pack: { day, cards }, shards: Number(updated[0].shards) };
+    const sets = buildSets(cards, new Set(ownedRows.map((r) => r.card_id)), done);
+    const updated = await tx.query<{ shards: number }>("select shards from users where id = $1", [userId]);
+    return { pack: { day, cards }, shards: Number(updated[0].shards), sets, setBonus: bonus };
   });
 }
 
-export type CraftResult = { ok: true; shards: number } | { ok: false; error: string };
+export type CraftResult = { ok: true; shards: number; setBonus: number } | { ok: false; error: string };
 
 /** Fabrique une carte manquante avec des éclats. */
 export async function craftCard(userId: string, cardId: string): Promise<CraftResult> {
@@ -121,6 +163,7 @@ export async function craftCard(userId: string, cardId: string): Promise<CraftRe
     );
     if (paid.length === 0) return { ok: false, error: `Il te faut ${cost} éclats.` } as const;
     await tx.query("insert into owned_cards (user_id, card_id, copies, gold) values ($1, $2, 1, 0)", [userId, cardId]);
-    return { ok: true, shards: Number(paid[0].shards) } as const;
+    const { bonus } = await awardCompletedSets(tx, userId, [card.work.id]);
+    return { ok: true, shards: Number(paid[0].shards) + bonus, setBonus: bonus } as const;
   });
 }

@@ -1,86 +1,77 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Card } from "@/components/Card";
-import { Filters, parseFilters } from "@/components/Filters";
-import { OddsTable } from "@/components/OddsTable";
+import { RarityBar, parseRarity } from "@/components/RarityBar";
 import { getCurrentUser } from "@/lib/auth";
-import { CARDS, WORK_COUNT } from "@/lib/catalogue";
+import { CARDS, RARITY_ORDER, WORK_COUNT, type Rarity } from "@/lib/catalogue";
 import { getOwned, type OwnedMap } from "@/lib/collection";
-import { Wobble } from "@/components/Wobble";
 
 export const metadata: Metadata = { title: "Catalogue" };
 
 function normalize(text: string): string {
   return text
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 }
 
 export default async function CataloguePage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const values = parseFilters(await searchParams);
+  const params = await searchParams;
+  const rarete = parseRarity(params.rarete);
+  const rawQ = Array.isArray(params.q) ? params.q[0] : params.q;
+  const qText = (rawQ ?? "").trim().slice(0, 60);
+  const q = normalize(qText);
   const user = await getCurrentUser();
   const owned: OwnedMap = user ? await getOwned(user.id) : {};
-  const q = values.q ? normalize(values.q) : "";
 
-  const list = CARDS.filter((w) => {
-    if (values.type && w.work.type !== values.type) return false;
-    if (values.rarete && w.rarity !== values.rarete) return false;
-    if (q && !normalize(`${w.name} ${w.work.title} ${w.work.genres} ${w.work.year}`).includes(q)) return false;
-    return true;
-  });
+  const matches = q ? CARDS.filter((c) => normalize(`${c.name} ${c.work.title} ${c.work.genres} ${c.work.year}`).includes(q)) : CARDS;
+  const list = rarete ? matches.filter((c) => c.rarity === rarete) : matches;
+  const counts = Object.fromEntries(RARITY_ORDER.map((r) => [r, String(matches.filter((c) => c.rarity === r).length)])) as Record<
+    Rarity,
+    string
+  >;
 
   return (
     <>
       <section className="page-head">
         <div>
-          <h1 className="page-title">
-            <Wobble text="Catalogue" />
-          </h1>
+          <h1 className="page-title">Catalogue</h1>
           <p className="muted">
-            {CARDS.length} personnages de {WORK_COUNT} œuvres. {list.length !== CARDS.length && `${list.length} affichés.`}
+            {CARDS.length} personnages de {WORK_COUNT} œuvres.{list.length !== CARDS.length && ` ${list.length} affichés.`}
           </p>
         </div>
         <form className="search" action="/catalogue" role="search">
-          {values.type && <input type="hidden" name="type" value={values.type} />}
-          {values.rarete && <input type="hidden" name="rarete" value={values.rarete} />}
+          {rarete && <input type="hidden" name="rarete" value={rarete} />}
           <label htmlFor="q" className="sr-only">
             Rechercher un personnage ou une œuvre
           </label>
-          <input id="q" name="q" type="search" defaultValue={values.q} placeholder="Personnage, œuvre, genre…" className="input" />
+          <input id="q" name="q" type="search" defaultValue={qText} placeholder="Personnage, œuvre, genre…" className="input" />
           <button type="submit" className="btn btn--ghost">
             Rechercher
           </button>
         </form>
       </section>
 
-      <Filters base="/catalogue" values={values} />
+      <RarityBar base="/catalogue" active={rarete} counts={counts} total={String(matches.length)} keep={{ q: qText || undefined }} />
 
       {list.length === 0 ? (
-        <p className="empty">Aucune œuvre ne correspond à ta recherche.</p>
+        <p className="empty">Aucun personnage ne correspond à ta recherche.</p>
       ) : (
         <ul className="card-grid">
-          {list.map((w) => (
-            <li key={w.id} className="card-grid__item">
-              <Link href={`/carte/${w.id}`} className="card-link">
-                <Card card={w} />
+          {list.map((c) => (
+            <li key={c.id} className="card-grid__item">
+              <Link href={`/carte/${c.id}`} className="card-link">
+                <Card card={c} />
               </Link>
               {user && (
                 <span className="card-grid__info">
-                  {owned[w.id] ? <span className="owned-yes">Dans ta collection</span> : <span className="muted">Manquante</span>}
+                  {owned[c.id] ? <span className="owned-yes">Dans ta collection</span> : <span>Pas encore obtenue</span>}
                 </span>
               )}
             </li>
           ))}
         </ul>
       )}
-
-      <section className="panel panel--white">
-        <h2 className="section-title">
-          <Wobble text="Règles et chances" />
-        </h2>
-        <OddsTable />
-      </section>
     </>
   );
 }

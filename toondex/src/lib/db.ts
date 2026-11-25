@@ -45,6 +45,13 @@ create table if not exists daily_packs (
   opened_at timestamptz not null default now(),
   primary key (user_id, day)
 );
+create table if not exists completed_sets (
+  user_id text not null references users(id) on delete cascade,
+  work_id text not null,
+  bonus integer not null,
+  completed_at timestamptz not null default now(),
+  primary key (user_id, work_id)
+);
 `;
 
 async function createPostgres(url: string): Promise<Db> {

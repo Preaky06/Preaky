@@ -2,13 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition, type CSSProperties } from "react";
+import { useEffect, useRef, useState, useTransition, type CSSProperties, type ReactNode } from "react";
 import { openPack } from "@/app/actions";
 import { Card, CardBack } from "@/components/Card";
-import { RARITIES, getCard, type Rarity } from "@/lib/catalogue";
+import { Countdown } from "@/components/Countdown";
+import { ArrowIcon } from "@/components/Icons";
+import { Pack3D, PackScene } from "@/components/Pack3D";
+import { SetsPanel } from "@/components/SetsPanel";
+import { RARITIES, getCard, type CardDef, type Rarity } from "@/lib/catalogue";
 import type { PackCard } from "@/lib/collection";
-import { Wobble } from "@/components/Wobble";
-import { ArrowIcon } from "@/components/Cartoon";
+import { buildSets, type PackSet } from "@/lib/sets";
 
 /** Durée de l'animation d'ouverture selon la rareté (ms). Plus c'est rare, plus c'est long. */
 const REVEAL_MS: Record<Rarity, number> = {
@@ -39,7 +42,7 @@ function revealDuration(card: PackCard): number {
 
 function statusLabel(card: PackCard): string {
   if (card.status === "new-gold") return "Secrète en or !";
-  if (card.status === "new") return "Nouvelle !";
+  if (card.status === "new") return "Nouvelle carte";
   return `Doublon · +${card.shards} éclats`;
 }
 
@@ -47,11 +50,19 @@ const SPARKS = Array.from({ length: 12 }, (_, i) => i);
 
 type Props = {
   initialCards: PackCard[] | null;
+  /** Séries du paquet déjà ouvert. */
+  initialSets?: PackSet[];
   /** Aperçu : cartes imposées, sans appel au serveur ni compte. */
   demoCards?: PackCard[];
+  /** Titre et texte affichés à gauche du paquet fermé. */
+  intro: ReactNode;
+  /** Contenu sous le bouton d'ouverture (statistiques…). */
+  footer?: ReactNode;
+  /** Deux cartes en éventail derrière le paquet. */
+  showcase: CardDef[];
 };
 
-export function PackOpener({ initialCards, demoCards }: Props) {
+export function PackOpener({ initialCards, initialSets, demoCards, intro, footer, showcase }: Props) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>(initialCards ? "dealt" : "sealed");
   const [cards, setCards] = useState<PackCard[] | null>(initialCards);
@@ -59,6 +70,8 @@ export function PackOpener({ initialCards, demoCards }: Props) {
   const [animated, setAnimated] = useState(!initialCards);
   const [stageFx, setStageFx] = useState<"mythique" | "gold" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sets, setSets] = useState<PackSet[]>(initialSets ?? []);
+  const [setBonus, setSetBonus] = useState(0);
   const [announce, setAnnounce] = useState("");
   const [pending, startTransition] = useTransition();
   /** Nombre d'animations de révélation en cours : le bilan attend qu'elles soient finies. */
@@ -85,13 +98,20 @@ export function PackOpener({ initialCards, demoCards }: Props) {
     setPhase("opening");
     startTransition(async () => {
       const result = demoCards
-        ? ({ ok: true, pack: { day: "apercu", cards: demoCards }, shards: 0 } as const)
+        ? ({
+            ok: true,
+            pack: { day: "apercu", cards: demoCards },
+            shards: 0,
+            sets: buildSets(demoCards, new Set(demoCards.map((c) => c.cardId))),
+            setBonus: 0,
+          } as const)
         : await openPack();
       if (!result.ok) {
         setError(result.error);
         if (result.pack) {
           setCards(result.pack.cards);
           setRevealed(result.pack.cards.map(() => true));
+          setSets(result.sets ?? []);
           setAnimated(false);
           setPhase("dealt");
         } else {
@@ -101,6 +121,8 @@ export function PackOpener({ initialCards, demoCards }: Props) {
       }
       setCards(result.pack.cards);
       setRevealed(result.pack.cards.map(() => false));
+      setSets(result.sets);
+      setSetBonus(result.setBonus);
       setPhase("tearing");
       later(() => setPhase("dealt"), 650);
     });
@@ -122,7 +144,7 @@ export function PackOpener({ initialCards, demoCards }: Props) {
     later(
       () =>
         setAnnounce(
-          `${def.name}, ${RARITIES[def.rarity].label.toLowerCase()}${card.gold ? ", version or" : ""}. ${statusLabel(card)}`,
+          `${def.name}, ${RARITIES[def.rarity].label.toLowerCase()}${card.gold ? ", secrète en or" : ""}. ${statusLabel(card)}`,
         ),
       Math.min(ms, 1200),
     );
@@ -143,119 +165,130 @@ export function PackOpener({ initialCards, demoCards }: Props) {
   const shardTotal = cards?.reduce((sum, c) => sum + c.shards, 0) ?? 0;
 
   if (phase !== "dealt" || !cards) {
+    const packState = phase === "opening" ? "is-shaking" : phase === "tearing" ? "is-tearing" : "";
     return (
-      <div className="pack-stage">
-        <button
-          type="button"
-          className={`pack${phase === "opening" ? " is-shaking" : ""}${phase === "tearing" ? " is-tearing" : ""}`}
-          onClick={open}
-          disabled={pending || phase !== "sealed"}
-          aria-label="Ouvrir le paquet du jour"
-        >
-          <span className="pack__inner">
-            <span className="pack__sheen" aria-hidden="true" />
-            <span className="pack__logo" aria-hidden="true">
-              <Wobble text="ToonDex" />
-              <span className="badge-star" />
-            </span>
-            <span className="pack__label">Paquet du jour</span>
-            <span className="pack__count">5 cartes</span>
-          </span>
-        </button>
-        <button type="button" className="btn btn--lime btn--lg" onClick={open} disabled={pending || phase !== "sealed"}>
-          {phase === "sealed" ? "Ouvrir mon paquet" : "Ouverture…"}
-          <span className="btn__arrow">
-            <ArrowIcon />
-          </span>
-        </button>
-        {error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
+      <div className="hero">
+        <div className="hero__copy">
+          {intro}
+          <div className="hero__actions">
+            <button type="button" className="btn btn--primary btn--lg" onClick={open} disabled={pending || phase !== "sealed"}>
+              {phase === "sealed" ? "Ouvrir le paquet" : "Ouverture…"}
+              <ArrowIcon />
+            </button>
+            <span className="hero__note">Nouveau paquet chaque jour à minuit</span>
+          </div>
+          {error && (
+            <p className="form-error" role="alert">
+              {error}
+            </p>
+          )}
+          {footer}
+        </div>
+        <PackScene
+          cards={showcase}
+          pack={<Pack3D interactive onClick={open} disabled={pending || phase !== "sealed"} className={packState} />}
+        />
       </div>
     );
   }
 
   return (
-    <div className={`reveal${animated ? "" : " reveal--static"}`}>
-      {stageFx && <div className={`stage-fx stage-fx--${stageFx}`} aria-hidden="true" />}
-      <p className="sr-only" aria-live="polite">
-        {announce}
-      </p>
-      {error && <p className="notice">{error}</p>}
-      <ol className="reveal__row">
-        {cards.map((card, i) => {
-          const def = getCard(card.cardId)!;
-          const isOpen = revealed[i];
-          return (
-            <li key={`${card.cardId}-${i}`} className="reveal__item" style={{ "--i": i } as CSSProperties}>
-              <button
-                type="button"
-                className={`slot r-${def.rarity}${card.gold ? " r-gold" : ""}${isOpen ? " is-revealed" : ""}${animated ? "" : " is-static"}`}
-                onClick={() => reveal(i)}
-                aria-disabled={isOpen}
-                aria-label={isOpen ? `Carte ${i + 1} : ${def.name}` : `Révéler la carte ${i + 1}`}
-              >
-                <span className="slot__fx" aria-hidden="true">
-                  <span className="slot__rays" />
-                  <span className="slot__ring" />
-                  <span className="slot__flash" />
-                  {SPARKS.map((s) => (
-                    <span key={s} className="slot__spark" style={{ "--a": `${s * 30}deg` } as CSSProperties} />
-                  ))}
-                </span>
-                <span className="slot__lift" aria-hidden="true">
-                  <span className="flip">
-                    <span className="flip__face flip__face--front">
-                      <Card card={def} gold={card.gold} />
-                    </span>
-                    <span className="flip__face flip__face--back">
-                      <CardBack />
+    <div className="reveal-panel">
+      <div className="reveal__head">
+        <div>
+          <p className="eyebrow">Paquet du jour</p>
+          <h2>{animated ? "Tes 5 cartes" : "Ton paquet du jour est ouvert"}</h2>
+        </div>
+        {!animated && (
+          <p className="muted">
+            Prochain paquet dans <Countdown />
+          </p>
+        )}
+      </div>
+      <div className={`reveal${animated ? "" : " reveal--static"}`}>
+        {stageFx && <div className={`stage-fx stage-fx--${stageFx}`} aria-hidden="true" />}
+        <p className="sr-only" aria-live="polite">
+          {announce}
+        </p>
+        {error && <p className="notice">{error}</p>}
+        <ol className="reveal__row">
+          {cards.map((card, i) => {
+            const def = getCard(card.cardId)!;
+            const isOpen = revealed[i];
+            return (
+              <li key={`${card.cardId}-${i}`} className="reveal__item" style={{ "--i": i } as CSSProperties}>
+                <button
+                  type="button"
+                  className={`slot r-${def.rarity}${card.gold ? " r-gold" : ""}${isOpen ? " is-revealed" : ""}${animated ? "" : " is-static"}`}
+                  onClick={() => reveal(i)}
+                  aria-disabled={isOpen}
+                  aria-label={isOpen ? `Carte ${i + 1} : ${def.name}` : `Révéler la carte ${i + 1}`}
+                >
+                  <span className="slot__fx" aria-hidden="true">
+                    <span className="slot__rays" />
+                    <span className="slot__ring" />
+                    <span className="slot__flash" />
+                    {SPARKS.map((s) => (
+                      <span key={s} className="slot__spark" style={{ "--a": `${s * 30}deg` } as CSSProperties} />
+                    ))}
+                  </span>
+                  <span className="slot__lift" aria-hidden="true">
+                    <span className="flip">
+                      <span className="flip__face flip__face--front">
+                        <Card card={def} gold={card.gold} />
+                      </span>
+                      <span className="flip__face flip__face--back">
+                        <CardBack />
+                      </span>
                     </span>
                   </span>
+                </button>
+                <span
+                  className={`slot__status${isOpen ? " is-visible" : ""} status--${card.status}`}
+                  style={isOpen && animated ? { animationDelay: `${Math.round(revealDuration(card) * 0.75)}ms` } : undefined}
+                >
+                  {isOpen ? statusLabel(card) : `Carte ${i + 1}`}
                 </span>
-              </button>
-              <span
-                className={`slot__status${isOpen ? " is-visible" : ""} status--${card.status}`}
-                style={isOpen && animated ? { animationDelay: `${Math.round(revealDuration(card) * 0.75)}ms` } : undefined}
-              >
-                {isOpen ? statusLabel(card) : `Carte ${i + 1}`}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
+              </li>
+            );
+          })}
+        </ol>
 
-      {settled ? (
-        <div className="reveal__summary">
-          <p>
-            <strong>
-              {newCount} nouvelle{newCount > 1 ? "s" : ""} carte{newCount > 1 ? "s" : ""}
-            </strong>
-            {dupCount > 0 && (
-              <>
-                {" "}
-                · {dupCount} doublon{dupCount > 1 ? "s" : ""} transformé{dupCount > 1 ? "s" : ""} en{" "}
-                <strong>{shardTotal} éclats</strong>
-              </>
-            )}
-          </p>
-          <Link href="/collection" className="btn btn--lime">
-            Voir ma collection
-            <span className="btn__arrow">
+        {settled ? (
+          <div className="reveal__summary is-settled">
+            <p>
+              <strong>
+                {newCount} nouvelle{newCount > 1 ? "s" : ""} carte{newCount > 1 ? "s" : ""}
+              </strong>
+              {dupCount > 0 && (
+                <>
+                  {" "}
+                  · {dupCount} doublon{dupCount > 1 ? "s" : ""} transformé{dupCount > 1 ? "s" : ""} en{" "}
+                  <strong>{shardTotal} éclats</strong>
+                </>
+              )}
+              {setBonus > 0 && (
+                <>
+                  {" "}
+                  · bonus de série <strong className="gold-text">+{setBonus} éclats</strong>
+                </>
+              )}
+            </p>
+            <Link href="/collection" className="btn btn--primary">
+              Voir ma collection
               <ArrowIcon />
-            </span>
-          </Link>
-        </div>
-      ) : (
-        <div className="reveal__summary">
-          <p className="muted">{allRevealed ? "…" : "Touche une carte pour la retourner."}</p>
-          <button type="button" className="btn btn--ghost-dark" onClick={revealAll} disabled={allRevealed}>
-            Tout révéler
-          </button>
-        </div>
-      )}
+            </Link>
+          </div>
+        ) : (
+          <div className="reveal__summary">
+            <p className="muted">{allRevealed ? "…" : "Touche une carte pour la retourner."}</p>
+            <button type="button" className="btn btn--ghost" onClick={revealAll} disabled={allRevealed}>
+              Tout révéler
+            </button>
+          </div>
+        )}
+      </div>
+      {settled && <SetsPanel sets={sets} animated={animated} />}
     </div>
   );
 }

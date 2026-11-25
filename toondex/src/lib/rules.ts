@@ -48,3 +48,10 @@ export const CRAFT_COST: Record<Rarity, number> = {
 export function percent(perMille: number): string {
   return `${(perMille / 10).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} %`;
 }
+
+/** Bonus en éclats quand on complète toutes les cartes d'une œuvre (séries d'au moins 2 cartes). */
+export const SET_BONUS_PER_CARD = 40;
+
+export function setBonus(size: number): number {
+  return size >= 2 ? size * SET_BONUS_PER_CARD : 0;
+}

@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { logout } from "@/app/actions";
-import { ArrowIcon } from "@/components/Cartoon";
+import { LogoMark } from "@/components/Icons";
 import { NavLinks } from "@/components/NavLinks";
-import { Wobble } from "@/components/Wobble";
 import { getCurrentUser } from "@/lib/auth";
 
 export function Logo() {
   return (
     <Link href="/" className="logo" aria-label="ToonDex, accueil">
-      <Wobble text="ToonDex" className="logo__word" />
-      <span className="badge-star" aria-hidden="true" />
+      <LogoMark className="logo-mark" />
+      <span className="logo-name">ToonDex</span>
     </Link>
   );
 }
@@ -38,11 +37,8 @@ export async function Header() {
             </form>
           </>
         ) : (
-          <Link href="/connexion" className="btn btn--dark btn--sm">
+          <Link href="/connexion" className="btn btn--primary btn--sm">
             Se connecter
-            <span className="btn__arrow">
-              <ArrowIcon />
-            </span>
           </Link>
         )}
       </div>

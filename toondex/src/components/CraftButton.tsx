@@ -12,6 +12,11 @@ export function CraftButton({ cardId, cost, canAfford }: { cardId: string; cost:
         <span className="shards__gem" aria-hidden="true" />
         {pending ? "Fabrication…" : `Fabriquer · ${cost}`}
       </button>
+      {state?.ok && state.setBonus ? (
+        <span className="gold-text small" role="status">
+          Série complète : +{state.setBonus} éclats
+        </span>
+      ) : null}
       {state?.error && (
         <span className="form-error small" role="alert">
           {state.error}

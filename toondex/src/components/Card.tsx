@@ -1,49 +1,23 @@
 import type { CSSProperties } from "react";
 import { CardImage } from "@/components/CardImage";
-import { Wobble } from "@/components/Wobble";
-import { RARITIES, TYPES, cardNumber, type CardDef } from "@/lib/catalogue";
+import { LogoMark } from "@/components/Icons";
+import { CARDS, RARITIES, cardNumber, type CardDef } from "@/lib/catalogue";
+import { ENERGIES, RARITY_SYMBOL, combatProfile, type EnergyClass } from "@/lib/combat";
 
-function Stars({ rank }: { rank: number }) {
-  return (
-    <span className="card__stars" aria-hidden="true">
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg key={i} viewBox="0 0 10 10" className={i <= rank ? "is-on" : ""}>
-          <path d="M5 0.6l1.3 2.9 3.1.3-2.4 2.1.7 3.1L5 7.4 2.3 9l.7-3.1L.6 3.8l3.1-.3z" />
-        </svg>
-      ))}
-    </span>
-  );
+function Energy({ kind, className = "card__energy" }: { kind: EnergyClass; className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img className={className} src={ENERGIES[kind].icon} alt="" aria-hidden="true" />;
 }
 
-function ClapIcon() {
-  return (
-    <svg viewBox="0 0 16 16" aria-hidden="true">
-      <rect x="2" y="6.5" width="12" height="7.5" rx="1.2" fill="currentColor" />
-      <path d="M2.4 5.6 13 3l.4 1.8L2.8 7.4z" fill="currentColor" />
-    </svg>
-  );
-}
-
-function MasksIcon() {
-  return (
-    <svg viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M2 3h7v4.5C9 10 7.5 12 5.5 12S2 10 2 7.5z" fill="currentColor" />
-      <path d="M7.5 6.5h6.5v3c0 2.5-1.5 4.5-3.5 4.5S7 12 7 10" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="4.2" cy="6" r="0.9" fill="#fff" />
-      <circle cx="6.8" cy="6" r="0.9" fill="#fff" />
-    </svg>
-  );
-}
-
-function titleSize(text: string): string {
-  if (text.length > 22) return "card__title--xs";
-  if (text.length > 14) return "card__title--sm";
+function nameSize(name: string): string {
+  if (name.length > 17) return "card__name--xs";
+  if (name.length > 13) return "card__name--sm";
   return "";
 }
 
-/** Image réelle du personnage, hébergée par Wikipédia ou AniList. */
-function Portrait({ card, hidden = false }: { card: CardDef; hidden?: boolean }) {
-  return <CardImage name={card.name} image={card.image} hidden={hidden} />;
+/** Les cartes les plus rares sont « full art » : l'image remplit toute la carte. */
+export function isFullArt(card: CardDef, gold: boolean): boolean {
+  return gold || card.rarity === "legendaire" || card.rarity === "mythique";
 }
 
 type CardProps = {
@@ -55,51 +29,91 @@ type CardProps = {
   headingLevel?: "h2" | "h3";
 };
 
-/** Carte façon jeu de cartes : un personnage, son œuvre, sa rareté. */
+/**
+ * Carte façon jeu de cartes à collectionner : nom, PV et énergie en haut, illustration encadrée,
+ * deux attaques, faiblesse et retraite, numéro et symbole de rareté en bas.
+ * Commune : aucun effet. Rare : reflet sur l'illustration. Épique : carte texturée et pailletée.
+ * Légendaire et mythique : full art en relief, reflets arc-en-ciel. Secrète : tout en or.
+ */
 export function Card({ card, gold = false, width, className = "", headingLevel = "h3" }: CardProps) {
-  const type = TYPES[card.work.type];
   const Title = headingLevel;
-  const style = { "--type": type.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
+  const p = combatProfile(card);
+  const energy = ENERGIES[p.energy];
+  const full = isFullArt(card, gold);
+  const fx = gold || card.rarity !== "commune";
+  const style = { "--energy": energy.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
   return (
     <article
-      className={`card card--${card.rarity}${gold ? " card--gold" : ""}${gold || card.rarity !== "commune" ? " card--fx" : ""} ${className}`}
+      className={`card card--${card.rarity}${full ? " card--full" : ""}${gold ? " card--gold" : ""}${fx ? " card--fx" : ""} ${className}`}
       style={style}
-      aria-label={`${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", carte secrète en or" : ""}`}
+      aria-label={`${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", carte secrète en or" : ""}, ${p.hp} PV`}
     >
       <div className="card__face">
-        <div className="card__top">
-          <Title className={`card__title ${titleSize(card.name)}`}>{card.name}</Title>
-          <span className="card__year">{card.work.year}</span>
-        </div>
-        <div className="card__window">
-          <span className="card__type">{type.label}</span>
-          {gold && <span className="card__gold-badge">Secrète</span>}
-          <Portrait card={card} />
-          <span className="card__holo" aria-hidden="true" />
-        </div>
-        <ul className="card__moves">
-          <li>
-            <span className="card__icon">
-              <ClapIcon />
+        {full && (
+          <div className="card__bg">
+            <CardImage name={card.name} image={card.image} />
+          </div>
+        )}
+        <div className="card__inner">
+          <div className="card__top">
+            <Title className={`card__name ${nameSize(card.name)}`}>{card.name}</Title>
+            <span className="card__hp">
+              <small>PV</small>
+              {p.hp}
             </span>
-            <span className="card__move card__move--work">{card.work.title}</span>
-          </li>
-          <li>
-            <span className="card__icon">
-              <MasksIcon />
+            <Energy kind={p.energy} />
+          </div>
+          {!full && (
+            <div className="card__art">
+              <CardImage name={card.name} image={card.image} />
+              <span className="card__holo" aria-hidden="true" />
+            </div>
+          )}
+          <p className="card__meta">
+            N°{cardNumber(card.num)} · {card.work.title} · {card.work.year}
+          </p>
+          <ul className="card__attacks">
+            {p.attacks.map((a) => (
+              <li key={a.name}>
+                <span className="card__cost">
+                  {Array.from({ length: a.cost }, (_, i) => (
+                    <Energy key={i} kind={p.energy} className="card__cost-icon" />
+                  ))}
+                </span>
+                <span className="card__atk">{a.name}</span>
+                <span className="card__dmg">{a.damage}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="card__flavor">
+            {ENERGIES[p.energy].label} · {card.work.genres}. Vu dans {card.work.title}.
+          </p>
+          <div className="card__rules">
+            <span>
+              Faiblesse <Energy kind={p.weakness} className="card__rule-icon" />×2
             </span>
-            <span className="card__move">{card.work.genres}</span>
-          </li>
-        </ul>
-        <div className="card__foot">
-          <span className="card__rarity">
-            {RARITIES[card.rarity].label}
-            <Stars rank={RARITIES[card.rarity].rank} />
-          </span>
-          <span className="card__num">#{cardNumber(card.num)}</span>
+            <span>Retraite {"✦".repeat(p.retreat)}</span>
+          </div>
+          <div className="card__foot">
+            <span>
+              <span className="card__rank">{gold ? "Secrète" : RARITIES[card.rarity].label}</span> · Illus. {card.credit}
+            </span>
+            <span>
+              {cardNumber(card.num)}/{CARDS.length} <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
+            </span>
+          </div>
         </div>
+        <span className="card__texture" aria-hidden="true" />
         <span className="card__glitter" aria-hidden="true" />
         <span className="card__shine" aria-hidden="true" />
+        {(gold || card.rarity === "mythique") && (
+          <span className="card__sparkles" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
+        )}
       </div>
     </article>
   );
@@ -110,42 +124,8 @@ export function CardBack() {
   return (
     <div className="card card--back" aria-hidden="true">
       <div className="card__face card__back">
-        <span className="card__back-logo">
-          <Wobble text="ToonDex" />
-          <span className="badge-star" />
-        </span>
-        <span className="card__back-label">Cartes à collectionner</span>
-      </div>
-    </div>
-  );
-}
-
-/** Emplacement d'une carte pas encore obtenue : image floutée. */
-export function MissingCard({ card }: { card: CardDef }) {
-  const type = TYPES[card.work.type];
-  return (
-    <div className="card card--missing" style={{ "--type": type.color } as CSSProperties}>
-      <div className="card__face">
-        <div className="card__top">
-          <p className={`card__title ${titleSize(card.name)}`}>{card.name}</p>
-          <span className="card__year">?</span>
-        </div>
-        <div className="card__window">
-          <span className="card__type">{type.label}</span>
-          <Portrait card={card} hidden />
-        </div>
-        <ul className="card__moves">
-          <li>
-            <span className="card__icon">
-              <ClapIcon />
-            </span>
-            <span className="card__move card__move--work">{card.work.title}</span>
-          </li>
-        </ul>
-        <div className="card__foot">
-          <span className="card__rarity">{RARITIES[card.rarity].label}</span>
-          <span className="card__num">#{cardNumber(card.num)}</span>
-        </div>
+        <LogoMark className="logo-mark" />
+        <span className="card__back-name">TOONDEX</span>
       </div>
     </div>
   );

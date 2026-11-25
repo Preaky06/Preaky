@@ -16,7 +16,8 @@ import {
   recordLoginFailure,
   verifyPassword,
 } from "@/lib/auth";
-import { AlreadyOpenedError, craftCard, getTodayPack, openTodayPack, type Pack } from "@/lib/collection";
+import { AlreadyOpenedError, craftCard, getPackSets, getTodayPack, openTodayPack, type Pack } from "@/lib/collection";
+import type { PackSet } from "@/lib/sets";
 import { getDb } from "@/lib/db";
 
 export type FormState = { error?: string; pseudo?: string } | undefined;
@@ -75,25 +76,28 @@ export async function logout(): Promise<void> {
   redirect("/");
 }
 
-export type OpenResult = { ok: true; pack: Pack; shards: number } | { ok: false; error: string; pack?: Pack };
+export type OpenResult =
+  | { ok: true; pack: Pack; shards: number; sets: PackSet[]; setBonus: number }
+  | { ok: false; error: string; pack?: Pack; sets?: PackSet[] };
 
 export async function openPack(): Promise<OpenResult> {
   const user = await getCurrentUser();
   if (!user) return { ok: false, error: "Connecte-toi pour ouvrir ton paquet." };
   try {
-    const { pack, shards } = await openTodayPack(user.id);
+    const { pack, shards, sets, setBonus } = await openTodayPack(user.id);
     revalidatePath("/collection");
-    return { ok: true, pack, shards };
+    return { ok: true, pack, shards, sets, setBonus };
   } catch (err) {
     if (err instanceof AlreadyOpenedError) {
       const pack = (await getTodayPack(user.id)) ?? undefined;
-      return { ok: false, error: "Tu as déjà ouvert le paquet du jour.", pack };
+      const sets = pack ? await getPackSets(user.id, pack) : undefined;
+      return { ok: false, error: "Tu as déjà ouvert le paquet du jour.", pack, sets };
     }
     throw err;
   }
 }
 
-export type CraftState = { ok?: boolean; error?: string } | undefined;
+export type CraftState = { ok?: boolean; error?: string; setBonus?: number } | undefined;
 
 export async function craft(_prev: CraftState, form: FormData): Promise<CraftState> {
   const user = await getCurrentUser();
@@ -102,5 +106,5 @@ export async function craft(_prev: CraftState, form: FormData): Promise<CraftSta
   const result = await craftCard(user.id, cardId);
   if (!result.ok) return { error: result.error };
   revalidatePath("/", "layout");
-  return { ok: true };
+  return { ok: true, setBonus: result.setBonus };
 }

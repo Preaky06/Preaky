@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { Card } from "@/components/Card";
+import { CardImage } from "@/components/CardImage";
 import { CraftButton } from "@/components/CraftButton";
-import { Wobble } from "@/components/Wobble";
 import { getCurrentUser } from "@/lib/auth";
-import { CARDS, CARDS_BY_RARITY, RARITIES, TYPES, cardNumber, countryNames, getCard, type Rarity } from "@/lib/catalogue";
+import { CARDS, CARDS_BY_RARITY, RARITIES, cardNumber, countryNames, getCard, type Rarity } from "@/lib/catalogue";
 import { getOwned } from "@/lib/collection";
+import { ENERGIES, RARITY_SYMBOL, combatProfile } from "@/lib/combat";
 import { CRAFT_COST, GOLD_ODDS, LAST_SLOT_ODDS, PACK_SIZE, SHARDS_PER_DUPLICATE, SLOT_ODDS } from "@/lib/rules";
+import { cardsOfWork } from "@/lib/sets";
+
+/* eslint-disable @next/next/no-img-element */
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -25,87 +30,180 @@ function chancePerPack(rarity: Rarity): number {
 }
 
 function oneIn(p: number): string {
-  return `1 chance sur ${Math.round(1 / p).toLocaleString("fr-FR")}`;
+  return `1 sur ${Math.round(1 / p).toLocaleString("fr-FR")}`;
 }
+
+const STATS = [
+  { key: "hp", label: "PV", max: 250, color: "#4ADE80" },
+  { key: "attack", label: "ATQ", max: 200, color: "#E8563A" },
+  { key: "defense", label: "DÉF", max: 200, color: "#3A7FE0" },
+  { key: "speed", label: "VIT", max: 200, color: "#F0A81C" },
+] as const;
 
 export default async function CardPage({ params }: Params) {
   const card = getCard((await params).id);
   if (!card) notFound();
 
   const user = await getCurrentUser();
-  const owned = user ? (await getOwned(user.id))[card.id] : undefined;
-  const p = chancePerPack(card.rarity);
+  const ownedMap = user ? await getOwned(user.id) : {};
+  const owned = ownedMap[card.id];
+  const chance = chancePerPack(card.rarity);
   const prev = CARDS[card.num - 2];
   const next = CARDS[card.num];
   const work = card.work;
+  const p = combatProfile(card);
+  const energy = ENERGIES[p.energy];
+  const weakness = ENERGIES[p.weakness];
+  const siblings = cardsOfWork(work.id);
+  const back = owned ? { href: "/collection", label: "Ma collection" } : { href: "/catalogue", label: "Catalogue" };
 
   return (
-    <>
-      <nav className="crumbs" aria-label="Fil d’Ariane">
-        <Link href="/catalogue" className="link">
-          Catalogue
-        </Link>
-        <span aria-hidden="true"> / </span>
-        <span>#{cardNumber(card.num)}</span>
-      </nav>
-
-      <section className="detail">
-        <div className="detail__card">
-          <Card card={card} gold={!!owned && owned.gold > 0} headingLevel="h2" className={user && !owned ? "card--locked" : ""} />
+    <div className="dex" style={{ "--energy": energy.color } as CSSProperties}>
+      <article className="dex__panel">
+        <div className="dex__hero">
+          <div className="dex__bar">
+            <Link href={back.href}>← {back.label}</Link>
+            <span className="dex__num">N°{cardNumber(card.num)}</span>
+          </div>
+          <div className="dex__portrait">
+            <CardImage name={card.name} image={card.image} />
+          </div>
         </div>
-        <div className="detail__info">
-          <span className="type-chip" style={{ background: TYPES[work.type].color }}>
-            {TYPES[work.type].label} · #{cardNumber(card.num)}
-          </span>
-          <h1 className="detail__title">
-            <Wobble text={card.name} />
-          </h1>
-          <p className="detail__work">{work.title}</p>
-          <dl className="facts">
+
+        <div className="dex__body">
+          <div>
+            <h1 className="dex__name">{card.name}</h1>
+            <p className="dex__work">
+              {work.title} · {work.year}
+            </p>
+          </div>
+
+          <ul className="dex__chips" aria-label="Classe et rareté">
+            <li className="dex__chip" style={{ "--chip": energy.color } as CSSProperties}>
+              <img src={energy.icon} alt="" />
+              {energy.label}
+            </li>
+            <li className={`dex__chip dex__chip--rarity rarity--${card.rarity}`}>
+              <span aria-hidden="true">{RARITY_SYMBOL[card.rarity]}</span>
+              {RARITIES[card.rarity].label}
+            </li>
+          </ul>
+
+          <dl className="dex__facts">
             <div>
-              <dt>Œuvre</dt>
-              <dd>
-                {work.title} ({work.year})
+              <dd>{p.hp}</dd>
+              <dt>Points de vie</dt>
+            </div>
+            <div>
+              <dd className="dex__fact-icon">
+                <img src={weakness.icon} alt="" />
+                {weakness.label}
               </dd>
+              <dt>Faiblesse ×2</dt>
             </div>
             <div>
-              <dt>Pays</dt>
-              <dd>{countryNames(work.countries)}</dd>
-            </div>
-            <div>
-              <dt>Genres</dt>
-              <dd>{work.genres}</dd>
-            </div>
-            <div>
-              <dt>Rareté</dt>
-              <dd>
-                <span className={`rarity rarity--${card.rarity}`}>{RARITIES[card.rarity].label}</span>
-              </dd>
-            </div>
-            <div>
-              <dt>Chance par paquet</dt>
-              <dd>
-                {oneIn(p)} · version or : {oneIn(p / GOLD_ODDS)}
-              </dd>
-            </div>
-            <div>
-              <dt>Doublon</dt>
-              <dd>+{SHARDS_PER_DUPLICATE[card.rarity]} éclats</dd>
-            </div>
-            <div>
-              <dt>Image</dt>
-              <dd>
-                <a href={card.source} className="link" target="_blank" rel="noopener noreferrer">
-                  {card.credit}
-                </a>
-                <span className="credit">© ayants droit de l’œuvre</span>
-              </dd>
+              <dd>{"✦".repeat(p.retreat)}</dd>
+              <dt>Retraite</dt>
             </div>
           </dl>
 
-          {user ? (
-            owned ? (
-              <p className="owned-box">
+          <section className="dex__section" aria-labelledby="stats-title">
+            <h2 id="stats-title" className="dex__h">
+              Statistiques
+            </h2>
+            <ul className="dex__stats">
+              {STATS.map((s) => {
+                const value = p[s.key];
+                return (
+                  <li key={s.key}>
+                    <span>{s.label}</span>
+                    <span
+                      className="dex__meter"
+                      role="meter"
+                      aria-label={s.label}
+                      aria-valuenow={value}
+                      aria-valuemin={0}
+                      aria-valuemax={s.max}
+                    >
+                      <span style={{ width: `${Math.round((value / s.max) * 100)}%`, "--meter": s.color } as CSSProperties} />
+                    </span>
+                    <span className="dex__value" aria-hidden="true">
+                      {value}
+                      <small>/{s.max}</small>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+
+          <section className="dex__section" aria-labelledby="atk-title">
+            <h2 id="atk-title" className="dex__h">
+              Attaques
+            </h2>
+            <ul className="dex__attacks">
+              {p.attacks.map((a) => (
+                <li key={a.name}>
+                  <span className="dex__cost" aria-label={`Coût : ${a.cost} énergie${a.cost > 1 ? "s" : ""}`}>
+                    {Array.from({ length: a.cost }, (_, i) => (
+                      <img key={i} src={energy.icon} alt="" />
+                    ))}
+                  </span>
+                  <strong>{a.name}</strong>
+                  <span className="dex__dmg">{a.damage}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="dex__section" aria-labelledby="info-title">
+            <h2 id="info-title" className="dex__h">
+              Fiche
+            </h2>
+            <dl className="dex__info">
+              <div>
+                <dt>Œuvre</dt>
+                <dd>
+                  {work.title} ({work.year})
+                </dd>
+              </div>
+              <div>
+                <dt>Pays</dt>
+                <dd>{countryNames(work.countries)}</dd>
+              </div>
+              <div>
+                <dt>Genres</dt>
+                <dd>{work.genres}</dd>
+              </div>
+              <div>
+                <dt>Série</dt>
+                <dd>
+                  {siblings.length} carte{siblings.length > 1 ? "s" : ""} pour cette œuvre
+                  {user && siblings.length > 1 && ` · ${siblings.filter((c) => ownedMap[c.id]).length} dans ta collection`}
+                </dd>
+              </div>
+              <div>
+                <dt>Chance par paquet</dt>
+                <dd>
+                  {oneIn(chance)} · en or : {oneIn(chance / GOLD_ODDS)}
+                </dd>
+              </div>
+              <div>
+                <dt>Doublon</dt>
+                <dd>+{SHARDS_PER_DUPLICATE[card.rarity]} éclats</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+      </article>
+
+      <aside className="dex__side" aria-label="Carte">
+        <Card card={card} gold={!!owned && owned.gold > 0} headingLevel="h2" />
+
+        {user ? (
+          owned ? (
+            <div className="owned-box">
+              <p>
                 Dans ta collection : <strong>{owned.copies}</strong> exemplaire{owned.copies > 1 ? "s" : ""}
                 {owned.gold > 0 ? (
                   <>
@@ -115,37 +213,47 @@ export default async function CardPage({ params }: Params) {
                 ) : null}
                 .
               </p>
-            ) : (
-              <div className="owned-box">
-                <p>Tu n’as pas encore cette carte. Tu as {user.shards} éclats.</p>
-                <CraftButton cardId={card.id} cost={CRAFT_COST[card.rarity]} canAfford={user.shards >= CRAFT_COST[card.rarity]} />
-              </div>
-            )
+            </div>
           ) : (
-            <p className="owned-box">
+            <div className="owned-box">
+              <p>Tu n’as pas encore cette carte. Tu as {user.shards} éclats.</p>
+              <CraftButton cardId={card.id} cost={CRAFT_COST[card.rarity]} canAfford={user.shards >= CRAFT_COST[card.rarity]} />
+            </div>
+          )
+        ) : (
+          <div className="owned-box">
+            <p>
               <Link href={`/connexion?next=/carte/${card.id}`} className="link">
                 Connecte-toi
               </Link>{" "}
-              pour savoir si elle est dans ta collection.
+              pour l’ajouter à ta collection.
             </p>
-          )}
-
-          <div className="detail__nav">
-            {prev ? (
-              <Link href={`/carte/${prev.id}`} className="btn btn--ghost btn--sm">
-                ← #{cardNumber(prev.num)}
-              </Link>
-            ) : (
-              <span />
-            )}
-            {next && (
-              <Link href={`/carte/${next.id}`} className="btn btn--ghost btn--sm">
-                #{cardNumber(next.num)} →
-              </Link>
-            )}
           </div>
+        )}
+
+        <p className="credit">
+          Image :{" "}
+          <a href={card.source} className="link" target="_blank" rel="noopener noreferrer">
+            {card.credit}
+          </a>{" "}
+          · © ayants droit de l’œuvre
+        </p>
+
+        <div className="detail__nav">
+          {prev ? (
+            <Link href={`/carte/${prev.id}`} className="btn btn--ghost btn--sm">
+              ← N°{cardNumber(prev.num)}
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <Link href={`/carte/${next.id}`} className="btn btn--ghost btn--sm">
+              N°{cardNumber(next.num)} →
+            </Link>
+          )}
         </div>
-      </section>
-    </>
+      </aside>
+    </div>
   );
 }
