@@ -1,24 +1,42 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 
 type Props = {
   front: ReactNode;
   back: ReactNode;
   /** Nom de la carte, pour les lecteurs d'écran. */
   label: string;
+  /** Sans bouton ni consigne : seulement la carte. */
+  bare?: boolean;
 };
 
-const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+const clamp = (v: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, v));
 
 /**
  * Carte en 3D que l'on fait pivoter : glisser pour la tourner (le reflet suit l'angle), relâcher
  * pour qu'elle se pose sur sa face ou son dos. Bouton « Retourner » et flèches du clavier en plus.
  */
-export function CardViewer({ front, back, label }: Props) {
+export function CardViewer({ front, back, label, bare = false }: Props) {
   const [angle, setAngle] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
-  const start = useRef<{ px: number; py: number; x: number; y: number; moved: boolean } | null>(null);
+  const start = useRef<{
+    px: number;
+    py: number;
+    x: number;
+    y: number;
+    moved: boolean;
+  } | null>(null);
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
@@ -29,12 +47,21 @@ export function CardViewer({ front, back, label }: Props) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const settle = useCallback((y: number) => setAngle({ x: 0, y: Math.round(y / 180) * 180 }), []);
+  const settle = useCallback(
+    (y: number) => setAngle({ x: 0, y: Math.round(y / 180) * 180 }),
+    [],
+  );
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
     if (e.button !== 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
-    start.current = { px: e.clientX, py: e.clientY, x: angle.x, y: angle.y, moved: false };
+    start.current = {
+      px: e.clientX,
+      py: e.clientY,
+      x: angle.x,
+      y: angle.y,
+      moved: false,
+    };
     setDragging(true);
   }
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
@@ -51,7 +78,11 @@ export function CardViewer({ front, back, label }: Props) {
     start.current = null;
     setDragging(false);
     // Un simple clic retourne la carte ; un glissé la pose sur la face la plus proche.
-    setAngle((a) => (moved ? { x: 0, y: Math.round(a.y / 180) * 180 } : { x: 0, y: Math.round(a.y / 180) * 180 + 180 }));
+    setAngle((a) =>
+      moved
+        ? { x: 0, y: Math.round(a.y / 180) * 180 }
+        : { x: 0, y: Math.round(a.y / 180) * 180 + 180 },
+    );
   }
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
@@ -79,7 +110,10 @@ export function CardViewer({ front, back, label }: Props) {
   } as CSSProperties;
 
   return (
-    <div className={`viewer${dragging ? " is-dragging" : ""}${reduced ? " is-reduced" : ""}`} style={style}>
+    <div
+      className={`viewer${dragging ? " is-dragging" : ""}${reduced ? " is-reduced" : ""}`}
+      style={style}
+    >
       <div
         className="viewer__stage"
         role="group"
@@ -98,15 +132,35 @@ export function CardViewer({ front, back, label }: Props) {
         </div>
         <span className="viewer__shadow" aria-hidden="true" />
       </div>
-      <div className="viewer__controls">
-        <button type="button" className="btn btn--ghost btn--sm" onClick={() => settle(angle.y + 180)}>
-          <svg className="btn__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-            <path d="M3 8a5 5 0 0 1 8.6-3.5M13 8a5 5 0 0 1-8.6 3.5M11.5 2v2.7H8.8M4.5 14v-2.7h2.7" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          {showingBack ? "Voir la face" : "Voir le dos"}
-        </button>
-        <span className="viewer__hint">Fais glisser la carte pour la faire pivoter</span>
-      </div>
+      {!bare && (
+        <div className="viewer__controls">
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() => settle(angle.y + 180)}
+          >
+            <svg
+              className="btn__icon"
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M3 8a5 5 0 0 1 8.6-3.5M13 8a5 5 0 0 1-8.6 3.5M11.5 2v2.7H8.8M4.5 14v-2.7h2.7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {showingBack ? "Voir la face" : "Voir le dos"}
+          </button>
+          <span className="viewer__hint">
+            Fais glisser la carte pour la faire pivoter
+          </span>
+        </div>
+      )}
     </div>
   );
 }

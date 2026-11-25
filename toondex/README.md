@@ -69,7 +69,7 @@ Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit
 | --- | --- |
 | `/` | Invité : présentation et chances. Connecté : paquet du jour, puis bilan de la collection. |
 | `/collection` | Cartes obtenues, façon Pokédex, filtres par rareté. |
-| `/catalogue` | Toutes les cartes, 48 par page, recherche (personnage, œuvre, genre, chaîne), filtres par rareté. Un clic ouvre la carte en grand dans une visionneuse 3D (glisser pour la faire pivoter et voir son dos). |
+| `/catalogue` | Toutes les cartes, 48 par page, recherche (personnage, œuvre, genre, chaîne), filtres par rareté. Les cartes pas encore obtenues sont floues (« mystère ») ; seul leur cadre trahit la rareté. Un clic ouvre la carte seule, en grand, à faire pivoter (glisser, clic, flèches) ; un clic à côté ou Échap la referme. |
 | `/carte/[id]` | Fiche façon Pokédex : statistiques, attaques, série, chance de l'obtenir, carte en 3D. |
 | `/connexion`, `/inscription` | Comptes. |
 | `/apercu` | Paquet fixe avec une carte de chaque rareté (`?or=1` pour la version or). Désactivé en production sauf `TOONDEX_DEMO=1`. |

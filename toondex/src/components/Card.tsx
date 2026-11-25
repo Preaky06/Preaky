@@ -27,6 +27,8 @@ type CardProps = {
   width?: string;
   className?: string;
   headingLevel?: "h2" | "h3";
+  /** Carte pas encore obtenue : floue, comme un mystère. */
+  mystery?: boolean;
 };
 
 /**
@@ -35,7 +37,7 @@ type CardProps = {
  * Commune : aucun effet. Rare : reflet sur l'illustration. Épique : carte texturée et pailletée.
  * Légendaire et mythique : full art en relief, reflets arc-en-ciel. Secrète : tout en or.
  */
-export function Card({ card, gold = false, width, className = "", headingLevel = "h3" }: CardProps) {
+export function Card({ card, gold = false, width, className = "", headingLevel = "h3", mystery = false }: CardProps) {
   const Title = headingLevel;
   const p = combatProfile(card);
   const energy = ENERGIES[p.energy];
@@ -44,9 +46,13 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
   const style = { "--energy": energy.color, ...(width ? { "--card-w": width } : {}) } as CSSProperties;
   return (
     <article
-      className={`card card--${card.rarity}${full ? " card--full" : ""}${gold ? " card--gold" : ""}${fx ? " card--fx" : ""} ${className}`}
+      className={`card card--${card.rarity}${full ? " card--full" : ""}${gold ? " card--gold" : ""}${fx ? " card--fx" : ""}${mystery ? " card--mystery" : ""} ${className}`}
       style={style}
-      aria-label={`${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", carte secrète en or" : ""}, ${p.hp} PV`}
+      aria-label={
+        mystery
+          ? `Carte mystère n°${cardNumber(card.num, card.total)}, ${RARITIES[card.rarity].label.toLowerCase()}`
+          : `${card.name}, ${card.work.title}, ${RARITIES[card.rarity].label.toLowerCase()}${gold ? ", carte secrète en or" : ""}, ${p.hp} PV`
+      }
     >
       <div className="card__face">
         {full && (
@@ -54,7 +60,7 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
             <CardImage name={card.name} image={card.image} />
           </div>
         )}
-        <div className="card__inner">
+        <div className="card__inner" aria-hidden={mystery || undefined}>
           <div className="card__top">
             <Title className={`card__name ${nameSize(card.name)}`}>{card.name}</Title>
             <span className="card__hp">
@@ -106,6 +112,12 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
         <span className="card__texture" aria-hidden="true" />
         <span className="card__glitter" aria-hidden="true" />
         <span className="card__shine" aria-hidden="true" />
+        {mystery && (
+          <span className="card__mystery" aria-hidden="true">
+            <span className="card__mystery-mark">?</span>
+            <span className="card__mystery-label">Mystère</span>
+          </span>
+        )}
         {(gold || card.rarity === "mythique") && (
           <span className="card__sparkles" aria-hidden="true">
             <i />

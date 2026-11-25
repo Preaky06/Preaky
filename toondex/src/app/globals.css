@@ -760,7 +760,7 @@ body::before {
   background-size: 280% 100%;
   background-position: var(--sx, 50%) 0;
   mix-blend-mode: color-dodge;
-  opacity: 0.55;
+  opacity: 0.3;
   animation: td-foil 6s linear infinite;
 }
 .card__texture {
@@ -791,7 +791,7 @@ body::before {
 .card__glitter {
   z-index: 3;
   border-radius: inherit;
-  --go: 0.6;
+  --go: 0.38;
   --g1: #ffffff;
   --g2: #e3e9ff;
   --g3: #f6dcff;
@@ -813,7 +813,7 @@ body::before {
 .card__shine {
   z-index: 4;
   border-radius: inherit;
-  --so: 0.35;
+  --so: 0.24;
   background: linear-gradient(
     115deg,
     transparent 18%,
@@ -880,7 +880,7 @@ body::before {
   display: block;
 }
 .card--epique .card__texture {
-  opacity: 0.45;
+  opacity: 0.28;
 }
 /* Full art (légendaire, mythique, secrète) : l'image remplit la carte. */
 .card--full {
@@ -936,8 +936,11 @@ body::before {
 .card--mythique .card__sparkles {
   display: block;
 }
+.card--legendaire .card__texture {
+  opacity: 0.38;
+}
 .card--legendaire .card__glitter {
-  --go: 0.75;
+  --go: 0.45;
   --g1: #fff6cf;
   --g2: #ffd66b;
 }
@@ -951,15 +954,15 @@ body::before {
     0 0 7cqi rgba(255, 122, 182, 0.5);
 }
 .card--mythique .card__texture {
-  opacity: 0.9;
+  opacity: 0.45;
 }
 .card--mythique .card__glitter {
-  --go: 0.9;
+  --go: 0.5;
   --g2: #ffd1ec;
   --g3: #c9f7ff;
 }
 .card--mythique .card__shine {
-  --so: 0.45;
+  --so: 0.3;
 }
 /* Secrète : tout en or, image comprise. */
 .card--gold {
@@ -1021,13 +1024,13 @@ body::before {
   opacity: 0.6;
 }
 .card--gold .card__glitter {
-  --go: 0.85;
+  --go: 0.5;
   --g1: #fffbe8;
   --g2: #ffe08a;
   --g3: #ffffff;
 }
 .card--gold .card__shine {
-  --so: 0.45;
+  --so: 0.32;
   background: linear-gradient(115deg, transparent 24%, rgba(255, 250, 225, 0.8) 42%, rgba(255, 214, 107, 0.5) 50%, transparent 64%);
   background-size: 300% 300%;
   background-position: var(--sx, 50%) var(--sy, 50%);
@@ -1151,7 +1154,7 @@ body::before {
   animation: none;
 }
 .viewer .card__shine {
-  opacity: calc(var(--so, 0.35) + 0.15);
+  opacity: calc(var(--so, 0.24) + 0.1);
 }
 .viewer__shadow {
   position: absolute;
@@ -1176,65 +1179,49 @@ body::before {
   color: var(--muted);
 }
 
-/* Fenêtre du catalogue. */
+/* Fenêtre du catalogue : la carte seule, en grand, à faire pivoter. */
 .lightbox {
-  width: min(520px, calc(100vw - 24px));
-  max-height: calc(100dvh - 24px);
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
   padding: 0;
-  border: 1px solid var(--line-strong);
-  border-radius: 24px;
-  background:
-    radial-gradient(80% 50% at 50% 40%, rgba(255, 197, 49, 0.12), transparent 70%),
-    var(--surface);
-  color: var(--text);
-  overflow: auto;
-}
-.lightbox::backdrop {
-  background: rgba(8, 9, 12, 0.78);
-  backdrop-filter: blur(6px);
+  border: 0;
+  background: transparent;
+  overflow: hidden;
 }
 .lightbox[open] {
-  animation: td-pop 0.25s ease-out;
-}
-.lightbox__body {
-  display: grid;
-  gap: 18px;
-  padding: 18px 20px 20px;
-}
-.lightbox__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-.lightbox__num {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.lightbox__title {
-  font-size: clamp(22px, 4vw, 28px);
-  line-height: 1.1;
-}
-.lightbox__work {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-.lightbox__close {
-  flex: none;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  animation: td-pop 0.25s ease-out;
+}
+.lightbox::backdrop {
+  background: rgba(8, 9, 12, 0.88);
+  backdrop-filter: blur(8px);
+}
+/* La visionneuse prend la taille de la carte : un clic à côté referme la fenêtre. */
+.lightbox .viewer {
+  width: auto;
+}
+.lightbox .viewer__stage {
+  width: min(460px, 86vw, calc((100dvh - 110px) * 63 / 88));
+}
+.lightbox .viewer__stage:focus-visible {
+  outline: none;
+}
+.lightbox__close {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
   cursor: pointer;
 }
@@ -1242,10 +1229,76 @@ body::before {
   width: 16px;
   height: 16px;
 }
-.lightbox__foot {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+
+/* Carte mystère : pas encore obtenue, elle reste floue. */
+.card--mystery .card__face {
+  --card-bg: color-mix(in srgb, var(--energy) 55%, #2a2c33);
+}
+.card--mystery .card__bg,
+.card--mystery .card__inner,
+.card--mystery .card__holo {
+  /* Flou proportionnel à la carte : on ne devine rien, même en grand. */
+  filter: blur(7cqi) saturate(1.3);
+}
+.card--mystery .card__texture,
+.card--mystery .card__glitter,
+.card--mystery .card__sparkles {
+  display: none;
+}
+.card__mystery {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 3cqi;
+  background: radial-gradient(60% 45% at 50% 46%, rgba(20, 21, 26, 0.4), transparent 72%);
+}
+.card__mystery-mark {
+  display: grid;
+  place-items: center;
+  width: 30cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(20, 21, 26, 0.75);
+  border: 1cqi solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font: 900 17cqi/1 var(--font-display), sans-serif;
+  box-shadow: 0 2cqi 6cqi rgba(0, 0, 0, 0.45);
+}
+.card__mystery-label {
+  padding: 1.4cqi 3.4cqi;
+  border-radius: 999px;
+  background: rgba(20, 21, 26, 0.75);
+  color: #fff;
+  font: 800 3.4cqi/1 var(--font-sans), sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.dex__portrait.is-mystery .card__photo,
+.dex__portrait.is-mystery .card__placeholder {
+  filter: blur(26px) saturate(1.3);
+  transform: scale(1.25);
+}
+.dex__portrait.is-mystery::after {
+  content: "?";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 900 72px/1 var(--font-display), sans-serif;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+.dex__locked {
+  margin: 0;
+  max-width: 46ch;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  color: var(--muted);
+  text-align: center;
 }
 
 /* Pagination. */
@@ -1318,8 +1371,8 @@ body::before {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(200px, 43vw), 1fr));
-  gap: clamp(14px, 2vw, 24px);
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 44vw), 1fr));
+  gap: clamp(14px, 2vw, 28px);
 }
 .card-grid__item {
   display: flex;
