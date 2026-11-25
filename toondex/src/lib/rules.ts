@@ -6,20 +6,22 @@ export const PACK_SIZE = 5;
 
 /** Cartes 1 à 4 : poids en pour mille. */
 export const SLOT_ODDS: Record<Rarity, number> = {
-  commune: 620,
+  commune: 619,
   rare: 250,
   epique: 90,
   legendaire: 32,
   mythique: 8,
+  "matiere-noire": 1,
 };
 
 /** Carte 5 : au moins rare. */
 export const LAST_SLOT_ODDS: Record<Rarity, number> = {
   commune: 0,
-  rare: 700,
+  rare: 696,
   epique: 210,
   legendaire: 70,
   mythique: 20,
+  "matiere-noire": 4,
 };
 
 /** Chaque carte a 1 chance sur GOLD_ODDS d'être en version or. */
@@ -32,6 +34,7 @@ export const SHARDS_PER_DUPLICATE: Record<Rarity, number> = {
   epique: 25,
   legendaire: 60,
   mythique: 150,
+  "matiere-noire": 500,
 };
 
 export const GOLD_SHARD_MULTIPLIER = 5;
@@ -43,6 +46,7 @@ export const CRAFT_COST: Record<Rarity, number> = {
   epique: 250,
   legendaire: 600,
   mythique: 1500,
+  "matiere-noire": 5000,
 };
 
 export function percent(perMille: number): string {

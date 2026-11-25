@@ -27,6 +27,7 @@ Toutes les valeurs sont dans `src/lib/rules.ts`.
 - **Paquet du jour** : 5 cartes, une fois par jour et par compte. Renouvelé à minuit, heure de Paris. La clé primaire `(user_id, day)` empêche une double ouverture.
 - **Raretés** : cartes 1 à 4 tirées à 62 % commune, 25 % rare, 9 % épique, 3,2 % légendaire, 0,8 % mythique. La carte 5 est au moins rare.
 - **Version or** : 1 chance sur 250 par carte, quelle que soit la rareté. Ne se fabrique pas.
+- **Matière noire** : la rareté la plus haute, 5 cartes seulement (`src/data/black-matter.json`, une par univers). 0,1 % par carte pour les cartes 1 à 4, 0,4 % pour la cinquième. Carte noire cosmique, traînée de lumière qui fait le tour du cadre, halo qui pulse ; révélation avec écran noir et anneau qui se resserre.
 - **Doublons** : convertis automatiquement en éclats (5, 10, 25, 60, 150 selon la rareté, ×5 pour un doublon or).
 - **Fabrication** : 40, 100, 250, 600 ou 1 500 éclats pour une carte manquante.
 - **Animations d'ouverture** : une par rareté, plus une pour l'or (`src/app/globals.css`, section Révélation). Réduites à un simple retournement si le système demande moins d'animations.

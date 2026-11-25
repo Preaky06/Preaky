@@ -39,6 +39,10 @@ cards.forEach((c, i) => {
   if (!/^https:\/\//.test(c.source)) errors.push(`${at} : source manquante`);
 });
 for (const r of RARITIES) if (!cards.some((c) => c.rarity === r)) errors.push(`aucune carte ${r}`);
+// Les cinq cartes « matière noire » doivent exister.
+const blackMatter = read("black-matter.json");
+if (blackMatter.length !== 5) errors.push(`matière noire : ${blackMatter.length} cartes au lieu de 5`);
+for (const id of blackMatter) if (!cardIds.has(id)) errors.push(`matière noire : carte inconnue ${id}`);
 const names = new Map();
 for (const c of cards) {
   const key = `${c.work}|${c.name.toLowerCase()}`;

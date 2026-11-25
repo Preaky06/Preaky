@@ -17,7 +17,7 @@ function nameSize(name: string): string {
 
 /** Les cartes les plus rares sont « full art » : l'image remplit toute la carte. */
 export function isFullArt(card: CardDef, gold: boolean): boolean {
-  return gold || card.rarity === "legendaire" || card.rarity === "mythique";
+  return gold || card.rarity === "legendaire" || card.rarity === "mythique" || card.rarity === "matiere-noire";
 }
 
 type CardProps = {
@@ -35,7 +35,8 @@ type CardProps = {
  * Carte façon jeu de cartes à collectionner : nom, PV et énergie en haut, illustration encadrée,
  * deux attaques, faiblesse et retraite, numéro et symbole de rareté en bas.
  * Commune : aucun effet. Rare : reflet sur l'illustration. Épique : carte texturée et pailletée.
- * Légendaire et mythique : full art en relief, reflets arc-en-ciel. Secrète : tout en or.
+ * Légendaire et mythique : full art en relief, reflets arc-en-ciel. Matière noire (5 cartes) : noir
+ * cosmique, bord animé. Secrète : tout en or.
  */
 export function Card({ card, gold = false, width, className = "", headingLevel = "h3", mystery = false }: CardProps) {
   const Title = headingLevel;
@@ -118,7 +119,8 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
             <span className="card__mystery-label">Mystère</span>
           </span>
         )}
-        {(gold || card.rarity === "mythique") && (
+        {card.rarity === "matiere-noire" && !gold && <span className="card__void" aria-hidden="true" />}
+        {(gold || card.rarity === "mythique" || card.rarity === "matiere-noire") && (
           <span className="card__sparkles" aria-hidden="true">
             <i />
             <i />

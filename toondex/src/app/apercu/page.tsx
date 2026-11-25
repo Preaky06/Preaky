@@ -31,7 +31,7 @@ export default async function PreviewPage({ searchParams }: { searchParams: Prom
           <>
             <p className="eyebrow">Aperçu</p>
             <h1 className="hero__title">Une carte par rareté</h1>
-            <p className="hero__lead">Commune, rare, épique, légendaire, mythique{withGold ? ", et une version or" : ""}.</p>
+            <p className="hero__lead">Commune, rare, épique, légendaire, mythique, matière noire{withGold ? ", et une version or" : ""}.</p>
           </>
         }
       />

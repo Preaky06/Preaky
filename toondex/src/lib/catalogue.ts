@@ -1,6 +1,7 @@
 import cardRows from "@/data/cards.json";
 import extraCardRows from "@/data/cards-extra.json";
 import extraWorkRows from "@/data/works-extra.json";
+import blackMatter from "@/data/black-matter.json";
 import workRows from "@/data/works.json";
 import { RARITY_ORDER, TYPE_ORDER, type CardDef, type Rarity, type Work, type WorkType } from "@/lib/cards-meta";
 
@@ -25,7 +26,12 @@ type CardRow = {
   credit: CardDef["credit"];
 };
 
-const ROWS = ([...cardRows, ...extraCardRows] as CardRow[]).filter((c) => WORKS_BY_ID.has(c.work));
+/** Les cinq cartes « matière noire », la rareté la plus haute : elles remplacent leur rareté d'origine. */
+const BLACK_MATTER = new Set(blackMatter as string[]);
+
+const ROWS = ([...cardRows, ...extraCardRows] as CardRow[])
+  .filter((c) => WORKS_BY_ID.has(c.work))
+  .map((c) => (BLACK_MATTER.has(c.id) ? { ...c, rarity: "matiere-noire" as Rarity } : c));
 
 /** Ordre d'apparition de chaque œuvre dans les fichiers : les œuvres restent groupées. */
 const firstIndex = new Map<string, number>();

@@ -107,7 +107,7 @@ const ATTACKS: Record<EnergyClass, [string[], string[]]> = {
   ],
 };
 
-const RANK: Record<Rarity, number> = { commune: 0, rare: 1, epique: 2, legendaire: 3, mythique: 4 };
+const RANK: Record<Rarity, number> = { commune: 0, rare: 1, epique: 2, legendaire: 3, mythique: 4, "matiere-noire": 5 };
 
 export function hash(text: string): number {
   let h = 2166136261;
@@ -175,4 +175,5 @@ export const RARITY_SYMBOL: Record<Rarity, string> = {
   epique: "★",
   legendaire: "★★",
   mythique: "★★★",
+  "matiere-noire": "✦✦✦✦",
 };

@@ -19,6 +19,7 @@ const REVEAL_MS: Record<Rarity, number> = {
   epique: 1400,
   legendaire: 2000,
   mythique: 2800,
+  "matiere-noire": 3600,
 };
 const GOLD_EXTRA_MS = 900;
 
@@ -68,7 +69,7 @@ export function PackOpener({ initialCards, initialSets, demoCards, demoSets, int
   const [cards, setCards] = useState<PackCardView[] | null>(initialCards);
   const [revealed, setRevealed] = useState<boolean[]>(() => (initialCards ?? []).map(() => true));
   const [animated, setAnimated] = useState(!initialCards);
-  const [stageFx, setStageFx] = useState<"mythique" | "gold" | null>(null);
+  const [stageFx, setStageFx] = useState<"mythique" | "void" | "gold" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sets, setSets] = useState<PackSet[]>(initialSets ?? []);
   const [setBonus, setSetBonus] = useState(0);
@@ -134,13 +135,14 @@ export function PackOpener({ initialCards, initialSets, demoCards, demoSets, int
     const card = cards[index];
     const def = card.card;
     setRevealed((prev) => prev.map((v, i) => (i === index ? true : v)));
-    if (def.rarity === "mythique") setStageFx("mythique");
+    if (def.rarity === "matiere-noire") setStageFx("void");
+    else if (def.rarity === "mythique") setStageFx("mythique");
     else if (card.gold) setStageFx("gold");
     const ms = revealDuration(card);
     busyUntil.current = Math.max(busyUntil.current, clock() + ms);
     setInFlight((n) => n + 1);
     later(() => setInFlight((n) => n - 1), ms);
-    if (def.rarity === "mythique" || card.gold) later(() => setStageFx(null), ms);
+    if (def.rarity === "mythique" || def.rarity === "matiere-noire" || card.gold) later(() => setStageFx(null), ms);
     later(
       () =>
         setAnnounce(
@@ -197,7 +199,7 @@ export function PackOpener({ initialCards, initialSets, demoCards, demoSets, int
       <div className="reveal__head">
         <div>
           <p className="eyebrow">Paquet du jour</p>
-          <h2>{animated ? "Tes 5 cartes" : "Ton paquet du jour est ouvert"}</h2>
+          <h2>{animated ? `Tes ${cards.length} cartes` : "Ton paquet du jour est ouvert"}</h2>
         </div>
         {!animated && (
           <p className="muted">

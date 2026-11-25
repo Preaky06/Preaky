@@ -4,7 +4,7 @@
  */
 
 export type WorkType = "serie" | "serie-animee" | "anime" | "film" | "film-animation";
-export type Rarity = "commune" | "rare" | "epique" | "legendaire" | "mythique";
+export type Rarity = "commune" | "rare" | "epique" | "legendaire" | "mythique" | "matiere-noire";
 
 /** Une œuvre : série, série animée, anime ou film. Sert de contexte aux cartes. */
 export type Work = {
@@ -51,6 +51,8 @@ export const RARITIES: Record<Rarity, { label: string; rank: number }> = {
   epique: { label: "Épique", rank: 2 },
   legendaire: { label: "Légendaire", rank: 3 },
   mythique: { label: "Mythique", rank: 4 },
+  /** Cinq cartes seulement dans tout le catalogue (src/data/black-matter.json). */
+  "matiere-noire": { label: "Matière noire", rank: 5 },
 };
 
 export const RARITY_ORDER = Object.keys(RARITIES) as Rarity[];

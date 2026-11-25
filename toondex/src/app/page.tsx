@@ -55,10 +55,11 @@ function Rules() {
       <section className="section">
         <div className="section__head">
           <div>
-            <h2 className="section-title">Six niveaux de rareté</h2>
+            <h2 className="section-title">Sept niveaux de rareté</h2>
             <p>
               Commune sans effet, rare à reflet, épique pailletée, légendaire et mythique en pleine illustration avec reflets
-              arc-en-ciel. La secrète, tout en or, peut sortir à n’importe quel niveau.
+              arc-en-ciel. Au sommet, la matière noire : cinq cartes seulement, au bord animé. La secrète, tout en or, peut
+              sortir à n’importe quel niveau.
             </p>
           </div>
           <Link href="/catalogue" className="btn btn--ghost">
@@ -93,7 +94,10 @@ function Landing() {
             <b>{CARDS.length.toLocaleString("fr-FR")}</b> personnages
           </>,
           <>
-            <b>{WORK_COUNT}</b> œuvres<span className="hide-sm"> : séries, anime, films</span>
+            <b>{WORK_COUNT}</b>
+            <span>
+              œuvres<span className="hide-sm"> : séries, anime, films</span>
+            </span>
           </>,
         ]}
       >

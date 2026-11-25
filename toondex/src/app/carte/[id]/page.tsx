@@ -55,7 +55,7 @@ function oneIn(p: number): string {
 }
 
 const STATS = [
-  { key: "hp", label: "PV", max: 250, color: "#4ADE80" },
+  { key: "hp", label: "PV", max: 300, color: "#4ADE80" },
   { key: "attack", label: "ATQ", max: 200, color: "#E8563A" },
   { key: "defense", label: "DÉF", max: 200, color: "#3A7FE0" },
   { key: "speed", label: "VIT", max: 200, color: "#F0A81C" },

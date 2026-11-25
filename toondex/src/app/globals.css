@@ -22,6 +22,7 @@
   --r-epique: #cdb8ff;
   --r-legendaire: #ffd873;
   --r-mythique: #ffb3d9;
+  --r-matiere-noire: #c4a7ff;
 
   --gutter-l: max(16px, env(safe-area-inset-left, 0px));
   --gutter-r: max(16px, env(safe-area-inset-right, 0px));
@@ -458,6 +459,11 @@ body::before {
 }
 .rarity--mythique {
   --rc: var(--r-mythique);
+}
+.rarity--matiere-noire {
+  --rc: var(--r-matiere-noire);
+  background: #0b0712;
+  box-shadow: inset 0 0 0 1px rgba(168, 85, 247, 0.6);
 }
 
 .rarity-bar {
@@ -964,6 +970,114 @@ body::before {
 .card--mythique .card__shine {
   --so: 0.3;
 }
+/* Matière noire : cinq cartes seulement. Noir cosmique, nébuleuse violette, bord animé :
+   une traînée de lumière fait le tour du cadre, et un halo pulse autour de la carte. */
+@property --void {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.card--matiere-noire {
+  --ink: #f3ecff;
+}
+.card--matiere-noire .card__face {
+  background:
+    linear-gradient(#07050c, #07050c) padding-box,
+    conic-gradient(from var(--void), transparent 0 70%, rgba(196, 167, 255, 0.2) 78%, #fff 86%, #a855f7 89%, transparent 94%) border-box,
+    conic-gradient(from calc(var(--void) * -1), #050308, #2e1065 18%, #050308 34%, #0c2a4a 52%, #050308 68%, #4c1d95 84%, #050308) border-box;
+  box-shadow:
+    0 1.6cqi 6cqi rgba(0, 0, 0, 0.6),
+    0 0 6cqi rgba(124, 58, 237, 0.55);
+  animation:
+    td-void 4s linear infinite,
+    td-void-glow 2.6s ease-in-out infinite alternate;
+}
+.card--matiere-noire .card__bg {
+  background: #07050c;
+}
+.card--matiere-noire .card__bg .card__photo {
+  filter: saturate(0.85) contrast(1.1) brightness(0.92);
+}
+.card--matiere-noire .card__bg::after {
+  background:
+    radial-gradient(90% 60% at 80% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
+    radial-gradient(70% 50% at 10% 90%, rgba(14, 116, 144, 0.3), transparent 60%),
+    linear-gradient(180deg, rgba(5, 3, 8, 0.75) 0%, rgba(5, 3, 8, 0) 20%),
+    linear-gradient(180deg, rgba(5, 3, 8, 0) 40%, rgba(5, 3, 8, 0.8) 62%, rgba(5, 3, 8, 0.96) 100%);
+}
+.card--matiere-noire .card__name,
+.card--matiere-noire .card__hp {
+  text-shadow:
+    0 0 2cqi rgba(168, 85, 247, 0.8),
+    0 0.4cqi 1.4cqi rgba(0, 0, 0, 0.7);
+}
+.card--matiere-noire .card__meta {
+  background: rgba(168, 85, 247, 0.22);
+}
+.card--matiere-noire .card__rules {
+  border-top-color: rgba(196, 167, 255, 0.35);
+}
+.card--matiere-noire .card__rank {
+  color: #d8c7ff;
+}
+.card--matiere-noire .card__texture,
+.card--matiere-noire .card__glitter,
+.card--matiere-noire .card__shine,
+.card--matiere-noire .card__sparkles {
+  display: block;
+}
+.card--matiere-noire .card__texture {
+  opacity: 0.25;
+}
+.card--matiere-noire .card__glitter {
+  --go: 0.55;
+  --g1: #ffffff;
+  --g2: #c4a7ff;
+  --g3: #7dd3fc;
+}
+.card--matiere-noire .card__shine {
+  --so: 0.22;
+}
+/* Tourbillon de matière noire, lent, par-dessus l'image. */
+.card__void {
+  position: absolute;
+  inset: -40%;
+  z-index: 1;
+  background: conic-gradient(from 0deg, transparent, rgba(124, 58, 237, 0.22), transparent 30%, rgba(14, 165, 233, 0.16), transparent 60%, rgba(168, 85, 247, 0.2), transparent);
+  -webkit-mask: radial-gradient(closest-side, transparent 30%, #000 75%);
+  mask: radial-gradient(closest-side, transparent 30%, #000 75%);
+  mix-blend-mode: screen;
+  animation: hero-spin 14s linear infinite;
+  pointer-events: none;
+}
+@keyframes td-void {
+  to {
+    --void: 360deg;
+  }
+}
+@keyframes td-void-glow {
+  from {
+    box-shadow:
+      0 1.6cqi 6cqi rgba(0, 0, 0, 0.6),
+      0 0 4cqi rgba(124, 58, 237, 0.4);
+  }
+  to {
+    box-shadow:
+      0 1.6cqi 6cqi rgba(0, 0, 0, 0.6),
+      0 0 9cqi rgba(168, 85, 247, 0.75),
+      0 0 2cqi rgba(125, 211, 252, 0.4);
+  }
+}
+.dex-tile--matiere-noire {
+  background:
+    radial-gradient(80% 60% at 50% 30%, rgba(124, 58, 237, 0.45), transparent 70%),
+    #0b0712;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(168, 85, 247, 0.6),
+    0 0 24px rgba(124, 58, 237, 0.4);
+}
+
 /* Secrète : tout en or, image comprise. */
 .card--gold {
   --ink: #2b1d00;
@@ -1077,8 +1191,8 @@ body::before {
     0 2cqi 6cqi rgba(0, 0, 0, 0.5);
 }
 .card__back-emblem .logo-mark {
-  width: 28cqi;
-  height: 28cqi;
+  width: 32cqi;
+  height: 32cqi;
 }
 .card__back-name {
   position: relative;
@@ -2212,8 +2326,8 @@ button.pack3d:disabled {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 14px;
 }
 .tiers li {
   display: flex;
@@ -2776,7 +2890,9 @@ button.pack3d:disabled {
   width: 100%;
   max-width: 1180px;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* Une colonne par carte : 5 pour un paquet, 6 pour l'aperçu « une carte par rareté ». */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: clamp(10px, 2vw, 24px);
 }
 .reveal__item {
@@ -2793,6 +2909,7 @@ button.pack3d:disabled {
 }
 @media (max-width: 760px) {
   .reveal__row {
+    grid-auto-flow: row;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .reveal__item:last-child {
@@ -3033,6 +3150,57 @@ button.pack3d:disabled {
   animation: td-flash 0.7s calc(var(--flip-delay, 0s) + 0.25s) ease-out;
 }
 
+/* Matière noire : l'écran devient noir, un anneau violet se resserre, puis la carte apparaît. */
+.slot.r-matiere-noire {
+  --fx: #a855f7;
+  --flip-delay: 2.2s;
+  --flip-dur: 0.9s;
+}
+.slot.r-matiere-noire.is-revealed {
+  z-index: 60;
+}
+.slot.r-matiere-noire.is-revealed .slot__rays {
+  animation: td-rays 3.6s 0.3s ease-out;
+}
+.slot.r-matiere-noire.is-revealed .slot__lift {
+  animation:
+    td-shake-hard 2.2s linear,
+    td-lift 1.4s 2.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.slot.r-matiere-noire.is-revealed .slot__flash {
+  animation: td-flash 0.8s 2.4s ease-out;
+}
+.slot.r-matiere-noire.is-revealed .slot__ring {
+  animation: td-ring 1.2s 2.6s ease-out;
+}
+.slot.r-matiere-noire.is-revealed .slot__spark {
+  animation: td-spark 1.4s 2.6s ease-out;
+}
+.stage-fx--void {
+  background: radial-gradient(circle at 50% 55%, rgba(124, 58, 237, 0.25), rgba(2, 1, 4, 0.96) 58%);
+  animation: td-dim 3.6s ease-in-out forwards;
+}
+.stage-fx--void::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 160vmax;
+  height: 160vmax;
+  margin: -80vmax 0 0 -80vmax;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.8);
+  box-shadow:
+    0 0 60px rgba(168, 85, 247, 0.6),
+    inset 0 0 60px rgba(125, 211, 252, 0.4);
+  animation: td-collapse 2.3s cubic-bezier(0.6, 0, 0.4, 1) forwards;
+}
+@keyframes td-collapse {
+  to {
+    transform: scale(0.02);
+    opacity: 0.2;
+  }
+}
 .stage-fx {
   position: fixed;
   inset: 0;
@@ -3362,6 +3530,8 @@ button.pack3d:disabled {
   .card__shine,
   .card__sparkles i,
   .card--mythique .card__face,
+  .card--matiere-noire .card__face,
+  .card__void,
   .pack3d__body,
   .pack3d__foil,
   .set,
