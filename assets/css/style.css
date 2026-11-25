@@ -267,7 +267,7 @@ p { margin: 0; text-wrap: pretty; }
   margin-block: clamp(56px, 8vw, 96px) 24px;
 }
 
-/* projets principaux */
+/* réalisations principales */
 .project {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -308,6 +308,7 @@ a.project-media:hover .stage > img { transform: scale(1.015); }
   outline: 1px solid rgba(255, 255, 255, 0.1);
 }
 .stage-phones img:nth-child(2) { margin-top: -4%; }
+.stage-sneaky { background: radial-gradient(120% 90% at 20% 0%, #3A2410 0%, #07090D 55%, #2A0E18 100%); }
 
 /* fiche technique */
 .spec { display: grid; gap: 0; margin: 0; }
@@ -577,7 +578,7 @@ td:first-child { white-space: nowrap; }
     padding-bottom: 8px;
   }
   .sheet li { scroll-snap-align: start; }
-  .gallery { --cols: 2 !important; }
+  .gallery.phones { --cols: 2 !important; }
   .identity-row { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 520px) {
@@ -625,7 +626,7 @@ td:first-child { white-space: nowrap; }
   .about-side, .facts, .case-facts, .quote, .table-wrap, .contact, .case-section { break-inside: avoid; }
   /* pas sur les titres de grille : leur break-after remonte à toute la section */
   .case-body h3, .sub-head, .section-head { break-after: avoid; }
-  #projets, .print-case, .print-break { break-before: page; }
+  #realisations, .print-case, .print-break { break-before: page; }
   .table-wrap { overflow: visible; }
   table { min-width: 0; }
   .identity-row { width: 72%; }

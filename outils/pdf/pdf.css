@@ -1,0 +1,122 @@
+/* Mise en page du PDF : couverture, sommaire, une partie par chapitre.
+   Chargée après style.css, uniquement par le document composé pour l'impression. */
+@page { size: A4; }
+
+/* chaque partie commence sur une nouvelle page */
+.pdf-chapter { break-before: page; }
+.pdf-chapter .section { border-top: 0; padding-block: 0 36px; }
+.pdf-chapter .case-hero { padding-block: 0 24px; }
+.pdf-chapter .contact > .label:first-child { display: none; }
+
+.pdf-part {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 36px;
+}
+.pdf-part-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.25rem;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+}
+.pdf-part-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
+}
+.pdf-part-sub { margin-left: auto; }
+
+/* couverture : une page pleine */
+.pdf-cover { height: 1390px; break-after: page; }
+.pdf-cover-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  padding-top: 40px;
+}
+.pdf-cover .wordmark { font-size: 12.5rem; margin-block: 16px 20px; }
+.pdf-cover-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: -0.03em;
+}
+.pdf-cover-role { font-size: 1.5rem; line-height: 1.35; color: var(--ink-2); max-width: 30ch; margin-top: 10px; }
+.pdf-cover .sheet { margin: 0; }
+.pdf-cover-foot {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  border-top: 2px solid var(--ink);
+  padding-top: 16px;
+}
+.pdf-cover-foot div { display: grid; gap: 4px; }
+.pdf-cover-foot dt { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.pdf-cover-foot dd { margin: 0; font-weight: 500; }
+.pdf-cover-foot a { text-decoration: none; }
+
+/* sommaire */
+.pdf-toc { padding-top: 40px; }
+.pdf-toc-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 6rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  margin: 16px 0 48px;
+}
+.pdf-toc-list, .pdf-toc-list ol { list-style: none; margin: 0; padding: 0; }
+.pdf-toc-list a {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) 4rem;
+  align-items: baseline;
+  gap: 16px;
+  padding-block: 20px;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+}
+.pdf-toc-list > li:last-child > a { border-bottom: 1px solid var(--rule); }
+.pdf-toc-list .n {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1;
+  color: var(--accent);
+}
+.pdf-toc-list .t {
+  display: grid;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.03em;
+}
+.pdf-toc-list small {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+.pdf-toc-list .pg {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pdf-toc-list ol a { padding-block: 12px; }
+.pdf-toc-list ol .t { font-size: 1.25rem; font-weight: 600; }
+
+/* page d'ouverture d'une réalisation : image réduite pour y faire tenir la première section */
+.pdf-chapter .case-cover { width: 72%; margin-bottom: 24px; }
+/* les captures de Vomalia sont plus hautes que celles des autres réalisations */
+#p-vomalia .case-cover { width: 60%; }

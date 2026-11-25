@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sneaky · Preaky</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Étude de cas Sneaky par Maël Gillet (Preaky) : un quiz d’infiltration multijoueur à jouer dans la même pièce, chacun sur son téléphone.">
+<meta name="theme-color" content="#ECEDF1">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-name">Preaky<b>.</b></span>
+      <span class="brand-sub label">Maël Gillet</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="index.html#realisations">← Réalisations</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="contenu">
+  <div class="wrap">
+
+    <section class="case-hero" aria-labelledby="case-title">
+      <p class="label">Étude de cas · Jeu multijoueur · 2026</p>
+      <h1 class="case-title" id="case-title">Sneaky</h1>
+      <p class="case-lede">Un quiz de culture générale à jouer dans la même pièce, chacun sur son téléphone. L’un des joueurs connaît toutes les réponses&nbsp;: à l’équipe de le démasquer.</p>
+      <dl class="case-facts">
+        <div><dt>Rôle</dt><dd>Concept, game design, identité, UX/UI, développement</dd></div>
+        <div><dt>Support</dt><dd>Web app installable sur téléphone, de 3 à 12&nbsp;joueurs</dd></div>
+        <div><dt>Année</dt><dd>2026</dd></div>
+        <div><dt>En ligne</dt><dd><a class="link-arrow" href="https://sneaky-u6ig.onrender.com/" target="_blank" rel="noopener">sneaky-u6ig.onrender.com ↗</a></dd></div>
+      </dl>
+    </section>
+
+    <figure class="case-cover">
+      <div class="stage stage-phones stage-sneaky">
+        <img src="assets/img/sneaky-accueil.webp" alt="Accueil de Sneaky : la mascotte taupe à chapeau et lunettes noires, le titre SNEAKY et le champ nom de code" width="780" height="1328">
+        <img src="assets/img/sneaky-role-taupe.webp" alt="Révélation secrète du rôle : LA TAUPE, avec le scanner d’empreinte" width="780" height="1328">
+        <img src="assets/img/sneaky-verdict.webp" alt="Verdict du vote : Hugo démasqué, tampon LA TAUPE !" width="780" height="1328">
+      </div>
+    </figure>
+
+    <section class="case-section" aria-labelledby="s-concept">
+      <h2 id="s-concept">Le concept</h2>
+      <div class="case-body">
+        <p class="quote">« Un quiz de culture générale. L’un de vous connaît toutes les réponses. »</p>
+        <p>Sneaky croise deux jeux de soirée&nbsp;: le quiz, où l’on joue sa culture, et le jeu de rôle caché à la Loup-Garou, où l’on joue son bluff. Ici, l’équipe répond ensemble aux questions, et un joueur tiré au sort, la taupe, connaît toutes les bonnes réponses. Son but&nbsp;: faire échouer les missions sans se faire repérer.</p>
+        <p>Le téléphone sert de dossier secret, et la partie se joue à voix haute, autour de la table&nbsp;: on débat, on accuse, on se défend, puis on vote.</p>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-partie">
+      <h2 id="s-partie">Une partie, étape par étape</h2>
+      <div class="case-body">
+        <ol class="steps">
+          <li><strong>Le salon</strong><span>Le chef d’opération crée la partie. Les autres rejoignent avec un code à 4 lettres ou en scannant un QR code.</span></li>
+          <li><strong>Les rôles</strong><span>Chacun maintient le doigt sur un scanner d’empreinte pour découvrir son rôle en secret&nbsp;: agent ou taupe.</span></li>
+          <li><strong>Les questions</strong><span>Chaque question est une mission d’équipe, réussie si la réponse majoritaire est la bonne. La taupe voit la bonne réponse en vert sur son écran.</span></li>
+          <li><strong>Le tableau public</strong><span>Après chaque question, tout le monde voit qui a eu juste et qui a eu faux. Un joueur qui ne se trompe jamais devient suspect.</span></li>
+          <li><strong>Les réunions d’urgence</strong><span>Entre deux questions, un agent peut convoquer une réunion pour débattre, accuser ou se défendre.</span></li>
+          <li><strong>Le vote</strong><span>En fin de série, le joueur le plus voté est démasqué. Si c’est la taupe, les agents gagnent la série.</span></li>
+        </ol>
+        <div class="gallery phones" style="--cols:3">
+          <figure>
+            <a href="assets/img/sneaky-salon.webp" data-zoom><img src="assets/img/sneaky-salon.webp" alt="Salon : code d’accès CWJC en grandes lettres et QR code pour rejoindre" width="780" height="1328" loading="lazy"></a>
+            <figcaption>Le salon et son code d’accès</figcaption>
+          </figure>
+          <figure>
+            <a href="assets/img/sneaky-question-taupe.webp" data-zoom><img src="assets/img/sneaky-question-taupe.webp" alt="Question vue par la taupe : la bonne réponse, Le rugby, surlignée en vert" width="780" height="1328" loading="lazy"></a>
+            <figcaption>La question vue par la taupe</figcaption>
+          </figure>
+          <figure>
+            <a href="assets/img/sneaky-mission-echouee.webp" data-zoom><img src="assets/img/sneaky-mission-echouee.webp" alt="Résultat : tampon MISSION ÉCHOUÉE et réponses des quatre agents" width="780" height="1328" loading="lazy"></a>
+            <figcaption>Le tableau public après une question</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-mecaniques">
+      <h2 id="s-mecaniques">Gadgets, indices et Chouette</h2>
+      <div class="case-body">
+        <p>Pour que chaque série reste tendue, les deux camps ont des outils.</p>
+        <ul>
+          <li><strong>Les gadgets de la taupe</strong>, un seul au choix par série&nbsp;: le <em>brouillage</em> rend les réponses illisibles 6&nbsp;secondes sur tous les écrans, le <em>coupe-chrono</em> divise le temps par deux, la <em>falsification</em> glisse un faux indice dans la réunion suivante. Tout le monde sait qu’une pièce est truquée, sans savoir laquelle.</li>
+          <li><strong>Les indices des agents.</strong> Toutes les deux missions réussies, l’équipe débloque un indice&nbsp;: agent blanchi, message intercepté, périmètre de suspects.</li>
+          <li><strong>La Chouette</strong>, dès 4&nbsp;joueurs&nbsp;: un agent secret qui peut observer un joueur par série et apprendre s’il est la taupe. Si la taupe est démasquée, elle a une dernière chance&nbsp;: désigner la Chouette pour lui voler 300&nbsp;points.</li>
+          <li><strong>Une difficulté progressive.</strong> Les questions se corsent de l’échauffement à la série finale, sans devenir impossibles.</li>
+        </ul>
+        <div class="gallery phones" style="--cols:3">
+          <figure>
+            <a href="assets/img/sneaky-role-chouette.webp" data-zoom><img src="assets/img/sneaky-role-chouette.webp" alt="Révélation du rôle : LA CHOUETTE, agente spéciale" width="780" height="1328" loading="lazy"></a>
+            <figcaption>Le rôle de la Chouette</figcaption>
+          </figure>
+          <figure>
+            <a href="assets/img/sneaky-reunion.webp" data-zoom><img src="assets/img/sneaky-reunion.webp" alt="Réunion d’urgence : alerte rouge, liste des suspects et réactions" width="780" height="1328" loading="lazy"></a>
+            <figcaption>La réunion d’urgence</figcaption>
+          </figure>
+          <figure>
+            <a href="assets/img/sneaky-fin-partie.webp" data-zoom><img src="assets/img/sneaky-fin-partie.webp" alt="Débriefing final : HUGO GAGNE, podium des joueurs et distinctions" width="780" height="1328" loading="lazy"></a>
+            <figcaption>Le podium de fin de partie</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-points">
+      <h2 id="s-points">Le barème</h2>
+      <div class="case-body">
+        <p>Les points récompensent les deux façons de jouer&nbsp;: bien répondre et bien soupçonner. Les scores restent cachés pendant la série pour ne rien trahir.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th scope="col">Action</th><th scope="col">Points</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Bonne réponse (agent)</td><td class="num">+100</td></tr>
+              <tr><td>Voter contre la taupe</td><td class="num">+200</td></tr>
+              <tr><td>Taupe démasquée (chaque agent)</td><td class="num">+100</td></tr>
+              <tr><td>Faire écarter un innocent</td><td class="num">−50</td></tr>
+              <tr><td>Taupe&nbsp;: mission échouée</td><td class="num">+150</td></tr>
+              <tr><td>Taupe&nbsp;: non démasquée en fin de série</td><td class="num">+300</td></tr>
+              <tr><td>Taupe&nbsp;: démasquée</td><td class="num">−200</td></tr>
+              <tr><td>Taupe&nbsp;: Chouette capturée</td><td class="num">+300</td></tr>
+              <tr><td>Chouette&nbsp;: taupe démasquée sans être capturée</td><td class="num">+150</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-plateau">
+      <h2 id="s-plateau">L’écran plateau</h2>
+      <div class="case-body">
+        <p>Sur une TV, un ordinateur ou une tablette, le mode plateau affiche en grand le code du salon, les questions, les indices et les verdicts, sans jamais révéler de secret. Tout le monde regarde le même écran pendant le dépouillement.</p>
+        <div class="gallery" style="--cols:1">
+          <figure>
+            <a href="assets/img/sneaky-plateau-verdict.webp" data-zoom><img src="assets/img/sneaky-plateau-verdict.webp" alt="Écran plateau : dépouillement du vote, Inès démasquée, tampon LA TAUPE !" width="1280" height="800" loading="lazy"></a>
+            <figcaption>Le dépouillement du vote sur l’écran plateau</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-identite">
+      <h2 id="s-identite">L’identité</h2>
+      <div class="case-body">
+        <p>Tout l’univers vient du film d’espionnage. La mascotte est une taupe à chapeau et lunettes noires, qui joue sur le double sens du mot. Les rôles arrivent dans un dossier «&nbsp;Confidentiel&nbsp;» en papier kraft, s’ouvrent avec un scanner d’empreinte, et les verdicts tombent comme des coups de tampon&nbsp;: «&nbsp;Mission échouée&nbsp;», «&nbsp;La taupe&nbsp;!&nbsp;».</p>
+        <ul>
+          <li><strong>Une couleur par camp.</strong> L’ambre guide l’action, le rouge signale la taupe et les échecs, le vert les bonnes réponses, le violet la Chouette.</li>
+          <li><strong>Une interface pensée pour la table.</strong> Gros boutons, textes courts, sons et vibrations à chaque étape, écran maintenu allumé pendant toute la partie.</li>
+        </ul>
+        <dl class="spec">
+          <div><dt>Titres</dt><dd>Bebas Neue</dd></div>
+          <div><dt>Interface</dt><dd>Space Grotesk</dd></div>
+          <div><dt>Codes</dt><dd>JetBrains Mono</dd></div>
+          <div><dt>Palette</dt><dd><ul class="swatches">
+            <li><i style="--c:#07090D"></i>Nuit #07090D</li>
+            <li><i style="--c:#FFB547"></i>Ambre #FFB547</li>
+            <li><i style="--c:#FF3B5C"></i>Rouge #FF3B5C</li>
+            <li><i style="--c:#3DFFA8"></i>Vert #3DFFA8</li>
+            <li><i style="--c:#A78BFA"></i>Violet #A78BFA</li>
+            <li><i style="--c:#EFE6D2"></i>Papier #EFE6D2</li>
+          </ul></dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="case-section" aria-labelledby="s-technique">
+      <h2 id="s-technique">Sous le capot</h2>
+      <div class="case-body">
+        <ul>
+          <li>Interface en React et TypeScript, serveur Node avec Socket.IO pour le temps réel&nbsp;: tous les téléphones restent synchronisés à la seconde.</li>
+          <li>Le moteur de jeu tourne entièrement sur le serveur. Chaque téléphone ne reçoit que ce que son joueur a le droit de voir&nbsp;: impossible de tricher en inspectant la page.</li>
+          <li>384 questions en 12 catégories, tirées sans doublon dans un même salon, plus les questions maison écrites par le chef d’opération.</li>
+          <li>Application installable sur l’écran d’accueil, reconnexion automatique quand un téléphone se met en veille.</li>
+          <li>26 tests automatisés sur le moteur et le serveur, et une partie complète simulée sur 4 téléphones pour vérifier qu’aucun texte ne déborde.</li>
+          <li>Hébergé sur Render. Sur l’offre gratuite, le serveur s’endort après 15 minutes sans visite et met une cinquantaine de secondes à se réveiller.</li>
+        </ul>
+        <p class="label">Outils&nbsp;: Claude (IA) pour le développement, Socket.IO, Render.</p>
+      </div>
+    </section>
+
+    <a class="next" href="cinemood.html">
+      <span class="label">Réalisation suivante</span>
+      <span class="case-title">CinéMood →</span>
+    </a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="label">© 2026 Maël Gillet · Preaky</span>
+    <a class="label" href="index.html">Toutes les réalisations</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
