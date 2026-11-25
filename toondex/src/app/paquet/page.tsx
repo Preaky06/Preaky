@@ -30,40 +30,22 @@ export default async function PackPage() {
   const showcase = best.length === 2 ? best : DEFAULT_SHOWCASE.map((id) => getCard(id)).filter((c): c is CardDef => !!c);
 
   return (
-    <section className="pack-section" aria-label="Paquet du jour">
-      <PackOpener
-        initialCards={pack ? withDefs(pack.cards) : null}
-        initialSets={sets}
-        showcase={showcase}
-        intro={
-          <>
-            <p className="eyebrow">{todayLabel()}</p>
-            <h1 className="hero__title">Ton paquet du jour</h1>
-            <p className="hero__lead">
-              Touche le paquet pour l’ouvrir. La cinquième carte est au moins rare, et chaque carte a une chance sur 250 de
-              sortir en secrète, entièrement en or.
-            </p>
-          </>
-        }
-        footer={
-          <dl className="hero__stats">
-            <div>
-              <dt>Collection</dt>
-              <dd>
-                {ownedCards.length} <small>/ {CARDS.length.toLocaleString("fr-FR")}</small>
-              </dd>
-            </div>
-            <div>
-              <dt>Éclats</dt>
-              <dd>{user.shards}</dd>
-            </div>
-            <div>
-              <dt>Secrètes</dt>
-              <dd>{golds}</dd>
-            </div>
-          </dl>
-        }
-      />
-    </section>
+    <PackOpener
+      initialCards={pack ? withDefs(pack.cards) : null}
+      initialSets={sets}
+      showcase={showcase}
+      chips={[
+        <>{todayLabel()}</>,
+        <>
+          <b>
+            {ownedCards.length}/{CARDS.length.toLocaleString("fr-FR")}
+          </b>{" "}
+          cartes
+        </>,
+        <>
+          <b>{user.shards}</b> éclats{golds > 0 ? ` · ${golds} secrète${golds > 1 ? "s" : ""}` : ""}
+        </>,
+      ]}
+    />
   );
 }

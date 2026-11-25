@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
+import { BrandFloats, BrandTicker } from "@/components/BrandTicker";
 import { Card } from "@/components/Card";
 import type { CardDef } from "@/lib/cards-meta";
-
-/* eslint-disable @next/next/no-img-element */
 
 type Props = {
   /** Trois cartes en éventail derrière le mot (gauche, centre, droite). */
@@ -14,7 +13,6 @@ type Props = {
   compact?: boolean;
 };
 
-const TICKER = ["Séries", "Anime", "Disney", "Pixar", "Cartoon Network", "Nickelodeon", "Adult Swim", "Disney Channel", "Films d’animation", "Super-héros", "Netflix", "Ghibli"];
 
 /**
  * Bandeau de marque : TOONDEX en très grand, trois vraies cartes en éventail qui sortent de
@@ -42,22 +40,10 @@ export function BrandHero({ cards, chips, children, compact = false }: Props) {
         <h1 id="brand-word" className="brand-hero__word">
           ToonDex
         </h1>
-        <img className="brand-hero__float brand-hero__float--popcorn" src="/3d/popcorn.webp" alt="" aria-hidden="true" />
-        <img className="brand-hero__float brand-hero__float--clap" src="/3d/clap.webp" alt="" aria-hidden="true" />
-        <img className="brand-hero__float brand-hero__float--star" src="/3d/etoile.webp" alt="" aria-hidden="true" />
-        <img className="brand-hero__float brand-hero__float--gem" src="/3d/gemme.webp" alt="" aria-hidden="true" />
+        <BrandFloats />
       </div>
       <div className="brand-hero__bottom">{children}</div>
-      <div className="brand-hero__ticker" aria-hidden="true">
-        <div className="brand-hero__track">
-          {[...TICKER, ...TICKER].map((t, i) => (
-            <span key={i}>
-              {t}
-              <img src="/3d/etoile.webp" alt="" />
-            </span>
-          ))}
-        </div>
-      </div>
+      <BrandTicker />
     </section>
   );
 }

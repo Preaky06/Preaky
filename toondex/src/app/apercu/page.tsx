@@ -21,20 +21,12 @@ export default async function PreviewPage({ searchParams }: { searchParams: Prom
   if (process.env.NODE_ENV === "production" && process.env.TOONDEX_DEMO !== "1") notFound();
   const withGold = (await searchParams).or === "1";
   return (
-    <section className="pack-section">
-      <PackOpener
-        initialCards={null}
-        demoCards={withDefs(withGold ? GOLD : DEMO)}
-        demoSets={buildSets(DEMO, new Set(DEMO.map((c) => c.cardId)))}
-        showcase={SHOWCASE}
-        intro={
-          <>
-            <p className="eyebrow">Aperçu</p>
-            <h1 className="hero__title">Une carte par rareté</h1>
-            <p className="hero__lead">Commune, rare, épique, légendaire, mythique, matière noire{withGold ? ", et une version or" : ""}.</p>
-          </>
-        }
-      />
-    </section>
+    <PackOpener
+      initialCards={null}
+      demoCards={withDefs(withGold ? GOLD : DEMO)}
+      demoSets={buildSets(DEMO, new Set(DEMO.map((c) => c.cardId)))}
+      showcase={SHOWCASE}
+      chips={[<>Aperçu</>, <>Une carte par rareté{withGold ? ", dont une secrète en or" : ""}</>]}
+    />
   );
 }

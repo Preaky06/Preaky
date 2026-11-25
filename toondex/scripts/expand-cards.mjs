@@ -23,6 +23,8 @@ cache.tvmaze ??= {};
 cache.disney ??= {};
 cache.disneyNames ??= {};
 cache.anilist ??= {};
+cache.tvIndex ??= {};
+cache.tvById ??= {};
 const saveCache = () => writeFileSync(CACHE_FILE, JSON.stringify(cache));
 
 async function getJson(url, init = {}) {
@@ -805,6 +807,66 @@ for (const e of showEntries) {
   log.push(`TVMaze : ${show.name} (${year}, ${show.network}) → ${added}`);
 }
 
+/* TVMaze, découverte : tout l'index, puis les séries live et animées les plus suivies. */
+
+const DISCOVER_WEIGHT = 90; // popularité TVMaze minimale (0 à 100)
+const DISCOVER_LIMIT = 3200; // nombre maximal de séries découvertes
+const SKIP_TYPES = new Set(["Reality", "Talk Show", "Game Show", "News", "Sports", "Documentary", "Award Show", "Panel Show", "Variety"]);
+
+async function tvIndexPage(page) {
+  if (page in cache.tvIndex) return cache.tvIndex[page];
+  if (OFFLINE) return null;
+  const list = await getJson(`https://api.tvmaze.com/shows?page=${page}`);
+  await sleep(550);
+  cache.tvIndex[page] = list
+    ? list.map((s) => [s.id, s.name, s.type, s.language, s.weight ?? 0, (s.premiered ?? "").slice(0, 4), s.network?.name ?? s.webChannel?.name ?? "", s.network?.country?.code ?? s.webChannel?.country?.code ?? "", s.genres])
+    : null;
+  if (page % 20 === 0) saveCache();
+  return cache.tvIndex[page];
+}
+async function tvShowById(id) {
+  if (id in cache.tvById) return cache.tvById[id];
+  if (OFFLINE) return null;
+  const show = await getJson(`https://api.tvmaze.com/shows/${id}?embed=cast`);
+  await sleep(550);
+  cache.tvById[id] = show && {
+    cast: (show._embedded?.cast ?? []).map(({ character }) => [character.id, character.name, character.image ? (character.image.original ?? character.image.medium) : null, character.url]),
+  };
+  if (Object.keys(cache.tvById).length % 50 === 0) saveCache();
+  return cache.tvById[id];
+}
+{
+  const index = [];
+  for (let page = 0; page < 1000; page++) {
+    const list = await tvIndexPage(page);
+    if (!list) break;
+    index.push(...list);
+  }
+  saveCache();
+  const candidates = index
+    .filter(([id, , type, language, weight, year]) => !seenShows.has(id) && !SKIP_TYPES.has(type) && weight >= DISCOVER_WEIGHT && year && !(type === "Animation" && language === "Japanese"))
+    .sort((a, b) => b[4] - a[4] || a[0] - b[0])
+    .slice(0, DISCOVER_LIMIT);
+  log.push(`TVMaze : index de ${index.length} séries, ${candidates.length} découvertes`);
+  let done = 0;
+  for (const [id, name, type, language, weight, year, network, country, genres] of candidates) {
+    const show = await tvShowById(id);
+    if (++done % 200 === 0) console.log(`découverte TVMaze : ${done}/${candidates.length}`);
+    if (!show) continue;
+    seenShows.add(id);
+    const animated = type === "Animation";
+    const work = addWork(freshWorkId(name), name, animated ? "serie-animee" : "serie", Number(year), country, genresFr(genres ?? [], animated ? "comédie" : "drame"), network);
+    let rank = 0;
+    let added = 0;
+    for (const [, cname, image, url] of show.cast) {
+      const r = rank++;
+      if (added >= (animated ? 10 : 8)) break;
+      if (addCandidate({ name: NAMES_FR[cname] ?? cname, work, image, source: url, credit: "TVMaze", score: weight / 100 - r * 0.06, pool: "tvmaze" })) added++;
+    }
+  }
+  saveCache();
+}
+
 /* Disney API */
 
 async function disneyFilm(title) {
@@ -864,7 +926,7 @@ for (const [title, fr, year, genres, existing] of DISNEY_FILMS) {
   const work = existing && workIds.has(existing) ? existing : addWork(freshWorkId(fr), fr, "film-animation", year, "US", genres, "Disney");
   let added = 0;
   for (const c of list.sort((a, b) => b.count - a.count)) {
-    if (added >= 6) break;
+    if (added >= 12) break;
     const source = c.url ?? `https://disney.fandom.com/wiki/${encodeURIComponent(c.name.replace(/ /g, "_"))}`;
     if (addCandidate({ name: NAMES_FR[c.name] ?? c.name, work, image: cleanDisneyImage(c.image), source, credit: "Disney API", score: Math.log10(c.count + 1), pool: "disney" })) added++;
   }
@@ -898,7 +960,7 @@ async function anilistPage(page) {
 }
 {
   const media = [];
-  for (let page = 1; page <= 12; page++) media.push(...(await anilistPage(page)));
+  for (let page = 1; page <= 60; page++) media.push(...(await anilistPage(page)));
   const byId = new Map(media.map((m) => [m.id, m]));
   // Une suite rejoint l'œuvre d'origine si celle-ci est dans la liste.
   const rootOf = (m, depth = 0) => {
@@ -924,7 +986,7 @@ async function anilistPage(page) {
       workOfRoot.set(root.id, work);
     }
     for (const n of m.characters.nodes) {
-      if ((perWork.get(work) ?? 0) >= 7) break;
+      if ((perWork.get(work) ?? 0) >= 9) break;
       const ok = addCandidate({
         name: n.name.full,
         work,
