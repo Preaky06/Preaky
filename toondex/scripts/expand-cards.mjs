@@ -844,7 +844,7 @@ async function tvShowById(id) {
   }
   saveCache();
   const candidates = index
-    .filter(([id, , type, language, weight, year]) => !seenShows.has(id) && !SKIP_TYPES.has(type) && weight >= DISCOVER_WEIGHT && year && !(type === "Animation" && language === "Japanese"))
+    .filter(([id, , type, language, weight, year]) => !seenShows.has(id) && !SKIP_TYPES.has(type) && weight >= DISCOVER_WEIGHT && year && Number(year) <= new Date().getFullYear() && !(type === "Animation" && language === "Japanese"))
     .sort((a, b) => b[4] - a[4] || a[0] - b[0])
     .slice(0, DISCOVER_LIMIT);
   log.push(`TVMaze : index de ${index.length} séries, ${candidates.length} découvertes`);
