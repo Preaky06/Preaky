@@ -1,12 +1,13 @@
-// Vérifie la cohérence du catalogue : œuvres (works.json) et cartes de personnages (cards.json).
+// Vérifie la cohérence du catalogue : œuvres et cartes de personnages, sélection et extension.
 import { readFileSync } from "node:fs";
 
 const read = (f) => JSON.parse(readFileSync(new URL(`../src/data/${f}`, import.meta.url), "utf8"));
-const works = read("works.json");
-const cards = read("cards.json");
+// La sélection (fetch-cards.mjs) et l'extension (expand-cards.mjs) forment un seul catalogue.
+const works = [...read("works.json"), ...read("works-extra.json")];
+const cards = [...read("cards.json"), ...read("cards-extra.json")];
 const TYPES = new Set(["serie", "serie-animee", "anime", "film", "film-animation"]);
 const RARITIES = new Set(["commune", "rare", "epique", "legendaire", "mythique"]);
-const COUNTRIES = new Set(["US", "GB", "FR", "JP", "KR", "ES", "DE", "AU", "NZ", "CA"]);
+const COUNTRIES = new Set(["US", "GB", "FR", "JP", "KR", "ES", "DE", "AU", "NZ", "CA", "CN", "IT", "BE", "IE", "SE", "DK", "NO", "MX", "BR", "IN", "IL", "TR", "PL", "NL", "AR", "CO", "PH", "TW", "FI", "IS", "AT", "CH", "RU", "ZA", "TH"]);
 const errors = [];
 const thisYear = new Date().getFullYear();
 
@@ -38,6 +39,12 @@ cards.forEach((c, i) => {
   if (!/^https:\/\//.test(c.source)) errors.push(`${at} : source manquante`);
 });
 for (const r of RARITIES) if (!cards.some((c) => c.rarity === r)) errors.push(`aucune carte ${r}`);
+const names = new Map();
+for (const c of cards) {
+  const key = `${c.work}|${c.name.toLowerCase()}`;
+  if (names.has(key)) errors.push(`carte ${c.id} : même personnage que ${names.get(key)}`);
+  names.set(key, c.id);
+}
 
 if (errors.length) {
   console.error(errors.join("\n"));

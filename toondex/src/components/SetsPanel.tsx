@@ -1,8 +1,10 @@
 import type { CSSProperties } from "react";
 import { CardImage } from "@/components/CardImage";
-import { getCard } from "@/lib/catalogue";
+import { RARITIES, type CardDef } from "@/lib/cards-meta";
 import { ENERGIES, energyOf } from "@/lib/combat";
-import { starsOf, type PackSet } from "@/lib/sets";
+import type { PackSet } from "@/lib/pack-types";
+
+const starsOf = (card: CardDef) => RARITIES[card.rarity].rank + 1;
 
 /**
  * Séries touchées par le paquet, façon album à compléter : chaque œuvre montre ses cartes,
@@ -46,11 +48,11 @@ export function SetsPanel({ sets, animated }: { sets: PackSet[]; animated: boole
             </p>
             <ul className="set__slots">
               {set.slots.map((slot, j) => {
-                const card = getCard(slot.cardId)!;
+                const card = slot.card;
                 const style = { "--j": j, "--energy": ENERGIES[energyOf(card)].color } as CSSProperties;
                 if (!slot.owned) {
                   return (
-                    <li key={slot.cardId} className="set__slot is-missing" style={style}>
+                    <li key={card.id} className="set__slot is-missing" style={style}>
                       <span className="set__thumb" aria-hidden="true">
                         ?
                       </span>
@@ -61,7 +63,7 @@ export function SetsPanel({ sets, animated }: { sets: PackSet[]; animated: boole
                 }
                 return (
                   <li
-                    key={slot.cardId}
+                    key={card.id}
                     className={`set__slot${slot.isNew ? " is-new" : ""}${slot.gold ? " is-gold" : ""}`}
                     style={style}
                   >

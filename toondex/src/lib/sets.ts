@@ -1,35 +1,11 @@
-import { CARDS, RARITIES, getCard, type CardDef } from "@/lib/catalogue";
+import { CARDS, getCard, type CardDef } from "@/lib/catalogue";
+import type { PackCard, PackSet } from "@/lib/pack-types";
 import { setBonus } from "@/lib/rules";
 
 /**
  * Séries à compléter : une série regroupe toutes les cartes d'une même œuvre.
  * Après l'ouverture d'un paquet, chaque œuvre touchée affiche sa progression.
  */
-
-export type SetSlot = {
-  cardId: string;
-  owned: boolean;
-  /** Obtenue pour la première fois dans ce paquet. */
-  isNew: boolean;
-  /** Nombre de doublons de cette carte dans ce paquet. */
-  dup: number;
-  /** Une version or est sortie dans ce paquet. */
-  gold: boolean;
-};
-
-export type PackSet = {
-  workId: string;
-  title: string;
-  year: number;
-  slots: SetSlot[];
-  owned: number;
-  total: number;
-  complete: boolean;
-  /** Bonus de la série, versé une seule fois à la complétion. */
-  bonus: number;
-  /** La série vient d'être complétée par ce paquet (et le bonus versé). */
-  justCompleted: boolean;
-};
 
 const BY_WORK = new Map<string, CardDef[]>();
 for (const c of CARDS) {
@@ -42,11 +18,8 @@ export function cardsOfWork(workId: string): CardDef[] {
   return BY_WORK.get(workId) ?? [];
 }
 
-export function starsOf(card: CardDef): number {
-  return RARITIES[card.rarity].rank + 1;
-}
 
-type PackLike = { cardId: string; gold: boolean; status: "new" | "new-gold" | "dup" }[];
+type PackLike = Pick<PackCard, "cardId" | "gold" | "status">[];
 
 /** Séries touchées par un paquet (œuvres d'au moins 2 cartes), dans l'ordre d'apparition des cartes. */
 export function buildSets(pack: PackLike, ownedIds: ReadonlySet<string>, justCompleted: ReadonlySet<string> = new Set()): PackSet[] {
@@ -60,7 +33,7 @@ export function buildSets(pack: PackLike, ownedIds: ReadonlySet<string>, justCom
     const slots = cards.map((c) => {
       const hits = pack.filter((p) => p.cardId === c.id);
       return {
-        cardId: c.id,
+        card: c,
         owned: ownedIds.has(c.id),
         isNew: hits.some((p) => p.status !== "dup"),
         dup: hits.filter((p) => p.status === "dup").length,

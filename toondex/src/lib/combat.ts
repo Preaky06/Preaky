@@ -1,4 +1,4 @@
-import type { CardDef, Rarity } from "@/lib/catalogue";
+import type { CardDef, Rarity } from "@/lib/cards-meta";
 
 /**
  * Profil de combat d'une carte : classe d'énergie, points de vie, statistiques, attaques, faiblesse.

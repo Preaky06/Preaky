@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Card } from "@/components/Card";
+import { CardLightbox } from "@/components/CardLightbox";
+import { Pagination } from "@/components/Pagination";
 import { RarityBar, parseRarity } from "@/components/RarityBar";
 import { getCurrentUser } from "@/lib/auth";
 import { CARDS, RARITY_ORDER, WORK_COUNT, type Rarity } from "@/lib/catalogue";
 import { getOwned, type OwnedMap } from "@/lib/collection";
 
 export const metadata: Metadata = { title: "Catalogue" };
+
+const PAGE_SIZE = 48;
 
 function normalize(text: string): string {
   return text
@@ -24,8 +28,15 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
   const user = await getCurrentUser();
   const owned: OwnedMap = user ? await getOwned(user.id) : {};
 
-  const matches = q ? CARDS.filter((c) => normalize(`${c.name} ${c.work.title} ${c.work.genres} ${c.work.year}`).includes(q)) : CARDS;
+  const matches = q
+    ? CARDS.filter((c) => normalize(`${c.name} ${c.work.title} ${c.work.genres} ${c.work.year} ${c.work.network}`).includes(q))
+    : CARDS;
   const list = rarete ? matches.filter((c) => c.rarity === rarete) : matches;
+  const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+  const rawPage = Number(Array.isArray(params.page) ? params.page[0] : params.page);
+  const page = Number.isInteger(rawPage) ? Math.min(Math.max(rawPage, 1), pages) : 1;
+  const shown = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const keep = { q: qText || undefined, rarete };
   const counts = Object.fromEntries(RARITY_ORDER.map((r) => [r, String(matches.filter((c) => c.rarity === r).length)])) as Record<
     Rarity,
     string
@@ -37,7 +48,9 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
         <div>
           <h1 className="page-title">Catalogue</h1>
           <p className="muted">
-            {CARDS.length} personnages de {WORK_COUNT} œuvres.{list.length !== CARDS.length && ` ${list.length} affichés.`}
+            {CARDS.length.toLocaleString("fr-FR")} personnages de {WORK_COUNT} œuvres.
+            {list.length !== CARDS.length && ` ${list.length.toLocaleString("fr-FR")} correspondent.`}
+            {pages > 1 && ` Page ${page} sur ${pages}.`}
           </p>
         </div>
         <form className="search" action="/catalogue" role="search">
@@ -45,7 +58,7 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
           <label htmlFor="q" className="sr-only">
             Rechercher un personnage ou une œuvre
           </label>
-          <input id="q" name="q" type="search" defaultValue={qText} placeholder="Personnage, œuvre, genre…" className="input" />
+          <input id="q" name="q" type="search" defaultValue={qText} placeholder="Personnage, œuvre, chaîne…" className="input" />
           <button type="submit" className="btn btn--ghost">
             Rechercher
           </button>
@@ -57,10 +70,11 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
       {list.length === 0 ? (
         <p className="empty">Aucun personnage ne correspond à ta recherche.</p>
       ) : (
-        <ul className="card-grid">
-          {list.map((c) => (
+        <CardLightbox cards={shown}>
+          <ul className="card-grid">
+          {shown.map((c) => (
             <li key={c.id} className="card-grid__item">
-              <Link href={`/carte/${c.id}`} className="card-link">
+              <Link href={`/carte/${c.id}`} className="card-link" data-card={c.id} aria-label={`${c.name}, ouvrir la carte`}>
                 <Card card={c} />
               </Link>
               {user && (
@@ -70,8 +84,10 @@ export default async function CataloguePage({ searchParams }: { searchParams: Pr
               )}
             </li>
           ))}
-        </ul>
+          </ul>
+        </CardLightbox>
       )}
+      <Pagination base="/catalogue" page={page} pages={pages} keep={keep} />
     </>
   );
 }

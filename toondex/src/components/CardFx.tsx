@@ -23,7 +23,9 @@ export function CardFx() {
     const onMove = (event: PointerEvent) => {
       if (event.pointerType === "touch") return;
       const target = event.target instanceof Element ? event.target : null;
-      const card = target?.closest<HTMLElement>(".card--fx") ?? null;
+      const hit = target?.closest<HTMLElement>(".card--fx") ?? null;
+      // Dans la visionneuse 3D, c'est la visionneuse qui oriente la carte et son reflet.
+      const card = hit && !hit.closest(".viewer") ? hit : null;
       if (card !== current) reset();
       if (!card) return;
       const box = card.getBoundingClientRect();

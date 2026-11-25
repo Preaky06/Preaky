@@ -1,23 +1,25 @@
 import "server-only";
 import { getDb, type Queryable } from "@/lib/db";
 import { getCard } from "@/lib/catalogue";
-import { buildSets, cardsOfWork, type PackSet } from "@/lib/sets";
+import type { PackCard, PackCardView, PackSet } from "@/lib/pack-types";
+import { buildSets, cardsOfWork } from "@/lib/sets";
 import { drawPack, parisDay } from "@/lib/game";
 import { CRAFT_COST, GOLD_SHARD_MULTIPLIER, SHARDS_PER_DUPLICATE, setBonus } from "@/lib/rules";
 
 export type Owned = { copies: number; gold: number };
 export type OwnedMap = Record<string, Owned>;
 
-/** Résultat d'une carte ouverte, stocké avec le paquet. */
-export type PackCard = {
-  cardId: string;
-  gold: boolean;
-  /** "new" : carte jamais obtenue. "new-gold" : première version or. "dup" : doublon converti. */
-  status: "new" | "new-gold" | "dup";
-  shards: number;
-};
+export type { PackCard, PackCardView, PackSet };
 
 export type Pack = { day: string; cards: PackCard[] };
+
+/** Ajoute à chaque carte ouverte sa définition (nom, image, œuvre…) pour l'affichage. */
+export function withDefs(cards: PackCard[]): PackCardView[] {
+  return cards.flatMap((c) => {
+    const card = getCard(c.cardId);
+    return card ? [{ ...c, card }] : [];
+  });
+}
 
 export async function getOwned(userId: string): Promise<OwnedMap> {
   const db = await getDb();

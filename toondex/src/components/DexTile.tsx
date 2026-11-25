@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { CardImage } from "@/components/CardImage";
-import { RARITIES, cardNumber, type CardDef } from "@/lib/catalogue";
+import { RARITIES, cardNumber, type CardDef } from "@/lib/cards-meta";
 import { ENERGIES, combatProfile } from "@/lib/combat";
 
 /** Case de la collection façon Pokédex : couleur de la classe, portrait, numéro, nom, rareté et PV. */
@@ -17,7 +17,7 @@ export function DexTile({ card, copies, gold }: { card: CardDef; copies: number;
       <span className="dex-tile__frame">
         <CardImage name={card.name} image={card.image} />
       </span>
-      <span className="dex-tile__num">N°{cardNumber(card.num)}</span>
+      <span className="dex-tile__num">N°{cardNumber(card.num, card.total)}</span>
       {gold > 0 && <span className="dex-tile__gold">Or ×{gold}</span>}
       <span className="dex-tile__name">{card.name}</span>
       <span className="dex-tile__meta">

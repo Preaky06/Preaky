@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CSSProperties } from "react";
-import { Card } from "@/components/Card";
+import { Card, CardBack } from "@/components/Card";
+import { CardViewer } from "@/components/CardViewer";
 import { CardImage } from "@/components/CardImage";
 import { CraftButton } from "@/components/CraftButton";
 import { getCurrentUser } from "@/lib/auth";
@@ -63,7 +64,7 @@ export default async function CardPage({ params }: Params) {
         <div className="dex__hero">
           <div className="dex__bar">
             <Link href={back.href}>← {back.label}</Link>
-            <span className="dex__num">N°{cardNumber(card.num)}</span>
+            <span className="dex__num">N°{cardNumber(card.num, card.total)}</span>
           </div>
           <div className="dex__portrait">
             <CardImage name={card.name} image={card.image} />
@@ -167,6 +168,12 @@ export default async function CardPage({ params }: Params) {
                   {work.title} ({work.year})
                 </dd>
               </div>
+              {work.network && (
+                <div>
+                  <dt>Chaîne ou studio</dt>
+                  <dd>{work.network}</dd>
+                </div>
+              )}
               <div>
                 <dt>Pays</dt>
                 <dd>{countryNames(work.countries)}</dd>
@@ -198,7 +205,7 @@ export default async function CardPage({ params }: Params) {
       </article>
 
       <aside className="dex__side" aria-label="Carte">
-        <Card card={card} gold={!!owned && owned.gold > 0} headingLevel="h2" />
+        <CardViewer label={card.name} front={<Card card={card} gold={!!owned && owned.gold > 0} headingLevel="h2" />} back={<CardBack />} />
 
         {user ? (
           owned ? (
@@ -242,14 +249,14 @@ export default async function CardPage({ params }: Params) {
         <div className="detail__nav">
           {prev ? (
             <Link href={`/carte/${prev.id}`} className="btn btn--ghost btn--sm">
-              ← N°{cardNumber(prev.num)}
+              ← N°{cardNumber(prev.num, prev.total)}
             </Link>
           ) : (
             <span />
           )}
           {next && (
             <Link href={`/carte/${next.id}`} className="btn btn--ghost btn--sm">
-              N°{cardNumber(next.num)} →
+              N°{cardNumber(next.num, next.total)} →
             </Link>
           )}
         </div>

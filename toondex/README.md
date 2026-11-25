@@ -43,7 +43,8 @@ Chaque carte est un **personnage** d'une œuvre, avec sa vraie image. Une œuvre
   - **Wikipédia** pour les autres films (`WIKI_FILMS`), à partir du cache `scripts/.wiki-cache.json` (ignoré par git). Wikipédia limite fortement le débit des adresses partagées : `--wiki` remplit le cache lentement, on peut relancer sans tout redemander. Les affiches de film sont écartées.
   - **AniList** pour les anime et les films d'animation japonais (`ANIME`).
 - Un personnage sans image est écarté, et une œuvre sans personnage illustré n'a pas de carte.
-- Les cartes sont numérotées par type d'œuvre, dans l'ordre du fichier.
+- **Extension** : `node scripts/expand-cards.mjs` ajoute la distribution principale de plusieurs centaines de séries (live, Cartoon Network, Nickelodeon, Adult Swim, Disney Channel, animation adulte, super-héros, jeunesse), les personnages des films Disney et Pixar (ceux qui y apparaissent pour la première fois, pas les caméos) et les personnages les plus aimés des anime les plus populaires d'AniList. Il écrit `src/data/cards-extra.json` et `src/data/works-extra.json` (8ᵉ colonne : chaîne ou studio). Les réponses des sources sont gardées dans `scripts/.sources-cache.json` (ignoré par git) ; `--offline` reconstruit sans rien redemander. Jamais de photo de comédien de doublage : un personnage animé sans dessin est écarté. Rareté selon la popularité dans chaque source (poids de la série et rang dans la distribution sur TVMaze, nombre d'apparitions sur le wiki Disney, favoris sur AniList) : 2 % mythique, 6 % légendaire, 14 % épique, 28 % rare, le reste commune.
+- Ordre et numérotation : par type d'œuvre, puis œuvre par œuvre. Lancer `fetch-cards.mjs` puis `expand-cards.mjs`.
 
 Vérification : `npm run check:catalogue`.
 
@@ -67,9 +68,9 @@ Les personnages, leurs images et les œuvres appartiennent à leurs ayants droit
 | Route | Contenu |
 | --- | --- |
 | `/` | Invité : présentation et chances. Connecté : paquet du jour, puis bilan de la collection. |
-| `/collection` | Cartes possédées et manquantes, filtres, fabrication. |
-| `/catalogue` | Toutes les cartes, recherche par personnage ou œuvre, filtres, règles. |
-| `/carte/[id]` | Fiche d'une carte, chance de l'obtenir, exemplaires possédés. |
+| `/collection` | Cartes obtenues, façon Pokédex, filtres par rareté. |
+| `/catalogue` | Toutes les cartes, 48 par page, recherche (personnage, œuvre, genre, chaîne), filtres par rareté. Un clic ouvre la carte en grand dans une visionneuse 3D (glisser pour la faire pivoter et voir son dos). |
+| `/carte/[id]` | Fiche façon Pokédex : statistiques, attaques, série, chance de l'obtenir, carte en 3D. |
 | `/connexion`, `/inscription` | Comptes. |
 | `/apercu` | Paquet fixe avec une carte de chaque rareté (`?or=1` pour la version or). Désactivé en production sauf `TOONDEX_DEMO=1`. |
 

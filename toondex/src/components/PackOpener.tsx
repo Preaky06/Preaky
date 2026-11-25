@@ -9,9 +9,8 @@ import { Countdown } from "@/components/Countdown";
 import { ArrowIcon } from "@/components/Icons";
 import { Pack3D, PackScene } from "@/components/Pack3D";
 import { SetsPanel } from "@/components/SetsPanel";
-import { RARITIES, getCard, type CardDef, type Rarity } from "@/lib/catalogue";
-import type { PackCard } from "@/lib/collection";
-import { buildSets, type PackSet } from "@/lib/sets";
+import { RARITIES, type CardDef, type Rarity } from "@/lib/cards-meta";
+import type { PackCardView, PackSet } from "@/lib/pack-types";
 
 /** Durée de l'animation d'ouverture selon la rareté (ms). Plus c'est rare, plus c'est long. */
 const REVEAL_MS: Record<Rarity, number> = {
@@ -34,13 +33,12 @@ function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function revealDuration(card: PackCard): number {
+function revealDuration(card: PackCardView): number {
   if (prefersReducedMotion()) return 250;
-  const def = getCard(card.cardId)!;
-  return REVEAL_MS[def.rarity] + (card.gold ? GOLD_EXTRA_MS : 0);
+  return REVEAL_MS[card.card.rarity] + (card.gold ? GOLD_EXTRA_MS : 0);
 }
 
-function statusLabel(card: PackCard): string {
+function statusLabel(card: PackCardView): string {
   if (card.status === "new-gold") return "Secrète en or !";
   if (card.status === "new") return "Nouvelle carte";
   return `Doublon · +${card.shards} éclats`;
@@ -49,11 +47,13 @@ function statusLabel(card: PackCard): string {
 const SPARKS = Array.from({ length: 12 }, (_, i) => i);
 
 type Props = {
-  initialCards: PackCard[] | null;
+  initialCards: PackCardView[] | null;
   /** Séries du paquet déjà ouvert. */
   initialSets?: PackSet[];
   /** Aperçu : cartes imposées, sans appel au serveur ni compte. */
-  demoCards?: PackCard[];
+  demoCards?: PackCardView[];
+  /** Aperçu : séries correspondant aux cartes imposées. */
+  demoSets?: PackSet[];
   /** Titre et texte affichés à gauche du paquet fermé. */
   intro: ReactNode;
   /** Contenu sous le bouton d'ouverture (statistiques…). */
@@ -62,10 +62,10 @@ type Props = {
   showcase: CardDef[];
 };
 
-export function PackOpener({ initialCards, initialSets, demoCards, intro, footer, showcase }: Props) {
+export function PackOpener({ initialCards, initialSets, demoCards, demoSets, intro, footer, showcase }: Props) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>(initialCards ? "dealt" : "sealed");
-  const [cards, setCards] = useState<PackCard[] | null>(initialCards);
+  const [cards, setCards] = useState<PackCardView[] | null>(initialCards);
   const [revealed, setRevealed] = useState<boolean[]>(() => (initialCards ?? []).map(() => true));
   const [animated, setAnimated] = useState(!initialCards);
   const [stageFx, setStageFx] = useState<"mythique" | "gold" | null>(null);
@@ -102,7 +102,7 @@ export function PackOpener({ initialCards, initialSets, demoCards, intro, footer
             ok: true,
             pack: { day: "apercu", cards: demoCards },
             shards: 0,
-            sets: buildSets(demoCards, new Set(demoCards.map((c) => c.cardId))),
+            sets: demoSets ?? [],
             setBonus: 0,
           } as const)
         : await openPack();
@@ -132,7 +132,7 @@ export function PackOpener({ initialCards, initialSets, demoCards, intro, footer
     if (!cards || revealed[index] || revealedIds.current.has(index)) return;
     revealedIds.current.add(index);
     const card = cards[index];
-    const def = getCard(card.cardId)!;
+    const def = card.card;
     setRevealed((prev) => prev.map((v, i) => (i === index ? true : v)));
     if (def.rarity === "mythique") setStageFx("mythique");
     else if (card.gold) setStageFx("gold");
@@ -213,7 +213,7 @@ export function PackOpener({ initialCards, initialSets, demoCards, intro, footer
         {error && <p className="notice">{error}</p>}
         <ol className="reveal__row">
           {cards.map((card, i) => {
-            const def = getCard(card.cardId)!;
+            const def = card.card;
             const isOpen = revealed[i];
             return (
               <li key={`${card.cardId}-${i}`} className="reveal__item" style={{ "--i": i } as CSSProperties}>

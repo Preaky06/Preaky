@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { CardImage } from "@/components/CardImage";
 import { LogoMark } from "@/components/Icons";
-import { CARDS, RARITIES, cardNumber, type CardDef } from "@/lib/catalogue";
+import { RARITIES, cardNumber, type CardDef } from "@/lib/cards-meta";
 import { ENERGIES, RARITY_SYMBOL, combatProfile, type EnergyClass } from "@/lib/combat";
 
 function Energy({ kind, className = "card__energy" }: { kind: EnergyClass; className?: string }) {
@@ -70,7 +70,7 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
             </div>
           )}
           <p className="card__meta">
-            N°{cardNumber(card.num)} · {card.work.title} · {card.work.year}
+            N°{cardNumber(card.num, card.total)} · {card.work.title} · {card.work.year}
           </p>
           <ul className="card__attacks">
             {p.attacks.map((a) => (
@@ -99,7 +99,7 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
               <span className="card__rank">{gold ? "Secrète" : RARITIES[card.rarity].label}</span> · Illus. {card.credit}
             </span>
             <span>
-              {cardNumber(card.num)}/{CARDS.length} <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
+              {cardNumber(card.num, card.total)}/{card.total} <b className="card__symbol">{RARITY_SYMBOL[card.rarity]}</b>
             </span>
           </div>
         </div>
@@ -119,13 +119,18 @@ export function Card({ card, gold = false, width, className = "", headingLevel =
   );
 }
 
-/** Dos de carte, utilisé avant la révélation. */
+/** Dos de carte : emblème ToonDex, motif rayonnant, reflet métallisé. */
 export function CardBack() {
   return (
     <div className="card card--back" aria-hidden="true">
       <div className="card__face card__back">
-        <LogoMark className="logo-mark" />
+        <span className="card__back-rays" />
+        <span className="card__back-emblem">
+          <LogoMark className="logo-mark" />
+        </span>
         <span className="card__back-name">TOONDEX</span>
+        <span className="card__back-tag">Cartes à collectionner</span>
+        <span className="card__back-foil" />
       </div>
     </div>
   );

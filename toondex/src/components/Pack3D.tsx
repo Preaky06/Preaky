@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Card } from "@/components/Card";
-import type { CardDef } from "@/lib/catalogue";
+import type { CardDef } from "@/lib/cards-meta";
 
 type Pack3DProps = {
   /** Bouton cliquable (ouverture) ou simple illustration. */

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RARITIES, RARITY_ORDER, type Rarity } from "@/lib/catalogue";
+import { RARITIES, RARITY_ORDER, type Rarity } from "@/lib/cards-meta";
 
 type Props = {
   /** Page de base, ex. "/collection". */

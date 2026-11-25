@@ -1,4 +1,4 @@
-import type { Rarity } from "@/lib/catalogue";
+import type { Rarity } from "@/lib/cards-meta";
 
 /** Règles du jeu, partagées par le serveur et l'affichage. */
 

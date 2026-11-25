@@ -16,8 +16,8 @@ import {
   recordLoginFailure,
   verifyPassword,
 } from "@/lib/auth";
-import { AlreadyOpenedError, craftCard, getPackSets, getTodayPack, openTodayPack, type Pack } from "@/lib/collection";
-import type { PackSet } from "@/lib/sets";
+import { AlreadyOpenedError, craftCard, getPackSets, getTodayPack, openTodayPack, withDefs } from "@/lib/collection";
+import type { PackCardView, PackSet } from "@/lib/pack-types";
 import { getDb } from "@/lib/db";
 
 export type FormState = { error?: string; pseudo?: string } | undefined;
@@ -76,9 +76,11 @@ export async function logout(): Promise<void> {
   redirect("/");
 }
 
+type PackView = { day: string; cards: PackCardView[] };
+
 export type OpenResult =
-  | { ok: true; pack: Pack; shards: number; sets: PackSet[]; setBonus: number }
-  | { ok: false; error: string; pack?: Pack; sets?: PackSet[] };
+  | { ok: true; pack: PackView; shards: number; sets: PackSet[]; setBonus: number }
+  | { ok: false; error: string; pack?: PackView; sets?: PackSet[] };
 
 export async function openPack(): Promise<OpenResult> {
   const user = await getCurrentUser();
@@ -86,12 +88,17 @@ export async function openPack(): Promise<OpenResult> {
   try {
     const { pack, shards, sets, setBonus } = await openTodayPack(user.id);
     revalidatePath("/collection");
-    return { ok: true, pack, shards, sets, setBonus };
+    return { ok: true, pack: { day: pack.day, cards: withDefs(pack.cards) }, shards, sets, setBonus };
   } catch (err) {
     if (err instanceof AlreadyOpenedError) {
       const pack = (await getTodayPack(user.id)) ?? undefined;
       const sets = pack ? await getPackSets(user.id, pack) : undefined;
-      return { ok: false, error: "Tu as déjà ouvert le paquet du jour.", pack, sets };
+      return {
+        ok: false,
+        error: "Tu as déjà ouvert le paquet du jour.",
+        pack: pack && { day: pack.day, cards: withDefs(pack.cards) },
+        sets,
+      };
     }
     throw err;
   }

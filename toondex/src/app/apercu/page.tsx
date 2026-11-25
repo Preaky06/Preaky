@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PackOpener } from "@/components/PackOpener";
 import { CARDS_BY_RARITY, RARITY_ORDER, getCard, type CardDef } from "@/lib/catalogue";
-import type { PackCard } from "@/lib/collection";
+import { withDefs, type PackCard } from "@/lib/collection";
+import { buildSets } from "@/lib/sets";
 
 export const metadata: Metadata = { title: "Aperçu des animations", robots: { index: false } };
 
@@ -23,7 +24,8 @@ export default async function PreviewPage({ searchParams }: { searchParams: Prom
     <section className="pack-section">
       <PackOpener
         initialCards={null}
-        demoCards={withGold ? GOLD : DEMO}
+        demoCards={withDefs(withGold ? GOLD : DEMO)}
+        demoSets={buildSets(DEMO, new Set(DEMO.map((c) => c.cardId)))}
         showcase={SHOWCASE}
         intro={
           <>

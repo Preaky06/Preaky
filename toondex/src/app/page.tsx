@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandHero } from "@/components/BrandHero";
+import { Countdown } from "@/components/Countdown";
 import { ArrowIcon } from "@/components/Icons";
 import { OddsTable } from "@/components/OddsTable";
 import { Pack3D, PackScene } from "@/components/Pack3D";
@@ -7,11 +8,17 @@ import { PackOpener } from "@/components/PackOpener";
 import { RarityTiers } from "@/components/RarityTiers";
 import { getCurrentUser } from "@/lib/auth";
 import { CARDS, RARITY_ORDER, WORK_COUNT, getCard, type CardDef } from "@/lib/catalogue";
-import { getOwned, getPackSets, getTodayPack } from "@/lib/collection";
+import { getOwned, getPackSets, getTodayPack, withDefs } from "@/lib/collection";
 
 /* eslint-disable @next/next/no-img-element */
 
 const DEFAULT_SHOWCASE = ["walter-white", "satoru-gojo"];
+/** Éventail du bandeau : un anime, un dessin animé en secrète or, une série. */
+const HERO_FAN = ["monkey-d-luffy", "homer-simpson", "walter-white"];
+
+function heroCards(ids: string[]) {
+  return showcaseFrom(ids).map((card, i) => ({ card, gold: i === 1 }));
+}
 
 function todayLabel(): string {
   const text = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", weekday: "long", day: "numeric", month: "long" }).format(
@@ -79,7 +86,17 @@ function Rules() {
 function Landing() {
   return (
     <>
-      <BrandHero tags={[`${CARDS.length} personnages`, `${WORK_COUNT} séries, anime et films`]}>
+      <BrandHero
+        cards={heroCards(HERO_FAN)}
+        chips={[
+          <>
+            <b>{CARDS.length.toLocaleString("fr-FR")}</b> personnages
+          </>,
+          <>
+            <b>{WORK_COUNT}</b> œuvres<span className="hide-sm"> : séries, anime, films</span>
+          </>,
+        ]}
+      >
         <p className="brand-hero__lead">Les personnages de tes séries, anime et films, en cartes à collectionner.</p>
         <Link href="/inscription" className="btn btn--hero">
           Commencer ma collection
@@ -128,10 +145,33 @@ export default async function Home() {
   // Derrière le paquet : les deux cartes les plus rares de la collection, sinon deux cartes d'exemple.
   const best = [...ownedCards].sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity)).slice(0, 2);
   const showcase = best.length === 2 ? best : showcaseFrom(DEFAULT_SHOWCASE);
+  // Bandeau : les trois plus belles cartes du joueur (la meilleure au centre), sinon l'éventail par défaut.
+  const top3 = [...ownedCards]
+    .sort((a, b) => RARITY_ORDER.indexOf(b.rarity) - RARITY_ORDER.indexOf(a.rarity) || (owned[b.id].gold - owned[a.id].gold))
+    .slice(0, 3)
+    .map((card) => ({ card, gold: owned[card.id].gold > 0 }));
+  const fan = top3.length === 3 ? [top3[1], top3[0], top3[2]] : heroCards(HERO_FAN);
 
   return (
     <>
-      <BrandHero compact tags={[todayLabel(), `${ownedCards.length}/${CARDS.length} cartes`]}>
+      <BrandHero
+        compact
+        cards={fan}
+        chips={[
+          <>
+            <b>
+              {ownedCards.length}/{CARDS.length.toLocaleString("fr-FR")}
+            </b>{" "}
+            cartes
+          </>,
+          <>
+            Nouveau paquet dans{" "}
+            <b>
+              <Countdown />
+            </b>
+          </>,
+        ]}
+      >
         <p className="brand-hero__lead">
           {pack ? "Ton paquet du jour est ouvert. Le prochain arrive à minuit." : `Salut ${user.pseudo}, ton paquet du jour t’attend.`}
         </p>
@@ -143,7 +183,7 @@ export default async function Home() {
 
       <section className="pack-section" id="paquet" aria-label="Paquet du jour">
         <PackOpener
-          initialCards={pack?.cards ?? null}
+          initialCards={pack ? withDefs(pack.cards) : null}
           initialSets={sets}
           showcase={showcase}
           intro={
