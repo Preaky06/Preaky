@@ -48,12 +48,12 @@ export function starsOf(card: CardDef): number {
 
 type PackLike = { cardId: string; gold: boolean; status: "new" | "new-gold" | "dup" }[];
 
-/** Séries touchées par un paquet, dans l'ordre d'apparition des cartes. */
+/** Séries touchées par un paquet (œuvres d'au moins 2 cartes), dans l'ordre d'apparition des cartes. */
 export function buildSets(pack: PackLike, ownedIds: ReadonlySet<string>, justCompleted: ReadonlySet<string> = new Set()): PackSet[] {
   const order: string[] = [];
   for (const p of pack) {
     const card = getCard(p.cardId);
-    if (card && !order.includes(card.work.id)) order.push(card.work.id);
+    if (card && !order.includes(card.work.id) && cardsOfWork(card.work.id).length >= 2) order.push(card.work.id);
   }
   return order.map((workId) => {
     const cards = cardsOfWork(workId);

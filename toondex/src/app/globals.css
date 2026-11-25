@@ -1634,6 +1634,7 @@ button.pack3d:disabled {
   animation-delay: calc(0.3s + var(--j, 0) * 90ms);
 }
 .set__thumb {
+  container-type: inline-size;
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { CardImage } from "@/components/CardImage";
 import { getCard } from "@/lib/catalogue";
 import { ENERGIES, energyOf } from "@/lib/combat";
 import { starsOf, type PackSet } from "@/lib/sets";
@@ -31,9 +32,7 @@ export function SetsPanel({ sets, animated }: { sets: PackSet[]; animated: boole
             <p className="set__reward">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={set.complete ? "/3d/trophy.webp" : "/3d/gift.webp"} alt="" />
-              {set.bonus === 0 ? (
-                <span>Carte unique de l’œuvre</span>
-              ) : set.justCompleted ? (
+              {set.justCompleted ? (
                 <span>
                   Série complète ! <strong>+{set.bonus} éclats</strong>
                 </span>
@@ -68,8 +67,7 @@ export function SetsPanel({ sets, animated }: { sets: PackSet[]; animated: boole
                   >
                     {slot.isNew && <span className="set__new">Nouveau</span>}
                     <span className="set__thumb">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={card.image} alt="" loading="lazy" />
+                      <CardImage name={card.name} image={card.image} />
                     </span>
                     {slot.dup > 0 && <span className="set__dup">+{slot.dup}</span>}
                     <span className="set__stars" aria-label={`${starsOf(card)} étoiles`}>
